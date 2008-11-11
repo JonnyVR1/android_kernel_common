@@ -55,6 +55,12 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
 	wait_queue_head_t wait_q;
 	size_t retlen;
 	int ret;
+	int chunk = len / mtd->writesize;
+	unsigned char *ew_buf = kzalloc(mtd->writesize, GFP_KERNEL);
+	unsigned int ew_off = 0;
+
+	if (!ew_buf)
+		return -EINTR;
 
 	/*
 	 * First, let's erase the flash block.
@@ -86,12 +92,23 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
 	/*
 	 * Next, writhe data to flash.
 	 */
+	for (; chunk > 0 ; chunk--) {
+		memcpy(ew_buf, (buf + ew_off), mtd->writesize);
+		ret = mtd->write(mtd, pos, mtd->writesize, &retlen, ew_buf);
 
-	ret = mtd->write(mtd, pos, len, &retlen, buf);
-	if (ret)
-		return ret;
-	if (retlen != len)
-		return -EIO;
+		if (ret) {
+			kfree(ew_buf);
+			return ret;
+		}
+		if (retlen != mtd->writesize) {
+			kfree(ew_buf);
+			return -EIO;
+		}
+		ew_off = ew_off + mtd->writesize;
+		pos = pos + mtd->writesize;
+	}
+
+	kfree(ew_buf);
 	return 0;
 }
 
@@ -132,6 +149,10 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
 	unsigned int sect_size = mtdblk->cache_size;
 	size_t retlen;
 	int ret;
+	unsigned char *wr_buf = kzalloc(mtd->writesize, GFP_KERNEL);
+
+	if (!wr_buf)
+		return -EINTR;
 
 	DEBUG(MTD_DEBUG_LEVEL2, "mtdblock: write on \"%s\" at 0x%lx, size 0x%x\n",
 		mtd->name, pos, len);
@@ -143,54 +164,57 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
 		unsigned long sect_start = (pos/sect_size)*sect_size;
 		unsigned int offset = pos - sect_start;
 		unsigned int size = sect_size - offset;
+		int chunk = sect_size / mtd->writesize;
+		unsigned int wr_off = 0;
 		if( size > len )
 			size = len;
 
-		if (size == sect_size) {
-			/*
-			 * We are covering a whole sector.  Thus there is no
-			 * need to bother with the cache while it may still be
-			 * useful for other partial writes.
-			 */
-			ret = erase_write (mtd, pos, size, buf);
+		if (mtdblk->cache_state == STATE_DIRTY &&
+		    mtdblk->cache_offset != sect_start) {
+			ret = write_cached_data(mtdblk);
 			if (ret)
 				return ret;
-		} else {
-			/* Partial sector: need to use the cache */
-
-			if (mtdblk->cache_state == STATE_DIRTY &&
-			    mtdblk->cache_offset != sect_start) {
-				ret = write_cached_data(mtdblk);
-				if (ret)
-					return ret;
-			}
-
-			if (mtdblk->cache_state == STATE_EMPTY ||
-			    mtdblk->cache_offset != sect_start) {
-				/* fill the cache with the current sector */
-				mtdblk->cache_state = STATE_EMPTY;
-				ret = mtd->read(mtd, sect_start, sect_size,
-						&retlen, mtdblk->cache_data);
-				if (ret)
-					return ret;
-				if (retlen != sect_size)
-					return -EIO;
-
-				mtdblk->cache_offset = sect_start;
-				mtdblk->cache_size = sect_size;
-				mtdblk->cache_state = STATE_CLEAN;
-			}
-
-			/* write data to our local cache */
-			memcpy (mtdblk->cache_data + offset, buf, size);
-			mtdblk->cache_state = STATE_DIRTY;
 		}
+
+		if (mtdblk->cache_state == STATE_EMPTY ||
+		    mtdblk->cache_offset != sect_start) {
+			/* fill the cache with the current sector */
+			mtdblk->cache_state = STATE_EMPTY;
+			for (; chunk > 0 ; chunk--) {
+				ret = mtd->read(mtd, sect_start,
+					mtd->writesize, &retlen, wr_buf);
+
+				if (ret) {
+					kfree(wr_buf);
+					return ret;
+				}
+				if (retlen != mtd->writesize) {
+					kfree(wr_buf);
+					return -EIO;
+				}
+
+				memcpy(mtdblk->cache_data + wr_off, wr_buf,
+							mtd->writesize);
+				wr_off = wr_off + mtd->writesize;
+				sect_start = sect_start + mtd->writesize;
+			}
+
+			sect_start = sect_start - mtd->erasesize;
+			mtdblk->cache_offset = sect_start;
+			mtdblk->cache_size = sect_size;
+			mtdblk->cache_state = STATE_CLEAN;
+		}
+
+		/* write data to our local cache */
+		memcpy(mtdblk->cache_data + offset, buf, size);
+		mtdblk->cache_state = STATE_DIRTY;
 
 		buf += size;
 		pos += size;
 		len -= size;
 	}
 
+	kfree(wr_buf);
 	return 0;
 }
 
@@ -202,6 +226,10 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 	unsigned int sect_size = mtdblk->cache_size;
 	size_t retlen;
 	int ret;
+	unsigned char *rd_buf = kzalloc(mtd->writesize, GFP_KERNEL);
+
+	if (!rd_buf)
+		return -EINTR;
 
 	DEBUG(MTD_DEBUG_LEVEL2, "mtdblock: read on \"%s\" at 0x%lx, size 0x%x\n",
 			mtd->name, pos, len);
@@ -213,6 +241,8 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 		unsigned long sect_start = (pos/sect_size)*sect_size;
 		unsigned int offset = pos - sect_start;
 		unsigned int size = sect_size - offset;
+		unsigned int chunk = sect_size / mtd->writesize;
+		unsigned int rd_off = 0;
 		if (size > len)
 			size = len;
 
@@ -226,11 +256,34 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 		    mtdblk->cache_offset == sect_start) {
 			memcpy (buf, mtdblk->cache_data + offset, size);
 		} else {
-			ret = mtd->read(mtd, pos, size, &retlen, buf);
-			if (ret)
-				return ret;
-			if (retlen != size)
-				return -EIO;
+			if (mtdblk->cache_state == STATE_DIRTY) {
+				ret = write_cached_data(mtdblk);
+				if (ret)
+					return ret;
+			}
+
+			for (; chunk > 0 ; chunk--) {
+				ret = mtd->read(mtd, sect_start,
+					mtd->writesize, &retlen, rd_buf);
+				if (ret) {
+					kfree(rd_buf);
+					return ret;
+				}
+				if (retlen != mtd->writesize) {
+					kfree(rd_buf);
+					return -EIO;
+				}
+
+				memcpy((mtdblk->cache_data + rd_off), rd_buf,
+							mtd->writesize);
+				rd_off = rd_off + mtd->writesize;
+				sect_start = sect_start + mtd->writesize;
+			}
+
+			memcpy(buf, mtdblk->cache_data + offset, size);
+			sect_start = sect_start - mtd->erasesize;
+			mtdblk->cache_offset = sect_start;
+			mtdblk->cache_state = STATE_CLEAN;
 		}
 
 		buf += size;
@@ -238,6 +291,7 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
 		len -= size;
 	}
 
+	kfree(rd_buf);
 	return 0;
 }
 
@@ -245,6 +299,11 @@ static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
 			      unsigned long block, char *buf)
 {
 	struct mtdblk_dev *mtdblk = mtdblks[dev->devnum];
+	if (unlikely(!mtdblk->cache_data && mtdblk->cache_size)) {
+		mtdblk->cache_data = vmalloc(mtdblk->mtd->erasesize);
+		if (!mtdblk->cache_data)
+			return -EINTR;
+	}
 	return do_cached_read(mtdblk, block<<9, 512, buf);
 }
 
