@@ -92,9 +92,18 @@ static long alarm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	struct timespec new_rtc_time;
 	struct timespec tmp_time;
 	struct rtc_time rtc_new_rtc_time;
-	enum android_alarm_type alarm_type = ANDROID_ALARM_IOCTL_TO_TYPE(cmd);
-	uint32_t alarm_type_mask = 1U << alarm_type;
+	enum android_alarm_type alarm_type;
+	uint32_t alarm_type_mask;
+	struct timezone tz;
 
+	if (cmd == ANDROID_ALARM_SET_TIMEZONE) {
+		if (copy_from_user(&tz, (void __user *) arg, sizeof(tz)))
+			return -EFAULT;
+		return do_sys_settimeofday(NULL, &tz);
+	}
+
+	alarm_type = ANDROID_ALARM_IOCTL_TO_TYPE(cmd);
+	alarm_type_mask = 1U << alarm_type;
 	if (alarm_type >= ANDROID_ALARM_TYPE_COUNT)
 		return -EINVAL;
 
