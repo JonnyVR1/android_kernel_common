@@ -2942,6 +2942,13 @@ config MSM_RMNET
 	help
 	  Virtual ethernet interface for MSM RMNET transport.
 
+config MSM_RMNET_DEBUG
+	bool "Debug interface for MSM RMNET"
+	depends on MSM_RMNET
+	default y
+	help
+	 Timeout and wakeup values are exported to track device wakeups.
+
 config NETCONSOLE_DYNAMIC
 	bool "Dynamic reconfiguration of logging targets (EXPERIMENTAL)"
 	depends on NETCONSOLE && SYSFS && EXPERIMENTAL
