@@ -1,0 +1,20 @@
+Revision: 91f2bf524e0485509f1c0baf4bb756bc5cbfe6b5
+Patch-set: 1
+File: Documentation/android.txt
+
+38
+Mon Feb 02 22:23:02 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACX///+8=
+Bytes: 123
+This shoud be ANDROID_RAM_CONSOLE not ANDROID_RAM_CONSOLES
+
+Alsom it should probably be moved to the recommended section.
+
+80
+Mon Feb 02 22:23:02 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACX///+4=
+Bytes: 43
+We also need USER_WAKELOCK and EARLYSUSPEND
+
