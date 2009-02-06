@@ -1,0 +1,32 @@
+Revision: 699d2bd840ae76f5b440e73c88c42f793c7185a5
+Patch-set: 2
+File: Documentation/android.txt
+
+22
+Fri Feb 06 22:49:23 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACn///8M=
+Bytes: 141
+it's kind of backwards. this is the configuration required to run the Android framework on top of the Linux kernel, not the other way around.
+
+77
+Fri Feb 06 22:49:23 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACn///8I=
+Bytes: 27
+Not required, MSM specific.
+
+115
+Fri Feb 06 22:49:23 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACn///8E=
+Bytes: 13
+MSM specific.
+
+117
+Fri Feb 06 22:49:23 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAACn///8A=
+Bytes: 55
+Add a section for potentially useful drivers like pmem?
+
