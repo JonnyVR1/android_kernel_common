@@ -190,4 +190,16 @@ config CPU_FREQ_GOV_CONSERVATIVE
 
 	  If in doubt, say N.
 
+config CPU_FREQ_TICKS
+	int "Ticks between governor polling interval."
+	default 10
+	help
+	  Minimum number of ticks between polling interval for governors.
+
+config CPU_FREQ_MIN_SAMPLING_RATIO
+	int "Min sampling rate ratio for governors."
+	default 2
+	help
+	  Min sampling rate ratio used by governors to calculate min polling interval.
+
 endif	# CPU_FREQ

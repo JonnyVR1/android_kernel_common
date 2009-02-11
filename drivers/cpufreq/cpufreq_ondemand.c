@@ -39,10 +39,11 @@
  * All times here are in uS.
  */
 static unsigned int def_sampling_rate;
-#define MIN_SAMPLING_RATE_RATIO			(2)
+#define MIN_SAMPLING_RATE_RATIO		(CONFIG_CPU_FREQ_MIN_SAMPLING_RATIO)
 /* for correct statistics, we need at least 10 ticks between each measure */
 #define MIN_STAT_SAMPLING_RATE 			\
-			(MIN_SAMPLING_RATE_RATIO * jiffies_to_usecs(10))
+			(MIN_SAMPLING_RATE_RATIO * \
+			jiffies_to_usecs(CONFIG_CPU_FREQ_TICKS))
 #define MIN_SAMPLING_RATE			\
 			(def_sampling_rate / MIN_SAMPLING_RATE_RATIO)
 #define MAX_SAMPLING_RATE			(500 * def_sampling_rate)
