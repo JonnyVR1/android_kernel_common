@@ -1,11 +1,14 @@
-/* IP tables module for matching the value of the IPv4/IPv6 DSCP field
+/* x_tables module for setting the IPv4/IPv6 DSCP field, Version 1.8
  *
  * (C) 2002 by Harald Welte <laforge@netfilter.org>
+ * based on ipt_FTOS.c (C) 2000 by Matthew G. Marsh <mgm@paktronix.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
- */
+ *
+ * See RFC2474 for a description of the DSCP field within the IP Header.
+*/
 
 #include <linux/module.h>
 #include <linux/skbuff.h>
@@ -14,132 +17,209 @@
 #include <net/dsfield.h>
 
 #include <linux/netfilter/x_tables.h>
-#include <linux/netfilter/xt_dscp.h>
-#include <linux/netfilter_ipv4/ipt_tos.h>
+#include <linux/netfilter/xt_DSCP.h>
+#include <linux/netfilter_ipv4/ipt_TOS.h>
 
 MODULE_AUTHOR("Harald Welte <laforge@netfilter.org>");
-MODULE_DESCRIPTION("Xtables: DSCP/TOS field match");
+MODULE_DESCRIPTION("Xtables: DSCP/TOS field modification");
 MODULE_LICENSE("GPL");
-MODULE_ALIAS("ipt_dscp");
-MODULE_ALIAS("ip6t_dscp");
-MODULE_ALIAS("ipt_tos");
-MODULE_ALIAS("ip6t_tos");
+MODULE_ALIAS("ipt_DSCP");
+MODULE_ALIAS("ip6t_DSCP");
+MODULE_ALIAS("ipt_TOS");
+MODULE_ALIAS("ip6t_TOS");
 
-static bool
-dscp_mt(const struct sk_buff *skb, const struct net_device *in,
-        const struct net_device *out, const struct xt_match *match,
-        const void *matchinfo, int offset, unsigned int protoff, bool *hotdrop)
+static unsigned int
+dscp_tg(struct sk_buff *skb, const struct net_device *in,
+        const struct net_device *out, unsigned int hooknum,
+        const struct xt_target *target, const void *targinfo)
 {
-	const struct xt_dscp_info *info = matchinfo;
+	const struct xt_DSCP_info *dinfo = targinfo;
 	u_int8_t dscp = ipv4_get_dsfield(ip_hdr(skb)) >> XT_DSCP_SHIFT;
 
-	return (dscp == info->dscp) ^ !!info->invert;
+	if (dscp != dinfo->dscp) {
+		if (!skb_make_writable(skb, sizeof(struct iphdr)))
+			return NF_DROP;
+
+		ipv4_change_dsfield(ip_hdr(skb), (__u8)(~XT_DSCP_MASK),
+				    dinfo->dscp << XT_DSCP_SHIFT);
+
+	}
+	return XT_CONTINUE;
 }
 
-static bool
-dscp_mt6(const struct sk_buff *skb, const struct net_device *in,
-         const struct net_device *out, const struct xt_match *match,
-         const void *matchinfo, int offset, unsigned int protoff,
-         bool *hotdrop)
+static unsigned int
+dscp_tg6(struct sk_buff *skb, const struct net_device *in,
+         const struct net_device *out, unsigned int hooknum,
+         const struct xt_target *target, const void *targinfo)
 {
-	const struct xt_dscp_info *info = matchinfo;
+	const struct xt_DSCP_info *dinfo = targinfo;
 	u_int8_t dscp = ipv6_get_dsfield(ipv6_hdr(skb)) >> XT_DSCP_SHIFT;
 
-	return (dscp == info->dscp) ^ !!info->invert;
+	if (dscp != dinfo->dscp) {
+		if (!skb_make_writable(skb, sizeof(struct ipv6hdr)))
+			return NF_DROP;
+
+		ipv6_change_dsfield(ipv6_hdr(skb), (__u8)(~XT_DSCP_MASK),
+				    dinfo->dscp << XT_DSCP_SHIFT);
+	}
+	return XT_CONTINUE;
 }
 
 static bool
-dscp_mt_check(const char *tablename, const void *info,
-              const struct xt_match *match, void *matchinfo,
+dscp_tg_check(const char *tablename, const void *e_void,
+              const struct xt_target *target, void *targinfo,
               unsigned int hook_mask)
 {
-	const u_int8_t dscp = ((struct xt_dscp_info *)matchinfo)->dscp;
+	const u_int8_t dscp = ((struct xt_DSCP_info *)targinfo)->dscp;
 
 	if (dscp > XT_DSCP_MAX) {
-		printk(KERN_ERR "xt_dscp: dscp %x out of range\n", dscp);
+		printk(KERN_WARNING "DSCP: dscp %x out of range\n", dscp);
+		return false;
+	}
+	return true;
+}
+
+static unsigned int
+tos_tg_v0(struct sk_buff *skb, const struct net_device *in,
+          const struct net_device *out, unsigned int hooknum,
+          const struct xt_target *target, const void *targinfo)
+{
+	const struct ipt_tos_target_info *info = targinfo;
+	struct iphdr *iph = ip_hdr(skb);
+	u_int8_t oldtos;
+
+	if ((iph->tos & IPTOS_TOS_MASK) != info->tos) {
+		if (!skb_make_writable(skb, sizeof(struct iphdr)))
+			return NF_DROP;
+
+		iph      = ip_hdr(skb);
+		oldtos   = iph->tos;
+		iph->tos = (iph->tos & IPTOS_PREC_MASK) | info->tos;
+		csum_replace2(&iph->check, htons(oldtos), htons(iph->tos));
+	}
+
+	return XT_CONTINUE;
+}
+
+static bool
+tos_tg_check_v0(const char *tablename, const void *e_void,
+                const struct xt_target *target, void *targinfo,
+                unsigned int hook_mask)
+{
+	const u_int8_t tos = ((struct ipt_tos_target_info *)targinfo)->tos;
+
+	if (tos != IPTOS_LOWDELAY && tos != IPTOS_THROUGHPUT &&
+	    tos != IPTOS_RELIABILITY && tos != IPTOS_MINCOST &&
+	    tos != IPTOS_NORMALSVC) {
+		printk(KERN_WARNING "TOS: bad tos value %#x\n", tos);
 		return false;
 	}
 
 	return true;
 }
 
-static bool tos_mt_v0(const struct sk_buff *skb, const struct net_device *in,
-                      const struct net_device *out,
-                      const struct xt_match *match, const void *matchinfo,
-                      int offset, unsigned int protoff, bool *hotdrop)
+static unsigned int
+tos_tg(struct sk_buff *skb, const struct net_device *in,
+       const struct net_device *out, unsigned int hooknum,
+       const struct xt_target *target, const void *targinfo)
 {
-	const struct ipt_tos_info *info = matchinfo;
+	const struct xt_tos_target_info *info = targinfo;
+	struct iphdr *iph = ip_hdr(skb);
+	u_int8_t orig, nv;
 
-	return (ip_hdr(skb)->tos == info->tos) ^ info->invert;
+	orig = ipv4_get_dsfield(iph);
+	nv   = (orig & ~info->tos_mask) ^ info->tos_value;
+
+	if (orig != nv) {
+		if (!skb_make_writable(skb, sizeof(struct iphdr)))
+			return NF_DROP;
+		iph = ip_hdr(skb);
+		ipv4_change_dsfield(iph, 0, nv);
+	}
+
+	return XT_CONTINUE;
 }
 
-static bool tos_mt(const struct sk_buff *skb, const struct net_device *in,
-                   const struct net_device *out, const struct xt_match *match,
-                   const void *matchinfo, int offset, unsigned int protoff,
-                   bool *hotdrop)
+static unsigned int
+tos_tg6(struct sk_buff *skb, const struct net_device *in,
+        const struct net_device *out, unsigned int hooknum,
+        const struct xt_target *target, const void *targinfo)
 {
-	const struct xt_tos_match_info *info = matchinfo;
+	const struct xt_tos_target_info *info = targinfo;
+	struct ipv6hdr *iph = ipv6_hdr(skb);
+	u_int8_t orig, nv;
 
-	if (match->family == AF_INET)
-		return ((ip_hdr(skb)->tos & info->tos_mask) ==
-		       info->tos_value) ^ !!info->invert;
-	else
-		return ((ipv6_get_dsfield(ipv6_hdr(skb)) & info->tos_mask) ==
-		       info->tos_value) ^ !!info->invert;
+	orig = ipv6_get_dsfield(iph);
+	nv   = (orig & info->tos_mask) ^ info->tos_value;
+
+	if (orig != nv) {
+		if (!skb_make_writable(skb, sizeof(struct iphdr)))
+			return NF_DROP;
+		iph = ipv6_hdr(skb);
+		ipv6_change_dsfield(iph, 0, nv);
+	}
+
+	return XT_CONTINUE;
 }
 
-static struct xt_match dscp_mt_reg[] __read_mostly = {
+static struct xt_target dscp_tg_reg[] __read_mostly = {
 	{
-		.name		= "dscp",
+		.name		= "DSCP",
 		.family		= AF_INET,
-		.checkentry	= dscp_mt_check,
-		.match		= dscp_mt,
-		.matchsize	= sizeof(struct xt_dscp_info),
+		.checkentry	= dscp_tg_check,
+		.target		= dscp_tg,
+		.targetsize	= sizeof(struct xt_DSCP_info),
+		.table		= "mangle",
 		.me		= THIS_MODULE,
 	},
 	{
-		.name		= "dscp",
+		.name		= "DSCP",
 		.family		= AF_INET6,
-		.checkentry	= dscp_mt_check,
-		.match		= dscp_mt6,
-		.matchsize	= sizeof(struct xt_dscp_info),
+		.checkentry	= dscp_tg_check,
+		.target		= dscp_tg6,
+		.targetsize	= sizeof(struct xt_DSCP_info),
+		.table		= "mangle",
 		.me		= THIS_MODULE,
 	},
 	{
-		.name		= "tos",
+		.name		= "TOS",
 		.revision	= 0,
 		.family		= AF_INET,
-		.match		= tos_mt_v0,
-		.matchsize	= sizeof(struct ipt_tos_info),
+		.table		= "mangle",
+		.target		= tos_tg_v0,
+		.targetsize	= sizeof(struct ipt_tos_target_info),
+		.checkentry	= tos_tg_check_v0,
 		.me		= THIS_MODULE,
 	},
 	{
-		.name		= "tos",
+		.name		= "TOS",
 		.revision	= 1,
 		.family		= AF_INET,
-		.match		= tos_mt,
-		.matchsize	= sizeof(struct xt_tos_match_info),
+		.table		= "mangle",
+		.target		= tos_tg,
+		.targetsize	= sizeof(struct xt_tos_target_info),
 		.me		= THIS_MODULE,
 	},
 	{
-		.name		= "tos",
+		.name		= "TOS",
 		.revision	= 1,
 		.family		= AF_INET6,
-		.match		= tos_mt,
-		.matchsize	= sizeof(struct xt_tos_match_info),
+		.table		= "mangle",
+		.target		= tos_tg6,
+		.targetsize	= sizeof(struct xt_tos_target_info),
 		.me		= THIS_MODULE,
 	},
 };
 
-static int __init dscp_mt_init(void)
+static int __init dscp_tg_init(void)
 {
-	return xt_register_matches(dscp_mt_reg, ARRAY_SIZE(dscp_mt_reg));
+	return xt_register_targets(dscp_tg_reg, ARRAY_SIZE(dscp_tg_reg));
 }
 
-static void __exit dscp_mt_exit(void)
+static void __exit dscp_tg_exit(void)
 {
-	xt_unregister_matches(dscp_mt_reg, ARRAY_SIZE(dscp_mt_reg));
+	xt_unregister_targets(dscp_tg_reg, ARRAY_SIZE(dscp_tg_reg));
 }
 
-module_init(dscp_mt_init);
-module_exit(dscp_mt_exit);
+module_init(dscp_tg_init);
+module_exit(dscp_tg_exit);
