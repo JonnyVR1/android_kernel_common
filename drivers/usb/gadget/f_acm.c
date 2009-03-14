@@ -99,6 +99,14 @@ static inline struct f_acm *port_to_acm(struct gserial *p)
 
 /* interface and class descriptors: */
 
+struct usb_interface_assoc_descriptor acm_interface_assoc_desc __initdata = {
+	.bLength           = USB_DT_INTERFACE_ASSOCIATION_SIZE,
+	.bDescriptorType   = USB_DT_INTERFACE_ASSOCIATION,
+	.bInterfaceCount   = 2,
+	.bFunctionClass    = USB_CLASS_COMM,
+	.bFunctionSubClass = USB_CDC_SUBCLASS_ACM,
+	.bFunctionProtocol = USB_CDC_ACM_PROTO_AT_V25TER,
+};
 static struct usb_interface_descriptor acm_control_interface_desc __initdata = {
 	.bLength =		USB_DT_INTERFACE_SIZE,
 	.bDescriptorType =	USB_DT_INTERFACE,
@@ -178,6 +186,7 @@ static struct usb_endpoint_descriptor acm_fs_out_desc __initdata = {
 };
 
 static struct usb_descriptor_header *acm_fs_function[] __initdata = {
+	(struct usb_descriptor_header *) &acm_interface_assoc_desc,
 	(struct usb_descriptor_header *) &acm_control_interface_desc,
 	(struct usb_descriptor_header *) &acm_header_desc,
 	(struct usb_descriptor_header *) &acm_call_mgmt_descriptor,
@@ -216,6 +225,7 @@ static struct usb_endpoint_descriptor acm_hs_out_desc __initdata = {
 };
 
 static struct usb_descriptor_header *acm_hs_function[] __initdata = {
+	(struct usb_descriptor_header *) &acm_interface_assoc_desc,
 	(struct usb_descriptor_header *) &acm_control_interface_desc,
 	(struct usb_descriptor_header *) &acm_header_desc,
 	(struct usb_descriptor_header *) &acm_call_mgmt_descriptor,
@@ -559,6 +569,7 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 	if (status < 0)
 		goto fail;
 	acm->ctrl_id = status;
+	acm_interface_assoc_desc.bFirstInterface = status;
 
 	acm_control_interface_desc.bInterfaceNumber = status;
 	acm_union_desc .bMasterInterface0 = status;
