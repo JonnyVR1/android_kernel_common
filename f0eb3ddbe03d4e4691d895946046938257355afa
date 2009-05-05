@@ -1,0 +1,11 @@
+Revision: f0eb3ddbe03d4e4691d895946046938257355afa
+Patch-set: 4
+File: drivers/misc/qemutrace/qemu_trace.c
+
+339
+Tue May 05 22:31:55 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAQ3///88=
+Bytes: 18
+(ret < 0) or (ret)
+
