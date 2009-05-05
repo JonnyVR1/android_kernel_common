@@ -1,0 +1,11 @@
+Revision: c750781e30910fe47ffdbb31e71f8e05b90afd52
+Patch-set: 2
+File: drivers/misc/qemutrace/qemu_trace.c
+
+333
+Tue May 05 21:22:15 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAQ3///9s=
+Bytes: 160
+The state of this driver should probably be wrapped into a struct, but it's best to be left for a separate change. Could you at least make this variable static?
+
