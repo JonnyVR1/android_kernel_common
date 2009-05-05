@@ -1,0 +1,13 @@
+Revision: e7b0989ac254798c7cc596b4e5d9e3e58d8d97fb
+Patch-set: 1
+File: drivers/misc/qemutrace/qemu_trace.c
+
+337
+Tue May 05 21:16:11 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAQ3///94=
+Bytes: 136
+kernel style suggests not to use function call as a boolean value in an if.
+
+Please assign the return value to an intermediate variable.
+
