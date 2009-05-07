@@ -819,7 +819,10 @@ static int yaffs_write_end(struct file *filp, struct address_space *mapping,
 		(unsigned) addr,
 		(int)pos, copied));
 
-	ret = yaffs_file_write(filp, addr, copied, &pos);
+	if (copied)
+		ret = yaffs_file_write(filp, addr, copied, &pos);
+	else
+		ret = 0;
 
 	if (ret != copied) {
 		T(YAFFS_TRACE_OS,
