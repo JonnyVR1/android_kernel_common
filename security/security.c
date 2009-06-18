@@ -17,6 +17,10 @@
 #include <linux/kernel.h>
 #include <linux/security.h>
 
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+#include <linux/android_aid.h>
+#endif
+
 /* Boot-time LSM user choice */
 static __initdata char chosen_lsm[SECURITY_NAME_MAX + 1];
 
@@ -156,6 +160,12 @@ int security_capset(struct cred *new, const struct cred *old,
 
 int security_capable(int cap)
 {
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+	if (cap == CAP_NET_RAW && in_egroup_p(AID_NET_RAW))
+		return 1;
+	if (cap == CAP_NET_ADMIN && in_egroup_p(AID_NET_ADMIN))
+		return 1;
+#endif
 	return security_ops->capable(current, current_cred(), cap,
 				     SECURITY_CAP_AUDIT);
 }
