@@ -16,3 +16,12 @@ UUID: AAAAZX////4=
 Bytes: 23
 Yes, they are the same.
 
+269
+Fri Jun 19 04:00:07 2009 +0000
+Author: Chia-chi Yeh <1001923@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAZX////0=
+Bytes: 127
+Hmm, I take it back.
+in_egroup_p(AID_NET_RAW) only checks the groups,
+but capable(CAP_NET_RAW) also checks the real capability.
+
