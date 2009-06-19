@@ -1,0 +1,11 @@
+Revision: 91757d0e292a10097fd818f1c08a177c226151ec
+Patch-set: 2
+File: net/ipv4/af_inet.c
+
+283
+Fri Jun 19 01:18:35 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAZH///44=
+Bytes: 35
+The previous code was cleaner here.
+
