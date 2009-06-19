@@ -163,6 +163,8 @@ int security_capable(int cap)
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 	if (cap == CAP_NET_RAW && in_egroup_p(AID_NET_RAW))
 		return 1;
+	if (cap == CAP_NET_ADMIN && in_egroup_p(AID_NET_ADMIN))
+		return 1;
 #endif
 	return security_ops->capable(current, current_cred(), cap,
 				     SECURITY_CAP_AUDIT);
