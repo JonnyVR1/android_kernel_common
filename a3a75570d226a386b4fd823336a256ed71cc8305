@@ -9,3 +9,10 @@ UUID: AAAAZn///7E=
 Bytes: 42
 use PAGE_ALIGN instead of PAGE_CACHE_ALIGN
 
+525
+Tue Jun 23 17:52:59 2009 +0000
+Author: Marco Nelissen <1001525@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAZn///68=
+Bytes: 84
+OK, I can change that. I used PAGE_CACHE_ALIGN because that is what mm/shmem.c uses.
+
