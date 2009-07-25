@@ -1,0 +1,11 @@
+Revision: edc71cab6a21fd0415b626bf2cbe737af29e3491
+Patch-set: 2
+File: drivers/input/touchscreen/synaptics_i2c_rmi.c
+
+223
+Sat Jul 25 04:47:13 2009 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAcX///4I=
+Bytes: 47
+is this just simulating a release or something?
+
