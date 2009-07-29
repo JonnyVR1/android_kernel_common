@@ -486,9 +486,14 @@ int sdio_reset_comm(struct mmc_card *card)
 {
 	struct mmc_host *host = card->host;
 	u32 ocr;
-	int err;
+	int err, claimed_in_reset = 0;
 
 	printk("%s():\n", __func__);
+	if (!host->claimed) {
+		mmc_claim_host(host);
+		claimed_in_reset = 1;
+	}
+
 	mmc_go_idle(host);
 
 	mmc_set_clock(host, host->f_min);
@@ -529,13 +534,14 @@ int sdio_reset_comm(struct mmc_card *card)
 	err = sdio_enable_wide(card);
 	if (err)
 		goto err;
-
+	if (claimed_in_reset)
+		mmc_release_host(host);
 	return 0;
- err:
+err:
 	printk("%s: Error resetting SDIO communications (%d)\n",
 	       mmc_hostname(host), err);
+	if (claimed_in_reset)
+		mmc_release_host(host);
 	return err;
 }
 EXPORT_SYMBOL(sdio_reset_comm);
-
-
