@@ -37,6 +37,14 @@ struct android_usb_platform_data {
 	int nluns;
 };
 
+/* This Structure passes Platform data to the Mass Storage driver
+	for SCSI commands */
+struct usb_mass_storage_platform_data {
+	char *vendor;
+	char *product;
+	int release;
+};
+
 extern void android_usb_set_connected(int on);
 
 #endif	/* __LINUX_USB_ANDROID_H */
