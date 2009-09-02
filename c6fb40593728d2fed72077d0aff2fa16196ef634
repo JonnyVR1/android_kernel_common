@@ -1,0 +1,27 @@
+Revision: c6fb40593728d2fed72077d0aff2fa16196ef634
+Patch-set: 1
+File: drivers/misc/Kconfig
+
+261
+Wed Sep 02 12:02:47 2009 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAj3///xU=
+Bytes: 23
+whitespace problem here
+
+File: drivers/misc/apanic.c
+
+87
+Wed Sep 02 12:02:47 2009 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAj3///xQ=
+Bytes: 19
+trailing whitespace
+
+133
+Wed Sep 02 12:02:47 2009 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAj3///xM=
+Bytes: 19
+trailing whitespace
+
