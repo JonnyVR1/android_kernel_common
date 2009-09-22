@@ -1105,6 +1105,8 @@ static int rfcomm_recv_ua(struct rfcomm_session *s, u8 dlci)
 		}
 	} else {
 		/* Control channel */
+		struct socket *sock = s->sock;
+		struct sock *sk = sock->sk;
 		switch (s->state) {
 		case BT_CONNECT:
 			s->state = BT_CONNECTED;
@@ -1112,7 +1114,8 @@ static int rfcomm_recv_ua(struct rfcomm_session *s, u8 dlci)
 			break;
 
 		case BT_DISCONN:
-			rfcomm_session_put(s);
+			if (sk->sk_state != BT_CLOSED)
+				rfcomm_session_put(s);
 			break;
 		}
 	}
