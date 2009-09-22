@@ -1,0 +1,11 @@
+Revision: 7c465a3e14d6ec18c6c8c38c471d0631abeae41a
+Patch-set: 1
+File: arch/arm/mach-goldfish/include/mach/debug-macro.S
+
+32
+Tue Sep 22 22:38:46 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAm3///Qk=
+Bytes: 138
+I think you could drop the teq and make the store unconditional, since rx is always going to be one of the above defines and never zero...
+
