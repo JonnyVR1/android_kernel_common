@@ -1,0 +1,11 @@
+Revision: a61517fe66db914ea9445de8e188d53e5dc40239
+Patch-set: 1
+File: arch/arm/mach-goldfish/Kconfig
+
+9
+Wed Sep 23 18:14:33 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAm3///Kw=
+Bytes: 303
+You probably should do this as a feature -- choose either V7 or V5, instead of having GOLDFISH select ARM9 and then GOLDFISH_ARMV7 select V7 -- since you can't build GOLDFISH with only GOLDFISH_ARMV7 selected.  The mach-msm kconfig file has some examples of stuff like this around amss/dsp version, etc.
+
