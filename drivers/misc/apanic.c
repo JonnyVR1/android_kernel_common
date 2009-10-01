@@ -504,6 +504,8 @@ static int apanic(struct notifier_block *this, unsigned long event,
 #endif
 	touch_softlockup_watchdog();
 
+	printk(KERN_EMERG "APANIC: %s", linux_banner);
+
 	if (!ctx->mtd)
 		goto out;
 
