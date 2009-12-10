@@ -1,0 +1,18 @@
+Revision: cd1620bb844edfc795cf0f8ac98726cc3d9d8110
+Patch-set: 1
+File: drivers/input/keyreset.c
+
+47
+Thu Dec 10 01:04:47 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAo3//+wM=
+Bytes: 78
+Does this produce any useful output. You are crashing a working kernel thread.
+
+68
+Thu Dec 10 01:04:47 2009 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAo3//+wI=
+Bytes: 118
+Where do you clear this? It looks like you are requesting a stack trace if this key had ever been pressed or released.
+
