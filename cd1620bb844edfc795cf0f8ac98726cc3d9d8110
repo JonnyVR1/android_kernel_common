@@ -9,10 +9,26 @@ UUID: AAAAo3//+wM=
 Bytes: 78
 Does this produce any useful output. You are crashing a working kernel thread.
 
+47
+Thu Dec 10 01:18:35 2009 +0000
+Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAo3//+wM=
+UUID: AAAAo3//+v8=
+Bytes: 45
+some output at the bottom of keyreset_event()
+
 68
 Thu Dec 10 01:04:47 2009 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAAo3//+wI=
 Bytes: 118
 Where do you clear this? It looks like you are requesting a stack trace if this key had ever been pressed or released.
+
+68
+Thu Dec 10 01:18:35 2009 +0000
+Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAo3//+wI=
+UUID: AAAAo3//+v4=
+Bytes: 64
+presumably value == 0 on key release.  code below supports this.
 
