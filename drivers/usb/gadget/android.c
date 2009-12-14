@@ -25,16 +25,12 @@
 #include <linux/delay.h>
 #include <linux/kernel.h>
 #include <linux/utsname.h>
-#include <linux/miscdevice.h>
 #include <linux/platform_device.h>
 
 #include <linux/usb/android.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/composite.h>
 #include <linux/usb/gadget.h>
-
-#include "f_mass_storage.h"
-#include "f_adb.h"
 
 #include "gadget_chips.h"
 
@@ -60,20 +56,19 @@ static const char longname[] = "Gadget Android";
 /* Default vendor and product IDs, overridden by platform data */
 #define VENDOR_ID		0x18D1
 #define PRODUCT_ID		0x0001
-#define ADB_PRODUCT_ID	0x0002
 
 struct android_dev {
 	struct usb_composite_dev *cdev;
 
-	int product_id;
-	int adb_product_id;
-	int version;
+	int num_functions;
+	usb_function_adder **function_adders;
+	int num_products;
+	struct android_usb_product *products;
 
-	int adb_enabled;
-	int nluns;
+	int product_id;
+	int version;
 };
 
-static atomic_t adb_enable_excl;
 static struct android_dev *_android_dev;
 
 /* string IDs are assigned dynamically */
@@ -114,6 +109,7 @@ static struct usb_device_descriptor device_desc = {
 
 void android_usb_set_connected(int connected)
 {
+pr_info("android_usb_set_connected %d\n", connected);
 	if (_android_dev && _android_dev->cdev && _android_dev->cdev->gadget) {
 		if (connected)
 			usb_gadget_connect(_android_dev->cdev->gadget);
@@ -125,13 +121,19 @@ void android_usb_set_connected(int connected)
 static int __init android_bind_config(struct usb_configuration *c)
 {
 	struct android_dev *dev = _android_dev;
+	usb_function_adder **adders = dev->function_adders;
+	int count = dev->num_functions;
 	int ret;
+	int i;
+
 	printk(KERN_DEBUG "android_bind_config\n");
 
-	ret = mass_storage_function_add(dev->cdev, c, dev->nluns);
-	if (ret)
-		return ret;
-	return adb_function_add(dev->cdev, c);
+	for (i = 0; i < count; i++, adders++) {
+    	ret = (*adders)(dev->cdev, c);
+    	if (ret)
+    		return ret;
+	}
+	return 0;
 }
 
 static struct usb_configuration android_config_driver = {
@@ -142,13 +144,52 @@ static struct usb_configuration android_config_driver = {
 	.bMaxPower	= 0xFA, /* 500ma */
 };
 
+static int product_has_function(struct android_usb_product *p,
+		struct usb_function *f)
+{
+	char **functions = p->functions;
+	int count = p->num_functions;
+	const char *name = f->name;
+	int i;
+
+	for (i = 0; i < count; i++) {
+		if (!strcmp(name, *functions++))
+			return 1;
+	}
+	return 0;
+}
+
+static int product_matches_functions(struct android_usb_product *p)
+{
+	struct usb_function		*f;
+	list_for_each_entry(f, &android_config_driver.functions, list) {
+		if (product_has_function(p, f) == !!f->hidden)
+			return 0;
+	}
+	return 1;
+}
+
+static int get_product_id(struct android_dev *dev)
+{
+	struct android_usb_product *p = dev->products;
+	int count = dev->num_products;
+	int i;
+
+	if (p) {
+		for (i = 0; i < count; i++, p++) {
+			if (product_matches_functions(p))
+				return p->product_id;
+		}
+	}
+	/* use default product ID */
+	return dev->product_id;
+}
+
 static int __init android_bind(struct usb_composite_dev *cdev)
 {
 	struct android_dev *dev = _android_dev;
 	struct usb_gadget	*gadget = cdev->gadget;
-	int			gcnum;
-	int			id;
-	int			ret;
+	int			gcnum, id, product_id, ret;
 
 	printk(KERN_INFO "android_bind\n");
 
@@ -198,6 +239,9 @@ static int __init android_bind(struct usb_composite_dev *cdev)
 
 	usb_gadget_set_selfpowered(gadget);
 	dev->cdev = cdev;
+	product_id = get_product_id(dev);
+	device_desc.idProduct = __constant_cpu_to_le16(product_id);
+	cdev->desc.idProduct = device_desc.idProduct;
 
 	return 0;
 }
@@ -209,19 +253,16 @@ static struct usb_composite_driver android_usb_driver = {
 	.bind		= android_bind,
 };
 
-static void enable_adb(struct android_dev *dev, int enable)
+void android_enable_function(struct usb_function *f, int enable)
 {
-	if (enable != dev->adb_enabled) {
-		dev->adb_enabled = enable;
-		adb_function_enable(enable);
+	struct android_dev *dev = _android_dev;
+	int disable = !enable;
+	int product_id;
 
-		/* set product ID to the appropriate value */
-		if (enable)
-			device_desc.idProduct =
-				__constant_cpu_to_le16(dev->adb_product_id);
-		else
-			device_desc.idProduct =
-				__constant_cpu_to_le16(dev->product_id);
+	if (!!f->hidden != disable) {
+		f->hidden = disable;
+		product_id = get_product_id(dev);
+		device_desc.idProduct = __constant_cpu_to_le16(product_id);
 		if (dev->cdev)
 			dev->cdev->desc.idProduct = device_desc.idProduct;
 
@@ -231,42 +272,9 @@ static void enable_adb(struct android_dev *dev, int enable)
 			usb_gadget_disconnect(dev->cdev->gadget);
 			msleep(10);
 			usb_gadget_connect(dev->cdev->gadget);
-		}
+		}	
 	}
 }
-
-static int adb_enable_open(struct inode *ip, struct file *fp)
-{
-	if (atomic_inc_return(&adb_enable_excl) != 1) {
-		atomic_dec(&adb_enable_excl);
-		return -EBUSY;
-	}
-
-	printk(KERN_INFO "enabling adb\n");
-	enable_adb(_android_dev, 1);
-
-	return 0;
-}
-
-static int adb_enable_release(struct inode *ip, struct file *fp)
-{
-	printk(KERN_INFO "disabling adb\n");
-	enable_adb(_android_dev, 0);
-	atomic_dec(&adb_enable_excl);
-	return 0;
-}
-
-static const struct file_operations adb_enable_fops = {
-	.owner =   THIS_MODULE,
-	.open =    adb_enable_open,
-	.release = adb_enable_release,
-};
-
-static struct miscdevice adb_enable_device = {
-	.minor = MISC_DYNAMIC_MINOR,
-	.name = "android_adb_enable",
-	.fops = &adb_enable_fops,
-};
 
 static int __init android_probe(struct platform_device *pdev)
 {
@@ -274,8 +282,18 @@ static int __init android_probe(struct platform_device *pdev)
 	struct android_dev *dev = _android_dev;
 
 	printk(KERN_INFO "android_probe pdata: %p\n", pdata);
-
+	printk(KERN_INFO "&pdev->dev.kobj: %p\n", &pdev->dev.kobj);
+{
+char* chp = (char *)&pdev->dev.kobj;
+pr_info("kobj -8 %c%c%c%c%c%c%c%c\n", chp[-8], chp[-7], chp[-6], chp[-5], chp[-4], chp[-3], chp[-2], chp[-1]);
+pr_info("kobj %c%c%c%c%c%c%c%c\n", chp[0], chp[1], chp[2], chp[3], chp[4], chp[5], chp[6], chp[7]);
+pr_info("kobj 8  %c%c%c%c%c%c%c%c\n", chp[8], chp[9], chp[10], chp[11], chp[12], chp[13], chp[14], chp[15]);
+}
 	if (pdata) {
+		dev->function_adders = pdata->function_adders;
+		dev->num_functions = pdata->num_functions;
+		dev->products = pdata->products;
+		dev->num_products = pdata->num_products;
 		if (pdata->vendor_id)
 			device_desc.idVendor =
 				__constant_cpu_to_le16(pdata->vendor_id);
@@ -284,8 +302,6 @@ static int __init android_probe(struct platform_device *pdev)
 			device_desc.idProduct =
 				__constant_cpu_to_le16(pdata->product_id);
 		}
-		if (pdata->adb_product_id)
-			dev->adb_product_id = pdata->adb_product_id;
 		if (pdata->version)
 			dev->version = pdata->version;
 
@@ -296,8 +312,14 @@ static int __init android_probe(struct platform_device *pdev)
 					pdata->manufacturer_name;
 		if (pdata->serial_number)
 			strings_dev[STRING_SERIAL_IDX].s = pdata->serial_number;
-		dev->nluns = pdata->nluns;
 	}
+
+{
+char* chp = (char *)&pdev->dev.kobj;
+pr_info("kobj -8 %c%c%c%c%c%c%c%c\n", chp[-8], chp[-7], chp[-6], chp[-5], chp[-4], chp[-3], chp[-2], chp[-1]);
+pr_info("kobj %c%c%c%c%c%c%c%c\n", chp[0], chp[1], chp[2], chp[3], chp[4], chp[5], chp[6], chp[7]);
+pr_info("kobj 8  %c%c%c%c%c%c%c%c\n", chp[8], chp[9], chp[10], chp[11], chp[12], chp[13], chp[14], chp[15]);
+}
 
 	return 0;
 }
@@ -320,22 +342,14 @@ static int __init init(void)
 
 	/* set default values, which should be overridden by platform data */
 	dev->product_id = PRODUCT_ID;
-	dev->adb_product_id = ADB_PRODUCT_ID;
 	_android_dev = dev;
 
 	ret = platform_driver_register(&android_platform_driver);
 	if (ret)
 		return ret;
-	ret = misc_register(&adb_enable_device);
-	if (ret) {
-		platform_driver_unregister(&android_platform_driver);
-		return ret;
-	}
 	ret = usb_composite_register(&android_usb_driver);
-	if (ret) {
-		misc_deregister(&adb_enable_device);
+	if (ret)
 		platform_driver_unregister(&android_platform_driver);
-	}
 	return ret;
 }
 module_init(init);
@@ -343,7 +357,6 @@ module_init(init);
 static void __exit cleanup(void)
 {
 	usb_composite_unregister(&android_usb_driver);
-	misc_deregister(&adb_enable_device);
 	platform_driver_unregister(&android_platform_driver);
 	kfree(_android_dev);
 	_android_dev = NULL;

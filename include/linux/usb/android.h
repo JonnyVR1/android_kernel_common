@@ -17,6 +17,23 @@
 #ifndef	__LINUX_USB_ANDROID_H
 #define	__LINUX_USB_ANDROID_H
 
+#include <linux/usb/composite.h>
+
+struct android_usb_product {
+	/* Default product ID. */
+	__u16 product_id;
+
+	/* List of function names associated with this product.
+	 * This is used to compute the USB product ID dynamically
+	 * based on which functions are enabled.
+	 */
+	int num_functions;
+	char **functions;
+};
+
+typedef int (usb_function_adder)(struct usb_composite_dev *cdev,
+		struct usb_configuration *c);
+
 struct android_usb_platform_data {
 	/* USB device descriptor fields */
 	__u16 vendor_id;
@@ -24,27 +41,50 @@ struct android_usb_platform_data {
 	/* Default product ID. */
 	__u16 product_id;
 
-	/* Product ID when adb is enabled. */
-	__u16 adb_product_id;
-
 	__u16 version;
 
 	char *product_name;
 	char *manufacturer_name;
 	char *serial_number;
 
-	/* number of LUNS for mass storage function */
-	int nluns;
+	/* List of function add callbacks for all 
+	 * supported USB functions
+	 */
+	int num_functions;
+	usb_function_adder **function_adders;
+
+	/* List of available USB products.
+	 * This is used to compute the USB product ID dynamically
+	 * based on which functions are enabled.
+	 * if num_products is zero or no match can be found,
+	 * we use the default product ID
+	 */
+	int num_products;
+	struct android_usb_product *products;
 };
 
-/* Platform data for "usb_mass_storage" driver.
- * Contains values for the SC_INQUIRY SCSI command. */
+/* Platform data for "usb_mass_storage" driver. */
 struct usb_mass_storage_platform_data {
+	/* Contains values for the SC_INQUIRY SCSI command. */
 	char *vendor;
 	char *product;
 	int release;
+
+	/* number of LUNS */
+	int nluns;
 };
 
 extern void android_usb_set_connected(int on);
+
+extern void android_enable_function(struct usb_function *f, int enable);
+
+/* Function adder callbacks */
+extern int acm_function_add(struct usb_composite_dev *cdev,
+	struct usb_configuration *c);
+extern int adb_function_add(struct usb_composite_dev *cdev,
+	struct usb_configuration *c);
+extern int mass_storage_function_add(struct usb_composite_dev *cdev,
+	struct usb_configuration *c);
+
 
 #endif	/* __LINUX_USB_ANDROID_H */

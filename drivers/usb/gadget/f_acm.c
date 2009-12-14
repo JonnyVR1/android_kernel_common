@@ -762,7 +762,7 @@ int __init acm_bind_config(struct usb_configuration *c, u8 port_num)
 	return status;
 }
 
-int __init acm_function_add(struct usb_composite_dev *cdev,
+int acm_function_add(struct usb_composite_dev *cdev,
 	struct usb_configuration *c)
 {
 	int ret = acm_bind_config(c, 0);

@@ -75,7 +75,6 @@
 #include <linux/usb/gadget.h>
 #include <linux/usb/android.h>
 
-#include "f_mass_storage.h"
 #include "gadget_chips.h"
 
 
@@ -2711,7 +2710,7 @@ fsg_function_unbind(struct usb_configuration *c, struct usb_function *f)
 	switch_dev_unregister(&fsg->sdev);
 }
 
-static int __init
+static int
 fsg_function_bind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
@@ -2902,6 +2901,7 @@ static int __init fsg_probe(struct platform_device *pdev)
 
 		if (pdata->release)
 			fsg->release = pdata->release;
+		fsg->nluns = pdata->nluns;
 	}
 
 	return 0;
@@ -2912,8 +2912,8 @@ static struct platform_driver fsg_platform_driver = {
 	.probe = fsg_probe,
 };
 
-int __init mass_storage_function_add(struct usb_composite_dev *cdev,
-	struct usb_configuration *c, int nluns)
+int mass_storage_function_add(struct usb_composite_dev *cdev,
+	struct usb_configuration *c)
 {
 	int		rc;
 	struct fsg_dev	*fsg;
@@ -2923,7 +2923,6 @@ int __init mass_storage_function_add(struct usb_composite_dev *cdev,
 	if (rc)
 		return rc;
 	fsg = the_fsg;
-	fsg->nluns = nluns;
 
 	spin_lock_init(&fsg->lock);
 	init_rwsem(&fsg->filesem);
