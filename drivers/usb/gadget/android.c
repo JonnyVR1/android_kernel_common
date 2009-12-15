@@ -136,13 +136,34 @@ static int __init android_bind_config(struct usb_configuration *c)
 	return 0;
 }
 
+static int android_setup_config(struct usb_configuration *c,
+		const struct usb_ctrlrequest *ctrl);
+
 static struct usb_configuration android_config_driver = {
 	.label		= "android",
 	.bind		= android_bind_config,
+	.setup		= android_setup_config,
 	.bConfigurationValue = 1,
 	.bmAttributes	= USB_CONFIG_ATT_ONE | USB_CONFIG_ATT_SELFPOWER,
 	.bMaxPower	= 0xFA, /* 500ma */
 };
+
+static int android_setup_config(struct usb_configuration *c,
+		const struct usb_ctrlrequest *ctrl)
+{
+	int i;
+	int ret = -EOPNOTSUPP;
+
+	for (i = 0; i < android_config_driver.next_interface_id; i++) {
+		if (android_config_driver.interface[i]->setup) {
+			ret = android_config_driver.interface[i]->setup(
+				android_config_driver.interface[i], ctrl);
+			if (ret >= 0)
+				return ret;
+		}
+	}
+	return ret;
+}
 
 static int product_has_function(struct android_usb_product *p,
 		struct usb_function *f)
