@@ -1,0 +1,11 @@
+Revision: 470301b8ac84c5bff18137d8af50b0627b154565
+Patch-set: 1
+File: drivers/usb/gadget/f_adb.c
+
+214
+Tue Dec 22 15:10:19 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///7M=
+Bytes: 171
+If req->status is non-zero, we should set dev->error = 1 like before.  We could do this on the other side (after the wait event), which would probably make the most sense.
+
