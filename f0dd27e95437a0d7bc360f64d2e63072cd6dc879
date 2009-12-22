@@ -1,0 +1,48 @@
+Revision: f0dd27e95437a0d7bc360f64d2e63072cd6dc879
+Patch-set: 2
+File: drivers/usb/gadget/android.c
+
+64
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///64=
+Bytes: 47
+probably a list of registered functions here...
+
+132
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///60=
+Bytes: 10
+whitespace
+
+275
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///6w=
+Bytes: 10
+whitespace
+
+File: include/linux/usb/android.h
+
+18
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///7E=
+Bytes: 112
+Maybe we should use a more specific header file name than android.h?  generic_composite.h?  android_composite.h?
+
+54
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///7A=
+Bytes: 201
+I'd prefer to drop the function list here and have the function drivers publish themselves (as platform devices would be okay), to make this less fragile in the face of drivers being included/excluded.
+
+87
+Tue Dec 22 15:21:41 2009 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAqH///68=
+Bytes: 131
+These could go away if the function drivers used a publish mechanism.  They could all actually just call a registration function...
+
