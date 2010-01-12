@@ -1,0 +1,11 @@
+Revision: a3993c4f81f332fcea39157373d1f0c146bb8a57
+Patch-set: 6
+File: drivers/usb/gadget/Makefile
+
+36
+Tue Jan 12 05:01:49 2010 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3////Y=
+Bytes: 24
+possibly get rid of this
+
