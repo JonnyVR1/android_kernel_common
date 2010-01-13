@@ -1,0 +1,11 @@
+Revision: 3d71f1475cee6cd8db06d99af77aa7c550cf6737
+Patch-set: 2
+File: include/linux/cpufreq.h
+
+258
+Wed Jan 13 01:04:09 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3///6U=
+Bytes: 27
+get rid of the ; at the end
+
