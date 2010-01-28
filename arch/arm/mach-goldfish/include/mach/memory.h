@@ -23,6 +23,12 @@
 #define BUS_OFFSET	UL(0x00000000)
 
 /*
+ * Needed to allow framebuffer sizes > 1MB.
+ * This must be a multiple of SZ_2M.
+ */
+#define CONSISTENT_DMA_SIZE      (4*SZ_2M)
+
+/*
  * Virtual view <-> DMA view memory address translations
  * virt_to_bus: Used to translate the virtual address to an
  *              address suitable to be passed to set_dma_addr
