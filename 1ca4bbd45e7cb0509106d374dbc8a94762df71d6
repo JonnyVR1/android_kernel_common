@@ -1,0 +1,11 @@
+Revision: 1ca4bbd45e7cb0509106d374dbc8a94762df71d6
+Patch-set: 1
+File: arch/arm/mach-goldfish/include/mach/memory.h
+
+29
+Thu Jan 28 22:23:47 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3///Ds=
+Bytes: 30
+8MB? Do you get more than 4MB?
+
