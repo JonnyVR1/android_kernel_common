@@ -215,11 +215,11 @@ static void print_active_locks(int type)
 	list_for_each_entry(lock, &active_wake_locks[type], link) {
 		if (lock->flags & WAKE_LOCK_AUTO_EXPIRE) {
 			long timeout = lock->expires - jiffies;
-			if (timeout <= 0)
-				pr_info("wake lock %s, expired\n", lock->name);
-			else
+			if (timeout > 0)
 				pr_info("active wake lock %s, time left %ld\n",
 					lock->name, timeout);
+			else if (debug_mask & DEBUG_EXPIRE)
+				pr_info("wake lock %s, expired\n", lock->name);
 		} else
 			pr_info("active wake lock %s\n", lock->name);
 	}
@@ -250,6 +250,8 @@ long has_wake_lock(int type)
 	unsigned long irqflags;
 	spin_lock_irqsave(&list_lock, irqflags);
 	ret = has_wake_lock_locked(type);
+	if (debug_mask & DEBUG_SUSPEND && type == WAKE_LOCK_SUSPEND && ret)
+		print_active_locks(type);
 	spin_unlock_irqrestore(&list_lock, irqflags);
 	return ret;
 }
