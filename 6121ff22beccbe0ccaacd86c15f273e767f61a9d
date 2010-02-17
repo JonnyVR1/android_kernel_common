@@ -9,6 +9,16 @@ UUID: AAAAr3//+UA=
 Bytes: 24
 Why did you change this?
 
+221
+Wed Feb 17 02:07:51 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAr3//+UA=
+UUID: AAAAr3//+T0=
+Bytes: 243
+I felt that expire and suspend information are independent, and in cases where you may only be interested in the currently held active wakelock at that point in time.
+
+Printing expire information when DEBUG_EXPIRE is enabled reduces dmesg spam
+
 253
 Wed Feb 17 01:21:11 2010 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
