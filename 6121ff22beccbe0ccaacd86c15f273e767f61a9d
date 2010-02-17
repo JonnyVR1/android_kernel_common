@@ -1,0 +1,18 @@
+Revision: 6121ff22beccbe0ccaacd86c15f273e767f61a9d
+Patch-set: 1
+File: kernel/power/wakelock.c
+
+221
+Wed Feb 17 01:21:11 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3//+UA=
+Bytes: 24
+Why did you change this?
+
+253
+Wed Feb 17 01:21:11 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3//+T8=
+Bytes: 16
+Check ret first.
+
