@@ -1,0 +1,11 @@
+Revision: 93bf9e63070ffed537e479b75d614af888d4d663
+Patch-set: 3
+File: kernel/power/wakelock.c
+
+255
+Sat Feb 20 00:28:57 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAr3//+FY=
+Bytes: 21
+() around expr & expr
+
