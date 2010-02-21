@@ -555,6 +555,7 @@ static struct logger_log VAR = { \
 };
 
 DEFINE_LOGGER_DEVICE(log_main, LOGGER_LOG_MAIN, 64*1024)
+DEFINE_LOGGER_DEVICE(log_system, LOGGER_LOG_SYSTEM, 64*1024)
 DEFINE_LOGGER_DEVICE(log_events, LOGGER_LOG_EVENTS, 256*1024)
 DEFINE_LOGGER_DEVICE(log_radio, LOGGER_LOG_RADIO, 64*1024)
 
@@ -562,6 +563,8 @@ static struct logger_log *get_log_from_minor(int minor)
 {
 	if (log_main.misc.minor == minor)
 		return &log_main;
+	if (log_system.misc.minor == minor)
+		return &log_system;
 	if (log_events.misc.minor == minor)
 		return &log_events;
 	if (log_radio.misc.minor == minor)
@@ -591,6 +594,10 @@ static int __init logger_init(void)
 	int ret;
 
 	ret = init_log(&log_main);
+	if (unlikely(ret))
+		goto out;
+
+	ret = init_log(&log_system);
 	if (unlikely(ret))
 		goto out;
 
