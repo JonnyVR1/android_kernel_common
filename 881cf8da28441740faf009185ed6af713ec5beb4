@@ -1,0 +1,27 @@
+Revision: 881cf8da28441740faf009185ed6af713ec5beb4
+Patch-set: 2
+File: net/bluetooth/hci_conn.c
+
+226
+Wed Feb 24 22:17:14 2010 +0000
+Author: Jaikumar Ganesh <1000635@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAtX///84=
+Bytes: 34
+Shouldn't this be conn->pkt_type ?
+
+File: net/bluetooth/sco.c
+
+507
+Wed Feb 24 22:17:14 2010 +0000
+Author: Jaikumar Ganesh <1000635@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAtX///80=
+Bytes: 22
+Can addr be Null now ?
+
+632
+Wed Feb 24 22:17:14 2010 +0000
+Author: Jaikumar Ganesh <1000635@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAtX///8s=
+Bytes: 43
+u can take this line out of the if ... else
+
