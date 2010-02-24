@@ -9,6 +9,13 @@ UUID: AAAAtX///84=
 Bytes: 34
 Shouldn't this be conn->pkt_type ?
 
+226
+Wed Feb 24 22:38:36 2010 +0000
+Author: npelly <1001002@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAtX///8c=
+Bytes: 40
+no. the case statement is a fall-through
+
 File: net/bluetooth/sco.c
 
 507
@@ -18,10 +25,26 @@ UUID: AAAAtX///80=
 Bytes: 22
 Can addr be Null now ?
 
+507
+Wed Feb 24 22:38:36 2010 +0000
+Author: npelly <1001002@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAtX///80=
+UUID: AAAAtX///8Y=
+Bytes: 183
+userspace can pass a NULL sockaddr, im not sure if this fixes a real bug or if it already gets checked elsewhere and this is just defense programming. Marcel actually added this code.
+
 632
 Wed Feb 24 22:17:14 2010 +0000
 Author: Jaikumar Ganesh <1000635@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAAtX///8s=
 Bytes: 43
 u can take this line out of the if ... else
+
+632
+Wed Feb 24 22:38:36 2010 +0000
+Author: npelly <1001002@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAtX///8s=
+UUID: AAAAtX///8U=
+Bytes: 31
+will do and upload in a sec....
 
