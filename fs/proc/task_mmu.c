@@ -404,6 +404,7 @@ static int show_smap(struct seq_file *m, void *v)
 
 	memset(&mss, 0, sizeof mss);
 	mss.vma = vma;
+	down_read(&vma->vm_mm->mmap_sem);
 	if (vma->vm_mm && !is_vm_hugetlb_page(vma))
 		walk_page_range(vma->vm_start, vma->vm_end, &smaps_walk);
 
@@ -435,6 +436,7 @@ static int show_smap(struct seq_file *m, void *v)
 
 	if (m->count < m->size)  /* vma is copied successfully */
 		m->version = (vma != get_gate_vma(task)) ? vma->vm_start : 0;
+	up_read(&vma->vm_mm->mmap_sem);
 	return 0;
 }
 
@@ -726,8 +728,6 @@ static ssize_t pagemap_read(struct file *file, char __user *buf,
 	down_read(&current->mm->mmap_sem);
 	ret = get_user_pages(current, current->mm, uaddr, pagecount,
 			     1, 0, pages, NULL);
-	up_read(&current->mm->mmap_sem);
-
 	if (ret < 0)
 		goto out_free;
 
@@ -776,6 +776,7 @@ out_pages:
 		page_cache_release(page);
 	}
 out_free:
+	up_read(&current->mm->mmap_sem);
 	kfree(pages);
 out_mm:
 	mmput(mm);
