@@ -101,6 +101,9 @@ static int walk_pud_range(pgd_t *pgd, unsigned long addr, unsigned long end,
  *
  * If any callback returns a non-zero value, the walk is aborted and
  * the return value is propagated back to the caller. Otherwise 0 is returned.
+ *
+ * Care should be taken to grab the mmap_sem to avoid racing
+ * with remove_vma_list()
  */
 int walk_page_range(unsigned long addr, unsigned long end,
 		    struct mm_walk *walk)

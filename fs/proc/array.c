@@ -377,6 +377,7 @@ static inline unsigned long get_stack_usage_in_bytes(struct vm_area_struct *vma,
 	ss.startpage = task->stack_start & PAGE_MASK;
 	ss.usage = 0;
 
+	down_read(&vma->vm_mm);
 #ifdef CONFIG_STACK_GROWSUP
 	walk_page_range(KSTK_ESP(task) & PAGE_MASK, vma->vm_end,
 		&stack_walk);
@@ -384,6 +385,7 @@ static inline unsigned long get_stack_usage_in_bytes(struct vm_area_struct *vma,
 	walk_page_range(vma->vm_start, (KSTK_ESP(task) & PAGE_MASK) + PAGE_SIZE,
 		&stack_walk);
 #endif
+	up_read(&vma->vm_mm);
 	return ss.usage;
 }
 
