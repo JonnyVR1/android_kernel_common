@@ -1,0 +1,11 @@
+Revision: f824a6018ffd8c44bcea57778c100d126ed61147
+Patch-set: 3
+File: init/Kconfig
+
+552
+Mon Apr 05 20:15:22 2010 +0000
+Author: Iliyan Malchev <1000866@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAwX///sg=
+Bytes: 102
+You should point out that this is in u64, not in bytes.  Why are you even making this a CONFIG option?
+
