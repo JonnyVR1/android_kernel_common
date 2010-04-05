@@ -9,3 +9,11 @@ UUID: AAAAwX///sg=
 Bytes: 102
 You should point out that this is in u64, not in bytes.  Why are you even making this a CONFIG option?
 
+552
+Mon Apr 05 21:30:08 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAwX///sg=
+UUID: AAAAwX///sY=
+Bytes: 220
+If the # of frequencies the cpu has available is greater than 32, then the table needs to be larger or else we cannot track those cpu frequency speeds. Making this a config option so you don't have to edit kernel/sched.c
+
