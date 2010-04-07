@@ -21,6 +21,8 @@
 #define disk_to_dev(disk)	(&(disk)->part0.__dev)
 #define part_to_dev(part)	(&((part)->__dev))
 
+#define GENHD_PART_NAME_SIZE	128
+
 extern struct device_type part_type;
 extern struct kobject *block_depr;
 extern struct class block_class;
@@ -106,6 +108,7 @@ struct hd_struct {
 	struct disk_stats dkstats;
 #endif
 	struct rcu_head rcu_head;
+	char partition_name[GENHD_PART_NAME_SIZE];
 };
 
 #define GENHD_FL_REMOVABLE			1
@@ -533,7 +536,8 @@ extern int disk_expand_part_tbl(struct gendisk *disk, int target);
 extern int rescan_partitions(struct gendisk *disk, struct block_device *bdev);
 extern struct hd_struct * __must_check add_partition(struct gendisk *disk,
 						     int partno, sector_t start,
-						     sector_t len, int flags);
+						     sector_t len, int flags,
+						     const char *name);
 extern void delete_partition(struct gendisk *, int);
 extern void printk_all_partitions(void);
 
