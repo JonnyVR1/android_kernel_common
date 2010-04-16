@@ -9,3 +9,11 @@ UUID: AAAAwn///0U=
 Bytes: 55
 does this cancel the current transfer or all transfers?
 
+2317
+Fri Apr 16 21:52:06 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAwn///0U=
+UUID: AAAAwn///yI=
+Bytes: 51
+This loop will cancel all requests that are queued.
+
