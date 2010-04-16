@@ -1,0 +1,11 @@
+Revision: 0fc7f96b5be344f7a5499e29b30f245fb857f4a2
+Patch-set: 1
+File: drivers/usb/gadget/f_mass_storage.c
+
+2317
+Fri Apr 16 18:27:56 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAwn///0U=
+Bytes: 55
+does this cancel the current transfer or all transfers?
+
