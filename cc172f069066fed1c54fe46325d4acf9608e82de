@@ -1,0 +1,11 @@
+Revision: cc172f069066fed1c54fe46325d4acf9608e82de
+Patch-set: 1
+File: drivers/md/dm-crypt.c
+
+1205
+Wed Apr 21 16:03:10 2010 +0000
+Author: Kenny Root <1002975@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAw3////8=
+Bytes: 102
+You could probably move the end of the #endif block here since it's only jumped to in line 1186 above.
+
