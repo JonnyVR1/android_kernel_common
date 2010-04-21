@@ -1,5 +1,14 @@
 Revision: cc172f069066fed1c54fe46325d4acf9608e82de
 Patch-set: 1
+File: drivers/md/Kconfig
+
+247
+Wed Apr 21 20:23:26 2010 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAw3///+k=
+Bytes: 39
+Might be worth buying some vowels here?
+
 File: drivers/md/dm-crypt.c
 
 1205
