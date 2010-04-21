@@ -24,6 +24,7 @@
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
 #include <linux/workqueue.h>
+#include <linux/slab.h>
 
 #include <linux/akm8973.h>
 
@@ -812,7 +813,7 @@ static struct i2c_driver akm8973_driver = {
 
 static int __init akm8973_init(void)
 {
-	pr_info(KERN_INFO "AKM8973 magnetometer driver\n");
+	pr_info("AKM8973 magnetometer driver\n");
 	return i2c_add_driver(&akm8973_driver);
 }
 
