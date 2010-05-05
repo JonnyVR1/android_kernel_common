@@ -1,0 +1,11 @@
+Revision: fea9e1d42e77b527a8cda1e658eb1703710c55f3
+Patch-set: 2
+File: drivers/staging/android/binder.c
+
+3042
+Wed May 05 00:37:32 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAx3///Jo=
+Bytes: 100
+This should also unmap the pages so moving this call up before the loop should also fix the problem.
+
