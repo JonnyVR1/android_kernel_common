@@ -32,6 +32,16 @@ UUID: AAAAyX///7A=
 Bytes: 134
 Probably, but I figured this was more likely to make it upstream to staging without a huge argument about making changes to do_exit().
 
+186
+Wed May 05 21:00:53 2010 +0000
+Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAyX///7A=
+UUID: AAAAyX///4U=
+Bytes: 219
+I don't understand this.   If this driver is ever going to make its way out of staging, you'll need to do it the 'right' way anyway, no?
+
+Maybe explicitly depend on CONFIG_PROFILING if you really want to keep this here?
+
 204
 Wed May 05 19:01:49 2010 +0000
 Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
