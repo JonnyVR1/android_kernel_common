@@ -1,0 +1,25 @@
+Revision: ae8d55f1f77e0698b536fc228f248d9fd51573f6
+Patch-set: 1
+File: drivers/staging/android/lowmemorykiller.c
+
+76
+Wed May 05 19:01:49 2010 +0000
+Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAyX///7M=
+Bytes: 94
+This there be any synchronization here between the release and setting of lowmem_deathpending?
+
+186
+Wed May 05 19:01:49 2010 +0000
+Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAyX///7c=
+Bytes: 141
+Why not just call back into this code from the tail end of do_exit() and not rely on CONFIG_PROFILING?  This seems to be abusing the api, no?
+
+204
+Wed May 05 19:01:49 2010 +0000
+Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAAyX///7Y=
+Bytes: 38
+Not needed.  Already NULL at start up.
+
