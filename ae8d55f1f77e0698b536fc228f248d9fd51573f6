@@ -9,6 +9,14 @@ UUID: AAAAyX///7M=
 Bytes: 94
 This there be any synchronization here between the release and setting of lowmem_deathpending?
 
+76
+Wed May 05 19:11:20 2010 +0000
+Author: san <1001174@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAyX///7M=
+UUID: AAAAyX///7E=
+Bytes: 132
+no, this thing gets called right before the freeing of the task struct from a put_task_struct() where the usage count has gone to 0.
+
 186
 Wed May 05 19:01:49 2010 +0000
 Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: AAAAyX///7c=
 Bytes: 141
 Why not just call back into this code from the tail end of do_exit() and not rely on CONFIG_PROFILING?  This seems to be abusing the api, no?
 
+186
+Wed May 05 19:11:20 2010 +0000
+Author: san <1001174@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAyX///7c=
+UUID: AAAAyX///7A=
+Bytes: 134
+Probably, but I figured this was more likely to make it upstream to staging without a huge argument about making changes to do_exit().
+
 204
 Wed May 05 19:01:49 2010 +0000
 Author: mikew <1003778@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAAyX///7Y=
 Bytes: 38
 Not needed.  Already NULL at start up.
+
+204
+Wed May 05 19:11:20 2010 +0000
+Author: san <1001174@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAAyX///7Y=
+UUID: AAAAyX///68=
+Bytes: 2
+OK
 
