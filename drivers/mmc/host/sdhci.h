@@ -309,6 +309,8 @@ struct sdhci_host {
 
 	struct timer_list	timer;		/* Timer for timeouts */
 
+	unsigned int		card_present;	/* Previous card detect */
+
 	unsigned long		private[0] ____cacheline_aligned;
 };
 
