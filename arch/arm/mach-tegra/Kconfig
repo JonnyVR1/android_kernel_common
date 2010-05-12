@@ -68,4 +68,9 @@ config TEGRA_FIQ_DEBUGGER
 	help
 	  Enables the FIQ serial debugger on Tegra"
 
+config WIFI_CONTROL_FUNC
+	bool "Enable WiFi control function abstraction"
+	help
+	  Enables Power/Reset/Carddetect function abstraction
+
 endif
