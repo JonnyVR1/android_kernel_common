@@ -29,7 +29,9 @@ struct cpuacct_cpufreq_calls {
 	 */
 	void (*init) (void **cpuacct_data);
 	void (*charge) (void *cpuacct_data,  u64 cputime, unsigned int cpu);
-	void (*show) (void *cpuacct_data, struct cgroup_map_cb *cb);
+	void (*cpufreq_show) (void *cpuacct_data, struct cgroup_map_cb *cb);
+	/* Returns power consumed in milliWatt seconds */
+	u64 (*power_usage) (void *cpuacct_data);
 };
 
 int cpuacct_register_cpufreq(struct cpuacct_cpufreq_calls *fn);
