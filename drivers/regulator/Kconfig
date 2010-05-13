@@ -201,5 +201,11 @@ config REGULATOR_88PM8607
 	help
 	  This driver supports 88PM8607 voltage regulator chips.
 
+config REGULATOR_CPCAP
+	tristate "CPCAP regulator driver"
+	depends on MFD_CPCAP
+	help
+	  Say Y here to support the voltage regulators on CPCAP
+
 endif
 
