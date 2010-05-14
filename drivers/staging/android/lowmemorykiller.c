@@ -35,6 +35,7 @@
 #include <linux/oom.h>
 #include <linux/sched.h>
 #include <linux/notifier.h>
+#include <linux/swap.h>
 
 static uint32_t lowmem_debug_level = 2;
 static int lowmem_adj[6] = {
@@ -78,6 +79,19 @@ task_notify_func(struct notifier_block *self, unsigned long val, void *data)
 	return NOTIFY_OK;
 }
 
+static int reclaimable_file_pages(void)
+{
+	int nr;
+
+	if (nr_swap_pages > 0)
+		nr = global_page_state(NR_FILE_PAGES);
+	else
+		nr = global_page_state(NR_ACTIVE_FILE) +
+		     global_page_state(NR_INACTIVE_FILE);
+
+	return nr;
+}
+
 static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 {
 	struct task_struct *p;
@@ -90,7 +104,7 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 	int selected_oom_adj;
 	int array_size = ARRAY_SIZE(lowmem_adj);
 	int other_free = global_page_state(NR_FREE_PAGES);
-	int other_file = global_page_state(NR_FILE_PAGES);
+	int other_file = reclaimable_file_pages();
 
 	/*
 	 * If we already have a death outstanding, then
