@@ -337,6 +337,14 @@ config SENSORS_AK8975
 	  If you say yes here you get support for Asahi Kasei's 
 	  orientation sensor AK8975.
 
+config SENSORS_BMP085
+	tristate "BMP085 Barometer"
+	default n
+	depends on I2C
+	help
+	 Say yes here if you wish to include the Bosch
+	 BMP085 barometer driver.
+
 config SENSORS_LIS331DLH
 	tristate "LIS331DLH Accelerometer"
 	default n
