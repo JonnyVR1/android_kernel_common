@@ -805,8 +805,7 @@ static int bmp085_probe(struct i2c_client *client,
 	INIT_WORK(&barom->wq, bmp085_work_queue);
 
 	err = request_irq(barom->client->irq, bmp085_irq_handler,
-			  (IRQF_TRIGGER_RISING | IRQF_TRIGGER_HIGH),
-			  BMP085_NAME, barom);
+			  IRQF_TRIGGER_RISING, BMP085_NAME, barom);
 	if (err != 0) {
 		pr_err("%s: irq request failed: %d\n", __func__, err);
 		err = -ENODEV;
