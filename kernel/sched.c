@@ -10604,15 +10604,15 @@ struct cpuacct {
 	u64 *cpuusage;
 	struct percpu_counter cpustat[CPUACCT_STAT_NSTATS];
 	struct cpuacct *parent;
-	struct cpuacct_cpufreq_calls *cpufreq_fn;
+	struct cpuacct_charge_calls *cpufreq_fn;
 	void *cpuacct_data;
 };
 
 static struct cpuacct *cpuacct_root;
 
 /* Default calls for cpufreq accounting */
-static struct cpuacct_cpufreq_calls *cpuacct_cpufreq;
-int cpuacct_register_cpufreq(struct cpuacct_cpufreq_calls *fn)
+static struct cpuacct_charge_calls *cpuacct_cpufreq;
+int cpuacct_charge_register(struct cpuacct_charge_calls *fn)
 {
 	cpuacct_cpufreq = fn;
 

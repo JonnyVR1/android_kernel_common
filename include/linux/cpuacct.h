@@ -18,11 +18,13 @@
 
 #include <linux/cgroup.h>
 
+#ifdef CONFIG_CGROUP_CPUACCT
+
 /*
  * Platform specific CPU frequency hooks for cpuacct. These functions are
  * called from the scheduler.
  */
-struct cpuacct_cpufreq_calls {
+struct cpuacct_charge_calls {
 	/*
 	 * Platforms can take advantage of this data and use
 	 * per-cpu allocations if necessary.
@@ -34,6 +36,9 @@ struct cpuacct_cpufreq_calls {
 	u64 (*power_usage) (void *cpuacct_data);
 };
 
-int cpuacct_register_cpufreq(struct cpuacct_cpufreq_calls *fn);
+int cpuacct_charge_register(struct cpuacct_charge_calls *fn);
 
-#endif // _CPUACCT_H_
+#endif /* CONFIG_CGROUP_CPUACCT */
+
+
+#endif /* _CPUACCT_H_ */
