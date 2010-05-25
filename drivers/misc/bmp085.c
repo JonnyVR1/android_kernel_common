@@ -465,7 +465,11 @@ static ssize_t bmp085_registers_store(struct device *dev,
 		}
 	}
 	if (!strcmp("Go", name)) {
-		bmp085_schedule_work(barom_data);
+		if (value > 0)
+			bmp085_enable(barom_data);
+		else
+			bmp085_disable(barom_data);
+
 		return 0;
 	}
 	if (!strcmp("acc", name)) {
