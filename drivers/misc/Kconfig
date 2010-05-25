@@ -345,6 +345,14 @@ config SENSORS_BMP085
 	 Say yes here if you wish to include the Bosch
 	 BMP085 barometer driver.
 
+config SENSORS_KXTF9
+	tristate "KXTF9 Accelerometer"
+	default n
+	depends on I2C
+	help
+	 Say yes here if you wish to include the Kionix
+	 KXTF9 accelerometer driver.
+
 config SENSORS_LIS331DLH
 	tristate "LIS331DLH Accelerometer"
 	default n
