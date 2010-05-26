@@ -361,6 +361,14 @@ config SENSORS_LIS331DLH
 	 Say yes here if you wish to include the STI Micro
 	 LIS331DLH accelerometer driver.
 
+config SENSORS_MAX9635
+	tristate "Maxim Ambient Light Sensor"
+	default n
+	depends on I2C
+	help
+	 Say yes here if you wish to include the Maxim
+	 MAX9635 ambient light sensor driver.
+
 config WL127X_RFKILL
 	tristate "Bluetooth power control driver for TI wl127x"
 	depends on RFKILL
