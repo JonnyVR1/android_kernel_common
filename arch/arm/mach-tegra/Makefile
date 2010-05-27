@@ -40,3 +40,4 @@ obj-${CONFIG_MACH_STINGRAY}             += board-stingray-wifi.o
 obj-${CONFIG_MACH_STINGRAY}             += board-stingray-sensors.o
 obj-${CONFIG_MACH_STINGRAY}             += board-stingray-wlan_nvs.o
 obj-${CONFIG_MACH_STINGRAY}             += board-stingray-touch.o
+obj-${CONFIG_MACH_STINGRAY}             += board-stingray-spi.o
