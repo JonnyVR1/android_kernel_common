@@ -953,7 +953,7 @@ static int __init bmp085_init(void)
 		pr_err("%s: Cannot create work queue\n", __func__);
 		return -ENOMEM;
 	}
-	pr_err(KERN_INFO "BMP085 barometer driver\n");
+	pr_info("BMP085 barometer driver\n");
 	return i2c_add_driver(&bmp085_driver);
 }
 
