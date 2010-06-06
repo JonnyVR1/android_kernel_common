@@ -41,3 +41,19 @@ config SHARP_SCOOP
 config COMMON_CLKDEV
 	bool
 	select HAVE_CLK
+
+config FIQ_DEBUGGER
+	bool
+	select FIQ
+
+config FIQ_DEBUGGER_NO_SLEEP
+	bool
+	depends on FIQ_DEBUGGER
+
+config FIQ_DEBUGGER_WAKEUP_IRQ_ALWAYS_ON
+	bool
+	depends on FIQ_DEBUGGER
+
+config FIQ_DEBUGGER_CONSOLE
+	bool
+	depends on FIQ_DEBUGGER
