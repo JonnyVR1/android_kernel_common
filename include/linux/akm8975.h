@@ -67,16 +67,20 @@ Defines a read-only address of the fuse ROM of the AK8975.*/
 #define ECS_IOCTL_APP_GET_AFLAG		_IOR(AKMIO, 0x14, short)
 #define ECS_IOCTL_APP_SET_DELAY		_IOW(AKMIO, 0x18, short)
 #define ECS_IOCTL_APP_GET_DELAY		ECS_IOCTL_GET_DELAY
-#define ECS_IOCTL_APP_SET_MVFLAG	_IOW(AKMIO, 0x19, short) /* Set raw magnetic vector flag */
-#define ECS_IOCTL_APP_GET_MVFLAG	_IOR(AKMIO, 0x1A, short) /* Get raw magnetic vector flag */
+/* Set raw magnetic vector flag */
+#define ECS_IOCTL_APP_SET_MVFLAG	_IOW(AKMIO, 0x19, short)
+/* Get raw magnetic vector flag */
+#define ECS_IOCTL_APP_GET_MVFLAG	_IOR(AKMIO, 0x1A, short)
 #define ECS_IOCTL_APP_SET_TFLAG         _IOR(AKMIO, 0x15, short)
 
 
-/* Default GPIO setting */
-#define ECS_INTR	140
-
 struct akm8975_platform_data {
 	int intr;
+
+	int (*init)(void);
+	void (*exit)(void);
+	int (*power_on)(void);
+	int (*power_off)(void);
 };
 
 #endif
