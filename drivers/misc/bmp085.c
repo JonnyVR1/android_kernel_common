@@ -121,8 +121,6 @@ struct bmp085_reg {
 static uint32_t bmp085_debug = 0x01;
 module_param_named(baro_debug, bmp085_debug, uint, 0664);
 
-#define FUZZ			32
-#define FLAT			32
 #define I2C_RETRY_DELAY		5
 #define I2C_RETRIES		5
 #define AUTO_INCREMENT		0x80
@@ -302,6 +300,7 @@ static int bmp085_disable(struct bmp085_data *barom)
 		cancel_delayed_work_sync(&barom->input_work);
 		bmp085_device_power_off(barom);
 	}
+	barom->measurement_cycle = NO_CYCLE;
 
 	return 0;
 }
@@ -580,22 +579,18 @@ static void bmp085_input_work_func(struct work_struct *work)
 
 	if ((barom->measurement_cycle == TEMP_CYCLE) ||
 	    (barom->measurement_cycle == PRESSURE_CYCLE)) {
-		/* We are in a measurement cycle so wait until the cycle is
-		   over to start a new cycle */
-		pr_err("%s: Wait for it\n", __func__);
-		do {
-			msleep(5);
-			i++;
-		} while ((barom->measurement_cycle != NO_CYCLE) || (i <= 100));
-	}
-	barom->measurement_cycle = TEMP_CYCLE;
-	err = bmp085_i2c_write(barom, buf, 2);
-	if (err) {
-		pr_err("%s:Cannot start temp measurement\n", __func__);
+		/* One of the measurements took to long so
+		reset the state machine */
 		barom->measurement_cycle = NO_CYCLE;
-		return;
+	} else {
+		barom->measurement_cycle = TEMP_CYCLE;
+		err = bmp085_i2c_write(barom, buf, 2);
+		if (err) {
+			pr_err("%s:Cannot start temp measurement\n", __func__);
+			barom->measurement_cycle = NO_CYCLE;
+			return;
+		}
 	}
-
 	bmp085_schedule_work(barom);
 	return;
 }
@@ -608,8 +603,7 @@ void bmp085_work_queue(struct work_struct *work)
 	u8 buf[2];
 
 	if (barom_data->measurement_cycle == NO_CYCLE) {
-		pr_err("%s:Whoops.  No cycle defined\n",
-		       __func__);
+		pr_err("%s:No cycle defined\n", __func__);
 	} else if (barom_data->measurement_cycle == TEMP_CYCLE) {
 
 		if (bmp085_debug & 1)
@@ -699,9 +693,9 @@ static int bmp085_input_init(struct bmp085_data *barom)
 	set_bit(EV_ABS, barom->input_dev->evbit);
 
 	/* Need to define the correct min and max */
-	input_set_abs_params(barom->input_dev, ABS_PRESSURE, 0, 10000, FUZZ,
-			     FLAT);
-	input_set_abs_params(barom->input_dev, ABS_THROTTLE, -30, 85, 0, 0);
+	input_set_abs_params(barom->input_dev, ABS_PRESSURE,
+				barom->pdata->min_p, barom->pdata->max_p,
+				barom->pdata->fuzz, barom->pdata->flat);
 
 	barom->input_dev->name = "barometer";
 

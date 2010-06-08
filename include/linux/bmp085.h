@@ -35,6 +35,10 @@
 struct bmp085_platform_data {
 	int poll_interval;
 	int min_interval;
+	int max_p;
+	int min_p;
+	int fuzz;
+	int flat;
 
 	int (*init)(void);
 	void (*exit)(void);
