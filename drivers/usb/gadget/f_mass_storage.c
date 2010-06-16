@@ -295,7 +295,12 @@
 
 #include "gadget_chips.h"
 
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+#include <linux/usb/android_composite.h>
+#include <linux/platform_device.h>
 
+#define FUNCTION_NAME		"usb_mass_storage"
+#endif
 
 /*------------------------------------------------------------------------*/
 
@@ -409,6 +414,10 @@ struct fsg_config {
 	u16 release;
 
 	char			can_stall;
+
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+	struct platform_device *pdev;
+#endif
 };
 
 
@@ -2400,7 +2409,6 @@ reset:
 	}
 }
 
-
 /*
  * Change our operational configuration.  This code must agree with the code
  * that returns config descriptors, and with interface altsetting code.
@@ -2427,6 +2435,7 @@ static int do_set_config(struct fsg_common *common, u8 new_config)
 		if (rc != 0)
 			common->config = 0;	/* Reset on errors */
 	}
+
 	return rc;
 }
 
@@ -2683,7 +2692,6 @@ static int fsg_main_thread(void *common_)
 static DEVICE_ATTR(ro, 0644, fsg_show_ro, fsg_store_ro);
 static DEVICE_ATTR(file, 0644, fsg_show_file, fsg_store_file);
 
-
 /****************************** FSG COMMON ******************************/
 
 static void fsg_common_release(struct kref *ref);
@@ -2702,7 +2710,6 @@ static inline void fsg_common_put(struct fsg_common *common)
 {
 	kref_put(&common->ref, fsg_common_release);
 }
-
 
 static struct fsg_common *fsg_common_init(struct fsg_common *common,
 					  struct usb_composite_dev *cdev,
@@ -2764,7 +2771,13 @@ static struct fsg_common *fsg_common_init(struct fsg_common *common,
 		curlun->ro = lcfg->cdrom || lcfg->ro;
 		curlun->removable = lcfg->removable;
 		curlun->dev.release = fsg_lun_release;
+
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+		/* use "usb_mass_storage" platform device as parent */
+		curlun->dev.parent = &cfg->pdev->dev;
+#else
 		curlun->dev.parent = &gadget->dev;
+#endif
 		/* curlun->dev.driver = &fsg_driver.driver; XXX */
 		dev_set_drvdata(&curlun->dev, &common->filesem);
 		dev_set_name(&curlun->dev,
@@ -2851,7 +2864,6 @@ buffhds_first_it:
 
 	spin_lock_init(&common->lock);
 	kref_init(&common->ref);
-
 
 	/* Tell the thread to start working */
 	common->thread_exits = cfg->thread_exits;
@@ -2959,6 +2971,7 @@ static void fsg_unbind(struct usb_configuration *c, struct usb_function *f)
 	struct fsg_dev		*fsg = fsg_from_func(f);
 
 	DBG(fsg, "unbind\n");
+
 	fsg_common_put(fsg->common);
 	usb_free_descriptors(fsg->function.descriptors);
 	usb_free_descriptors(fsg->function.hs_descriptors);
@@ -3023,6 +3036,7 @@ static struct usb_gadget_strings *fsg_strings_array[] = {
 	NULL,
 };
 
+
 static int fsg_add(struct usb_composite_dev *cdev,
 		   struct usb_configuration *c,
 		   struct fsg_common *common)
@@ -3034,7 +3048,11 @@ static int fsg_add(struct usb_composite_dev *cdev,
 	if (unlikely(!fsg))
 		return -ENOMEM;
 
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+	fsg->function.name        = FUNCTION_NAME;
+#else
 	fsg->function.name        = FSG_DRIVER_DESC;
+#endif
 	fsg->function.strings     = fsg_strings_array;
 	fsg->function.descriptors = usb_copy_descriptors(fsg_fs_function);
 	if (unlikely(!fsg->function.descriptors)) {
@@ -3165,4 +3183,64 @@ fsg_common_from_params(struct fsg_common *common,
 	fsg_config_from_params(&cfg, params);
 	return fsg_common_init(common, cdev, &cfg);
 }
+
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+
+static struct fsg_config fsg_cfg;
+
+static int __init fsg_probe(struct platform_device *pdev)
+{
+	struct usb_mass_storage_platform_data *pdata = pdev->dev.platform_data;
+	int i, nluns;
+
+	printk(KERN_INFO "fsg_probe pdev: %p, pdata: %p\n", pdev, pdata);
+	if (!pdata)
+		return -1;
+
+	nluns = pdata->nluns;
+	if (nluns > FSG_MAX_LUNS)
+		nluns = FSG_MAX_LUNS;
+	fsg_cfg.nluns = nluns;
+	for (i = 0; i < nluns; i++)
+		fsg_cfg.luns[i].removable = 1;
+
+	fsg_cfg.vendor_name = pdata->vendor;
+	fsg_cfg.product_name = pdata->product;
+	fsg_cfg.release = pdata->release;
+	fsg_cfg.can_stall = 0;
+	fsg_cfg.pdev = pdev;
+
+	return 0;
+}
+
+static struct platform_driver fsg_platform_driver = {
+	.driver = { .name = FUNCTION_NAME, },
+	.probe = fsg_probe,
+};
+
+int mass_storage_bind_config(struct usb_configuration *c)
+{
+	struct fsg_common *common = fsg_common_init(NULL, c->cdev, &fsg_cfg);
+	if (IS_ERR(common))
+		return -1;
+	return fsg_add(c->cdev, c, common);
+}
+
+static struct android_usb_function mass_storage_function = {
+	.name = FUNCTION_NAME,
+	.bind_config = mass_storage_bind_config,
+};
+
+static int __init init(void)
+{
+	int		rc;
+	printk(KERN_INFO "f_mass_storage init\n");
+	rc = platform_driver_register(&fsg_platform_driver);
+	if (rc != 0)
+		return rc;
+	android_register_function(&mass_storage_function);
+	return 0;
+}module_init(init);
+
+#endif /* CONFIG_USB_ANDROID_MASS_STORAGE */
 
