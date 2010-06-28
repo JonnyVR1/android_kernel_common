@@ -103,6 +103,20 @@ void usb_function_set_enabled(struct usb_function *f, int enabled)
 	kobject_uevent(&f->dev->kobj, KOBJ_CHANGE);
 }
 
+
+void usb_composite_force_reset(struct usb_composite_dev *cdev)
+{
+	/* force reenumeration */
+	if (cdev && cdev->gadget &&
+			cdev->gadget->speed != USB_SPEED_UNKNOWN) {
+		/* avoid sending a disconnect switch event until after we disconnect */
+		cdev->mute_switch = 1;
+		usb_gadget_disconnect(cdev->gadget);
+		msleep(10);
+		usb_gadget_connect(cdev->gadget);
+	}
+}
+
 /**
  * usb_add_function() - add a function to a configuration
  * @config: the configuration
@@ -1002,7 +1016,10 @@ static void composite_disconnect(struct usb_gadget *gadget)
 		reset_config(cdev);
 	spin_unlock_irqrestore(&cdev->lock, flags);
 
-	schedule_work(&cdev->switch_work);
+	if (cdev->mute_switch)
+		cdev->mute_switch = 0;
+	else
+		schedule_work(&cdev->switch_work);
 }
 
 /*-------------------------------------------------------------------------*/
