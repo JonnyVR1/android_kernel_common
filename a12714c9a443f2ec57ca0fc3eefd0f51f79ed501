@@ -1,0 +1,11 @@
+Revision: a12714c9a443f2ec57ca0fc3eefd0f51f79ed501
+Patch-set: 2
+File: drivers/usb/gadget/composite.c
+
+109
+Mon Jun 28 23:29:40 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA0n///ak=
+Bytes: 41
+shouldn't you be using the flags version?
+
