@@ -1,0 +1,11 @@
+Revision: 346e90a96fc8e1f130a85186403f01f4560e4ba5
+Patch-set: 3
+File: include/linux/usb/composite.h
+
+359
+Mon Jun 28 23:38:57 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA0n///aY=
+Bytes: 25
+should really be a 'bool'
+
