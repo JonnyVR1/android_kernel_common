@@ -110,16 +110,6 @@ static struct usb_device_descriptor device_desc = {
 static struct list_head _functions = LIST_HEAD_INIT(_functions);
 static int _registered_function_count = 0;
 
-void android_usb_set_connected(int connected)
-{
-	if (_android_dev && _android_dev->cdev && _android_dev->cdev->gadget) {
-		if (connected)
-			usb_gadget_connect(_android_dev->cdev->gadget);
-		else
-			usb_gadget_disconnect(_android_dev->cdev->gadget);
-	}
-}
-
 static struct android_usb_function *get_function(const char *name)
 {
 	struct android_usb_function	*f;
@@ -347,7 +337,7 @@ void android_enable_function(struct usb_function *f, int enable)
 			 */
 			list_for_each_entry(func, &android_config_driver.functions, list) {
 				if (!strcmp(func->name, "usb_mass_storage")) {
-					usb_function_set_enabled(f, !enable);
+					usb_function_set_enabled(func, !enable);
 					break;
 				}
 			}
@@ -358,14 +348,7 @@ void android_enable_function(struct usb_function *f, int enable)
 		device_desc.idProduct = __constant_cpu_to_le16(product_id);
 		if (dev->cdev)
 			dev->cdev->desc.idProduct = device_desc.idProduct;
-
-		/* force reenumeration */
-		if (dev->cdev && dev->cdev->gadget &&
-				dev->cdev->gadget->speed != USB_SPEED_UNKNOWN) {
-			usb_gadget_disconnect(dev->cdev->gadget);
-			msleep(10);
-			usb_gadget_connect(dev->cdev->gadget);
-		}
+		usb_composite_force_reset(dev->cdev);
 	}
 }
 
