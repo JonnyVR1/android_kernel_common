@@ -38,6 +38,8 @@
 
 #define APB_DMA_CNTRL				0x010
 
+#define APB_DMA_IRQ_MASK			0x01c
+
 #define APB_DMA_IRQ_MASK_SET			0x020
 
 #define APB_DMA_CHAN_CSR			0x000
@@ -95,8 +97,11 @@
 #define APB_SEQ_WRAP_SHIFT			16
 #define APB_SEQ_WRAP_MASK			(0x7<<APB_SEQ_WRAP_SHIFT)
 
+#define TEGRA_SYSTEM_DMA_CH_NR			16
+#define TEGRA_SYSTEM_DMA_AVP_CH_NUM		4
 #define TEGRA_SYSTEM_DMA_CH_MIN			0
-#define TEGRA_SYSTEM_DMA_CH_MAX			15
+#define TEGRA_SYSTEM_DMA_CH_MAX	\
+	(TEGRA_SYSTEM_DMA_CH_NR - TEGRA_SYSTEM_DMA_AVP_CH_NUM - 1)
 
 #define NV_DMA_MAX_TRASFER_SIZE 0x10000
 
@@ -577,7 +582,8 @@ static void handle_continuous_dma(struct tegra_dma_channel *ch)
 			req->status = TEGRA_DMA_REQ_SUCCESS;
 			/* DMA lock is NOT held when callback is called */
 			spin_unlock(&ch->lock);
-			req->threshold(req);
+			if (likely(req->threshold))
+				req->threshold(req);
 			return;
 
 		} else if (req->buffer_status ==
@@ -646,7 +652,8 @@ int __init tegra_dma_init(void)
 	addr = IO_ADDRESS(TEGRA_APB_DMA_BASE);
 	writel(GEN_ENABLE, addr + APB_DMA_GEN);
 	writel(0, addr + APB_DMA_CNTRL);
-	writel(0xFFFF, addr + APB_DMA_IRQ_MASK_SET);
+	writel(0xFFFFFFFFul >> (31 - TEGRA_SYSTEM_DMA_CH_MAX),
+	       addr + APB_DMA_IRQ_MASK_SET);
 
 	memset(channel_usage, 0, sizeof(channel_usage));
 	memset(dma_channels, 0, sizeof(dma_channels));
@@ -680,6 +687,8 @@ int __init tegra_dma_init(void)
 		}
 		ch->irq = irq;
 	}
+	/* mark the shared channel allocated */
+	__set_bit(TEGRA_SYSTEM_DMA_CH_MIN, channel_usage);
 
 	for (i = TEGRA_SYSTEM_DMA_CH_MAX+1; i < NV_DMA_MAX_CHANNELS; i++)
 		__set_bit(i, channel_usage);
@@ -694,3 +703,52 @@ fail:
 	}
 	return ret;
 }
+
+#ifdef CONFIG_PM
+static u32 apb_dma[5*TEGRA_SYSTEM_DMA_CH_NR + 3];
+
+void tegra_dma_suspend(void)
+{
+	void __iomem *addr = IO_ADDRESS(TEGRA_APB_DMA_BASE);
+	u32 *ctx = apb_dma;
+	int i;
+
+	*ctx++ = readl(addr + APB_DMA_GEN);
+	*ctx++ = readl(addr + APB_DMA_CNTRL);
+	*ctx++ = readl(addr + APB_DMA_IRQ_MASK);
+
+	for (i=0; i<TEGRA_SYSTEM_DMA_CH_NR; i++) {
+		addr = IO_ADDRESS(TEGRA_APB_DMA_CH0_BASE +
+				  TEGRA_APB_DMA_CH0_SIZE * i);
+
+		*ctx++ = readl(addr + APB_DMA_CHAN_CSR);
+		*ctx++ = readl(addr + APB_DMA_CHAN_AHB_PTR);
+		*ctx++ = readl(addr + APB_DMA_CHAN_AHB_SEQ);
+		*ctx++ = readl(addr + APB_DMA_CHAN_APB_PTR);
+		*ctx++ = readl(addr + APB_DMA_CHAN_APB_SEQ);
+	}
+}
+
+void tegra_dma_resume(void)
+{
+	void __iomem *addr = IO_ADDRESS(TEGRA_APB_DMA_BASE);
+	u32 *ctx = apb_dma;
+	int i;
+
+	writel(*ctx++, addr + APB_DMA_GEN);
+	writel(*ctx++, addr + APB_DMA_CNTRL);
+	writel(*ctx++, addr + APB_DMA_IRQ_MASK);
+
+	for (i=0; i<TEGRA_SYSTEM_DMA_CH_NR; i++) {
+		addr = IO_ADDRESS(TEGRA_APB_DMA_CH0_BASE +
+				  TEGRA_APB_DMA_CH0_SIZE * i);
+
+		writel(*ctx++, addr + APB_DMA_CHAN_CSR);
+		writel(*ctx++, addr + APB_DMA_CHAN_AHB_PTR);
+		writel(*ctx++, addr + APB_DMA_CHAN_AHB_SEQ);
+		writel(*ctx++, addr + APB_DMA_CHAN_APB_PTR);
+		writel(*ctx++, addr + APB_DMA_CHAN_APB_SEQ);
+	}
+}
+
+#endif
