@@ -1,0 +1,30 @@
+Revision: c1bdacd6b07d88453ddc251da52efcab602f14f4
+Patch-set: 1
+File: include/linux/cpuacct.h
+
+21
+Sat Jul 03 01:01:47 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA0n//+yE=
+Bytes: 22
+remove the ifdef here.
+
+28
+Sat Jul 03 01:01:47 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA0n//+yI=
+Bytes: 68
+surround the structure members with the
+#ifdef CONFIG_CGROUP_CPUACCT
+
+37
+Sat Jul 03 01:01:47 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA0n//+yA=
+Bytes: 70
+#ifdef CONFIG_CGROUP_CPUACCT
+...
+#else
+static inline int <blah>
+#endif
+
