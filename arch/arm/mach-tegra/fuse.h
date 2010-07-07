@@ -1,10 +1,10 @@
 /*
- * arch/arm/mach-tegra/include/mach/clk.h
+ * arch/arm/mach-tegra/fuse.c
  *
  * Copyright (C) 2010 Google, Inc.
  *
  * Author:
- *	Erik Gilling <konkers@google.com>
+ *	Colin Cross <ccross@android.com>
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -17,15 +17,7 @@
  *
  */
 
-#ifndef __MACH_CLK_H
-#define __MACH_CLK_H
-
-void tegra_periph_reset_deassert(struct clk *c);
-void tegra_periph_reset_assert(struct clk *c);
-
-int clk_enable_cansleep(struct clk *clk);
-void clk_disable_cansleep(struct clk *clk);
-int clk_set_rate_cansleep(struct clk *clk, unsigned long rate);
-int clk_set_parent_cansleep(struct clk *clk, struct clk *parent);
-
-#endif
+int tegra_sku_id(void);
+int tegra_cpu_process_id(void);
+int tegra_core_process_id(void);
+void tegra_init_fuse(void);
