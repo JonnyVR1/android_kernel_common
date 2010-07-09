@@ -158,45 +158,55 @@ unsigned long clk_measure_input_freq(void)
 	}
 }
 
-static int clk_div71_get_divider(struct clk *c, unsigned long rate)
+static int clk_div71_get_divider(unsigned long parent_rate, unsigned long rate)
 {
-	unsigned long divider_u71;
+	s64 divider_u71 = parent_rate * 2;
+	divider_u71 += rate - 1;
+	do_div(divider_u71, rate);
 
-	divider_u71 = DIV_ROUND_UP(c->rate * 2, rate);
+	if (divider_u71 - 2 < 0)
+		return 0;
 
-	if (divider_u71 - 2 > 255 || divider_u71 - 2 < 0)
+	if (divider_u71 - 2 > 255)
 		return -EINVAL;
 
 	return divider_u71 - 2;
 }
 
-static int clk_div16_get_divider(struct clk *c, unsigned long rate)
+static int clk_div16_get_divider(unsigned long parent_rate, unsigned long rate)
 {
-	unsigned long divider_u16;
+	s64 divider_u16;
 
-	divider_u16 = DIV_ROUND_UP(c->rate, rate);
+	divider_u16 = parent_rate;
+	divider_u16 += rate - 1;
+	do_div(divider_u16, rate);
 
-	if (divider_u16 - 1 > 255 || divider_u16 - 1 < 0)
+	if (divider_u16 - 1 < 0)
+		return 0;
+
+	if (divider_u16 - 1 > 255)
 		return -EINVAL;
 
 	return divider_u16 - 1;
 }
 
-static unsigned long tegra2_clk_recalculate_rate(struct clk *c)
+static unsigned long tegra2_clk_recalculate_rate(struct clk *c, int mul,
+	int div)
 {
-	unsigned long rate;
+	u64 rate;
 	rate = c->parent->rate;
 
-	if (c->mul != 0 && c->div != 0)
-		c->rate = rate * c->mul / c->div;
-	else
-		c->rate = rate;
-	if (c->rate > c->max_rate) {
-		pr_err("Attempted to set clock %s rate to %lu, max is %lu\n",
-			c->name, c->rate, c->max_rate);
-		c->rate = c->max_rate;
+	if (mul != 0 && div != 0) {
+		rate = rate * mul;
+		do_div(rate, div);
+	} else {
+		rate = rate;
 	}
-	return c->rate;
+
+	if (rate > c->max_rate)
+		rate = c->max_rate;
+
+	return rate;
 }
 
 
@@ -276,7 +286,7 @@ static void tegra2_super_clk_init(struct clk *c)
 	}
 	BUG_ON(sel->input == NULL);
 	c->parent = sel->input;
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, 0, 0);
 }
 
 static int tegra2_super_clk_enable(struct clk *c)
@@ -342,7 +352,7 @@ static struct clk_ops tegra_super_ops = {
  */
 static void tegra2_cpu_clk_init(struct clk *c)
 {
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, 0, 0);
 }
 
 static int tegra2_cpu_clk_enable(struct clk *c)
@@ -396,7 +406,7 @@ static void tegra2_bus_clk_init(struct clk *c)
 	c->state = ((val >> c->reg_shift) & BUS_CLK_DISABLE) ? OFF : ON;
 	c->div = ((val >> c->reg_shift) & BUS_CLK_DIV_MASK) + 1;
 	c->mul = 1;
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 }
 
 static int tegra2_bus_clk_enable(struct clk *c)
@@ -441,7 +451,8 @@ static struct clk_ops tegra_bus_ops = {
 };
 
 /* PLL Functions */
-static unsigned long tegra2_pll_clk_recalculate_rate(struct clk *c)
+static unsigned long tegra2_pll_clk_recalculate_rate(struct clk *c, int mul,
+	int div)
 {
 	u64 rate;
 	rate = c->parent->rate;
@@ -494,7 +505,7 @@ static void tegra2_pll_clk_init(struct clk *c)
 	if (c->flags & PLL_HAS_CPCON)
 		c->cpcon = (val & PLL_MISC_CPCON_MASK) >> PLL_MISC_CPCON_SHIFT;
 
-	tegra2_pll_clk_recalculate_rate(c);
+	c->rate = tegra2_pll_clk_recalculate_rate(c, 0, 0);
 }
 
 static int tegra2_pll_clk_enable(struct clk *c)
@@ -617,7 +628,7 @@ static void tegra2_pll_div_clk_init(struct clk *c)
 		c->mul = 1;
 	}
 
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 }
 
 static int tegra2_pll_div_clk_enable(struct clk *c)
@@ -678,7 +689,7 @@ static int tegra2_pll_div_clk_set_rate(struct clk *c, unsigned long rate)
 	int divider_u71;
 	pr_debug("%s: %s %lu\n", __func__, c->name, rate);
 	if (c->flags & DIV_U71) {
-		divider_u71 = clk_div71_get_divider(c->parent, rate);
+		divider_u71 = clk_div71_get_divider(c->parent->rate, rate);
 		if (divider_u71 >= 0) {
 			val = clk_readl(c->reg);
 			new_val = val >> c->reg_shift;
@@ -693,7 +704,7 @@ static int tegra2_pll_div_clk_set_rate(struct clk *c, unsigned long rate)
 			clk_writel(val, c->reg);
 			c->div = divider_u71 + 2;
 			c->mul = 2;
-			tegra2_clk_recalculate_rate(c);
+			c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 			return 0;
 		}
 	} else if (c->flags & DIV_2) {
@@ -705,12 +716,31 @@ static int tegra2_pll_div_clk_set_rate(struct clk *c, unsigned long rate)
 	return -EINVAL;
 }
 
+static long tegra2_pll_div_clk_round_rate(struct clk *c, unsigned long rate)
+{
+	int divider;
+	pr_debug("%s: %s %lu\n", __func__, c->name, rate);
+
+	if (rate > c->max_rate)
+		rate = c->max_rate;
+
+	if (c->flags & DIV_U71) {
+		divider = clk_div71_get_divider(c->parent->rate, rate);
+		if (divider < 0)
+			return divider;
+		return tegra2_clk_recalculate_rate(c, 2, divider + 2);
+	} else if (c->flags & DIV_2) {
+		return tegra2_clk_recalculate_rate(c, 1, 2);
+	}
+	return -EINVAL;
+}
 
 static struct clk_ops tegra_pll_div_ops = {
 	.init			= tegra2_pll_div_clk_init,
 	.enable			= tegra2_pll_div_clk_enable,
 	.disable		= tegra2_pll_div_clk_disable,
 	.set_rate		= tegra2_pll_div_clk_set_rate,
+	.round_rate		= tegra2_pll_div_clk_round_rate,
 	.recalculate_rate	= tegra2_clk_recalculate_rate,
 };
 
@@ -754,7 +784,7 @@ static void tegra2_periph_clk_init(struct clk *c)
 		if (clk_readl(RST_DEVICES + PERIPH_CLK_TO_ENB_REG(c)) &
 				PERIPH_CLK_TO_ENB_BIT(c))
 			c->state = OFF;
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 }
 
 static int tegra2_periph_clk_enable(struct clk *c)
@@ -836,7 +866,7 @@ static int tegra2_periph_clk_set_rate(struct clk *c, unsigned long rate)
 	int divider;
 	pr_debug("%s: %lu\n", __func__, rate);
 	if (c->flags & DIV_U71) {
-		divider = clk_div71_get_divider(c->parent, rate);
+		divider = clk_div71_get_divider(c->parent->rate, rate);
 		if (divider >= 0) {
 			val = clk_readl(c->reg);
 			val &= ~PERIPH_CLK_SOURCE_DIVU71_MASK;
@@ -844,11 +874,11 @@ static int tegra2_periph_clk_set_rate(struct clk *c, unsigned long rate)
 			clk_writel(val, c->reg);
 			c->div = divider + 2;
 			c->mul = 2;
-			tegra2_clk_recalculate_rate(c);
+			c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 			return 0;
 		}
 	} else if (c->flags & DIV_U16) {
-		divider = clk_div16_get_divider(c->parent, rate);
+		divider = clk_div16_get_divider(c->parent->rate, rate);
 		if (divider >= 0) {
 			val = clk_readl(c->reg);
 			val &= ~PERIPH_CLK_SOURCE_DIVU16_MASK;
@@ -856,9 +886,33 @@ static int tegra2_periph_clk_set_rate(struct clk *c, unsigned long rate)
 			clk_writel(val, c->reg);
 			c->div = divider + 1;
 			c->mul = 1;
-			tegra2_clk_recalculate_rate(c);
+			c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 			return 0;
 		}
+	}
+	return -EINVAL;
+}
+
+static long tegra2_periph_clk_round_rate(struct clk *c,
+	unsigned long rate)
+{
+	int divider;
+	pr_debug("%s: %s %lu\n", __func__, c->name, rate);
+
+	if (rate > c->max_rate)
+		rate = c->max_rate;
+
+	if (c->flags & DIV_U71) {
+		divider = clk_div71_get_divider(c->parent->rate, rate);
+		if (divider < 0)
+			return divider;
+
+		return tegra2_clk_recalculate_rate(c, 2, divider + 2);
+	} else if (c->flags & DIV_U16) {
+		divider = clk_div16_get_divider(c->parent->rate, rate);
+		if (divider < 0)
+			return divider;
+		return tegra2_clk_recalculate_rate(c, 1, divider + 1);
 	}
 	return -EINVAL;
 }
@@ -869,6 +923,7 @@ static struct clk_ops tegra_periph_clk_ops = {
 	.disable		= &tegra2_periph_clk_disable,
 	.set_parent		= &tegra2_periph_clk_set_parent,
 	.set_rate		= &tegra2_periph_clk_set_rate,
+	.round_rate		= &tegra2_periph_clk_round_rate,
 	.recalculate_rate	= &tegra2_clk_recalculate_rate,
 };
 
@@ -881,7 +936,7 @@ static void tegra2_clk_double_init(struct clk *c)
 	if (!(clk_readl(CLK_OUT_ENB + PERIPH_CLK_TO_ENB_REG(c)) &
 			PERIPH_CLK_TO_ENB_BIT(c)))
 		c->state = OFF;
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, c->mul, c->div);
 };
 
 static struct clk_ops tegra_clk_double_ops = {
@@ -903,7 +958,7 @@ static void tegra2_audio_sync_clk_init(struct clk *c)
 			break;
 	BUG_ON(sel->input == NULL);
 	c->parent = sel->input;
-	tegra2_clk_recalculate_rate(c);
+	c->rate = tegra2_clk_recalculate_rate(c, 0, 0);
 }
 
 static int tegra2_audio_sync_clk_enable(struct clk *c)
