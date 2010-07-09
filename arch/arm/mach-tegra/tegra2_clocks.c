@@ -1686,6 +1686,10 @@ struct clk_duplicate tegra_clk_duplicates[] = {
 	CLK_DUPLICATE("uarte",	"tegra_uart.4",	NULL),
 	CLK_DUPLICATE("host1x", "tegrafb.0", "host1x"),
 	CLK_DUPLICATE("host1x", "tegrafb.1", "host1x"),
+	CLK_DUPLICATE("host1x", "tegra_grhost", "host1x"),
+	CLK_DUPLICATE("2d", "tegra_grhost", "gr3d"),
+	CLK_DUPLICATE("3d", "tegra_grhost", "gr3d"),
+	CLK_DUPLICATE("epp", "tegra_grhost", "epp"),
 };
 
 #define CLK(dev, con, ck)	\
