@@ -488,4 +488,7 @@ config BLK_DEV_HD
 
 	  If unsure, say N.
 
+config BLK_DEV_UBLOCK
+	tristate "Userspace block device"
+
 endif # BLK_DEV

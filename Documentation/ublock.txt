@@ -1,0 +1,48 @@
+ublock: Userspace block device driver.
+
+ublock is a block device driver that allows userspace processes to create
+block devices and respond to read and write requests to them.  It is most
+easily described as the block device analogue of FUSE, which does the same for
+filesystems.
+
+Protocol:
+
+The userspace process opens /dev/ublockctl and repeatedly reads requests from
+it and writes responses back.  All requests and responses begin with headers
+including a sequence number and an opcode; further data depends on the opcode.
+
+The first request type is "INIT"; it tells the userspace process the vesrion
+of the ublock protocol that the kernel implements, along with the largest
+request/response size that the kernel supports, and the index of the block
+device created.
+
+The userspace process responds to "INIT" with the largest request/response
+size that it would like to use (which must be less than or equal to what the
+kernel offered), along with the size of the block device it would like to
+create (in bytes).
+
+The next request type is "READY"; it tells the userspace process that the
+kernel has finished adding the device and scanning partitions.  (This is
+provided so that the userspace process knows when /dev/ublock0, or whatever
+block device it was assigned, is available.)
+
+The userspace process responds to "READY", but the response contains no
+information.
+
+The last two request types are "READ" and "WRITE"; they both provide an offset
+and a length in the request, and a status in the reply.  "READ" responses
+contain the read data (if the status is successful); "WRITE" requests contain
+the write data.
+
+Internals:
+
+Each device has an "in request queue" and an "out request list".  The queue
+contains requests received from the block subsystem, and will be provided one
+at a time to the userspace process when it reads from the control file.  The
+list contains requests that have been read from the control file but are
+awaiting a response.
+
+Currently, all I/O between the userspace process and the control file is
+protected by the ctl_io_lock in the struct ub_device; with the addition of
+finer-grained locking, it would be possible to support multiple userspace
+threads responding to device requests at once.
