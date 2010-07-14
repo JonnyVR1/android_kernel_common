@@ -10,6 +10,7 @@ obj-y                                   += delay.o
 obj-y                                   += powergate.o
 obj-y					+= suspend.o
 obj-y					+= fuse.o
+obj-y                                   += usb_phy.o
 obj-$(CONFIG_FIQ)                       += fiq.o fiq_glue.o
 obj-$(CONFIG_TEGRA_FIQ_DEBUGGER)        += tegra_fiq_debugger.o
 
@@ -21,6 +22,8 @@ obj-$(CONFIG_SMP)                       += platsmp.o localtimer.o headsmp.o
 obj-$(CONFIG_TEGRA_SYSTEM_DMA)		+= dma.o
 obj-$(CONFIG_CPU_FREQ)                  += cpu-tegra.o
 obj-$(CONFIG_CPU_IDLE)			+= cpuidle.o
+obj-$(CONFIG_TEGRA_IOVMM)               += iovmm.o
+obj-$(CONFIG_TEGRA_IOVMM_GART)          += iovmm-gart.o
 
 obj-y					+= nv/
 

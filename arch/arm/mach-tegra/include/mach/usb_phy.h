@@ -1,11 +1,7 @@
 /*
- * arch/arm/mach-tegra/board.h
+ * arch/arm/mach-tegra/include/mach/usb_phy.h
  *
  * Copyright (C) 2010 Google, Inc.
- *
- * Author:
- *	Colin Cross <ccross@google.com>
- *	Erik Gilling <konkers@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -18,18 +14,22 @@
  *
  */
 
-#ifndef __MACH_TEGRA_BOARD_H
-#define __MACH_TEGRA_BOARD_H
+#ifndef __MACH_USB_PHY_H
+#define __MACH_USB_PHY_H
 
-#include <linux/types.h>
+#include <linux/platform_device.h>
+#include <linux/clk.h>
 
-struct tegra_suspend_platform_data;
+struct tegra_usb_phy {
+	int instance;
+	void __iomem *regs;
+	struct clk *pll_u;
+};
 
-void __init tegra_common_init(void);
-void __init tegra_map_common_io(void);
-void __init tegra_init_irq(void);
-void __init tegra_init_clock(void);
-void __init tegra_init_suspend(struct tegra_suspend_platform_data *plat);
+struct tegra_usb_phy *tegra_usb_phy_open(int instance, void __iomem *regs);
 
-extern struct sys_timer tegra_timer;
-#endif
+int tegra_usb_phy_power_on(struct tegra_usb_phy *phy);
+
+int tegra_usb_phy_close(struct tegra_usb_phy *phy);
+
+#endif //__MACH_USB_PHY_H
