@@ -1,0 +1,18 @@
+Revision: eed75ee9862bdae06c2ebb19cb4e983e559a8c5c
+Patch-set: 4
+File: drivers/usb/gadget/f_mtp.c
+
+794
+Thu Jul 15 09:31:10 2010 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA1H///kI=
+Bytes: 172
+Maybe a mutex around this whole block of code to avoid any issues should two userspace threads call the ioctl() at the same time?  As is, they could trip over each other...
+
+810
+Thu Jul 15 09:31:10 2010 +0000
+Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA1H///kM=
+Bytes: 126
+This function is only called from the ioctl which is called from thread context, so no need for ATOMIC.  How about GFP_KERNEL?
+
