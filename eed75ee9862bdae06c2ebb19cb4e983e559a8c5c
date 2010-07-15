@@ -9,10 +9,26 @@ UUID: AAAA1H///kI=
 Bytes: 172
 Maybe a mutex around this whole block of code to avoid any issues should two userspace threads call the ioctl() at the same time?  As is, they could trip over each other...
 
+794
+Thu Jul 15 15:20:27 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA1H///kI=
+UUID: AAAA1H///gg=
+Bytes: 34
+Good idea - I'll add a mutex here.
+
 810
 Thu Jul 15 09:31:10 2010 +0000
 Author: Brian Swetland <1001286@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA1H///kM=
 Bytes: 126
 This function is only called from the ioctl which is called from thread context, so no need for ATOMIC.  How about GFP_KERNEL?
+
+810
+Thu Jul 15 15:20:27 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA1H///kM=
+UUID: AAAA1H///gc=
+Bytes: 172
+Actually we can use GFP_KERNEL for all the bulk transfers too since that also happens in thread context.  We only need GFP_ATOMIC for replying to requests on endpoint zero.
 
