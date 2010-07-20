@@ -1,0 +1,41 @@
+Revision: 11ebfd77a49a67204f3cd7ab9b6d28f313effaa8
+Patch-set: 1
+File: Documentation/cpu-freq/governors.txt
+
+199
+Tue Jul 20 02:03:40 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA2n///94=
+Bytes: 7
+off of?
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+61
+Tue Jul 20 02:03:40 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA2n///9k=
+Bytes: 35
+Do you need this to be conditional?
+
+80
+Tue Jul 20 02:03:40 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA2n///9c=
+Bytes: 28
+This should fit on one line.
+
+180
+Tue Jul 20 02:03:40 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA23////Q=
+Bytes: 198
+I don't think this will always work. If the work was queued on the low priority queue and a high priority thread prevents it from running the work may not get queued on the high priority work-queue.
+
+188
+Tue Jul 20 02:03:40 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA23////U=
+Bytes: 43
+Do you want to only clear one cpu bit here?
+
