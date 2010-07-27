@@ -89,3 +89,17 @@ UUID: AAAA3X///z0=
 Bytes: 217
 why is this in include/linux? You are not exporting anything to the kernel or to userspace. This is a private header for your ublock.c driver, and thus should just sit next to your driver (i.e. drivers/block/ublock.h)
 
+29
+Tue Jul 27 17:41:36 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///zo=
+Bytes: 60
+please add the values of each member of the enum explicitly.
+
+35
+Tue Jul 27 17:41:36 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///zk=
+Bytes: 20
+add comma at the end
+
