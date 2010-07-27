@@ -17,6 +17,14 @@ Bytes: 187
 you probably want kzalloc here. Unless you always assign all the fields, and never rely on some fields for 0 to mean uninitialized.
 Also, does this actually get called in softirq context?
 
+145
+Tue Jul 27 18:05:15 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA3X///4Y=
+UUID: AAAA3X///zQ=
+Bytes: 52
+you didn't reply regarding GFP_ATOMIC vs GFP_KERNEL?
+
 668
 Tue Jul 27 17:38:38 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,6 +52,14 @@ Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA3X///z4=
 Bytes: 47
 is it safe to call this without any locks held?
+
+736
+Tue Jul 27 18:05:15 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA3X///z4=
+UUID: AAAA3X///zM=
+Bytes: 5
+ping?
 
 950
 Tue Jul 27 17:38:38 2010 +0000
