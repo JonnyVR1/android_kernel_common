@@ -1,0 +1,11 @@
+Revision: 20a7a65284857679a951aa86aab7502b2f67fa02
+Patch-set: 2
+File: drivers/block/ublock.c
+
+686
+Tue Jul 27 18:05:18 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///zI=
+Bytes: 102
+you should only insert it into your devices list once you've actually initialized the structure fully.
+
