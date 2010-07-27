@@ -1,0 +1,91 @@
+Revision: 9d94ee5a1deb350103e35af2e9003b0c2c98fdc6
+Patch-set: 1
+File: drivers/block/ublock.c
+
+139
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5Y=
+Bytes: 6
+static
+
+145
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///4Y=
+Bytes: 187
+you probably want kzalloc here. Unless you always assign all the fields, and never rely on some fields for 0 to mean uninitialized.
+Also, does this actually get called in softirq context?
+
+668
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5Q=
+Bytes: 10
+pr_warning
+
+674
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5M=
+Bytes: 10
+pr_warning
+
+681
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5I=
+Bytes: 10
+pr_warning
+
+736
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///z4=
+Bytes: 47
+is it safe to call this without any locks held?
+
+950
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5E=
+Bytes: 10
+pr_warning
+
+998
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5A=
+Bytes: 6
+pr_err
+
+1024
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///48=
+Bytes: 6
+pr_err
+
+1046
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///5U=
+Bytes: 6
+pr_err
+
+1058
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///44=
+Bytes: 7
+pr_info
+
+File: include/linux/ublock.h
+
+20
+Tue Jul 27 17:38:38 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA3X///z0=
+Bytes: 217
+why is this in include/linux? You are not exporting anything to the kernel or to userspace. This is a private header for your ublock.c driver, and thus should just sit next to your driver (i.e. drivers/block/ublock.h)
+
