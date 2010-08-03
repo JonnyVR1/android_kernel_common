@@ -1,0 +1,11 @@
+Revision: 8eafa35cde84c2a49284466564ab7b986640330b
+Patch-set: 2
+File: drivers/net/wireless/bcm4329/wl_iw.c
+
+1000
+Tue Aug 03 22:11:21 2010 +0000
+Author: npelly <1001002@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA33///cY=
+Bytes: 31
+this error path does not unlock
+
