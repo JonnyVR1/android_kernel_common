@@ -2794,6 +2794,7 @@ wl_iw_iscan_set_scan_broadcast_prep(struct net_device *dev, uint flag)
 
 	return 0;
 }
+
 static int
 wl_iw_iscan_set_scan(
 	struct net_device *dev,
@@ -2804,6 +2805,7 @@ wl_iw_iscan_set_scan(
 {
 	wlc_ssid_t ssid;
 	iscan_info_t *iscan = g_iscan;
+	int ret = 0;
 
 	WL_TRACE(("%s: SIOCSIWSCAN : ISCAN\n", dev->name));
 
@@ -2812,28 +2814,32 @@ wl_iw_iscan_set_scan(
 	return -EINVAL;
 #endif
 
+	net_os_wake_lock(dev);
+
 #if defined(SOFTAP)
 	if (ap_cfg_running) {
 		WL_TRACE(("\n>%s: Not executed, reason -'SOFTAP is active'\n", __FUNCTION__));
-		return 0;
+		goto set_scan_end;
 	}
 #endif
 
 	if (g_onoff == G_WLAN_SET_OFF) {
 		WL_TRACE(("%s: driver is not up yet after START\n", __FUNCTION__));
-		return 0;
+		goto set_scan_end;
 	}
 
 	if ((!iscan) || (iscan->sysioc_pid < 0)) {
 		WL_TRACE(("%s use backup if iscan thread is not successful\n", \
 			 __FUNCTION__));
-		return wl_iw_set_scan(dev, info, wrqu, extra);
+		ret = wl_iw_set_scan(dev, info, wrqu, extra);
+		goto set_scan_end;
 	}
 
 	if (g_scan_specified_ssid) {
 		WL_TRACE(("%s Specific SCAN already running ignoring BC scan\n", \
 				__FUNCTION__));
-		return EBUSY;
+		ret = EBUSY;
+		goto set_scan_end;
 	}
 
 	memset(&ssid, 0, sizeof(ssid));
@@ -2848,7 +2854,8 @@ wl_iw_iscan_set_scan(
 			if (g_first_broadcast_scan < BROADCAST_SCAN_FIRST_RESULT_CONSUMED) {
 				WL_TRACE(("%s First ISCAN in progress : ignoring SC = %s\n", \
 					 __FUNCTION__, req->essid));
-				return -EBUSY;
+				ret = -EBUSY;
+				goto set_scan_end;
 			}
 #endif
 			ssid.SSID_len = MIN(sizeof(ssid.SSID), req->essid_len);
@@ -2856,14 +2863,15 @@ wl_iw_iscan_set_scan(
 			ssid.SSID_len = htod32(ssid.SSID_len);
 			dev_wlc_ioctl(dev, WLC_SET_PASSIVE_SCAN, &as, sizeof(as));
 			wl_iw_set_event_mask(dev);
-			return wl_iw_set_scan(dev, info, wrqu, extra);
+			ret = wl_iw_set_scan(dev, info, wrqu, extra);
+			goto set_scan_end;
 		}
 		else {
 			g_scan_specified_ssid = 0;
 
 			if (iscan->iscan_state == ISCAN_STATE_SCANING) {
 				WL_TRACE(("%s ISCAN already in progress \n", __FUNCTION__));
-				return 0;
+				goto set_scan_end;
 			}
 		}
 	}
@@ -2871,7 +2879,9 @@ wl_iw_iscan_set_scan(
 
 	wl_iw_iscan_set_scan_broadcast_prep(dev, 0);
 
-	return 0;
+set_scan_end:
+	net_os_wake_unlock(dev);
+	return ret;
 }
 #endif 
 
