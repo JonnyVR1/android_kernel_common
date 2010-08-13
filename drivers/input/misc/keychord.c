@@ -49,8 +49,6 @@ struct keychord_device {
 	unsigned long keybit[BITS_TO_LONGS(KEY_CNT)];
 	/* current state of the keys */
 	unsigned long keystate[BITS_TO_LONGS(KEY_CNT)];
-	/* number of keys that are currently pressed */
-	int key_down;
 
 	/* second input_device_id is needed for null termination */
 	struct input_device_id  device_ids[2];
@@ -62,12 +60,27 @@ struct keychord_device {
 	__u16			buff[BUFFER_SIZE];
 };
 
+static int count_keys_down(struct keychord_device *kdev)
+{
+	int i, count = 0;
+	unsigned long *keybits = kdev->keystate;
+	int keybits_size = sizeof(kdev->keystate) / sizeof(kdev->keystate[0]);
+
+	for (i = 0; i < keybits_size; i++) {
+		unsigned long k = *keybits++;
+		/* clear the least significant bit set until we clear them all */
+		for ( ; k != 0; count++)
+			k &= k - 1;
+	}
+	return count;
+}
+
 static int check_keychord(struct keychord_device *kdev,
-		struct input_keychord *keychord)
+		struct input_keychord *keychord, int key_down_count)
 {
 	int i;
 
-	if (keychord->count != kdev->key_down)
+	if (keychord->count != key_down_count)
 		return 0;
 
 	for (i = 0; i < keychord->count; i++) {
@@ -85,7 +98,7 @@ static void keychord_event(struct input_handle *handle, unsigned int type,
 	struct keychord_device *kdev = handle->private;
 	struct input_keychord *keychord;
 	unsigned long flags;
-	int i, got_chord = 0;
+	int i, key_down_count, got_chord = 0;
 
 	if (type != EV_KEY || code >= KEY_MAX)
 		return;
@@ -95,10 +108,6 @@ static void keychord_event(struct input_handle *handle, unsigned int type,
 	if (!test_bit(code, kdev->keystate) == !value)
 		goto done;
 	__change_bit(code, kdev->keystate);
-	if (value)
-		kdev->key_down++;
-	else
-		kdev->key_down--;
 
 	/* don't notify on key up */
 	if (!value)
@@ -111,9 +120,11 @@ static void keychord_event(struct input_handle *handle, unsigned int type,
 	if (!keychord)
 		goto done;
 
+	key_down_count = count_keys_down(kdev);
+
 	/* check to see if the keyboard state matches any keychords */
 	for (i = 0; i < kdev->keychord_count; i++) {
-		if (check_keychord(kdev, keychord)) {
+		if (check_keychord(kdev, keychord, key_down_count)) {
 			kdev->buff[kdev->head] = keychord->id;
 			kdev->head = (kdev->head + 1) % BUFFER_SIZE;
 			got_chord = 1;
@@ -255,7 +266,6 @@ static ssize_t keychord_write(struct file *file, const char __user *buffer,
 	kfree(kdev->keychords);
 	kdev->keychords = 0;
 	kdev->keychord_count = 0;
-	kdev->key_down = 0;
 	memset(kdev->keybit, 0, sizeof(kdev->keybit));
 	memset(kdev->keystate, 0, sizeof(kdev->keystate));
 	kdev->head = kdev->tail = 0;
