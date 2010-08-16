@@ -28,6 +28,8 @@
 #include <linux/delay.h>
 #include <linux/sched.h>
 #include <linux/timer.h>
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
 #include <linux/wakelock.h>
 
 #include <asm/stacktrace.h>
@@ -38,6 +40,8 @@
 
 #include <linux/uaccess.h>
 
+#include "fiq_debugger_ringbuf.h"
+
 static void sleep_timer_expired(unsigned long);
 
 static bool ignore_next_wakeup_irq;
@@ -47,14 +51,23 @@ static int no_sleep = true;
 static int no_sleep;
 #endif
 static DEFINE_TIMER(sleep_timer, sleep_timer_expired, 0, 0);
-static int debug_enable;
-static int debugger_enable;
+static bool debug_enable;
+static bool console_enable;
 static struct wake_lock debugger_wake_lock;
 static bool uart_clk_enabled;
 
 static const struct fiq_debugger *init_data;
 
+#ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
+static struct tty_driver *fiq_tty_driver;
+static struct tty_struct *fiq_tty;
+static int fiq_tty_open_count;
+static struct fiq_debugger_ringbuf *fiq_tty_rbuf;
+#endif
+
 module_param(no_sleep, bool, 0644);
+module_param(debug_enable, bool, 0644);
+module_param(console_enable, bool, 0644);
 
 #ifdef CONFIG_FIQ_DEBUGGER_WAKEUP_IRQ_ALWAYS_ON
 static inline void enable_wakeup_irq(unsigned int irq) {}
@@ -372,6 +385,8 @@ static void debug_exec(const char *cmd, unsigned *regs, void *svc_sp)
 		no_sleep = false;
 	} else if (!strcmp(cmd, "nosleep")) {
 		no_sleep = true;
+	} else if (!strcmp(cmd, "console")) {
+		console_enable = true;
 	} else {
 		if (debug_busy) {
 			dprintf("command processor busy. trying to abort.\n");
@@ -392,7 +407,7 @@ static void sleep_timer_expired(unsigned long data)
 {
 	if (uart_clk_enabled && !no_sleep) {
 		if (debug_enable) {
-			debug_enable = 0;
+			debug_enable = false;
 			debug_printf_nfiq(NULL,
 					"suspending fiq debugger\n");
 		}
@@ -430,6 +445,19 @@ static irqreturn_t debug_irq(int irq, void *dev)
 		wake_lock(&debugger_wake_lock);
 		mod_timer(&sleep_timer, jiffies + HZ * 5);
 	}
+#if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
+	if (fiq_tty) {
+		int i;
+		int count = fiq_debugger_ringbuf_level(fiq_tty_rbuf);
+		for (i = 0; i < count; i++) {
+			int c = fiq_debugger_ringbuf_peek(fiq_tty_rbuf, i);
+			tty_insert_flip_char(fiq_tty, c, TTY_NORMAL);
+			if (fiq_debugger_ringbuf_consume(fiq_tty_rbuf, 1) != 1)
+				pr_warn("fiq tty failed to consume byte\n");
+		}
+		tty_flip_buffer_push(fiq_tty);
+	}
+#endif
 	if (debug_busy) {
 		struct kdbg_ctxt ctxt;
 
@@ -451,7 +479,7 @@ static void debug_fiq(void *data, void *regs, void *svc_sp)
 	static int last_c;
 	int count = 0;
 
-	while ((c = init_data->uart_getc()) != -1) {
+	while ((c = init_data->uart_getc()) != FIQ_DEBUGGER_NO_CHAR) {
 		count++;
 		if (!debug_enable) {
 			if ((c == 13) || (c == 10)) {
@@ -459,6 +487,16 @@ static void debug_fiq(void *data, void *regs, void *svc_sp)
 				debug_count = 0;
 				debug_prompt();
 			}
+		} else if (c == FIQ_DEBUGGER_BREAK) {
+			console_enable = false;
+			debug_puts("fiq debugger mode\n");
+			debug_count = 0;
+			debug_prompt();
+#ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
+		} else if (console_enable && fiq_tty_rbuf) {
+			fiq_debugger_ringbuf_push(fiq_tty_rbuf, c);
+			init_data->force_irq(init_data->signal_irq);
+#endif
 		} else if ((c >= ' ') && (c < 127)) {
 			if (debug_count < (DEBUG_MAX - 1)) {
 				debug_buf[debug_count++] = c;
@@ -494,10 +532,19 @@ static void debug_fiq(void *data, void *regs, void *svc_sp)
 }
 
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
+struct tty_driver *debug_console_device(struct console *co, int *index)
+{
+	*index = 0;
+	return fiq_tty_driver;
+}
+
 static void debug_console_write(struct console *co,
 				const char *s, unsigned int count)
 {
 	unsigned long irq_flags;
+
+	if (!console_enable)
+		return;
 
 	/* disable irq's while TXing outside of FIQ context */
 	local_irq_save(irq_flags);
@@ -511,10 +558,100 @@ static void debug_console_write(struct console *co,
 }
 
 static struct console fiq_debugger_console = {
-	.name = "debug_console",
+	.name = "ttyFIQ",
+	.device	= debug_console_device,
 	.write = debug_console_write,
 	.flags = CON_PRINTBUFFER | CON_ANYTIME | CON_ENABLED,
 };
+
+int fiq_tty_open(struct tty_struct *tty, struct file *filp)
+{
+	if (fiq_tty_open_count++)
+		return 0;
+
+	fiq_tty = tty;
+	fiq_tty->driver = fiq_tty_driver;
+
+	return 0;
+}
+
+void fiq_tty_close(struct tty_struct *tty, struct file *filp)
+{
+	if (--fiq_tty_open_count)
+		return;
+	fiq_tty = NULL;
+}
+
+int  fiq_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
+{
+	int i;
+
+	if (!console_enable)
+		return count;
+
+	clk_enable(init_data->uart_clk);
+	for (i = 0; i < count; i++)
+		init_data->uart_putc(*buf++);
+	clk_disable(init_data->uart_clk);
+
+	return count;
+}
+
+int  fiq_tty_write_room(struct tty_struct *tty)
+{
+	return 1024;
+}
+
+static struct tty_operations fiq_tty_driver_ops = {
+	.write = fiq_tty_write,
+	.write_room = fiq_tty_write_room,
+	.open = fiq_tty_open,
+	.close = fiq_tty_close,
+};
+
+static int fiq_debugger_tty_init(void)
+{
+	int ret = -EINVAL;
+
+	fiq_tty_driver = alloc_tty_driver(1);
+	if (!fiq_tty_driver) {
+		pr_err("Failed to allocate fiq debugger tty\n");
+		return -ENOMEM;
+	}
+
+	fiq_tty_driver->owner		= THIS_MODULE;
+	fiq_tty_driver->driver_name	= "fiq-debugger";
+	fiq_tty_driver->name		= "ttyFIQ";
+	fiq_tty_driver->type		= TTY_DRIVER_TYPE_SERIAL;
+	fiq_tty_driver->subtype	= SERIAL_TYPE_NORMAL;
+	fiq_tty_driver->init_termios	= tty_std_termios;
+	fiq_tty_driver->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL;
+	fiq_tty_driver->init_termios.c_ispeed = fiq_tty_driver->init_termios.c_ospeed = 115200;
+	fiq_tty_driver->flags		= TTY_DRIVER_REAL_RAW;
+	tty_set_operations(fiq_tty_driver, &fiq_tty_driver_ops);
+
+	ret = tty_register_driver(fiq_tty_driver);
+	if (ret) {
+		pr_err("Failed to register fiq tty: %d\n", ret);
+		goto err;
+	}
+
+	fiq_tty_rbuf = fiq_debugger_ringbuf_alloc(1024);
+	if (!fiq_tty_rbuf) {
+		pr_err("Failed to allocate fiq debugger ringbuf\n");
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	pr_info("Registered FIQ tty driver %p\n", fiq_tty_driver);
+	return 0;
+
+err:
+	fiq_debugger_ringbuf_free(fiq_tty_rbuf);
+	fiq_tty_rbuf = NULL;
+	put_tty_driver(fiq_tty_driver);
+	return ret;
+}
 #endif
 
 void fiq_debugger_enable(int enable)
@@ -559,55 +696,22 @@ void fiq_debugger_init(const struct fiq_debugger *config)
 	if (ret)
 		dprintf("serial_debugger: could not install signal_irq");
 
-	ret = set_irq_wake(init_data->wakeup_irq, 1);
-	if (ret)
-		dprintf("serial_debugger: could not enable wakeup\n");
-	ret = request_irq(init_data->wakeup_irq, wakeup_irq_handler,
-			  IRQF_TRIGGER_FALLING | IRQF_DISABLED,
-			  "debug-wakeup", 0);
-	if (ret)
-		dprintf("serial_debugger: could not install wakeup irq\n");
-	if (no_sleep)
-		wakeup_irq_handler(init_data->wakeup_irq, 0);
+	if (init_data->wakeup_irq > 0) {
+		ret = set_irq_wake(init_data->wakeup_irq, 1);
+		if (ret)
+			dprintf("serial_debugger: could not enable wakeup\n");
+		ret = request_irq(init_data->wakeup_irq, wakeup_irq_handler,
+				  IRQF_TRIGGER_FALLING | IRQF_DISABLED,
+				  "debug-wakeup", 0);
+		if (ret)
+			dprintf("serial_debugger: could not install wakeup irq\n");
+		if (no_sleep)
+			wakeup_irq_handler(init_data->wakeup_irq, 0);
+	}
 
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
 	register_console(&fiq_debugger_console);
 	clk_enable(init_data->uart_clk);
+	fiq_debugger_tty_init();
 #endif
-	debugger_enable = 1;
 }
-
-static int fiq_debugger_remove(const char *val, struct kernel_param *kp)
-{
-	int ret;
-	static int pre_stat = 1;
-	ret = param_set_bool(val, kp);
-	if (ret)
-		return ret;
-
-	if (pre_stat == *(int *)kp->arg)
-		return 0;
-
-	pre_stat = *(int *)kp->arg;
-
-	if (*(int *)kp->arg) {
-		fiq_debugger_init(init_data);
-		printk(KERN_INFO "enable FIQ serial debugger\n");
-		return 0;
-	}
-
-#if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
-	unregister_console(&fiq_debugger_console);
-	clk_disable(init_data->uart_clk);
-#endif
-	free_irq(init_data->wakeup_irq, 0);
-	free_irq(init_data->signal_irq, 0);
-	init_data->fiq_enable(init_data->fiq_irq, 0);
-	if (uart_clk_enabled)
-		clk_disable(init_data->uart_clk);
-	wake_lock_destroy(&debugger_wake_lock);
-	printk(KERN_INFO "disable FIQ serial debugger\n");
-	return 0;
-}
-module_param_call(enable, fiq_debugger_remove, param_get_bool,
-		&debugger_enable, S_IWUSR | S_IRUGO);

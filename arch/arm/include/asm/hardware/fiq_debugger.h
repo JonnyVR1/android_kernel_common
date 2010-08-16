@@ -18,6 +18,11 @@
 #ifndef _ARCH_ARM_MACH_TEGRA_FIQ_DEBUGGER_H_
 #define _ARCH_ARM_MACH_TEGRA_FIQ_DEBUGGER_H_
 
+#include <linux/serial_core.h>
+
+#define FIQ_DEBUGGER_NO_CHAR NO_POLL_CHAR
+#define FIQ_DEBUGGER_BREAK 0x00ff0100
+
 struct fiq_debugger {
 	unsigned int base;
 	struct clk *uart_clk;
