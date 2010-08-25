@@ -36,4 +36,5 @@ obj-y				+= cb710/
 obj-$(CONFIG_VMWARE_BALLOON)	+= vmware_balloon.o
 obj-$(CONFIG_WL127X_RFKILL)	+= wl127x-rfkill.o
 obj-$(CONFIG_APANIC)		+= apanic.o
+obj-$(CONFIG_APANIC_MTD)	+= apanic_mtd.o
 obj-$(CONFIG_SENSORS_AK8975)	+= akm8975.o

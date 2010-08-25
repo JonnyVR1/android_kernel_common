@@ -388,12 +388,18 @@ config APANIC
 	bool "Android kernel panic diagnostics driver"
 	default n
 	---help---
-	 Driver which handles kernel panics and attempts to write
-	 critical debugging data to flash.
+	 Writes debugging data to flash upon kernel panics.
+
+config APANIC_MTD
+	bool "MTD device support for Android kernel panic diagnostics driver"
+	depends on APANIC
+	default n
+	---help---
+	 Use MTD to write debugging data to flash upon kernel panics.
 
 config APANIC_PLABEL
 	string "Android panic dump flash partition label"
-	depends on APANIC
+	depends on APANIC_MTD
 	default "kpanic"
 	---help---
 	 If your platform uses a different flash partition label for storing
