@@ -21,6 +21,7 @@
 #include <linux/ctype.h>
 #include <linux/genhd.h>
 #include <linux/blktrace_api.h>
+#include <linux/apanic.h>
 
 #include "check.h"
 
@@ -168,6 +169,11 @@ void put_named_partition(struct parsed_partitions *p, int n, sector_t from,
 			p->parts[n].name[name_size] = 0;
 		}
 	}
+
+#ifdef CONFIG_APANIC_MMC_SDHCI
+	apanic_sdhci_check_partition((char *) name, from * 512, size * 512,
+				     disk_to_dev(p->bdev->bd_disk));		
+#endif
 }
 EXPORT_SYMBOL(put_named_partition);
 
