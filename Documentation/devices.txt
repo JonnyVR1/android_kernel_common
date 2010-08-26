@@ -2515,7 +2515,7 @@ Your cooperation is appreciated.
 179 block       MMC block devices
 		  0 = /dev/mmcblk0      First SD/MMC card
 		  1 = /dev/mmcblk0p1    First partition on first MMC card
-		  8 = /dev/mmcblk1      Second SD/MMC card
+		 16 = /dev/mmcblk1      Second SD/MMC card
 		    ...
 
 179 char	CCube DVXChip-based PCI products
