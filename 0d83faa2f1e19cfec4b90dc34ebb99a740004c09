@@ -1,0 +1,11 @@
+Revision: 0d83faa2f1e19cfec4b90dc34ebb99a740004c09
+Patch-set: 4
+File: /COMMIT_MSG
+
+9
+Fri Sep 03 21:13:07 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7H///V4=
+Bytes: 66
+Suggest "<bdev>" or "<blockdev>" instead of "<block>" for clarity.
+
