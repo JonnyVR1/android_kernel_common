@@ -1,0 +1,11 @@
+Revision: 1d69bef0efc79604d54d882e075c134f47300414
+Patch-set: 1
+File: drivers/mmc/core/mmc.c
+
+228
+Mon Sep 06 05:02:30 2010 +0000
+Author: Gary King <1002657@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7H///M8=
+Bytes: 77
+SZ_* are only defined on ARM. Olof submitted a fix for this in a later patch.
+
