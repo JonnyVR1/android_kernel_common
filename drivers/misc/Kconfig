@@ -397,12 +397,26 @@ config APANIC_MTD
 	---help---
 	 Use MTD to write debugging data to flash upon kernel panics.
 
+config APANIC_MMC_SDHCI
+	bool "SD/MMC device support for Android kernel panic diagnostics driver"
+	depends on APANIC && MMC_SDHCI
+	default n
+	---help---
+	 Use SD/MMC to write debugging data to flash upon kernel panics.
+
+config APANIC_MMC_PDEV
+	string "SD/MMC platform device name for Android panic dump"
+	depends on APANIC_MMC_SDHCI
+	default ""
+	---help---
+	 Enter the SD/MMC platform device name for storing crashdumps.
+
 config APANIC_PLABEL
-	string "Android panic dump flash partition label"
-	depends on APANIC_MTD
+	string "Android panic dump flash/MMC partition label"
+	depends on APANIC_MTD || APANIC_MMC_SDHCI
 	default "kpanic"
 	---help---
-	 If your platform uses a different flash partition label for storing
+	 If your platform uses a different flash/MMC partition label for storing
  	 crashdumps, enter it here.
 
 source "drivers/misc/c2port/Kconfig"

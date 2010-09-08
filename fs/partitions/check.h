@@ -1,5 +1,7 @@
 #include <linux/pagemap.h>
 #include <linux/blkdev.h>
+#include <linux/apanic.h>
+
 
 #define PART_NAME_SIZE 128
 
@@ -45,6 +47,12 @@ put_named_partition(struct parsed_partitions *p, int n, sector_t from,
 			memcpy(p->parts[n].name, name, name_size);
 			p->parts[n].name[name_size] = 0;
 			printk(" (%s)", p->parts[n].name);
+
+#ifdef CONFIG_APANIC_MMC_SDHCI
+			apanic_sdhci_check_partition(
+			     (char *) name, from * 512, size * 512,
+			     disk_to_dev(p->bdev->bd_disk));
+#endif
 		}
 	}
 }
