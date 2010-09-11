@@ -258,7 +258,8 @@ static void mtd_panic_notify_add(struct mtd_info *mtd)
 		goto out_err;
 	}
 
-	if (apanic_register_device(1, mtd->writesize))
+	if (apanic_register_device(dev_name(&mtd->dev), mtd->name, 
+				   mtd->writesize))
 		goto out_err;
 
 	return;
@@ -270,7 +271,7 @@ static void mtd_panic_notify_remove(struct mtd_info *mtd)
 {
 	if (mtd == mtdctx.mtd) {
 		mtdctx.mtd = NULL;
-		apanic_register_device(0, mtd->writesize);
+		apanic_register_device(NULL, NULL, 0);
 		printk(KERN_INFO "apanic mtd: Unbound from %s\n", mtd->name);
 	}
 }

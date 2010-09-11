@@ -38,7 +38,7 @@
 #define APANIC_MMC_BLOCKSIZE	512
 
 static struct apanic_sdhci_data {
-	char			devname[20];
+	char			devname[80];
 	struct sdhci_host	*host;
 	int			startbyte;
 	int			sizebytes;
@@ -633,6 +633,7 @@ void apanic_sdhci_check_partition(char *pname, unsigned long startbyte,
 	if (sdhci_ctx.host != NULL) {
 		printk("\napanic sdhci: Registering device %s partition %s\n",
 		       sdhci_ctx.devname, pname);
-		apanic_register_device(1, APANIC_MMC_BLOCKSIZE);
+		apanic_register_device(sdhci_ctx.devname, pname, 
+				       APANIC_MMC_BLOCKSIZE);
 	}
 }

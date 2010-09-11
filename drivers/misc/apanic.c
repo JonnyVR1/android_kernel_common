@@ -53,11 +53,17 @@ struct panic_header {
 	u32 threads_length;
 };
 
+#define INFOBUF_SIZE 256
+
 struct apanic_data {
+	char			devname[80];
+	char			pname[80];
 	struct panic_header	curr;
+	char			infobuf[INFOBUF_SIZE];
+	int			infolen;
 	void			*bounce;
-	struct proc_dir_entry	*apanic_console;
-	struct proc_dir_entry	*apanic_threads;
+	struct proc_dir_entry	*proc_apanic;
+	struct proc_dir_entry	*proc_apanic_reset;
 	unsigned int		xfersize;
 	unsigned int		devregistered;
 };
@@ -66,16 +72,43 @@ static struct apanic_data drv_ctx;
 static struct work_struct proc_removal_work;
 static DEFINE_MUTEX(drv_mutex);
 
+/*
+ * /proc/apanic reads these keys/values whenever a device is registered:
+ *
+ * v <apanic header version>
+ * s <apanic header size>
+ * k {mtd|block}
+ * d <devicename>
+ * p <partitionname>
+ *
+ * and these values when a valid apanic dump header has been written
+ * to /proc/apanic:
+ *
+ * c <console offset> <console len>
+ * t <threads offset> <threads len>
+ */
+
+static void apanic_proc_reset(void)
+{
+	struct apanic_data *ctx = &drv_ctx;
+
+	ctx->infolen = snprintf(ctx->infobuf, sizeof(ctx->infobuf),
+				"v %d\ns %d\nk %s\nd %s\np %s\n",
+				PHDR_VERSION, (int) sizeof(struct panic_header),
+#if defined(CONFIG_APANIC_MTD)
+				"mtd",
+#elif defined(CONFIG_APANIC_MMC_SDHCI)
+				"block",
+#else
+#error "apanic_proc_reset doesn't know the apanic device kind"
+#endif
+				ctx->devname, ctx->pname);
+}
+
 static int apanic_proc_read(char *buffer, char **start, off_t offset,
 			       int count, int *peof, void *dat)
 {
 	struct apanic_data *ctx = &drv_ctx;
-	size_t file_length;
-	off_t file_offset;
-	unsigned int page_no;
-	off_t page_offset;
-	int rc;
-	size_t len;
 
 	if (!ctx->devregistered) {
 		*peof = 1;
@@ -85,54 +118,64 @@ static int apanic_proc_read(char *buffer, char **start, off_t offset,
 	if (!count)
 		return 0;
 
-	mutex_lock(&drv_mutex);
-
-	switch ((int) dat) {
-	case 1:	/* apanic_console */
-		file_length = ctx->curr.console_length;
-		file_offset = ctx->curr.console_offset;
-		break;
-	case 2:	/* apanic_threads */
-		file_length = ctx->curr.threads_length;
-		file_offset = ctx->curr.threads_offset;
-		break;
-	default:
-		pr_err("Bad dat (%d)\n", (int) dat);
-		mutex_unlock(&drv_mutex);
-		return -EINVAL;
-	}
-
-	if ((offset + count) > file_length) {
-		mutex_unlock(&drv_mutex);
+	if ((int) offset > ctx->infolen)
 		return 0;
-	}
 
-	if (count > ctx->xfersize)
-		count = ctx->xfersize;
+	if ((ctx->infolen - (int) offset) < count)
+		count = ctx->infolen - (int) offset;
 
-	page_no = (file_offset + offset) / ctx->xfersize;
-	page_offset = (file_offset + offset) % ctx->xfersize;
-
-	rc = apanic_dev_read(page_no * ctx->xfersize, &len, ctx->bounce);
-
-	if (rc) {
-		mutex_unlock(&drv_mutex);
-		return -EINVAL;
-	}
-
-	if (page_offset)
-		count -= page_offset;
-	memcpy(buffer, ctx->bounce + page_offset, count);
-
+	memcpy(buffer, ctx->infobuf + offset, count);
 	*start = count;
 
-	if ((offset + count) == file_length)
+	if ((offset + count) >= ctx->infolen)
 		*peof = 1;
 
-	mutex_unlock(&drv_mutex);
 	return count;
 }
 
+static int apanic_proc_write(struct file *file, 
+			     const char __user *buffer,
+			     unsigned long count, void *data)
+{
+	struct apanic_data *ctx = &drv_ctx;
+	struct panic_header *hdr = ctx->bounce;
+	unsigned long len = min(PAGE_SIZE, count);
+
+	if (len < sizeof(struct panic_header))
+		return -EINVAL;
+
+	if (copy_from_user(hdr, buffer, len))
+                return count;
+
+	if (hdr->magic != PANIC_MAGIC) {
+		printk(KERN_INFO "apanic: No panic data available (magic=0x%x)\n",
+		       hdr->magic);
+		apanic_dev_erase();
+		return count;
+	}
+
+	if (hdr->version != PHDR_VERSION) {
+		printk(KERN_INFO "apanic: Version mismatch (%d != %d)\n",
+		       hdr->version, PHDR_VERSION);
+		apanic_dev_erase();
+		return count;
+	}
+
+	memcpy(&ctx->curr, hdr, sizeof(struct panic_header));
+
+	ctx->infolen += snprintf(ctx->infobuf + ctx->infolen,
+				 sizeof(ctx->infobuf) - ctx->infolen,
+				"c %u %u\nt %u %u\n",
+				hdr->console_offset, hdr->console_length,
+				hdr->threads_offset, hdr->threads_length);
+
+	printk(KERN_INFO "apanic: c(%u, %u) t(%u, %u)\n",
+	       hdr->console_offset, hdr->console_length,
+	       hdr->threads_offset, hdr->threads_length);
+
+
+	return count;
+}
 
 static void apanic_remove_proc_work(struct work_struct *work)
 {
@@ -141,19 +184,13 @@ static void apanic_remove_proc_work(struct work_struct *work)
 	mutex_lock(&drv_mutex);
 	apanic_dev_erase();
 	memset(&ctx->curr, 0, sizeof(struct panic_header));
-	if (ctx->apanic_console) {
-		remove_proc_entry("apanic_console", NULL);
-		ctx->apanic_console = NULL;
-	}
-	if (ctx->apanic_threads) {
-		remove_proc_entry("apanic_threads", NULL);
-		ctx->apanic_threads = NULL;
-	}
+	apanic_proc_reset();
 	mutex_unlock(&drv_mutex);
 }
 
-static int apanic_proc_write(struct file *file, const char __user *buffer,
-				unsigned long count, void *data)
+static int apanic_proc_reset_write(struct file *file, 
+				   const char __user *buffer,
+				   unsigned long count, void *data)
 {
 	struct apanic_data *ctx = &drv_ctx;
 
@@ -163,15 +200,12 @@ static int apanic_proc_write(struct file *file, const char __user *buffer,
 	return count;
 }
 
-int apanic_register_device(int regunreg, unsigned int xfersize)
+
+int apanic_register_device(char *devname, char *pname, unsigned int xfersize)
 {
 	struct apanic_data *ctx = &drv_ctx;
-	struct panic_header *hdr = ctx->bounce;
-	int    proc_entry_created = 0;
-	int    rc;
-	size_t len;
 
-	if (!regunreg) {
+	if (!devname) {
 		drv_ctx.devregistered = 0;
 		return 0;
 	}
@@ -181,69 +215,36 @@ int apanic_register_device(int regunreg, unsigned int xfersize)
 	    return 1;
 	}
 
+	strncpy(drv_ctx.devname, devname, sizeof(drv_ctx.devname));
+	drv_ctx.devname[sizeof(drv_ctx.devname)-1] = '\0';
+	strncpy(drv_ctx.pname, pname, sizeof(drv_ctx.pname));
+	drv_ctx.pname[sizeof(drv_ctx.pname)-1] = '\0';
 	drv_ctx.xfersize = xfersize;
-	rc = apanic_dev_read(0, &len, drv_ctx.bounce);
-
-	if (rc) {
-		printk(KERN_ERR "apanic: Error reading panic header (%d)\n", rc);
-		return rc;
-	}
-
 	drv_ctx.devregistered = 1;
-	hdr = ctx->bounce;
 
-	if (hdr->magic != PANIC_MAGIC) {
-		printk(KERN_INFO "apanic: No panic data available\n");
-		apanic_dev_erase();
-		return 0;
+	ctx->proc_apanic = create_proc_entry("apanic",
+					     S_IWUSR | S_IRUGO, NULL);
+	if (!ctx->proc_apanic)
+		printk(KERN_ERR "%s: failed creating apanic proc file\n",
+		       __func__);
+	else {
+		ctx->proc_apanic->read_proc = apanic_proc_read;
+		ctx->proc_apanic->write_proc = apanic_proc_write;
+		ctx->proc_apanic->size = sizeof(ctx->infobuf);
+		ctx->proc_apanic->data = (void *) 1;
 	}
 
-	if (hdr->version != PHDR_VERSION) {
-		printk(KERN_INFO "apanic: Version mismatch (%d != %d)\n",
-		       hdr->version, PHDR_VERSION);
-		apanic_dev_erase();
-		return 0;
+	ctx->proc_apanic_reset = create_proc_entry("apanic-reset",
+						   S_IWUSR | S_IRUGO, NULL);
+	if (!ctx->proc_apanic_reset)
+		printk(KERN_ERR "%s: failed creating apanic-reset proc file\n",
+		       __func__);
+	else {
+		ctx->proc_apanic_reset->read_proc = NULL;
+		ctx->proc_apanic_reset->write_proc = apanic_proc_reset_write;
 	}
 
-	memcpy(&ctx->curr, hdr, sizeof(struct panic_header));
-
-	printk(KERN_INFO "apanic: c(%u, %u) t(%u, %u)\n",
-	       hdr->console_offset, hdr->console_length,
-	       hdr->threads_offset, hdr->threads_length);
-
-	if (hdr->console_length) {
-		ctx->apanic_console = create_proc_entry("apanic_console",
-						      S_IFREG | S_IRUGO, NULL);
-		if (!ctx->apanic_console)
-			printk(KERN_ERR "%s: failed creating procfile\n",
-			       __func__);
-		else {
-			ctx->apanic_console->read_proc = apanic_proc_read;
-			ctx->apanic_console->write_proc = apanic_proc_write;
-			ctx->apanic_console->size = hdr->console_length;
-			ctx->apanic_console->data = (void *) 1;
-			proc_entry_created = 1;
-		}
-	}
-
-	if (hdr->threads_length) {
-		ctx->apanic_threads = create_proc_entry("apanic_threads",
-						       S_IFREG | S_IRUGO, NULL);
-		if (!ctx->apanic_threads)
-			printk(KERN_ERR "%s: failed creating procfile\n",
-			       __func__);
-		else {
-			ctx->apanic_threads->read_proc = apanic_proc_read;
-			ctx->apanic_threads->write_proc = apanic_proc_write;
-			ctx->apanic_threads->size = hdr->threads_length;
-			ctx->apanic_threads->data = (void *) 2;
-			proc_entry_created = 1;
-		}
-	}
-
-	if (!proc_entry_created)
-		apanic_dev_erase();
-
+	apanic_proc_reset();
 	return 0;
 }
 
@@ -318,11 +319,6 @@ static int apanic(struct notifier_block *this, unsigned long event,
 
 	if (!ctx->devregistered)
 		goto out;
-
-	if (ctx->curr.magic) {
-		printk(KERN_EMERG "Crash partition in use!\n");
-		goto out;
-	}
 
 	console_offset = ctx->xfersize;
 
