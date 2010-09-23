@@ -1058,8 +1058,15 @@ static void sdhci_set_power(struct sdhci_host *host, unsigned short power)
 
 	if (pwr == 0) {
 		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+
+		if (host->ops->enable_clock)
+			host->ops->enable_clock(host, 0);
+
 		return;
 	}
+
+	if (host->ops->enable_clock)
+		host->ops->enable_clock(host, 1);
 
 	/*
 	 * Spec says that we should clear the power reg before setting
