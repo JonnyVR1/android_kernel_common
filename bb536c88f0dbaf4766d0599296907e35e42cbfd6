@@ -9,3 +9,28 @@ UUID: AAAA7n///Ao=
 Bytes: 33
 these don't work without a string
 
+File: arch/arm/common/fiq_debugger.c
+
+37
+Mon Sep 27 23:20:51 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n///Ac=
+Bytes: 66
+Why do you need this header. It is not available on all platforms.
+
+261
+Mon Sep 27 23:20:51 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n///AY=
+Bytes: 25
+why does this start at 1?
+
+File: arch/arm/include/asm/hardware/fiq_debugger.h
+
+36
+Mon Sep 27 23:20:51 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n///Ag=
+Bytes: 23
+fiq_ack would be useful
+
