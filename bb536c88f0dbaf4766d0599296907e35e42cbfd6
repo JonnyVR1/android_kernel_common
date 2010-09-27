@@ -1,0 +1,11 @@
+Revision: bb536c88f0dbaf4766d0599296907e35e42cbfd6
+Patch-set: 1
+File: arch/arm/common/Kconfig
+
+50
+Mon Sep 27 23:09:49 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n///Ao=
+Bytes: 33
+these don't work without a string
+
