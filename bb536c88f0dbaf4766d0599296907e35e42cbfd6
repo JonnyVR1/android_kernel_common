@@ -25,6 +25,13 @@ UUID: AAAA7n///AY=
 Bytes: 25
 why does this start at 1?
 
+562
+Mon Sep 27 23:41:55 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/U=
+Bytes: 41
+this may crash is wakeup_irq is not valid
+
 File: arch/arm/include/asm/hardware/fiq_debugger.h
 
 36
