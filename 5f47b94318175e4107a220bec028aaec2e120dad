@@ -1,0 +1,48 @@
+Revision: 5f47b94318175e4107a220bec028aaec2e120dad
+Patch-set: 1
+File: arch/arm/common/fiq_debugger.c
+
+569
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/4=
+Bytes: 32
+is there a lock protecting this?
+
+602
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/0=
+Bytes: 9
+why 1024?
+
+699
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/w=
+Bytes: 29
+0 is a valid interrupt number
+
+File: arch/arm/common/fiq_debugger_ringbuf.h
+
+39
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/s=
+Bytes: 35
+this not needed, you called kzalloc
+
+40
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/o=
+Bytes: 77
+is this needed? How do you notify the other cpu that the buffer is available?
+
+55
+Mon Sep 27 23:40:35 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+/k=
+Bytes: 2
++=
+
