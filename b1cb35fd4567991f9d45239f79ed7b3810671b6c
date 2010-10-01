@@ -18,6 +18,14 @@ UUID: AAAA73////k=
 Bytes: 61
 is there anything you need to undo for this if line 51 fails?
 
+49
+Fri Oct 01 22:19:18 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA73////k=
+UUID: AAAA73////I=
+Bytes: 39
+Also, you need to call this on each cpu
+
 60
 Fri Oct 01 22:02:48 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +40,14 @@ Parent: AAAA73////o=
 UUID: AAAA73////Q=
 Bytes: 31
 You can kfree() a NULL pointer.
+
+60
+Fri Oct 01 22:19:18 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA73////Q=
+UUID: AAAA73////E=
+Bytes: 14
+yeah, i'm dumb
 
 77
 Fri Oct 01 22:02:48 2010 +0000
