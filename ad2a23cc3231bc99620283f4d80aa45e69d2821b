@@ -1,0 +1,20 @@
+Revision: ad2a23cc3231bc99620283f4d80aa45e69d2821b
+Patch-set: 1
+File: arch/arm/common/Makefile
+
+20
+Fri Oct 01 05:40:37 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+kE=
+Bytes: 10
+Whitespace
+
+File: arch/arm/common/fiq_glue_setup.c
+
+42
+Fri Oct 01 05:40:37 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA7n//+kA=
+Bytes: 10
+whitespace
+
