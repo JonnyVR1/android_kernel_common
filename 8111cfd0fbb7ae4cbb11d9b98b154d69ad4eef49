@@ -1,0 +1,25 @@
+Revision: 8111cfd0fbb7ae4cbb11d9b98b154d69ad4eef49
+Patch-set: 7
+File: arch/arm/common/fiq_debugger.c
+
+624
+Fri Oct 01 23:17:48 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+Q=
+Bytes: 29
+remove the irq disable stuffs
+
+635
+Fri Oct 01 23:17:48 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+c=
+Bytes: 57
+inconsistent whitespace in struct definition before the =
+
+811
+Fri Oct 01 23:17:48 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+M=
+Bytes: 85
+I'm not sure it is correct to always leave the clock on. Perhaps add a bool to pdata?
+
