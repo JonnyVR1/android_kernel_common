@@ -25,6 +25,14 @@ UUID: AAAA73////o=
 Bytes: 73
 must check for NULL before kfree'ing since you can jump here from line 46
 
+60
+Fri Oct 01 22:11:09 2010 +0000
+Author: Iliyan Malchev <1000866@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA73////o=
+UUID: AAAA73////Q=
+Bytes: 31
+You can kfree() a NULL pointer.
+
 77
 Fri Oct 01 22:02:48 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
