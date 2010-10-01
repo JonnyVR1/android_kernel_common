@@ -1,0 +1,39 @@
+Revision: adbb5218ed61d756659475361786f5a15e83e14f
+Patch-set: 6
+File: arch/arm/common/fiq_debugger.c
+
+60
+Fri Oct 01 22:32:43 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+8=
+Bytes: 4
+bool
+
+71
+Fri Oct 01 22:32:43 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+4=
+Bytes: 4
+bool
+
+73
+Fri Oct 01 22:32:43 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+0=
+Bytes: 4
+bool
+
+607
+Fri Oct 01 22:32:43 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+s=
+Bytes: 42
+if you fail this, don't you want to abort?
+
+634
+Fri Oct 01 22:32:43 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///+o=
+Bytes: 111
+this code is currently unreachable. If you address the comment on line 607, you may need to jump here though :)
+
