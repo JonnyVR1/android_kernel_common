@@ -44,6 +44,7 @@
 #include "fiq_debugger_ringbuf.h"
 
 #define DEBUG_MAX 64
+#define MAX_UNHANDLED_FIQ_COUNT 1000000
 
 struct fiq_debugger_state {
 	struct fiq_glue_handler handler;
@@ -69,6 +70,9 @@ struct fiq_debugger_state {
 	bool uart_clk_enabled;
 	struct wake_lock debugger_wake_lock;
 	bool console_enable;
+	int current_cpu;
+	atomic_t unhandled_fiq_count;
+	bool in_fiq;
 
 #ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
 	struct console console;
@@ -446,6 +450,12 @@ static void debug_exec(struct fiq_debugger_state *state,
 	} else if (!strcmp(cmd, "console")) {
 		state->console_enable = true;
 		debug_printf(state, "console mode\n");
+	} else if (!strcmp(cmd, "cpu")) {
+		debug_printf(state, "cpu %d\n", state->current_cpu);
+	} else if (!strncmp(cmd, "cpu ", 4)) {
+		if (cmd[4] >= '0' && cmd[4] <= '9')
+			state->current_cpu = cmd[4] - '0';
+		debug_printf(state, "cpu %d\n", state->current_cpu);
 	} else {
 		if (state->debug_busy) {
 			debug_printf(state,
@@ -550,6 +560,26 @@ static void debug_fiq(struct fiq_glue_handler *h, void *regs, void *svc_sp)
 	static int last_c;
 	int count = 0;
 
+	if (smp_processor_id() != state->current_cpu) {
+		if (state->in_fiq)
+			return;
+
+		atomic_inc(&state->unhandled_fiq_count);
+
+		if (atomic_read(&state->unhandled_fiq_count) <
+					MAX_UNHANDLED_FIQ_COUNT)
+			return;
+
+		atomic_set(&state->unhandled_fiq_count, 0);
+		debug_printf(state, "fiq_debugger: cpu %d not responding, "
+			"reverting to cpu %d\n", state->current_cpu,
+			smp_processor_id());
+		state->current_cpu = smp_processor_id();
+		return;
+	}
+
+	state->in_fiq = true;
+
 	while ((c = debug_getc(state)) != FIQ_DEBUGGER_NO_CHAR) {
 		count++;
 		if (!state->debug_enable) {
@@ -603,6 +633,9 @@ static void debug_fiq(struct fiq_glue_handler *h, void *regs, void *svc_sp)
 	/* poke sleep timer if necessary */
 	if (state->debug_enable && !state->no_sleep)
 		debug_force_irq(state);
+
+	atomic_set(&state->unhandled_fiq_count, 0);
+	state->in_fiq = false;
 }
 
 static void debug_resume(struct fiq_glue_handler *h)
