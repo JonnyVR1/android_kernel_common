@@ -1,0 +1,18 @@
+Revision: 29b51c268c6a954b15df47da55dd75f178cc918c
+Patch-set: 3
+File: arch/arm/common/fiq_glue_setup.c
+
+32
+Sat Oct 02 20:32:59 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///9E=
+Bytes: 32
+Each cpu needs its own fiq_stack
+
+86
+Sat Oct 02 20:32:59 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///9A=
+Bytes: 47
+This needs to use the per-cpu fiq_stack as well
+
