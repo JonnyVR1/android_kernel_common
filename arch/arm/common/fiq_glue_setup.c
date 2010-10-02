@@ -12,6 +12,7 @@
  */
 
 #include <linux/kernel.h>
+#include <linux/percpu.h>
 #include <linux/slab.h>
 #include <asm/fiq.h>
 #include <asm/fiq_glue.h>
@@ -22,19 +23,22 @@ extern void fiq_glue_setup(void *func, void *data, void *sp);
 static struct fiq_handler fiq_debbuger_fiq_handler = {
 	.name = "fiq_glue",
 };
-static void *fiq_stack;
+static __percpu void *fiq_stack;
+DEFINE_PER_CPU(void *, fiq_stack_aligned);
 static struct fiq_glue_handler *current_handler;
 static DEFINE_MUTEX(fiq_glue_lock);
 
 static void fiq_glue_setup_helper(void *info)
 {
 	struct fiq_glue_handler *handler = info;
-	fiq_glue_setup(handler->fiq, handler, fiq_stack + THREAD_START_SP);
+	fiq_glue_setup(handler->fiq, handler,
+		__get_cpu_var(fiq_stack_aligned) + THREAD_START_SP);
 }
 
 int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 {
 	int ret;
+	int cpu;
 
 	if (!handler || !handler->fiq)
 		return -EINVAL;
@@ -45,10 +49,19 @@ int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 		goto err_busy;
 	}
 
-	fiq_stack = kmalloc(THREAD_SIZE, GFP_KERNEL);
+	fiq_stack = __alloc_percpu(THREAD_SIZE * 2, __alignof__(u32));
 	if (WARN_ON(!fiq_stack)) {
 		ret = -ENOMEM;
 		goto err_alloc_fiq_stack;
+	}
+
+	for_each_possible_cpu(cpu) {
+		struct thread_info *t;
+		unsigned long stack = (unsigned long)per_cpu_ptr(fiq_stack, cpu);
+		stack = ALIGN(stack, THREAD_SIZE);
+		per_cpu(fiq_stack_aligned, cpu) = (void *)stack;
+		t = (struct thread_info *)stack;
+		t->cpu = cpu;
 	}
 
 	ret = claim_fiq(&fiq_debbuger_fiq_handler);
@@ -61,7 +74,7 @@ int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 
 err_claim_fiq:
 	if (ret) {
-		kfree(fiq_stack);
+		free_percpu(fiq_stack);
 		fiq_stack = NULL;
 	}
 err_alloc_fiq_stack:
@@ -83,8 +96,7 @@ void fiq_glue_resume(void)
 	if (!current_handler)
 		return;
 	fiq_glue_setup(current_handler->fiq, current_handler,
-			fiq_stack + THREAD_START_SP);
+		__get_cpu_var(fiq_stack_aligned) + THREAD_START_SP);
 	if (current_handler->resume)
 		current_handler->resume(current_handler);
 }
-
