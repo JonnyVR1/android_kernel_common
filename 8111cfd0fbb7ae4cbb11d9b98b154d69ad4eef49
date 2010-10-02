@@ -2,6 +2,20 @@ Revision: 8111cfd0fbb7ae4cbb11d9b98b154d69ad4eef49
 Patch-set: 7
 File: arch/arm/common/fiq_debugger.c
 
+437
+Sat Oct 02 06:46:10 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///9o=
+Bytes: 38
+debug_printf(state, "console mode\n");
+
+450
+Sat Oct 02 06:46:10 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///9k=
+Bytes: 27
+if (!state->console_enable)
+
 624
 Fri Oct 01 23:17:48 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
