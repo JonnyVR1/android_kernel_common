@@ -12,6 +12,7 @@
  */
 
 #include <linux/kernel.h>
+#include <linux/percpu.h>
 #include <linux/slab.h>
 #include <asm/fiq.h>
 #include <asm/fiq_glue.h>
@@ -22,14 +23,15 @@ extern void fiq_glue_setup(void *func, void *data, void *sp);
 static struct fiq_handler fiq_debbuger_fiq_handler = {
 	.name = "fiq_glue",
 };
-static void *fiq_stack;
+static __percpu void *fiq_stack;
 static struct fiq_glue_handler *current_handler;
 static DEFINE_MUTEX(fiq_glue_lock);
 
 static void fiq_glue_setup_helper(void *info)
 {
 	struct fiq_glue_handler *handler = info;
-	fiq_glue_setup(handler->fiq, handler, fiq_stack + THREAD_START_SP);
+	fiq_glue_setup(handler->fiq, handler,
+		__this_cpu_ptr(fiq_stack) + THREAD_START_SP);
 }
 
 int fiq_glue_register_handler(struct fiq_glue_handler *handler)
@@ -45,7 +47,7 @@ int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 		goto err_busy;
 	}
 
-	fiq_stack = kmalloc(THREAD_SIZE, GFP_KERNEL);
+	fiq_stack = __alloc_percpu(THREAD_SIZE, L1_CACHE_BYTES);
 	if (WARN_ON(!fiq_stack)) {
 		ret = -ENOMEM;
 		goto err_alloc_fiq_stack;
@@ -61,7 +63,7 @@ int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 
 err_claim_fiq:
 	if (ret) {
-		kfree(fiq_stack);
+		free_percpu(fiq_stack);
 		fiq_stack = NULL;
 	}
 err_alloc_fiq_stack:
@@ -83,7 +85,7 @@ void fiq_glue_resume(void)
 	if (!current_handler)
 		return;
 	fiq_glue_setup(current_handler->fiq, current_handler,
-			fiq_stack + THREAD_START_SP);
+			__this_cpu_ptr(fiq_stack) + THREAD_START_SP);
 	if (current_handler->resume)
 		current_handler->resume(current_handler);
 }
