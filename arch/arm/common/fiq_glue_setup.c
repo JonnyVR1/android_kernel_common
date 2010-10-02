@@ -23,9 +23,20 @@ void fiq_glue_setup(void *func, void *data, void *sp);
 static struct fiq_handler fiq_debbuger_fiq_handler = {
 	.name = "fiq_glue",
 };
-static void *fiq_stack;
+static DEFINE_PER_CPU(void *, fiq_stack);
 static struct fiq_glue_handler *current_handler;
 static DEFINE_MUTEX(fiq_glue_lock);
+
+static void per_cpu_fiq_glue_setup(void *data)
+{
+	__get_cpu_var(fiq_stack) = kmalloc(THREAD_SIZE, GFP_ATOMIC);
+
+	if (WARN_ON(!__get_cpu_var(fiq_stack)))
+		return;
+
+	fiq_glue_setup(current_handler->fiq, current_handler,
+		__get_cpu_var(fiq_stack) + THREAD_START_SP);
+}
 
 int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 {
@@ -35,31 +46,22 @@ int fiq_glue_register_handler(struct fiq_glue_handler *handler)
 		return -EINVAL;
 
 	mutex_lock(&fiq_glue_lock);
-	if (fiq_stack) {
+	if (current_handler) {
 		ret = -EBUSY;
 		goto err;
 	}
-
-	fiq_stack = kmalloc(THREAD_SIZE, GFP_KERNEL);
-	if (WARN_ON(!fiq_stack)) {
-		ret = -ENOMEM;
-		goto err;
-	}
-
-	fiq_glue_setup(handler->fiq, handler, fiq_stack + THREAD_START_SP);
 
 	ret = claim_fiq(&fiq_debbuger_fiq_handler);
 	if (WARN_ON(ret))
 		goto err;
 
 	current_handler = handler;
+
+	on_each_cpu(per_cpu_fiq_glue_setup, NULL, 1);
+
 	set_fiq_handler(&fiq_glue, &fiq_glue_end - &fiq_glue);
 
 err:
-	if (ret) {
-		kfree(fiq_stack);
-		fiq_stack = NULL;
-	}
 	mutex_unlock(&fiq_glue_lock);
 	return ret;
 }
@@ -77,7 +79,7 @@ void fiq_glue_resume(void)
 	if (!current_handler)
 		return;
 	fiq_glue_setup(current_handler->fiq, current_handler,
-			fiq_stack + THREAD_START_SP);
+			__get_cpu_var(fiq_stack) + THREAD_START_SP);
 	if (current_handler->resume)
 		current_handler->resume(current_handler);
 }
