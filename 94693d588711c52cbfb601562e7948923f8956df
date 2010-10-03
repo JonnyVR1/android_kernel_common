@@ -1,0 +1,11 @@
+Revision: 94693d588711c52cbfb601562e7948923f8956df
+Patch-set: 3
+File: arch/arm/common/fiq_debugger.c
+
+562
+Sun Oct 03 04:40:54 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///8Y=
+Bytes: 68
+This isn't going to work in UP, hard_smp_processor_id is not defined
+
