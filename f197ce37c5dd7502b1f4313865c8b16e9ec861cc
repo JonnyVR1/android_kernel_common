@@ -1,0 +1,11 @@
+Revision: f197ce37c5dd7502b1f4313865c8b16e9ec861cc
+Patch-set: 2
+File: arch/arm/common/fiq_glue_setup.c
+
+33
+Sun Oct 03 00:20:46 2010 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///8o=
+Bytes: 64
+can't you use __percpu_alloc so we can easily check for failure?
+
