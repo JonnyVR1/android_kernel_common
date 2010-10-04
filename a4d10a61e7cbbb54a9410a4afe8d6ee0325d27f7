@@ -1,0 +1,11 @@
+Revision: a4d10a61e7cbbb54a9410a4afe8d6ee0325d27f7
+Patch-set: 7
+File: arch/arm/common/fiq_debugger.c
+
+637
+Mon Oct 04 18:26:59 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73///4g=
+Bytes: 143
+if you failed to request the irq, you need to at least set state->wakeup_irq to -1. I assume you wanted to try to continue if it failed though?
+
