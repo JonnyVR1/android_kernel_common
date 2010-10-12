@@ -1,0 +1,18 @@
+Revision: e9cf2f23d31c78e1fe1b9dd2e11af5267832ee94
+Patch-set: 1
+File: /COMMIT_MSG
+
+18
+Tue Oct 12 18:25:47 2010 +0000
+Author: Christian Bejram <1000319@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73//+xw=
+Bytes: 28
+Remove internal reference id
+
+21
+Tue Oct 12 18:25:47 2010 +0000
+Author: Christian Bejram <1000319@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA73//+x0=
+Bytes: 24
+Add second Signed-off-by
+
