@@ -1,0 +1,18 @@
+Revision: fcec6c42409220c69f6ccf817f027424aadffc2d
+Patch-set: 1
+File: arch/arm/common/fiq_debugger.c
+
+342
+Tue Oct 26 00:25:57 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//+i8=
+Bytes: 35
+for (cpu = 0; cpu < NR_CPUS; cpu++)
+
+344
+Tue Oct 26 00:25:57 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//+i4=
+Bytes: 33
+__IRQ_STAT(cpu, local_timer_irqs)
+
