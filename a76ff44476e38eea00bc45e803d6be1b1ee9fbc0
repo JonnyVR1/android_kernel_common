@@ -1,0 +1,40 @@
+Revision: a76ff44476e38eea00bc45e803d6be1b1ee9fbc0
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+61
+Wed Nov 03 20:17:56 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//9Sg=
+Bytes: 227
+80ms feels pretty high to me but your comments say its based off of UI tests
+
+Will this cause the CPU to spend more time running at higher frequencies? Given how bursty UI workload is there might be more room for power savings.
+
+64
+Wed Nov 03 20:17:56 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//9Sw=
+Bytes: 48
+IT would be great it this was tuneable from /sys
+
+213
+Wed Nov 03 20:17:56 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//9Ss=
+Bytes: 177
+I am curious why we exit early here. If the timer fires in less than 1ms, its too probably too quick for us to determine if we want to scale up, but can we decide to scale down?
+
+232
+Wed Nov 03 20:17:56 2010 +0000
+Author: Mike Chan <1001534@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//9Sk=
+Bytes: 533
+Do we want to calculate the load since the last cpu speed change?
+
+Correct me if I'm wrong, but in the case where CPU is at max (1ghz) for 10 seconds, then the load suddenly drops, it will take some time before the CPU lowers its speed.
+
+The ondemand governor uses X as a sample period (30-40ms on Nexus One), so actually in this case we keep the cpu running higher for longer burning more power.
+
+It might be better to look at the load for the last X ms, ie the last min_sample_time for that CPU, so the governor ramps down quickly.
+
