@@ -2419,7 +2419,9 @@ wl_iw_get_aplist(
 
 	for (i = 0, dwrq->length = 0; i < list->count && dwrq->length < IW_MAX_AP; i++) {
 		bi = bi ? (wl_bss_info_t *)((uintptr)bi + dtoh32(bi->length)) : list->bss_info;
-		if ((uintptr)bi >= ((uintptr)list + buflen)) {
+
+		if ((dtoh32(bi->length) >= buflen) ||
+		    (((uintptr)bi + dtoh32(bi->length)) >= ((uintptr)list + buflen))) {
 			WL_ERROR(("%s: Scan results out of bounds\n",__FUNCTION__));
 			kfree(list);
 			return -E2BIG;
@@ -2496,7 +2498,9 @@ wl_iw_iscan_get_aplist(
 		for (i = 0, dwrq->length = 0; i < list->count && dwrq->length < IW_MAX_AP; i++) {
 			bi = bi ? (wl_bss_info_t *)((uintptr)bi + dtoh32(bi->length))
 			          : list->bss_info;
-			if ((uintptr)bi >= ((uintptr)list + WLC_IW_ISCAN_MAXLEN)) {
+
+			if ((dtoh32(bi->length) >= WLC_IW_ISCAN_MAXLEN) ||
+			    (((uintptr)bi + dtoh32(bi->length)) >= ((uintptr)list + WLC_IW_ISCAN_MAXLEN))) {
 				WL_ERROR(("%s: Scan results out of bounds\n",__FUNCTION__));
 				return -E2BIG;
 			}
@@ -3433,7 +3437,7 @@ wl_iw_get_scan_prep(
 
 	if (!list) {
 		WL_ERROR(("%s: Null list pointer",__FUNCTION__));
-		return -EINVAL;
+		return ret;
 	}
 
 	for (i = 0; i < list->count && i < IW_MAX_AP; i++)
@@ -3782,7 +3786,8 @@ wl_iw_iscan_get_scan(
 	    for (ii = 0; ii < list->count && apcnt < IW_MAX_AP; apcnt++, ii++) {
 		bi = bi ? (wl_bss_info_t *)((uintptr)bi + dtoh32(bi->length)) : list->bss_info;
 
-		if ((uintptr)bi >= ((uintptr)list + WLC_IW_ISCAN_MAXLEN)) {
+		if ((dtoh32(bi->length) >= WLC_IW_ISCAN_MAXLEN) ||
+		    (((uintptr)bi + dtoh32(bi->length)) >= ((uintptr)list + WLC_IW_ISCAN_MAXLEN))) {
 			WL_ERROR(("%s: Scan results out of bounds\n",__FUNCTION__));
 			return -E2BIG;
 		}
