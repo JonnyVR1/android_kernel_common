@@ -17,3 +17,11 @@ UUID: AAAA8H//85w=
 Bytes: 89
 The variable is named "return_error", with an underscore.  Can you clarify your comments?
 
+1613
+Fri Nov 05 21:40:06 2010 +0000
+Author: Iliyan Malchev <1000866@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA8H//85w=
+UUID: AAAA8H//85c=
+Bytes: 58
+My bad.  The underscore wasn't visible in the gerrit diff.
+
