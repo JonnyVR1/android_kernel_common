@@ -237,6 +237,7 @@ static int pmem_free(int id, int index)
 	/* caller should hold the write lock on pmem_sem! */
 	int buddy, curr = index;
 	DLOG("index %d\n", index);
+	BUG_ON(id < 0);
 
 	if (pmem[id].no_allocator) {
 		pmem[id].allocated = 0;
@@ -384,6 +385,7 @@ static int pmem_allocate(int id, unsigned long len)
 	int end = pmem[id].num_entries;
 	int best_fit = -1;
 	unsigned long order = pmem_order(len);
+	BUG_ON(id < 0);
 
 	if (pmem[id].no_allocator) {
 		DLOG("no allocator");
@@ -454,6 +456,8 @@ static pgprot_t phys_mem_access_prot(struct file *file, pgprot_t vma_prot)
 
 static unsigned long pmem_start_addr(int id, struct pmem_data *data)
 {
+	BUG_ON(id < 0);
+	BUG_ON(data->index < 0);
 	if (pmem[id].no_allocator)
 		return PMEM_START_ADDR(id, 0);
 	else
@@ -463,11 +467,15 @@ static unsigned long pmem_start_addr(int id, struct pmem_data *data)
 
 static void *pmem_start_vaddr(int id, struct pmem_data *data)
 {
+	BUG_ON(id < 0);
+	BUG_ON(data->index < 0);
 	return pmem_start_addr(id, data) - pmem[id].base + pmem[id].vbase;
 }
 
 static unsigned long pmem_len(int id, struct pmem_data *data)
 {
+	BUG_ON(id < 0);
+	BUG_ON(data->index < 0);
 	if (pmem[id].no_allocator)
 		return data->index;
 	else
@@ -479,6 +487,7 @@ static int pmem_map_garbage(int id, struct vm_area_struct *vma,
 			    unsigned long len)
 {
 	int i, garbage_pages = len >> PAGE_SHIFT;
+	BUG_ON(id < 0);
 
 	vma->vm_flags |= VM_IO | VM_RESERVED | VM_PFNMAP | VM_SHARED | VM_WRITE;
 	for (i = 0; i < garbage_pages; i++) {
@@ -494,6 +503,7 @@ static int pmem_unmap_pfn_range(int id, struct vm_area_struct *vma,
 				unsigned long len)
 {
 	int garbage_pages;
+	BUG_ON(id < 0);
 	DLOG("unmap offset %lx len %lx\n", offset, len);
 
 	BUG_ON(!PMEM_IS_PAGE_ALIGNED(len));
@@ -513,6 +523,8 @@ static int pmem_map_pfn_range(int id, struct vm_area_struct *vma,
 	BUG_ON(!PMEM_IS_PAGE_ALIGNED(vma->vm_end));
 	BUG_ON(!PMEM_IS_PAGE_ALIGNED(len));
 	BUG_ON(!PMEM_IS_PAGE_ALIGNED(offset));
+	BUG_ON(id < 0);
+	BUG_ON(data->index < 0);
 
 	if (io_remap_pfn_range(vma, vma->vm_start + offset,
 		(pmem_start_addr(id, data) + offset) >> PAGE_SHIFT,
@@ -528,6 +540,7 @@ static int pmem_remap_pfn_range(int id, struct vm_area_struct *vma,
 {
 	/* hold the mm semp for the vma you are modifying when you call this */
 	BUG_ON(!vma);
+	BUG_ON(id < 0);
 	zap_page_range(vma, vma->vm_start + offset, len, NULL);
 	return pmem_map_pfn_range(id, vma, data, offset, len);
 }
@@ -712,7 +725,7 @@ int get_pmem_addr(struct file *file, unsigned long *start,
 	}
 
 	data = (struct pmem_data *)file->private_data;
-	if (data->index == -1) {
+	if (data->index < 0) {
 #if PMEM_DEBUG
 		printk(KERN_INFO "pmem: requested pmem data from file with no "
 		       "allocation.\n");
