@@ -9,3 +9,11 @@ UUID: AAAA8H//874=
 Bytes: 47
 Do not assign and return in the same statement.
 
+1613
+Fri Nov 05 21:33:11 2010 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA8H//874=
+UUID: AAAA8H//85w=
+Bytes: 89
+The variable is named "return_error", with an underscore.  Can you clarify your comments?
+
