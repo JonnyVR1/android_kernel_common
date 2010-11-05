@@ -1,0 +1,11 @@
+Revision: ee14f1317bbe2d2630d5611e8bd81f5e69182082
+Patch-set: 1
+File: drivers/staging/android/binder.c
+
+1613
+Fri Nov 05 18:55:36 2010 +0000
+Author: Iliyan Malchev <1000866@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//874=
+Bytes: 47
+Do not assign and return in the same statement.
+
