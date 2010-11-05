@@ -25,3 +25,10 @@ UUID: AAAA8H//85c=
 Bytes: 58
 My bad.  The underscore wasn't visible in the gerrit diff.
 
+1780
+Fri Nov 05 21:45:26 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//85U=
+Bytes: 40
+is BUG_ON the correct action here? Arve?
+
