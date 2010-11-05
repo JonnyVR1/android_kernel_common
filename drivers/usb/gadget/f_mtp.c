@@ -778,10 +778,7 @@ static int mtp_thread(void *data)
 				dev->thread_file_length);
 		}
 
-		if (dev->thread_file) {
-			fput(dev->thread_file);
-			dev->thread_file = NULL;
-		}
+		dev->thread_file = NULL;
 		dev->thread_command = 0;
 		complete(&dev->thread_wait);
 	}
@@ -858,6 +855,7 @@ static long mtp_ioctl(struct file *fp, unsigned code, unsigned long value)
 			ret = -EFAULT;
 			goto fail;
 		}
+		/* hold a reference to the file while we are working with it */
 		filp = fget(mfr.fd);
 		if (!filp) {
 			ret = -EBADF;
@@ -879,6 +877,7 @@ static long mtp_ioctl(struct file *fp, unsigned code, unsigned long value)
 
 		/* wait for the thread to complete the command */
 		wait_for_completion(&dev->thread_wait);
+		fput(filp);
 		ret = dev->thread_result;
 		DBG(dev->cdev, "thread returned %d\n", ret);
 		break;
@@ -911,8 +910,6 @@ static long mtp_ioctl(struct file *fp, unsigned code, unsigned long value)
 	}
 
 fail:
-	if (filp)
-		fput(filp);
 	spin_lock_irq(&dev->lock);
 	if (dev->state == STATE_CANCELED)
 		ret = -ECANCELED;
