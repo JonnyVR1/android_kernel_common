@@ -25,7 +25,15 @@
 #include <linux/slab.h>
 #include "leds.h"
 
+static DEFINE_MUTEX(timer_trig_list_lock);
+static LIST_HEAD(timer_trig_list);
+
 struct timer_trig_data {
+	struct led_classdev *led_cdev;
+	struct list_head list;
+	struct mutex lock;
+	bool active;
+
 	int brightness_on;		/* LED brightness during "on" period.
 					 * (LED_OFF < brightness_on <= LED_FULL)
 					 */
@@ -33,6 +41,23 @@ struct timer_trig_data {
 	unsigned long delay_off;	/* milliseconds off */
 	struct timer_list timer;
 };
+
+static
+struct timer_trig_data *timer_trig_get_data(struct led_classdev *led_cdev)
+{
+	struct timer_trig_data *timer_data;
+
+	mutex_lock(&timer_trig_list_lock);
+	list_for_each_entry(timer_data, &timer_trig_list, list) {
+		if (timer_data->led_cdev == led_cdev) {
+			mutex_unlock(&timer_trig_list_lock);
+			return timer_data;
+		}
+	}
+
+	mutex_unlock(&timer_trig_list_lock);
+	return NULL;
+}
 
 static void led_timer_function(unsigned long data)
 {
@@ -65,11 +90,31 @@ static void led_timer_function(unsigned long data)
 	mod_timer(&timer_data->timer, jiffies + msecs_to_jiffies(delay));
 }
 
+static void led_update_timer(struct timer_trig_data *timer_data)
+{
+	struct led_classdev *led_cdev = timer_data->led_cdev;
+
+	/* deactivate previous settings */
+	del_timer_sync(&timer_data->timer);
+
+	/* try to activate hardware acceleration, if any */
+	if (!led_cdev->blink_set ||
+	    led_cdev->blink_set(led_cdev,
+	      &timer_data->delay_on, &timer_data->delay_off)) {
+		/* no hardware acceleration, blink via timer */
+		mod_timer(&timer_data->timer, jiffies + 1);
+	}
+}
+
 static ssize_t led_delay_on_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct timer_trig_data *timer_data = led_cdev->trigger_data;
+	struct timer_trig_data *timer_data;
+
+	timer_data = timer_trig_get_data(led_cdev);
+	if (!timer_data)
+		return -EINVAL;
 
 	return sprintf(buf, "%lu\n", timer_data->delay_on);
 }
@@ -78,31 +123,29 @@ static ssize_t led_delay_on_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct timer_trig_data *timer_data = led_cdev->trigger_data;
+	struct timer_trig_data *timer_data;
 	int ret = -EINVAL;
 	char *after;
 	unsigned long state = simple_strtoul(buf, &after, 10);
 	size_t count = after - buf;
 
+	timer_data = timer_trig_get_data(led_cdev);
+	if (!timer_data)
+		return ret;
+
 	if (isspace(*after))
 		count++;
 
 	if (count == size) {
+		mutex_lock(&timer_data->lock);
 		if (timer_data->delay_on != state) {
 			/* the new value differs from the previous */
 			timer_data->delay_on = state;
 
-			/* deactivate previous settings */
-			del_timer_sync(&timer_data->timer);
-
-			/* try to activate hardware acceleration, if any */
-			if (!led_cdev->blink_set ||
-			    led_cdev->blink_set(led_cdev,
-			      &timer_data->delay_on, &timer_data->delay_off)) {
-				/* no hardware acceleration, blink via timer */
-				mod_timer(&timer_data->timer, jiffies + 1);
-			}
+			if (timer_data->active)
+				led_update_timer(timer_data);
 		}
+		mutex_unlock(&timer_data->lock);
 		ret = count;
 	}
 
@@ -113,7 +156,11 @@ static ssize_t led_delay_off_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct timer_trig_data *timer_data = led_cdev->trigger_data;
+	struct timer_trig_data *timer_data;
+
+	timer_data = timer_trig_get_data(led_cdev);
+	if (!timer_data)
+		return -EINVAL;
 
 	return sprintf(buf, "%lu\n", timer_data->delay_off);
 }
@@ -122,31 +169,29 @@ static ssize_t led_delay_off_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t size)
 {
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct timer_trig_data *timer_data = led_cdev->trigger_data;
+	struct timer_trig_data *timer_data;
 	int ret = -EINVAL;
 	char *after;
 	unsigned long state = simple_strtoul(buf, &after, 10);
 	size_t count = after - buf;
 
+	timer_data = timer_trig_get_data(led_cdev);
+	if (!timer_data)
+		return ret;
+
 	if (isspace(*after))
 		count++;
 
 	if (count == size) {
+		mutex_lock(&timer_data->lock);
 		if (timer_data->delay_off != state) {
 			/* the new value differs from the previous */
 			timer_data->delay_off = state;
 
-			/* deactivate previous settings */
-			del_timer_sync(&timer_data->timer);
-
-			/* try to activate hardware acceleration, if any */
-			if (!led_cdev->blink_set ||
-			    led_cdev->blink_set(led_cdev,
-			      &timer_data->delay_on, &timer_data->delay_off)) {
-				/* no hardware acceleration, blink via timer */
-				mod_timer(&timer_data->timer, jiffies + 1);
-			}
+			if (timer_data->active)
+				led_update_timer(timer_data);
 		}
+		mutex_unlock(&timer_data->lock);
 		ret = count;
 	}
 
@@ -159,42 +204,23 @@ static DEVICE_ATTR(delay_off, 0644, led_delay_off_show, led_delay_off_store);
 static void timer_trig_activate(struct led_classdev *led_cdev)
 {
 	struct timer_trig_data *timer_data;
-	int rc;
 
-	timer_data = kzalloc(sizeof(struct timer_trig_data), GFP_KERNEL);
+	timer_data = timer_trig_get_data(led_cdev);
 	if (!timer_data)
 		return;
+
+	mutex_lock(&timer_data->lock);
 
 	timer_data->brightness_on = led_get_brightness(led_cdev);
 	if (timer_data->brightness_on == LED_OFF)
 		timer_data->brightness_on = led_cdev->max_brightness;
 	led_cdev->trigger_data = timer_data;
 
-	init_timer(&timer_data->timer);
-	timer_data->timer.function = led_timer_function;
-	timer_data->timer.data = (unsigned long) led_cdev;
+	timer_data->active = true;
 
-	rc = device_create_file(led_cdev->dev, &dev_attr_delay_on);
-	if (rc)
-		goto err_out;
-	rc = device_create_file(led_cdev->dev, &dev_attr_delay_off);
-	if (rc)
-		goto err_out_delayon;
+	led_update_timer(timer_data);
 
-	/* If there is hardware support for blinking, start one
-	 * user friendly blink rate chosen by the driver.
-	 */
-	if (led_cdev->blink_set)
-		led_cdev->blink_set(led_cdev,
-			&timer_data->delay_on, &timer_data->delay_off);
-
-	return;
-
-err_out_delayon:
-	device_remove_file(led_cdev->dev, &dev_attr_delay_on);
-err_out:
-	led_cdev->trigger_data = NULL;
-	kfree(timer_data);
+	mutex_unlock(&timer_data->lock);
 }
 
 static void timer_trig_deactivate(struct led_classdev *led_cdev)
@@ -202,22 +228,76 @@ static void timer_trig_deactivate(struct led_classdev *led_cdev)
 	struct timer_trig_data *timer_data = led_cdev->trigger_data;
 	unsigned long on = 0, off = 0;
 
-	if (timer_data) {
-		device_remove_file(led_cdev->dev, &dev_attr_delay_on);
-		device_remove_file(led_cdev->dev, &dev_attr_delay_off);
-		del_timer_sync(&timer_data->timer);
-		kfree(timer_data);
-	}
+	mutex_lock(&timer_data->lock);
+	timer_data->active = false;
+
+	del_timer_sync(&timer_data->timer);
 
 	/* If there is hardware support for blinking, stop it */
 	if (led_cdev->blink_set)
 		led_cdev->blink_set(led_cdev, &on, &off);
+	mutex_unlock(&timer_data->lock);
+}
+
+static void timer_trig_init_led(struct led_classdev *led_cdev)
+{
+	struct timer_trig_data *timer_data;
+	int ret;
+
+	timer_data = kzalloc(sizeof(struct timer_trig_data), GFP_KERNEL);
+	if (!timer_data)
+		return;
+
+	init_timer(&timer_data->timer);
+	mutex_init(&timer_data->lock);
+	timer_data->timer.function = led_timer_function;
+	timer_data->timer.data = (unsigned long) led_cdev;
+
+	timer_data->led_cdev = led_cdev;
+
+	mutex_lock(&timer_trig_list_lock);
+	list_add_tail(&timer_data->list, &timer_trig_list);
+	mutex_unlock(&timer_trig_list_lock);
+
+	ret = device_create_file(led_cdev->dev, &dev_attr_delay_on);
+	if (ret)
+		goto err_out;
+	ret = device_create_file(led_cdev->dev, &dev_attr_delay_off);
+	if (ret)
+		goto err_out_delayon;
+
+	return;
+
+	err_out_delayon:
+		device_remove_file(led_cdev->dev, &dev_attr_delay_on);
+	err_out:
+		led_cdev->trigger_data = NULL;
+		kfree(timer_data);
+}
+
+static void timer_trig_destroy_led(struct led_classdev *led_cdev)
+{
+	static struct timer_trig_data *timer_data;
+
+	timer_data = timer_trig_get_data(led_cdev);
+	if (!timer_data)
+		return;
+
+	mutex_lock(&timer_trig_list_lock);
+	list_del(&timer_data->list);
+	mutex_unlock(&timer_trig_list_lock);
+
+	device_remove_file(led_cdev->dev, &dev_attr_delay_on);
+	device_remove_file(led_cdev->dev, &dev_attr_delay_off);
+	kfree(timer_data);
 }
 
 static struct led_trigger timer_led_trigger = {
-	.name     = "timer",
-	.activate = timer_trig_activate,
-	.deactivate = timer_trig_deactivate,
+	.name        = "timer",
+	.activate    = timer_trig_activate,
+	.deactivate  = timer_trig_deactivate,
+	.init_led    = timer_trig_init_led,
+	.destroy_led = timer_trig_destroy_led,
 };
 
 static int __init timer_trig_init(void)
