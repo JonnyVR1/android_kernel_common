@@ -1,0 +1,11 @@
+Revision: 07e50643b1220c7fd16c221fa270a8b3502e36c1
+Patch-set: 1
+File: drivers/leds/ledtrig-gpio.c
+
+42
+Mon Nov 08 22:51:49 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8X////o=
+Bytes: 228
+Since this looks awfully like the code additions for timer triggers, it seems that you need some helper functions in the led-trigger.c for trigger drivers to use if you expect every trigger type to implement something like this.
+
