@@ -1,0 +1,11 @@
+Revision: 1f93bea896caebd90ca206a2ab90b4f785fa200b
+Patch-set: 1
+File: drivers/leds/led-triggers.c
+
+207
+Mon Nov 08 22:18:44 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8H//8uw=
+Bytes: 14
+remove newline
+
