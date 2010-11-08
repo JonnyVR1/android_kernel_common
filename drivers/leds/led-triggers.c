@@ -134,23 +134,42 @@ void led_trigger_remove(struct led_classdev *led_cdev)
 }
 EXPORT_SYMBOL_GPL(led_trigger_remove);
 
-void led_trigger_set_default(struct led_classdev *led_cdev)
+void led_trigger_init_led(struct led_classdev *led_cdev)
 {
 	struct led_trigger *trig;
-
-	if (!led_cdev->default_trigger)
-		return;
 
 	down_read(&triggers_list_lock);
 	down_write(&led_cdev->trigger_lock);
 	list_for_each_entry(trig, &trigger_list, next_trig) {
-		if (!strcmp(led_cdev->default_trigger, trig->name))
+		if (trig->init_led)
+			trig->init_led(led_cdev);
+
+		if (led_cdev->default_trigger &&
+			    !strcmp(led_cdev->default_trigger, trig->name))
 			led_trigger_set(led_cdev, trig);
 	}
 	up_write(&led_cdev->trigger_lock);
 	up_read(&triggers_list_lock);
 }
-EXPORT_SYMBOL_GPL(led_trigger_set_default);
+EXPORT_SYMBOL_GPL(led_trigger_init_led);
+
+void led_trigger_destroy_led(struct led_classdev *led_cdev)
+{
+	struct led_trigger *trig;
+
+	down_read(&triggers_list_lock);
+	down_write(&led_cdev->trigger_lock);
+	if (led_cdev->trigger)
+		led_trigger_set(led_cdev, NULL);
+
+	list_for_each_entry(trig, &trigger_list, next_trig) {
+		if (trig->destroy_led)
+			trig->destroy_led(led_cdev);
+	}
+	up_write(&led_cdev->trigger_lock);
+	up_read(&triggers_list_lock);
+}
+EXPORT_SYMBOL_GPL(led_trigger_destroy_led);
 
 /* LED Trigger Interface */
 
@@ -172,18 +191,25 @@ int led_trigger_register(struct led_trigger *trigger)
 	}
 	/* Add to the list of led triggers */
 	list_add_tail(&trigger->next_trig, &trigger_list);
-	up_write(&triggers_list_lock);
 
-	/* Register with any LEDs that have this as a default trigger */
 	down_read(&leds_list_lock);
 	list_for_each_entry(led_cdev, &leds_list, node) {
 		down_write(&led_cdev->trigger_lock);
+
+		/* Initialize the trigger for any existing leds */
+		if (trigger->init_led)
+			trigger->init_led(led_cdev);
+
+		/* Register with any LEDs that have this as a default trigger */
 		if (!led_cdev->trigger && led_cdev->default_trigger &&
 			    !strcmp(led_cdev->default_trigger, trigger->name))
 			led_trigger_set(led_cdev, trigger);
+
 		up_write(&led_cdev->trigger_lock);
 	}
 	up_read(&leds_list_lock);
+
+	up_write(&triggers_list_lock);
 
 	return 0;
 }
@@ -202,6 +228,9 @@ void led_trigger_unregister(struct led_trigger *trigger)
 	down_read(&leds_list_lock);
 	list_for_each_entry(led_cdev, &leds_list, node) {
 		down_write(&led_cdev->trigger_lock);
+		if (trigger->destroy_led)
+			trigger->destroy_led(led_cdev);
+
 		if (led_cdev->trigger == trigger)
 			led_trigger_set(led_cdev, NULL);
 		up_write(&led_cdev->trigger_lock);

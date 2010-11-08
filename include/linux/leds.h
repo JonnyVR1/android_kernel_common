@@ -85,6 +85,8 @@ struct led_trigger {
 	const char	 *name;
 	void		(*activate)(struct led_classdev *led_cdev);
 	void		(*deactivate)(struct led_classdev *led_cdev);
+	void		(*init_led)(struct led_classdev *led_cdev);
+	void		(*destroy_led)(struct led_classdev *led_cdev);
 
 	/* LEDs under control by this trigger (for simple triggers) */
 	rwlock_t	  leddev_list_lock;

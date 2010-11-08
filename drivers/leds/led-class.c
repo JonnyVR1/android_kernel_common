@@ -148,9 +148,7 @@ int led_classdev_register(struct device *parent, struct led_classdev *led_cdev)
 
 	led_update_brightness(led_cdev);
 
-#ifdef CONFIG_LEDS_TRIGGERS
-	led_trigger_set_default(led_cdev);
-#endif
+	led_trigger_init_led(led_cdev);
 
 	printk(KERN_DEBUG "Registered led device: %s\n",
 			led_cdev->name);
@@ -168,12 +166,7 @@ EXPORT_SYMBOL_GPL(led_classdev_register);
  */
 void led_classdev_unregister(struct led_classdev *led_cdev)
 {
-#ifdef CONFIG_LEDS_TRIGGERS
-	down_write(&led_cdev->trigger_lock);
-	if (led_cdev->trigger)
-		led_trigger_set(led_cdev, NULL);
-	up_write(&led_cdev->trigger_lock);
-#endif
+	led_trigger_destroy_led(led_cdev);
 
 	device_unregister(led_cdev->dev);
 
