@@ -69,3 +69,13 @@ UUID: AAAA8n///0c=
 Bytes: 168
 Right.  The only reason we need this is to make sure we don't have SMP related memory read/write problems.  If you know a better way to handle this that would be great.
 
+853
+Tue Nov 09 23:12:13 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA8n///0c=
+UUID: AAAA8n///yk=
+Bytes: 339
+Recommend adding a comment about the SMP ordering purpose of the locks so somebody doesn't later take them out.
+
+An smp_rmb() prior to reads to ensure up-to-date info is read, and an smp_wmb() after writes to ensure the values are visible before continuing, might also fix whichever problems have been previously seen with SMP correctness.
+
