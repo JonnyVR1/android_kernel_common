@@ -1,0 +1,39 @@
+Revision: 5023553857812108cbf3fd0790b3044192c58e83
+Patch-set: 2
+File: drivers/usb/gadget/f_mtp.c
+
+632
+Tue Nov 09 22:02:50 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8n///20=
+Bytes: 203
+Still not sure why locking would be required here, have already ensured a single send_file/receive_file request is sent at a time, and there doesn't seem to be any other potential concurrent lock holder.
+
+679
+Tue Nov 09 22:02:50 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8n///2s=
+Bytes: 124
+Unclear why this single read needs mutual exclusion... if there were optimizer code motion issues maybe a barrier() instead?
+
+798
+Tue Nov 09 22:02:50 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8n///2k=
+Bytes: 128
+Sounds like there's never supposed to be concurrent ioctl requests, could WARN_ON() here if there's potential bugs to be caught?
+
+848
+Tue Nov 09 22:02:50 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8n///2E=
+Bytes: 138
+Didn't understand why this is necessary.  ioctl code is running in kernel context, doesn't seem like there should be address space issues?
+
+853
+Tue Nov 09 22:02:50 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA8n///1k=
+Bytes: 140
+It seems like dev->xfer_result must be consistent with the request that was just processed (since the ioctl exclusion lock is held), needed?
+
