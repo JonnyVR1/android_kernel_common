@@ -3916,7 +3916,7 @@ asmlinkage void __sched notrace preempt_schedule(void)
 	do {
 		add_preempt_count_notrace(PREEMPT_ACTIVE);
 		schedule();
-		sub_preempt_count_notrace(PREEMPT_ACTIVE);
+		sub_preempt_count(PREEMPT_ACTIVE);
 
 		/*
 		 * Check again in case we missed a preemption opportunity
