@@ -1,0 +1,11 @@
+Revision: fa171a5d793b7cb6cc4d28e6556de37ce0f8b38b
+Patch-set: 1
+File: drivers/usb/gadget/f_mtp.c
+
+633
+Mon Nov 15 22:02:08 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9X///+w=
+Bytes: 36
+DBG printfs should use %u for count.
+
