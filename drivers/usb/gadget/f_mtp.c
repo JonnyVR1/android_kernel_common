@@ -621,13 +621,14 @@ static void send_file_work(struct work_struct *data) {
 	struct file *filp;
 	loff_t offset;
 	size_t count;
-	int r, xfer, ret;
+	int xfer, ret;
+	int r = 0;
 
 	/* read our parameters */
 	smp_rmb();
 	filp = dev->xfer_file;
 	offset = dev->xfer_file_offset;
-	r = count = dev->xfer_file_length;
+	count = dev->xfer_file_length;
 
 	DBG(cdev, "send_file_work(%lld %d)\n", offset, count);
 
@@ -686,13 +687,14 @@ static void receive_file_work(struct work_struct *data)
 	struct file *filp;
 	loff_t offset;
 	size_t count;
-	int r, ret, cur_buf = 0;
+	int ret, cur_buf = 0;
+	int r = 0;
 
 	/* read our parameters */
 	smp_rmb();
 	filp = dev->xfer_file;
 	offset = dev->xfer_file_offset;
-	r = count = dev->xfer_file_length;
+	count = dev->xfer_file_length;
 
 	DBG(cdev, "receive_file_work(%d)\n", count);
 
