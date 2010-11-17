@@ -9,3 +9,13 @@ UUID: AAAA9n///2A=
 Bytes: 315
 The check for whether a zero-length packet must be written is made based on the value of dev->ep_in->maxpacket, but the data is written in maximum BULK_BUFFER_SIZE chunks at this layer.  Are the two values always the same, or should the checks for zero-length-packet needed and the actual writes use the same value?
 
+10
+Wed Nov 17 19:27:06 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n///2A=
+UUID: AAAA9n///1o=
+Bytes: 704
+The check is based entirely on the total size of the transfer and the maxpacket (64 for fullspeed or 512 for highspeed).  The BULK_BUFFER_SIZE should not be important, as this does not affect what the host sees on the other end.  
+
+The way this works is the host reads until it receives a "short packet", which is typically the last packet being smaller than the maxpacket size.  But if the total transfer is a multiple of maxpacket, we need to send a zero length packet at the end (which will be the "short packet" instead).  The BULK_BUFFER_SIZE just needs to be a multiple of maxpacket so we don't end up sending short packets prematurely, but other than that it doesn't figure into this logic at all.
+
