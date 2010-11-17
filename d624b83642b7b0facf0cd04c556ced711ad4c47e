@@ -13,3 +13,11 @@ Happened to note line 731 not affected by this patch:
 
 ret is the return of usb_ep_queue() that should return zero for no error, so the above is not needed and at first glance seems to be modifying a variable that in some cases needs to be a specific value.
 
+758
+Wed Nov 17 14:28:07 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n///9A=
+UUID: AAAA9n///48=
+Bytes: 64
+Yes that line is unnecessary.  I'll remove it before committing.
+
