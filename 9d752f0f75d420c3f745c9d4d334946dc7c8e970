@@ -1,0 +1,11 @@
+Revision: 9d752f0f75d420c3f745c9d4d334946dc7c8e970
+Patch-set: 1
+File: /COMMIT_MSG
+
+10
+Wed Nov 17 18:52:57 2010 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n///2A=
+Bytes: 315
+The check for whether a zero-length packet must be written is made based on the value of dev->ep_in->maxpacket, but the data is written in maximum BULK_BUFFER_SIZE chunks at this layer.  Are the two values always the same, or should the checks for zero-length-packet needed and the actual writes use the same value?
+
