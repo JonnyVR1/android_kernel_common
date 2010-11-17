@@ -1,0 +1,25 @@
+Revision: 64e2772b240d535a5475c2fc1affd25fb7c99da6
+Patch-set: 1
+File: arch/arm/common/fiq_debugger.c
+
+452
+Wed Nov 17 02:04:42 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n///8Y=
+Bytes: 23
+no need for backslashes
+
+461
+Wed Nov 17 02:04:42 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n///8U=
+Bytes: 28
+why the second debug_printf?
+
+476
+Wed Nov 17 02:04:42 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n///8Q=
+Bytes: 6
+braces
+
