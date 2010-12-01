@@ -47,6 +47,7 @@ struct acm_ep_descs {
 };
 
 struct f_acm {
+	struct usb_function		func;
 	struct gserial			port;
 	u8				ctrl_id, data_id;
 	u8				port_num;
@@ -86,7 +87,7 @@ struct f_acm {
 
 static inline struct f_acm *func_to_acm(struct usb_function *f)
 {
-	return container_of(f, struct f_acm, port.func);
+	return container_of(f, struct f_acm, func);
 }
 
 static inline struct f_acm *port_to_acm(struct gserial *p)
@@ -284,7 +285,7 @@ static void acm_complete_set_line_coding(struct usb_ep *ep,
 		struct usb_request *req)
 {
 	struct f_acm	*acm = ep->driver_data;
-	struct usb_composite_dev *cdev = acm->port.func.config->cdev;
+	struct usb_composite_dev *cdev = acm->func.config->cdev;
 
 	if (req->status != 0) {
 		DBG(cdev, "acm ttyGS%d completion, err %d\n",
@@ -491,7 +492,7 @@ static int acm_cdc_notify(struct f_acm *acm, u8 type, u16 value,
 	spin_lock(&acm->lock);
 
 	if (status < 0) {
-		ERROR(acm->port.func.config->cdev,
+		ERROR(acm->func.config->cdev,
 				"acm ttyGS%d can't notify serial state, %d\n",
 				acm->port_num, status);
 		acm->notify_req = req;
@@ -502,7 +503,7 @@ static int acm_cdc_notify(struct f_acm *acm, u8 type, u16 value,
 
 static int acm_notify_serial_state(struct f_acm *acm)
 {
-	struct usb_composite_dev *cdev = acm->port.func.config->cdev;
+	struct usb_composite_dev *cdev = acm->func.config->cdev;
 	int			status;
 
 	spin_lock(&acm->lock);
@@ -769,16 +770,16 @@ int acm_bind_config(struct usb_configuration *c, u8 port_num)
 	acm->port.disconnect = acm_disconnect;
 	acm->port.send_break = acm_send_break;
 
-	acm->port.func.name = "acm";
-	acm->port.func.strings = acm_strings;
+	acm->func.name = "acm";
+	acm->func.strings = acm_strings;
 	/* descriptors are per-instance copies */
-	acm->port.func.bind = acm_bind;
-	acm->port.func.unbind = acm_unbind;
-	acm->port.func.set_alt = acm_set_alt;
-	acm->port.func.setup = acm_setup;
-	acm->port.func.disable = acm_disable;
+	acm->func.bind = acm_bind;
+	acm->func.unbind = acm_unbind;
+	acm->func.set_alt = acm_set_alt;
+	acm->func.setup = acm_setup;
+	acm->func.disable = acm_disable;
 
-	status = usb_add_function(c, &acm->port.func);
+	status = usb_add_function(c, &acm->func);
 	if (status)
 		kfree(acm);
 	return status;
