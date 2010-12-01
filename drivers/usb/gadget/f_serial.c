@@ -33,6 +33,7 @@ struct gser_descs {
 };
 
 struct f_gser {
+	struct usb_function		func;
 	struct gserial			port;
 	u8				data_id;
 	u8				port_num;
@@ -43,7 +44,7 @@ struct f_gser {
 
 static inline struct f_gser *func_to_gser(struct usb_function *f)
 {
-	return container_of(f, struct f_gser, port.func);
+	return container_of(f, struct f_gser, func);
 }
 
 /*-------------------------------------------------------------------------*/
@@ -281,14 +282,14 @@ int __init gser_bind_config(struct usb_configuration *c, u8 port_num)
 
 	gser->port_num = port_num;
 
-	gser->port.func.name = "gser";
-	gser->port.func.strings = gser_strings;
-	gser->port.func.bind = gser_bind;
-	gser->port.func.unbind = gser_unbind;
-	gser->port.func.set_alt = gser_set_alt;
-	gser->port.func.disable = gser_disable;
+	gser->func.name = "gser";
+	gser->func.strings = gser_strings;
+	gser->func.bind = gser_bind;
+	gser->func.unbind = gser_unbind;
+	gser->func.set_alt = gser_set_alt;
+	gser->func.disable = gser_disable;
 
-	status = usb_add_function(c, &gser->port.func);
+	status = usb_add_function(c, &gser->func);
 	if (status)
 		kfree(gser);
 	return status;
