@@ -20,6 +20,7 @@
 #include <linux/usb/android_composite.h>
 
 #include "u_serial.h"
+#include "u_ldisc.h"
 #include "gadget_chips.h"
 
 
@@ -49,6 +50,7 @@ struct acm_ep_descs {
 struct f_acm {
 	struct usb_function		func;
 	struct gserial			port;
+	struct gldisc			*ldisc;
 	u8				ctrl_id, data_id;
 	u8				port_num;
 
@@ -414,6 +416,19 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		usb_ep_enable(acm->notify, acm->notify_desc);
 		acm->notify->driver_data = acm;
 
+	} else if (intf == acm->data_id && acm->ldisc) {
+		if (acm->ldisc->in->driver_data) {
+			DBG(cdev, "reset acm ldisc%d\n", acm->port_num);
+			gldisc_disconnect(acm->ldisc);
+		} else {
+			DBG(cdev, "activate acm ldisc%d\n", acm->port_num);
+		}
+		acm->ldisc->in_desc = ep_choose(cdev->gadget,
+				acm->hs.in, acm->fs.in);
+		acm->ldisc->out_desc = ep_choose(cdev->gadget,
+				acm->hs.out, acm->fs.out);
+		gldisc_connect(acm->ldisc);
+
 	} else if (intf == acm->data_id) {
 		if (acm->port.in->driver_data) {
 			DBG(cdev, "reset acm ttyGS%d\n", acm->port_num);
@@ -438,8 +453,12 @@ static void acm_disable(struct usb_function *f)
 	struct f_acm	*acm = func_to_acm(f);
 	struct usb_composite_dev *cdev = f->config->cdev;
 
-	DBG(cdev, "acm ttyGS%d deactivated\n", acm->port_num);
-	gserial_disconnect(&acm->port);
+	DBG(cdev, "acm %s%d deactivated\n", acm->ldisc ? "ldisc" : "ttyGS",
+					    acm->port_num);
+	if (acm->ldisc)
+		gldisc_disconnect(acm->ldisc);
+	else
+		gserial_disconnect(&acm->port);
 	usb_ep_disable(acm->notify);
 	acm->notify->driver_data = NULL;
 }
@@ -493,7 +512,8 @@ static int acm_cdc_notify(struct f_acm *acm, u8 type, u16 value,
 
 	if (status < 0) {
 		ERROR(acm->func.config->cdev,
-				"acm ttyGS%d can't notify serial state, %d\n",
+				"acm %s%d can't notify serial state, %d\n",
+				acm->ldisc ? "ldisc" : "ttyGS",
 				acm->port_num, status);
 		acm->notify_req = req;
 	}
@@ -508,7 +528,8 @@ static int acm_notify_serial_state(struct f_acm *acm)
 
 	spin_lock(&acm->lock);
 	if (acm->notify_req) {
-		DBG(cdev, "acm ttyGS%d serial state %04x\n",
+		DBG(cdev, "acm %s%d serial state %04x\n",
+				acm->ldisc ? "ldisc" : "ttyGS",
 				acm->port_num, acm->serial_state);
 		status = acm_cdc_notify(acm, USB_CDC_NOTIFY_SERIAL_STATE,
 				0, &acm->serial_state, sizeof(acm->serial_state));
@@ -570,6 +591,22 @@ static int acm_send_break(struct gserial *port, int duration)
 	return acm_notify_serial_state(acm);
 }
 
+static void acm_ldisc_connect(struct gldisc *gld)
+{
+	struct f_acm *acm = gld->f_data;
+
+	acm->serial_state |= ACM_CTRL_DSR | ACM_CTRL_DCD;
+	acm_notify_serial_state(acm);
+}
+
+static void acm_ldisc_disconnect(struct gldisc *gld)
+{
+	struct f_acm *acm = gld->f_data;
+
+	acm->serial_state &= ~(ACM_CTRL_DSR | ACM_CTRL_DCD);
+	acm_notify_serial_state(acm);
+}
+
 /*-------------------------------------------------------------------------*/
 
 /* ACM function driver setup/binding */
@@ -606,13 +643,19 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 	ep = usb_ep_autoconfig(cdev->gadget, &acm_fs_in_desc);
 	if (!ep)
 		goto fail;
-	acm->port.in = ep;
+	if (acm->ldisc)
+		acm->ldisc->in = ep;
+	else
+		acm->port.in = ep;
 	ep->driver_data = cdev;	/* claim */
 
 	ep = usb_ep_autoconfig(cdev->gadget, &acm_fs_out_desc);
 	if (!ep)
 		goto fail;
-	acm->port.out = ep;
+	if (acm->ldisc)
+		acm->ldisc->out = ep;
+	else
+		acm->port.out = ep;
 	ep->driver_data = cdev;	/* claim */
 
 	ep = usb_ep_autoconfig(cdev->gadget, &acm_fs_notify_desc);
@@ -666,10 +709,13 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 				f->hs_descriptors, &acm_hs_notify_desc);
 	}
 
-	DBG(cdev, "acm ttyGS%d: %s speed IN/%s OUT/%s NOTIFY/%s\n",
-			acm->port_num,
+	DBG(cdev, "acm %s%d: %s speed IN/%s OUT/%s NOTIFY/%s\n",
+			acm->ldisc ? "ldisc" : "ttyGS", acm->port_num,
 			gadget_is_dualspeed(c->cdev->gadget) ? "dual" : "full",
-			acm->port.in->name, acm->port.out->name,
+			acm->ldisc ? acm->ldisc->in->name :
+				     acm->port.in->name,
+			acm->ldisc ? acm->ldisc->out->name :
+				     acm->port.out->name,
 			acm->notify->name);
 	return 0;
 
@@ -682,8 +728,12 @@ fail:
 		acm->notify->driver_data = NULL;
 	if (acm->port.out)
 		acm->port.out->driver_data = NULL;
+	if (acm->ldisc && acm->ldisc->out)
+		acm->ldisc->out->driver_data = NULL;
 	if (acm->port.in)
 		acm->port.in->driver_data = NULL;
+	if (acm->ldisc && acm->ldisc->in)
+		acm->ldisc->in->driver_data = NULL;
 
 	ERROR(cdev, "%s/%p: can't bind, err %d\n", f->name, f, status);
 
@@ -709,31 +759,15 @@ static inline bool can_support_cdc(struct usb_configuration *c)
 	return true;
 }
 
-/**
- * acm_bind_config - add a CDC ACM function to a configuration
- * @c: the configuration to support the CDC ACM instance
- * @port_num: /dev/ttyGS* port this interface will use
- * Context: single threaded during gadget setup
- *
- * Returns zero on success, else negative errno.
- *
- * Caller must have called @gserial_setup() with enough ports to
- * handle all the ones it binds.  Caller is also responsible
- * for calling @gserial_cleanup() before module unload.
- */
-int acm_bind_config(struct usb_configuration *c, u8 port_num)
+/* Allocate device-global string IDs, and patch descriptors */
+static int acm_allocate_string_ids(struct usb_configuration *c)
 {
-	struct f_acm	*acm;
-	int		status;
-
-	if (!can_support_cdc(c))
-		return -EINVAL;
+	int status;
 
 	/* REVISIT might want instance-specific strings to help
 	 * distinguish instances ...
 	 */
 
-	/* maybe allocate device-global string IDs, and patch descriptors */
 	if (acm_string_defs[ACM_CTRL_IDX].id == 0) {
 		status = usb_string_id(c->cdev);
 		if (status < 0)
@@ -756,6 +790,33 @@ int acm_bind_config(struct usb_configuration *c, u8 port_num)
 
 		acm_iad_descriptor.iFunction = status;
 	}
+
+	return 0;
+}
+
+/**
+ * acm_bind_config - add a CDC ACM function to a configuration
+ * @c: the configuration to support the CDC ACM instance
+ * @port_num: /dev/ttyGS* port this interface will use
+ * Context: single threaded during gadget setup
+ *
+ * Returns zero on success, else negative errno.
+ *
+ * Caller must have called @gserial_setup() with enough ports to
+ * handle all the ones it binds.  Caller is also responsible
+ * for calling @gserial_cleanup() before module unload.
+ */
+int acm_bind_config(struct usb_configuration *c, u8 port_num)
+{
+	struct f_acm	*acm;
+	int		status;
+
+	if (!can_support_cdc(c))
+		return -EINVAL;
+
+	status = acm_allocate_string_ids(c);
+	if (status)
+		return status;
 
 	/* allocate and initialize one new instance */
 	acm = kzalloc(sizeof *acm, GFP_KERNEL);
@@ -785,6 +846,51 @@ int acm_bind_config(struct usb_configuration *c, u8 port_num)
 	return status;
 }
 
+int acm_ldisc_bind_config(struct usb_configuration *c, u8 port_num)
+{
+	struct f_acm *acm;
+	int status;
+
+	if (!can_support_cdc(c))
+		return -EINVAL;
+
+	status = acm_allocate_string_ids(c);
+	if (status)
+		return status;
+
+	/* allocate and initialize one new instance */
+	acm = kzalloc(sizeof *acm, GFP_KERNEL);
+	if (!acm)
+		return -ENOMEM;
+
+	spin_lock_init(&acm->lock);
+	acm->port_num = port_num;
+
+	acm->ldisc = gldisc_get(port_num);
+	if (!acm->ldisc) {
+		status = -EINVAL;
+		goto failed;
+	}
+
+	acm->ldisc->f_data = acm;
+	acm->ldisc->connect = acm_ldisc_connect;
+	acm->ldisc->disconnect = acm_ldisc_disconnect;
+
+	acm->func.name = "acm";
+	acm->func.strings = acm_strings;
+	acm->func.bind = acm_bind;
+	acm->func.unbind = acm_unbind;
+	acm->func.set_alt = acm_set_alt;
+	acm->func.setup = acm_setup;
+	acm->func.disable = acm_disable;
+
+	status = usb_add_function(c, &acm->func);
+failed:
+	if (status)
+		kfree(acm);
+	return status;
+}
+
 #ifdef CONFIG_USB_ANDROID_ACM
 
 int acm_function_bind_config(struct usb_configuration *c)
@@ -800,10 +906,22 @@ static struct android_usb_function acm_function = {
 	.bind_config = acm_function_bind_config,
 };
 
+int acm_ldisc_function_bind_config(struct usb_configuration *c)
+{
+	gldisc_register();
+	return acm_ldisc_bind_config(c, 0);
+}
+
+static struct android_usb_function acm_ldisc_function = {
+	.name = "acm_ldisc",
+	.bind_config = acm_ldisc_function_bind_config,
+};
+
 static int __init init(void)
 {
 	printk(KERN_INFO "f_acm init\n");
 	android_register_function(&acm_function);
+	android_register_function(&acm_ldisc_function);
 	return 0;
 }
 module_init(init);
