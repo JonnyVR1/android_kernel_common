@@ -45,6 +45,7 @@ struct obex_ep_descs {
 };
 
 struct f_obex {
+	struct usb_function		func;
 	struct gserial			port;
 	u8				ctrl_id;
 	u8				data_id;
@@ -57,7 +58,7 @@ struct f_obex {
 
 static inline struct f_obex *func_to_obex(struct usb_function *f)
 {
-	return container_of(f, struct f_obex, port.func);
+	return container_of(f, struct f_obex, func);
 }
 
 static inline struct f_obex *port_to_obex(struct gserial *p)
@@ -273,13 +274,13 @@ static void obex_disable(struct usb_function *f)
 static void obex_connect(struct gserial *g)
 {
 	struct f_obex		*obex = port_to_obex(g);
-	struct usb_composite_dev *cdev = g->func.config->cdev;
+	struct usb_composite_dev *cdev = obex->func.config->cdev;
 	int			status;
 
 	if (!obex->can_activate)
 		return;
 
-	status = usb_function_activate(&g->func);
+	status = usb_function_activate(&obex->func);
 	if (status)
 		DBG(cdev, "obex ttyGS%d function activate --> %d\n",
 			obex->port_num, status);
@@ -288,13 +289,13 @@ static void obex_connect(struct gserial *g)
 static void obex_disconnect(struct gserial *g)
 {
 	struct f_obex		*obex = port_to_obex(g);
-	struct usb_composite_dev *cdev = g->func.config->cdev;
+	struct usb_composite_dev *cdev = obex->func.config->cdev;
 	int			status;
 
 	if (!obex->can_activate)
 		return;
 
-	status = usb_function_deactivate(&g->func);
+	status = usb_function_deactivate(&obex->func);
 	if (status)
 		DBG(cdev, "obex ttyGS%d function deactivate --> %d\n",
 			obex->port_num, status);
@@ -473,16 +474,16 @@ int __init obex_bind_config(struct usb_configuration *c, u8 port_num)
 	obex->port.connect = obex_connect;
 	obex->port.disconnect = obex_disconnect;
 
-	obex->port.func.name = "obex";
-	obex->port.func.strings = obex_strings;
+	obex->func.name = "obex";
+	obex->func.strings = obex_strings;
 	/* descriptors are per-instance copies */
-	obex->port.func.bind = obex_bind;
-	obex->port.func.unbind = obex_unbind;
-	obex->port.func.set_alt = obex_set_alt;
-	obex->port.func.get_alt = obex_get_alt;
-	obex->port.func.disable = obex_disable;
+	obex->func.bind = obex_bind;
+	obex->func.unbind = obex_unbind;
+	obex->func.set_alt = obex_set_alt;
+	obex->func.get_alt = obex_get_alt;
+	obex->func.disable = obex_disable;
 
-	status = usb_add_function(c, &obex->port.func);
+	status = usb_add_function(c, &obex->func);
 	if (status)
 		kfree(obex);
 
