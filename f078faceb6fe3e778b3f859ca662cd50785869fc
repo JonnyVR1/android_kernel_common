@@ -1,0 +1,64 @@
+Revision: f078faceb6fe3e778b3f859ca662cd50785869fc
+Patch-set: 2
+File: drivers/usb/gadget/f_acm.c
+
+866
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//988=
+Bytes: 12
+sizeof(*acm)
+
+885
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//97c=
+Bytes: 270
+this seems very racy. The line discipline could be opened and closed between these, and will get into a funny state with the connected flag being all weird, etc. I think you may need to do something like gldisc_get(port_num, acm, acm_ldisc_connect, acm_ldisc_disconnect)
+
+File: drivers/usb/gadget/u_ldisc.c
+
+154
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//97w=
+Bytes: 16
+list_first_entry
+
+172
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//970=
+Bytes: 16
+list_first_entry
+
+263
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//97o=
+Bytes: 87
+why do you call disconnect if the ld is not opened. When would you have called connect?
+
+324
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//97k=
+Bytes: 131
+how do you prevent this ->connect from being called twice? once in here and another time in gldisc_connect? Am I missing something?
+
+340
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//97g=
+Bytes: 131
+if connected but !gld->disconnect, how would the connected flag get cleared? Do you require both connect and disconnect call backs?
+
+File: include/linux/tty.h
+
+53
+Thu Dec 02 01:31:13 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//99U=
+Bytes: 22
+I'd call this N_USBACM
+
