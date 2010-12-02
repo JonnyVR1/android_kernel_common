@@ -16,6 +16,14 @@ UUID: AAAA9n//97c=
 Bytes: 270
 this seems very racy. The line discipline could be opened and closed between these, and will get into a funny state with the connected flag being all weird, etc. I think you may need to do something like gldisc_get(port_num, acm, acm_ldisc_connect, acm_ldisc_disconnect)
 
+885
+Thu Dec 02 02:22:11 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//97c=
+UUID: AAAA9n//960=
+Bytes: 162
+These callbacks are only called when we are connected and the connected flag is set when gadget call set_alt, so it can only happen after bind_config has returned
+
 File: drivers/usb/gadget/u_ldisc.c
 
 154
@@ -39,6 +47,13 @@ UUID: AAAA9n//97o=
 Bytes: 87
 why do you call disconnect if the ld is not opened. When would you have called connect?
 
+263
+Thu Dec 02 02:22:11 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//96o=
+Bytes: 156
+This calls acm_connect that just notify to the host of the line state. The name is badly chosen in f_acm, they should have a set_line_state callback instead
+
 324
 Thu Dec 02 01:31:13 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +61,28 @@ UUID: AAAA9n//97k=
 Bytes: 131
 how do you prevent this ->connect from being called twice? once in here and another time in gldisc_connect? Am I missing something?
 
+324
+Thu Dec 02 02:22:11 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//97k=
+UUID: AAAA9n//96Y=
+Bytes: 157
+This can't be called twice, we won't call start_io twice. But I should do if(gld->tty) in gldisc_connect instead of if(gld->opened) to avoid a possible race.
+
 340
 Thu Dec 02 01:31:13 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA9n//97g=
 Bytes: 131
 if connected but !gld->disconnect, how would the connected flag get cleared? Do you require both connect and disconnect call backs?
+
+340
+Thu Dec 02 02:22:11 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//97g=
+UUID: AAAA9n//96U=
+Bytes: 68
+this doesn't clear the connected flag, just notify of the line state
 
 File: include/linux/tty.h
 
