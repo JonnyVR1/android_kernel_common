@@ -24,6 +24,14 @@ UUID: AAAA9n//960=
 Bytes: 162
 These callbacks are only called when we are connected and the connected flag is set when gadget call set_alt, so it can only happen after bind_config has returned
 
+885
+Thu Dec 02 02:28:54 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//960=
+UUID: AAAA9n//95o=
+Bytes: 137
+but the line discpline's open/close can be called in parallel to this. So, can't the ldisc code see a connect set but disconnect not set?
+
 File: drivers/usb/gadget/u_ldisc.c
 
 154
@@ -83,6 +91,14 @@ Parent: AAAA9n//97g=
 UUID: AAAA9n//96U=
 Bytes: 68
 this doesn't clear the connected flag, just notify of the line state
+
+340
+Thu Dec 02 02:28:54 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//96U=
+UUID: AAAA9n//95s=
+Bytes: 109
+well, the disconnect callback will end up calling gldisc_disconnect, which will clear the connected flag, no?
 
 File: include/linux/tty.h
 
