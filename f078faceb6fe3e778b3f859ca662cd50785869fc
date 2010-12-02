@@ -40,6 +40,14 @@ UUID: AAAA9n//95c=
 Bytes: 57
 yes but it uses these callback only once we are connected
 
+885
+Thu Dec 02 03:03:10 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//95c=
+UUID: AAAA9n//95I=
+Bytes: 25
+you are right, I see now.
+
 File: drivers/usb/gadget/u_ldisc.c
 
 154
@@ -115,6 +123,14 @@ Parent: AAAA9n//95s=
 UUID: AAAA9n//95g=
 Bytes: 54
 no this just changes the DSR / DCD flags in line_state
+
+340
+Thu Dec 02 03:03:10 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//95g=
+UUID: AAAA9n//95Q=
+Bytes: 61
+doh, sorry. my bad, i'm blind. The names are a bit confusing.
 
 File: include/linux/tty.h
 
