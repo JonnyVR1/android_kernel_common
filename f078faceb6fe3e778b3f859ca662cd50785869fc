@@ -32,6 +32,14 @@ UUID: AAAA9n//95o=
 Bytes: 137
 but the line discpline's open/close can be called in parallel to this. So, can't the ldisc code see a connect set but disconnect not set?
 
+885
+Thu Dec 02 02:37:19 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//95o=
+UUID: AAAA9n//95c=
+Bytes: 57
+yes but it uses these callback only once we are connected
+
 File: drivers/usb/gadget/u_ldisc.c
 
 154
@@ -99,6 +107,14 @@ Parent: AAAA9n//96U=
 UUID: AAAA9n//95s=
 Bytes: 109
 well, the disconnect callback will end up calling gldisc_disconnect, which will clear the connected flag, no?
+
+340
+Thu Dec 02 02:37:19 2010 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA9n//95s=
+UUID: AAAA9n//95g=
+Bytes: 54
+no this just changes the DSR / DCD flags in line_state
 
 File: include/linux/tty.h
 
