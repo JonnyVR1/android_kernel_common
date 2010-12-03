@@ -1531,14 +1531,13 @@ wl_control_wl_start(struct net_device *dev)
 #endif
 
 		ret = dhd_dev_reset(dev, 0);
-
+		if (ret == BCME_OK) {
 #if defined(BCMLXSDMMC)
-		sdioh_start(NULL, 1);
+			sdioh_start(NULL, 1);
 #endif
-
-		dhd_dev_init_ioctl(dev);
-
-		g_onoff = G_WLAN_SET_ON;
+			dhd_dev_init_ioctl(dev);
+			g_onoff = G_WLAN_SET_ON;
+		}
 	}
 	WL_TRACE(("Exited %s \n", __FUNCTION__));
 
