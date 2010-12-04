@@ -48,6 +48,15 @@ UUID: AAAA9n//95I=
 Bytes: 25
 you are right, I see now.
 
+925
+Sat Dec 04 01:57:47 2010 +0000
+Author: John Michelau <1005146@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA9n//9m8=
+Bytes: 713
+This is going to cause a problem with my patch you just merged into android.c for product id matching (https://review.source.android.com/#change,19321).  That patch changed the product_has_function() so that only the root of a name is searched when matching names between usb_function.name and android_usb_product.functions.  Now that there's is a new function you're introducing which has a substring that matches another function, you can get into trouble.
+
+I was actually going to propose an update to the android.c patch to check for a numeral after recognizing the root of two names match.  That should prevent any issues as long as nobody comes along and names a function as "acm12345" or something similar.
+
 File: drivers/usb/gadget/u_ldisc.c
 
 154
