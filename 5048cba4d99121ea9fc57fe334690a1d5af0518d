@@ -1,0 +1,27 @@
+Revision: 5048cba4d99121ea9fc57fe334690a1d5af0518d
+Patch-set: 2
+File: drivers/usb/gadget/composite.c
+
+886
+Mon Dec 13 20:35:28 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+X///8A=
+Bytes: 93
+does this need to be the irqsave version? can composite_disconnect be called from at softirq?
+
+1211
+Mon Dec 13 20:35:28 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+X///78=
+Bytes: 35
+you need to hold your spinlock here
+
+File: include/linux/usb/composite.h
+
+363
+Mon Dec 13 20:35:28 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+X///70=
+Bytes: 71
+inconsistent spacing. add some tabse before sw_connected and sw_config.
+
