@@ -9,6 +9,14 @@ UUID: AAAA+X///8A=
 Bytes: 93
 does this need to be the irqsave version? can composite_disconnect be called from at softirq?
 
+886
+Mon Dec 13 20:53:12 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+X///8A=
+UUID: AAAA+X///7g=
+Bytes: 184
+Yes, composite_setup is called from irq, so this should be using the irqsave/irqrestore versions of spin_lock.  I will also fix the spinlock in the USB_REQ_SET_CONFIGURATION case below
+
 1211
 Mon Dec 13 20:35:28 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
