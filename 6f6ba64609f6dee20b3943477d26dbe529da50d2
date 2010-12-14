@@ -16,10 +16,26 @@ UUID: AAAA+n///+w=
 Bytes: 74
 this has to be the irqsave version, since this data is accessed in an irq.
 
+1213
+Tue Dec 14 17:27:44 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+n///+w=
+UUID: AAAA+n///58=
+Bytes: 12
+Oops, right.
+
 1217
 Tue Dec 14 08:25:12 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA+n///+k=
 Bytes: 35
 i guess switch_set_state can sleep?
+
+1217
+Tue Dec 14 17:27:44 2010 +0000
+Author: Mike Lockwood <1000830@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+n///+k=
+UUID: AAAA+n///6A=
+Bytes: 73
+Yes, which is why we had to move this to a work queue in the first place.
 
