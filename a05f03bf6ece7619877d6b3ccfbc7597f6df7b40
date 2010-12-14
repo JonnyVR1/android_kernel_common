@@ -1,0 +1,11 @@
+Revision: a05f03bf6ece7619877d6b3ccfbc7597f6df7b40
+Patch-set: 4
+File: drivers/usb/gadget/composite.c
+
+1214
+Tue Dec 14 23:30:05 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+n///2w=
+Bytes: 271
+come to think of it, you may not actually need the lock here, since you'll drop the lock anyway prior to calling set_state. you could just add a write barrier whenever you set cdev->connected prior to scheduling work. It's up to you. The code you have now will work fine.
+
