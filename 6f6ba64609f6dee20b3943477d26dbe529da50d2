@@ -1,0 +1,25 @@
+Revision: 6f6ba64609f6dee20b3943477d26dbe529da50d2
+Patch-set: 3
+File: drivers/usb/gadget/composite.c
+
+969
+Tue Dec 14 08:25:12 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+n///+o=
+Bytes: 28
+this change is not necessary
+
+1213
+Tue Dec 14 08:25:12 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+n///+w=
+Bytes: 74
+this has to be the irqsave version, since this data is accessed in an irq.
+
+1217
+Tue Dec 14 08:25:12 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+n///+k=
+Bytes: 35
+i guess switch_set_state can sleep?
+
