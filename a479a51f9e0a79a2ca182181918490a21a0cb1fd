@@ -1,0 +1,11 @@
+Revision: a479a51f9e0a79a2ca182181918490a21a0cb1fd
+Patch-set: 3
+File: drivers/usb/gadget/f_acm.c
+
+963
+Tue Dec 14 00:24:48 2010 +0000
+Author: John Michelau <1005146@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+X///4o=
+Bytes: 102
+Can this be made dynamic just like acm_function_bind_config(), so that it supports multiple instances?
+
