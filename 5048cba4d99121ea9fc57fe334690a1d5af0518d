@@ -17,6 +17,14 @@ UUID: AAAA+X///7g=
 Bytes: 184
 Yes, composite_setup is called from irq, so this should be using the irqsave/irqrestore versions of spin_lock.  I will also fix the spinlock in the USB_REQ_SET_CONFIGURATION case below
 
+886
+Tue Dec 14 08:24:35 2010 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+X///7g=
+UUID: AAAA+n///+s=
+Bytes: 292
+well, if composite_setup is only ever called from irq context and can only be called from the usb irq (i.e. you can't be in this function more than once), making this be the irq save/restore versions technically won't make a difference, so the conversion under the USB_xxx is a not necessary.
+
 1211
 Mon Dec 13 20:35:28 2010 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
