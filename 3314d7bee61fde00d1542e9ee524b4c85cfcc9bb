@@ -1,0 +1,11 @@
+Revision: 3314d7bee61fde00d1542e9ee524b4c85cfcc9bb
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+598
+Fri Dec 24 09:50:02 2010 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3///RE=
+Bytes: 96
+I think you need a smp_wmb here to make sure governor_enabled=0 is visible to the timer function
+
