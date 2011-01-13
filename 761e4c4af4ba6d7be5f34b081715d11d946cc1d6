@@ -1,0 +1,18 @@
+Revision: 761e4c4af4ba6d7be5f34b081715d11d946cc1d6
+Patch-set: 1
+File: drivers/misc/uid_stat.c
+
+125
+Thu Jan 13 00:25:07 2011 +0000
+Author: Robert Greenwalt <1002609@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//85o=
+Bytes: 170
+All of this is boiler plate except for one line reading the particular field.  Could you make a subroutine that takes a field number as a param and shrink this by 80-90%?
+
+286
+Thu Jan 13 00:25:07 2011 +0000
+Author: Robert Greenwalt <1002609@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//85c=
+Bytes: 208
+Do you ever call find_uid_stat and not want to create one if not found?  Could that be moved inside the find call?  Or create a find_or_create function that does both if you really need a lookup-only version.
+
