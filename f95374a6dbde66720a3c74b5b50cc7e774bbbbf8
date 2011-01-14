@@ -1,0 +1,11 @@
+Revision: f95374a6dbde66720a3c74b5b50cc7e774bbbbf8
+Patch-set: 1
+File: drivers/misc/uid_stat.c
+
+65
+Fri Jan 14 18:21:21 2011 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//8iM=
+Bytes: 12
+Obsolete tab
+
