@@ -42,9 +42,23 @@ enum {
 	FB_SET_BLANK        = 0x18,
 	FB_GET_PHYS_WIDTH   = 0x1c,
 	FB_GET_PHYS_HEIGHT  = 0x20,
+	FB_GET_FORMAT       = 0x24,
 
 	FB_INT_VSYNC             = 1U << 0,
 	FB_INT_BASE_UPDATE_DONE  = 1U << 1
+};
+
+/* These values *must* match the platform definitions found under
+ * hardware/libhardware/include/hardware/hardware.h
+ */
+enum {
+    HAL_PIXEL_FORMAT_RGBA_8888          = 1,
+    HAL_PIXEL_FORMAT_RGBX_8888          = 2,
+    HAL_PIXEL_FORMAT_RGB_888            = 3,
+    HAL_PIXEL_FORMAT_RGB_565            = 4,
+    HAL_PIXEL_FORMAT_BGRA_8888          = 5,
+    HAL_PIXEL_FORMAT_RGBA_5551          = 6,
+    HAL_PIXEL_FORMAT_RGBA_4444          = 7,
 };
 
 struct goldfish_fb {
@@ -135,7 +149,8 @@ static int goldfish_fb_set_par(struct fb_info *info)
 {
 	struct goldfish_fb *fb = container_of(info, struct goldfish_fb, fb);
 	if(fb->rotation != fb->fb.var.rotate) {
-		info->fix.line_length = info->var.xres * 2;
+		int bpp = (info->var.bits_per_pixel+7) >> 3;
+		info->fix.line_length = info->var.xres * bpp;
 		fb->rotation = fb->fb.var.rotate;
 		writel(fb->rotation, fb->reg_base + FB_SET_ROTATION);
 	}
@@ -147,11 +162,13 @@ static int goldfish_fb_pan_display(struct fb_var_screeninfo *var, struct fb_info
 {
 	unsigned long irq_flags;
 	int base_update_count;
+	int bpp;
 	struct goldfish_fb *fb = container_of(info, struct goldfish_fb, fb);
 
 	spin_lock_irqsave(&fb->lock, irq_flags);
 	base_update_count = fb->base_update_count;
-	writel(fb->fb.fix.smem_start + fb->fb.var.xres * 2 * var->yoffset, fb->reg_base + FB_SET_BASE);
+	bpp = (fb->fb.var.bits_per_pixel+7) >> 3;
+	writel(fb->fb.fix.smem_start + fb->fb.var.xres * bpp * var->yoffset, fb->reg_base + FB_SET_BASE);
 	spin_unlock_irqrestore(&fb->lock, irq_flags);
 	wait_event_timeout(fb->wait, fb->base_update_count != base_update_count, HZ / 15);
 	if(fb->base_update_count == base_update_count)
@@ -191,7 +208,7 @@ static int goldfish_fb_probe(struct platform_device *pdev)
 	struct resource *r;
 	struct goldfish_fb *fb;
 	size_t framesize;
-	uint32_t width, height;
+	uint32_t width, height, format;
 	dma_addr_t fbpaddr;
 
 	fb = kzalloc(sizeof(*fb), GFP_KERNEL);
@@ -218,6 +235,7 @@ static int goldfish_fb_probe(struct platform_device *pdev)
 
 	width = readl(fb->reg_base + FB_GET_WIDTH);
 	height = readl(fb->reg_base + FB_GET_HEIGHT);
+        format = readl(fb->reg_base + FB_GET_FORMAT);
 
 	fb->fb.fbops		= &goldfish_fb_ops;
 	fb->fb.flags		= FBINFO_FLAG_DEFAULT;
@@ -225,7 +243,6 @@ static int goldfish_fb_probe(struct platform_device *pdev)
 	//strncpy(fb->fb.fix.id, clcd_name, sizeof(fb->fb.fix.id));
 	fb->fb.fix.type		= FB_TYPE_PACKED_PIXELS;
 	fb->fb.fix.visual = FB_VISUAL_TRUECOLOR;
-	fb->fb.fix.line_length = width * 2;
 	fb->fb.fix.accel	= FB_ACCEL_NONE;
 	fb->fb.fix.ypanstep = 1;
 
@@ -233,22 +250,33 @@ static int goldfish_fb_probe(struct platform_device *pdev)
 	fb->fb.var.yres		= height;
 	fb->fb.var.xres_virtual	= width;
 	fb->fb.var.yres_virtual	= height * 2;
-	fb->fb.var.bits_per_pixel = 16;
 	fb->fb.var.activate	= FB_ACTIVATE_NOW;
 	fb->fb.var.height	= readl(fb->reg_base + FB_GET_PHYS_HEIGHT);
 	fb->fb.var.width	= readl(fb->reg_base + FB_GET_PHYS_WIDTH);
 
-	fb->fb.var.red.offset = 11;
-	fb->fb.var.red.length = 5;
-	fb->fb.var.green.offset = 5;
-	fb->fb.var.green.length = 6;
-	fb->fb.var.blue.offset = 0;
-	fb->fb.var.blue.length = 5;
-
-	framesize = width * height * 2 * 2;
+        if (format != HAL_PIXEL_FORMAT_RGB_565) {
+            fb->fb.var.bits_per_pixel = 32;
+            fb->fb.var.red.offset = 0;
+            fb->fb.var.red.length = 8;
+            fb->fb.var.green.offset = 8;
+            fb->fb.var.green.length = 8;
+            fb->fb.var.blue.offset = 16;
+            fb->fb.var.blue.length = 8;
+            fb->fb.fix.line_length = width * 4;
+        } else {
+            fb->fb.var.bits_per_pixel = 16;
+            fb->fb.var.red.offset = 11;
+            fb->fb.var.red.length = 5;
+            fb->fb.var.green.offset = 5;
+            fb->fb.var.green.length = 6;
+            fb->fb.var.blue.offset = 0;
+            fb->fb.var.blue.length = 5;
+            fb->fb.fix.line_length = width * 2;
+        }
+        framesize = fb->fb.fix.line_length * height * 2;
 	fb->fb.screen_base = dma_alloc_writecombine(&pdev->dev, framesize,
 	                                            &fbpaddr, GFP_KERNEL);
-	printk("allocating frame buffer %d * %d, got %p\n", width, height, fb->fb.screen_base);
+	printk("allocating frame buffer %d * %d * %d, got %p\n", width, height, fb->fb.var.bits_per_pixel, fb->fb.screen_base);
 	if(fb->fb.screen_base == 0) {
 		ret = -ENOMEM;
 		goto err_alloc_screen_base_failed;
@@ -297,8 +325,9 @@ static int goldfish_fb_remove(struct platform_device *pdev)
 {
 	size_t framesize;
 	struct goldfish_fb *fb = platform_get_drvdata(pdev);
-	
-	framesize = fb->fb.var.xres_virtual * fb->fb.var.yres_virtual * 2;
+
+	framesize = fb->fb.var.xres * (fb->fb.var.bits_per_pixel >> 3) *
+		    fb->fb.var.yres_virtual * 2;
 
 #ifdef CONFIG_ANDROID_POWER
         android_unregister_early_suspend(&fb->early_suspend);
