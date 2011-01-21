@@ -9,3 +9,10 @@ UUID: AAAA+3//8iM=
 Bytes: 12
 Obsolete tab
 
+199
+Fri Jan 21 22:25:36 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//70k=
+Bytes: 108
+why don't you just set the data pointer to the entry you want to read and avoid all these wrapper functions?
+
