@@ -1,0 +1,18 @@
+Revision: 1bc4cb6cdbe30c83f04a31790ca9d9fc2f638920
+Patch-set: 4
+File: net/ipv4/udp.c
+
+1128
+Fri Jan 28 00:51:14 2011 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//7Tg=
+Bytes: 64
+I would initialize err to 0, because later you can jump to "out"
+
+1145
+Fri Jan 28 00:51:14 2011 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//7Tc=
+Bytes: 61
+Here err can be not initialized or initialized to -error code
+
