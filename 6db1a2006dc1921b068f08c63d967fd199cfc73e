@@ -1,0 +1,11 @@
+Revision: 6db1a2006dc1921b068f08c63d967fd199cfc73e
+Patch-set: 5
+File: net/ipv4/udp.c
+
+1128
+Sat Jan 29 04:32:40 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//7JQ=
+Bytes: 62
+Don't change this. It it mainline code and was correct before.
+
