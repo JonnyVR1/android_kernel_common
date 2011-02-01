@@ -332,6 +332,8 @@ requeue_req:
 		xfer = (req->actual < count) ? req->actual : count;
 		if (copy_to_user(buf, req->buf, xfer))
 			r = -EFAULT;
+		else
+			r = xfer;
 	} else
 		r = -EIO;
 
