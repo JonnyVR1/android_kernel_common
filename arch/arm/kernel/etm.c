@@ -235,6 +235,7 @@ static void etm_dump(void)
 	printk(KERN_INFO "\n--- ETB buffer end ---\n");
 
 	/* deassert the overflow bit */
+	etb_writel(t, 0, ETBR_WRITEADDR);
 	etb_writel(t, 1, ETBR_CTRL);
 	etb_writel(t, 0, ETBR_CTRL);
 
@@ -300,6 +301,7 @@ static ssize_t etb_read(struct file *file, char __user *data,
 		buf[i] = etb_readl(t, ETBR_READMEM);
 
 	/* the only way to deassert overflow bit in ETB status is this */
+	etb_writel(t, 0, ETBR_WRITEADDR);
 	etb_writel(t, 1, ETBR_CTRL);
 	etb_writel(t, 0, ETBR_CTRL);
 
