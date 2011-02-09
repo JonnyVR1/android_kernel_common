@@ -1,0 +1,11 @@
+Revision: 36c883ee27290b29da82f6da7a15b471a17cb3db
+Patch-set: 1
+File: include/linux/usb/android_composite.h
+
+31
+Wed Feb 09 17:55:17 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//5Zk=
+Bytes: 8
+iz -> is
+
