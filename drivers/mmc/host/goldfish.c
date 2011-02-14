@@ -5,7 +5,7 @@
  *
  *  based on omap.c driver, which was
  *  Copyright (C) 2004 Nokia Corporation
- *  Written by Tuukka Tikkanen and Juha Yrjölä<juha.yrjola@nokia.com>
+ *  Written by Tuukka Tikkanen and Juha Yrj?l?<juha.yrjola@nokia.com>
  *  Misc hacks here and there by Tony Lindgren <tony@atomide.com>
  *  Other hacks (DMA, SD, etc) by David Brownell
  *
@@ -47,7 +47,9 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/scatterlist.h>
+#ifdef CONFIG_ARM
 #include <asm/mach-types.h>
+#endif
 
 
 #include <asm/types.h>
@@ -132,7 +134,11 @@ struct goldfish_mmc_host {
 	unsigned		dma_done:1;
 	unsigned		dma_in_use:1;
 
-	uint32_t		reg_base;
+#ifdef CONFIG_ARM
+	uint32_t			reg_base;
+#elif	CONFIG_X86
+	void __iomem *reg_base;
+#endif
 };
 
 static inline int
@@ -385,8 +391,13 @@ goldfish_mmc_prepare_data(struct goldfish_mmc_host *host, struct mmc_request *re
 	else
 		dma_data_dir = DMA_FROM_DEVICE;
 
+#ifdef CONFIG_ARM
 	host->sg_len = dma_map_sg(mmc_dev(host->mmc), data->sg,
 				sg_len, dma_data_dir);
+#elif CONFIG_X86
+	host->sg_len = dma_map_sg(NULL, data->sg,
+				sg_len, dma_data_dir);
+#endif
 	host->dma_done = 0;
 	host->dma_in_use = 1;
 	
@@ -459,9 +470,15 @@ static int __init goldfish_mmc_probe(struct platform_device *pdev)
 
 	host = mmc_priv(mmc);
 	host->mmc = mmc;	
+#ifdef CONFIG_ARM
 	host->reg_base = IO_ADDRESS(res->start - IO_START);
 	host->virt_base = dma_alloc_writecombine(&pdev->dev, BUFFER_SIZE,
 						 &buf_addr, GFP_KERNEL);
+#elif	CONFIG_X86
+	host->reg_base = ioremap(res->start, res->end - res->start + 1);
+    printk("mmc start %x end %x\n", (u32)res->start, (u32)res->end);
+    host->virt_base = dma_alloc_coherent(NULL, BUFFER_SIZE, &buf_addr, GFP_KERNEL);
+#endif
 	if(host->virt_base == 0) {
 		ret = -EBUSY;
 		goto dma_alloc_failed;
@@ -509,7 +526,11 @@ static int __init goldfish_mmc_probe(struct platform_device *pdev)
 	return 0;
 
 err_request_irq_failed:
+#ifdef	CONFIG_ARM
 	dma_free_writecombine(&pdev->dev, BUFFER_SIZE, host->virt_base, host->phys_base);
+#elif	CONFIG_X86
+	dma_free_coherent(NULL, BUFFER_SIZE, host->virt_base, host->phys_base);
+#endif
 dma_alloc_failed:
 	mmc_free_host(host->mmc);
 err_alloc_host_failed:
@@ -526,7 +547,11 @@ static int goldfish_mmc_remove(struct platform_device *pdev)
 
 	mmc_remove_host(host->mmc);
 	free_irq(host->irq, host);
+#ifdef	CONFIG_ARM
 	dma_free_writecombine(&pdev->dev, BUFFER_SIZE, host->virt_base, host->phys_base);
+#elif	CONFIG_X86
+	dma_free_coherent(NULL, BUFFER_SIZE, host->virt_base, host->phys_base);
+#endif
 	mmc_free_host(host->mmc);
 
 	return 0;

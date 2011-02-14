@@ -313,6 +313,12 @@ config X86_VOYAGER
 	  If you do not specifically know you have a Voyager based machine,
 	  say N here, otherwise the kernel you build will not be bootable.
 
+config X86_GOLDFISH
+       bool "Goldfish (Virtual Platform)"
+	depends on X86_32
+       help
+          This option would make Goldfish virtual platform available.
+
 config X86_GENERICARCH
        bool "Generic architecture"
 	depends on X86_32
