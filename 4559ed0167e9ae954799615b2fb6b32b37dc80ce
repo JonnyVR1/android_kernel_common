@@ -16,3 +16,11 @@ UUID: AAAA+3//4uk=
 Bytes: 61
 This doesn't hold tracer.mutex, etm_regs could get iounmapped
 
+558
+Tue Feb 15 02:28:41 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4uk=
+UUID: AAAA+3//4uQ=
+Bytes: 76
+I agree that it should hold the mutex, but that is unrelated to this change.
+
