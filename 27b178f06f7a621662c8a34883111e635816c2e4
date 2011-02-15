@@ -9,3 +9,10 @@ UUID: AAAA+3//4vM=
 Bytes: 37
 you don't need to typecast from void*
 
+216
+Tue Feb 15 02:01:51 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4u8=
+Bytes: 47
+you probably want to use strlcpy just in case..
+
