@@ -238,6 +238,9 @@ __v7_setup:
 2:	ldr	r10, =0x00000c09		@ Cortex-A9 primary part number
 	teq	r0, r10
 	bne	3f
+	mrc	p15, 0, r10, c15, c0, 0		@ read power control register
+	orr	r10, r10, #1			@ enable dynamic clock gating
+	mcr	p15, 0, r10, c15, c0, 0		@ write power control register
 #ifdef CONFIG_ARM_ERRATA_742230
 	cmp	r6, #0x22			@ only present up to r2p2
 	mrcle	p15, 0, r10, c15, c0, 1		@ read diagnostic register
