@@ -1,0 +1,11 @@
+Revision: 27b178f06f7a621662c8a34883111e635816c2e4
+Patch-set: 1
+File: drivers/net/wireless/bcm4329/dhd_custom_gpio.c
+
+214
+Tue Feb 15 01:58:01 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4vM=
+Bytes: 37
+you don't need to typecast from void*
+
