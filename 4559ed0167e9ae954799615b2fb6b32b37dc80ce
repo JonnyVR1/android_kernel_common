@@ -1,0 +1,18 @@
+Revision: 4559ed0167e9ae954799615b2fb6b32b37dc80ce
+Patch-set: 2
+File: arch/arm/kernel/etm.c
+
+283
+Tue Feb 15 02:13:01 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4uo=
+Bytes: 62
+This doesn't hold tracer.mutex, etm_regs could get iounmapped.
+
+558
+Tue Feb 15 02:13:01 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4uk=
+Bytes: 61
+This doesn't hold tracer.mutex, etm_regs could get iounmapped
+
