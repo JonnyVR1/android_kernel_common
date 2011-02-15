@@ -428,6 +428,47 @@ static void dpm_show_time(ktime_t starttime, pm_message_t state, char *info)
 		usecs / USEC_PER_MSEC, usecs % USEC_PER_MSEC);
 }
 
+/**
+ *	dpm_drv_timeout - Driver suspend / resume watchdog handler
+ *
+ *	Called when a driver has timed out suspending or resuming.
+ *	There's not much we can do here to recover so
+ *	BUG() out for a crash-dump
+ *
+ */
+static void dpm_drv_timeout(unsigned long data)
+{
+	struct dpm_drv_wd_data *wd_data = (void *)data;
+	struct device *dev      = wd_data->dev;
+	struct task_struct *tsk = wd_data->tsk;
+
+	printk(KERN_EMERG "**** DPM device timeout: %s (%s)\n", dev_name(dev),
+	       (dev->driver ? dev->driver->name : "no driver"));
+
+	printk(KERN_EMERG "dpm suspend stack:\n");
+	show_stack(tsk, NULL);
+
+	BUG();
+}
+
+static void dpm_drv_wdset(struct device *dev, struct timer_list *timer,
+					  struct dpm_drv_wd_data *data)
+{
+	data->dev = dev;
+	data->tsk = get_current();
+	init_timer_on_stack(timer);
+	timer->expires = jiffies + HZ * 12;
+	timer->function = dpm_drv_timeout;
+	timer->data = (unsigned long)data;
+	add_timer(timer);
+}
+
+static void dpm_drv_wdclr(struct timer_list *timer)
+{
+	del_timer_sync(timer);
+	destroy_timer_on_stack(timer);
+}
+
 /*------------------------- Resume routines -------------------------*/
 
 /**
@@ -527,6 +568,8 @@ static int legacy_resume(struct device *dev, int (*cb)(struct device *dev))
 static int device_resume(struct device *dev, pm_message_t state, bool async)
 {
 	int error = 0;
+	struct timer_list timer;
+	struct dpm_drv_wd_data data;
 
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
@@ -537,6 +580,7 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	device_lock(dev);
 
 	dev->power.status = DPM_RESUMING;
+	dpm_drv_wdset(dev, &timer, &data);
 
 	if (dev->bus) {
 		if (dev->bus->pm) {
@@ -570,6 +614,7 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 	}
  End:
 	device_unlock(dev);
+	dpm_drv_wdclr(&timer);
 	complete_all(&dev->power.completion);
 
 	TRACE_RESUME(error);
@@ -591,30 +636,6 @@ static bool is_async(struct device *dev)
 {
 	return dev->power.async_suspend && pm_async_enabled
 		&& !pm_trace_is_enabled();
-}
-
-/**
- *	dpm_drv_timeout - Driver suspend / resume watchdog handler
- *	@data: struct device which timed out
- *
- * 	Called when a driver has timed out suspending or resuming.
- * 	There's not much we can do here to recover so
- * 	BUG() out for a crash-dump
- *
- */
-static void dpm_drv_timeout(unsigned long data)
-{
-	struct dpm_drv_wd_data *wd_data = (void *)data;
-	struct device *dev = wd_data->dev;
-	struct task_struct *tsk = wd_data->tsk;
-
-	printk(KERN_EMERG "**** DPM device timeout: %s (%s)\n", dev_name(dev),
-	       (dev->driver ? dev->driver->name : "no driver"));
-
-	printk(KERN_EMERG "dpm suspend stack:\n");
-	show_stack(tsk, NULL);
-
-	BUG();
 }
 
 /**
@@ -877,14 +898,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 	struct dpm_drv_wd_data data;
 
 	dpm_wait_for_children(dev, async);
-
-	data.dev = dev;
-	data.tsk = get_current();
-	init_timer_on_stack(&timer);
-	timer.expires = jiffies + HZ * 12;
-	timer.function = dpm_drv_timeout;
-	timer.data = (unsigned long)&data;
-	add_timer(&timer);
+	dpm_drv_wdset(dev, &timer, &data);
 
 	device_lock(dev);
 
@@ -928,8 +942,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
  End:
 	device_unlock(dev);
 
-	del_timer_sync(&timer);
-	destroy_timer_on_stack(&timer);
+	dpm_drv_wdclr(&timer);
 
 	complete_all(&dev->power.completion);
 
