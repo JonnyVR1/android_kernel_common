@@ -1,0 +1,11 @@
+Revision: 69fa8ccfb7878a9e4b016201c4ccf58a68261cd3
+Patch-set: 1
+File: include/linux/wlan_plat.h
+
+24
+Tue Feb 15 01:18:38 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4wE=
+Bytes: 34
+what does it return in the void *?
+
