@@ -1,0 +1,11 @@
+Revision: f2cbbccf48ce164facbb33b8c9210e8da944b292
+Patch-set: 1
+File: drivers/base/power/main.c
+
+448
+Thu Feb 17 00:54:47 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4e8=
+Bytes: 24
+it may be a resume stack
+
