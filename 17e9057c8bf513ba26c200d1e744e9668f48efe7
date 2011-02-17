@@ -1,0 +1,115 @@
+Revision: 17e9057c8bf513ba26c200d1e744e9668f48efe7
+Patch-set: 4
+File: drivers/misc/iface_stat.c
+
+29
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4cA=
+Bytes: 24
+in.h has macro for this.
+
+38
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bw=
+Bytes: 68
+Maybe ULL or some more explicit 64bit type.
+ARM9, 32bits, too small?
+
+101
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bM=
+Bytes: 90
+Based on for_ifa(in_dev):
+
+for (ifa = in_dev->ifa_list; ifa; ifa = ifa->ifa_next)
+   ...
+?
+
+106
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bI=
+Bytes: 116
+ifa_local is correct. See if_addr.h
+
+if (!ifa) return 0;
+
+Then maybe you wont need the hacky !(addr) in IS_LOOPBACK.
+
+138
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bQ=
+Bytes: 15
+pr_err(blabla)?
+
+144
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4b0=
+Bytes: 75
+hmmm.
+Some games require ~1GB of download.
+4 games will be easy to max out.
+
+145
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4b4=
+Bytes: 110
+Why do you need this hack?
+
+tx_bytes is unsigned long (ARM9 32bit), starts at 0 all the way to ULONG_MAX (4G).
+
+156
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bU=
+Bytes: 165
+How often will an individual stat be looked up without the need for the others?
+
+Maybe output all values on one line that would look like what /proc/net/dev outputs?
+
+193
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bY=
+Bytes: 74
+Maybe add a
+   /* FIXME: support more than 4GB on ARM or flag overflow. */
+
+File: include/linux/iface_stat.h
+
+1
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bA=
+Bytes: 70
+include/linux/net/iface_stat.h
+feels like a more natural place for it.
+
+16
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4cE=
+Bytes: 6
+upcase
+
+36
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4cI=
+Bytes: 73
+No ';' at end. It will mess up things like
+  if(create_iface_stat(d)) ...
+
+40
+Thu Feb 17 06:08:13 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4bE=
+Bytes: 33
+#endif /* __LINUX_IFACE_STAT_H */
+
