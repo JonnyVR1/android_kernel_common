@@ -9,6 +9,14 @@ UUID: AAAA+3//4cA=
 Bytes: 24
 in.h has macro for this.
 
+29
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4cA=
+UUID: AAAA+3//4YE=
+Bytes: 99
+Instead of including that file, I just picked this specific #def from it. I can use the .h instead.
+
 38
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,6 +24,14 @@ UUID: AAAA+3//4bw=
 Bytes: 68
 Maybe ULL or some more explicit 64bit type.
 ARM9, 32bits, too small?
+
+38
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bw=
+UUID: AAAA+3//4YM=
+Bytes: 332
+This is going in the "common" repo. Taking explicit architecture specific assumptions such as 64 bit capability might not be appropriate. Interface stats also use unsigned long (uid_stats uses atomic_t). I agree that overflow will have to be handled in most cases, but its better done in the framework code that uses these counters.
 
 101
 Thu Feb 17 06:08:13 2011 +0000
@@ -28,6 +44,14 @@ for (ifa = in_dev->ifa_list; ifa; ifa = ifa->ifa_next)
    ...
 ?
 
+101
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bM=
+UUID: AAAA+3//4Us=
+Bytes: 4
+Done
+
 106
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,12 +63,28 @@ if (!ifa) return 0;
 
 Then maybe you wont need the hacky !(addr) in IS_LOOPBACK.
 
+106
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bI=
+UUID: AAAA+3//4Uo=
+Bytes: 4
+Done
+
 138
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA+3//4bQ=
 Bytes: 15
 pr_err(blabla)?
+
+138
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bQ=
+UUID: AAAA+3//4Uk=
+Bytes: 153
+Looked at a few other places in the kernel. I guess we would have more things to worry about when kmalloc fails. Tell me if you feel strongly about this.
 
 144
 Thu Feb 17 06:08:13 2011 +0000
@@ -55,6 +95,14 @@ hmmm.
 Some games require ~1GB of download.
 4 games will be easy to max out.
 
+144
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4b0=
+UUID: AAAA+3//4YA=
+Bytes: 235
+Before a per app usage exceeds 4G, the overall usage of an interface would have overflowed (which also use the same unsigned long counters). We will need to figure out a way to deal with overflows in general (may be in the framework?).
+
 145
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,6 +111,14 @@ Bytes: 110
 Why do you need this hack?
 
 tx_bytes is unsigned long (ARM9 32bit), starts at 0 all the way to ULONG_MAX (4G).
+
+145
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4b4=
+UUID: AAAA+3//4X8=
+Bytes: 5
+Done.
 
 156
 Thu Feb 17 06:08:13 2011 +0000
@@ -73,6 +129,14 @@ How often will an individual stat be looked up without the need for the others?
 
 Maybe output all values on one line that would look like what /proc/net/dev outputs?
 
+156
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bU=
+UUID: AAAA+3//4X4=
+Bytes: 236
+I wanted to have the exact same representation as presented in /sys/class/net/<device>/statistics/tx_bytes   and the rest. This will avoid an extra step of parsing when comparing a uid's contribution to the total transmission/reception.
+
 193
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,6 +144,14 @@ UUID: AAAA+3//4bY=
 Bytes: 74
 Maybe add a
    /* FIXME: support more than 4GB on ARM or flag overflow. */
+
+193
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bY=
+UUID: AAAA+3//4X0=
+Bytes: 5
+Done.
 
 File: include/linux/iface_stat.h
 
@@ -91,12 +163,28 @@ Bytes: 70
 include/linux/net/iface_stat.h
 feels like a more natural place for it.
 
+1
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bA=
+UUID: AAAA+3//4Wc=
+Bytes: 95
+There is no such existing directory, so I am a bit hesitant to create my own for just one file.
+
 16
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA+3//4cE=
 Bytes: 6
 upcase
+
+16
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4cE=
+UUID: AAAA+3//4Wg=
+Bytes: 4
+Done
 
 36
 Thu Feb 17 06:08:13 2011 +0000
@@ -114,10 +202,26 @@ UUID: AAAA+3//4WI=
 Bytes: 33
 use static inline ... {} instead.
 
+36
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4cI=
+UUID: AAAA+3//4Wo=
+Bytes: 98
+This is being called in core/net/dev.c I am not sure I can make it inline. Am I missing something?
+
 40
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA+3//4bE=
 Bytes: 33
 #endif /* __LINUX_IFACE_STAT_H */
+
+40
+Fri Feb 18 01:38:32 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4bE=
+UUID: AAAA+3//4Wk=
+Bytes: 4
+Done
 
