@@ -33,6 +33,18 @@ UUID: AAAA+3//4YM=
 Bytes: 332
 This is going in the "common" repo. Taking explicit architecture specific assumptions such as 64 bit capability might not be appropriate. Interface stats also use unsigned long (uid_stats uses atomic_t). I agree that overflow will have to be handled in most cases, but its better done in the framework code that uses these counters.
 
+38
+Fri Feb 18 02:04:47 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4YM=
+UUID: AAAA+3//4To=
+Bytes: 169
+It should fix itself at some point ... :)
+
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=be1f3c2c027cc5ad735df6a45a542ed1db7ec48b
+
+nntr
+
 101
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -103,6 +115,19 @@ UUID: AAAA+3//4YA=
 Bytes: 235
 Before a per app usage exceeds 4G, the overall usage of an interface would have overflowed (which also use the same unsigned long counters). We will need to figure out a way to deal with overflows in general (may be in the framework?).
 
+144
+Fri Feb 18 02:04:47 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4YA=
+UUID: AAAA+3//4Tk=
+Bytes: 182
+June 2010... 64bit.
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=be1f3c2c027cc5ad735df6a45a542ed1db7ec48b
+
+:)
+But you have a fixme already :)
+nntr.
+
 145
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -170,6 +195,15 @@ Parent: AAAA+3//4bA=
 UUID: AAAA+3//4Wc=
 Bytes: 95
 There is no such existing directory, so I am a bit hesitant to create my own for just one file.
+
+1
+Fri Feb 18 02:04:47 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4Wc=
+UUID: AAAA+3//4Tw=
+Bytes: 29
+I meant include/net/...
+nntr.
 
 16
 Thu Feb 17 06:08:13 2011 +0000
