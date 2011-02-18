@@ -1,0 +1,11 @@
+Revision: 923c63810dbd45b549c79d20f3647e0b8a53f6d4
+Patch-set: 1
+File: drivers/video/goldfishfb.c
+
+257
+Fri Feb 18 00:45:20 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4VI=
+Bytes: 74
+What does the old emulator return? This does not look backward compatible.
+
