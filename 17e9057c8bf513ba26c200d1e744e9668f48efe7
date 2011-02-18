@@ -106,6 +106,14 @@ Bytes: 73
 No ';' at end. It will mess up things like
   if(create_iface_stat(d)) ...
 
+36
+Fri Feb 18 00:00:26 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4cI=
+UUID: AAAA+3//4WI=
+Bytes: 33
+use static inline ... {} instead.
+
 40
 Thu Feb 17 06:08:13 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
