@@ -26,3 +26,4 @@ obj-$(CONFIG_QEMU_TRACE)	+= qemutrace/
 obj-y				+= eeprom/
 obj-$(CONFIG_WL127X_RFKILL)	+= wl127x-rfkill.o
 obj-$(CONFIG_APANIC)		+= apanic.o
+obj-$(CONFIG_ARCH_GOLDFISH)	+= goldfish_audio.o
