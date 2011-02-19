@@ -1,0 +1,20 @@
+Revision: d91dcc7f50d9c4ead4935bc704cb86ca7c995a93
+Patch-set: 1
+File: drivers/misc/uid_stat.c
+
+81
+Sat Feb 19 00:42:59 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4LA=
+Bytes: 57
+Why merge the find() and create() instead of a new get()?
+
+File: include/linux/uid_stat.h
+
+27
+Sat Feb 19 00:42:59 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//4Lk=
+Bytes: 45
+While in this file, might as well fix the ';'
+
