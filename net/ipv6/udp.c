@@ -501,6 +501,17 @@ int udpv6_queue_rcv_skb(struct sock * sk, struct sk_buff *skb)
 		goto drop;
 
 	/*
+	 * UDP encapsulation support for IPv6. It works just like
+	 * net/ipv4/udp.c except that we do not do resubmission.
+	 */
+	if (up->encap_type && skb->len > sizeof(struct udphdr) &&
+	    up->encap_rcv && !(*up->encap_rcv)(sk, skb)) {
+		UDP6_INC_STATS_BH(sock_net(sk), UDP_MIB_INDATAGRAMS,
+		                  is_udplite);
+		return 0;
+	}
+
+	/*
 	 * UDP-Lite specific tests, ignored on UDP sockets (see net/ipv4/udp.c).
 	 */
 	if ((is_udplite & UDPLITE_RECV_CC)  &&  UDP_SKB_CB(skb)->partial_cov) {
