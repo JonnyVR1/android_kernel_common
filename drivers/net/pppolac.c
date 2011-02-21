@@ -218,10 +218,6 @@ static int pppolac_connect(struct socket *sock, struct sockaddr *useraddr,
 	sk_udp = sock_udp->sk;
 	lock_sock(sk_udp);
 
-	/* Remove this check when IPv6 supports UDP encapsulation. */
-	error = -EAFNOSUPPORT;
-	if (sk_udp->sk_family != AF_INET)
-		goto out;
 	error = -EPROTONOSUPPORT;
 	if (sk_udp->sk_protocol != IPPROTO_UDP)
 		goto out;
