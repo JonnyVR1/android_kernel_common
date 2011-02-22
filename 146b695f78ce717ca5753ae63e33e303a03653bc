@@ -1,0 +1,18 @@
+Revision: 146b695f78ce717ca5753ae63e33e303a03653bc
+Patch-set: 1
+File: drivers/mmc/host/goldfish.c
+
+394
+Tue Feb 22 23:59:48 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//32Q=
+Bytes: 29
+why do you need to pass NULL?
+
+475
+Tue Feb 22 23:59:48 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//32M=
+Bytes: 3
+...
+
