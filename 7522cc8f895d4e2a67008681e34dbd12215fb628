@@ -1,0 +1,11 @@
+Revision: 7522cc8f895d4e2a67008681e34dbd12215fb628
+Patch-set: 6
+File: drivers/misc/iface_stat.c
+
+206
+Tue Feb 22 23:35:10 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//32o=
+Bytes: 59
+don't add code that is commented out, use pr_debug instead.
+
