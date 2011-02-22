@@ -1,0 +1,11 @@
+Revision: 62c3ff922557686f6af35dd450d234a63a1b4c39
+Patch-set: 1
+File: drivers/misc/Makefile
+
+29
+Tue Feb 22 23:48:28 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA+3//32Y=
+Bytes: 100
+Adding entries to the end of a makefile usually creates merge conflicts. Sorted entries work better.
+
