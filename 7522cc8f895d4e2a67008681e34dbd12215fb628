@@ -9,3 +9,11 @@ UUID: AAAA+3//32o=
 Bytes: 59
 don't add code that is commented out, use pr_debug instead.
 
+206
+Tue Mar 01 23:05:00 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//32o=
+UUID: AAAA/H///zM=
+Bytes: 276
+I have uncommented the comments and refrained from using pr_debug, as these messages are fairly infrequent and useful as regular dmesg messages too, instead of especially enabling the pr_debug messages. Please let me know if you strongly prefer pr_debug instead of KERN_DEBUG.
+
