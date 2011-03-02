@@ -9,3 +9,13 @@ UUID: AAAA+3//4VI=
 Bytes: 74
 What does the old emulator return? This does not look backward compatible.
 
+257
+Wed Mar 02 14:40:46 2011 +0000
+Author: David Turner <1000411@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//4VI=
+UUID: AAAA/H///oY=
+Bytes: 187
+The old emulator doesn't return anything, it aborts() when the FB_GET_FORMAT read happens because it's an unsupported i/o address.
+
+The current emulator returns the appropriate constants.
+
