@@ -1,0 +1,27 @@
+Revision: 58ddd0431bd7db5c49cbb26e369319bc6c4f4416
+Patch-set: 10
+File: drivers/misc/iface_stat.c
+
+148
+Thu Mar 03 00:09:06 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///i8=
+Bytes: 27
+You are leaking memory here
+
+212
+Thu Mar 03 00:09:06 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///jA=
+Bytes: 60
+parent is not a good name for your global directory variable
+
+File: include/linux/iface_stat.h
+
+45
+Thu Mar 03 00:09:06 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///jE=
+Bytes: 158
+Something is not right here, you went from having no return value to returning -1. If you are never checking for errors here, your return type should be void.
+
