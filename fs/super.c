@@ -638,6 +638,15 @@ void emergency_remount(void)
 	}
 }
 
+void emergency_remount_synchronous(void)
+{
+	struct work_struct *work;
+
+	work = kmalloc(sizeof(*work), GFP_ATOMIC);
+	if (work)
+		do_emergency_remount(work);
+}
+
 /*
  * Unnamed block devices are dummy devices used by virtual
  * filesystems which don't use real block-devices.  -- jrs
