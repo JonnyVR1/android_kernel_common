@@ -81,6 +81,8 @@
 #include <linux/netlink.h>
 #include <linux/tcp.h>
 
+#include <linux/iface_stat.h>
+
 int sysctl_ip_default_ttl __read_mostly = IPDEFTTL;
 
 /* Generate a checksum for an outgoing IP datagram. */
@@ -181,6 +183,8 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 	struct rtable *rt = (struct rtable *)dst;
 	struct net_device *dev = dst->dev;
 	unsigned int hh_len = LL_RESERVED_SPACE(dev);
+	int protocol = ip_hdr(skb)->protocol;
+	protocol = protocol & (MAX_INET_PROTOS - 1);
 
 	if (rt->rt_type == RTN_MULTICAST) {
 		IP_UPD_PO_STATS(dev_net(dev), IPSTATS_MIB_OUTMCAST, skb->len);
@@ -200,6 +204,15 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 			skb_set_owner_w(skb2, skb->sk);
 		kfree_skb(skb);
 		skb = skb2;
+	}
+
+	if (skb->sk != NULL) {
+		uid_t uid = sock_i_uid((struct sock *)(skb->sk));
+
+		if (protocol == IPPROTO_TCP)
+			if_uid_stat_update_tx_tcp(skb->dev->name, uid, skb->len);
+		else /* All non TCP traffic gets counted under UDP stats */
+			if_uid_stat_update_tx_udp(skb->dev->name, uid, skb->len);
 	}
 
 	if (dst->hh)

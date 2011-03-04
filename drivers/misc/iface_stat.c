@@ -17,6 +17,7 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/in.h>
+#include <linux/ip.h>
 #include <linux/list.h>
 #include <linux/proc_fs.h>
 #include <linux/slab.h>
@@ -25,9 +26,27 @@
 #include <linux/inetdevice.h>
 #include <linux/rtnetlink.h>
 #include <linux/iface_stat.h>
+#include <linux/workqueue.h>
+#include <linux/spinlock.h>
+
+#include <net/protocol.h>
 
 static LIST_HEAD(iface_list);
+static DEFINE_SPINLOCK(iface_list_lock);
 static struct proc_dir_entry *iface_parent;
+
+struct uid_stat {
+	struct list_head u_link;
+	uid_t uid;
+	unsigned long tx_bytes_tcp;
+	unsigned long rx_bytes_tcp;
+	unsigned long tx_bytes_udp;
+	unsigned long rx_bytes_udp;
+	unsigned long tx_packets_tcp;
+	unsigned long rx_packets_tcp;
+	unsigned long tx_packets_udp;
+	unsigned long rx_packets_udp;
+};
 
 struct iface_stat {
 	struct list_head if_link;
@@ -37,7 +56,29 @@ struct iface_stat {
 	unsigned long tx_packets;
 	unsigned long rx_packets;
 	bool active;
+	struct proc_dir_entry *proc_ptr;
+	struct list_head uid_list;
+	spinlock_t uid_list_lock;
 };
+
+enum tx_rx {
+	TX,
+	RX
+};
+
+enum tcp_udp {
+	TCP,
+	UDP
+};
+
+/*
+ * The work queue structure for if_uid_stat creation task, from workqueue.h
+ */
+typedef struct {
+	struct work_struct create_work;
+	struct iface_stat *iface_entry;
+	uid_t uid;
+} create_work_struct_t;
 
 static int read_proc_entry(char *page, char **start, off_t off,
 		int count, int *eof, void *data)
@@ -77,15 +118,19 @@ static int read_proc_bool_entry(char *page, char **start, off_t off,
 
 /* Find the entry for tracking the specified interface. */
 static struct iface_stat *get_iface_stat(const char *ifname) {
+	unsigned long flags;
 	struct iface_stat *iface_entry;
 	if (!ifname)
 		return NULL;
 
+	spin_lock_irqsave(&iface_list_lock, flags);
 	list_for_each_entry(iface_entry, &iface_list, if_link) {
 		if (!strcmp(iface_entry->iface_name, ifname)) {
+			spin_unlock_irqrestore(&iface_list_lock, flags);
 			return iface_entry;
 		}
 	}
+	spin_unlock_irqrestore(&iface_list_lock, flags);
 	return NULL;
 }
 
@@ -95,6 +140,7 @@ static struct iface_stat *get_iface_stat(const char *ifname) {
  * Called when an interface is configured with a valid IP address.
  */
 void create_iface_stat(const struct in_device *in_dev) {
+	unsigned long flags;
 	struct iface_stat *new_iface;
 	struct proc_dir_entry *proc_entry;
 	const struct net_device *dev;
@@ -157,9 +203,19 @@ void create_iface_stat(const struct in_device *in_dev) {
 	new_iface->tx_packets = 0;
 	new_iface->active = true;
 
+	/* 
+	 * We don't need uid_list_lock here as the new iface is not yet added 
+	 * to the iface_list and hence unavailable for any update operations.
+	 */
+	INIT_LIST_HEAD(&new_iface->uid_list);
+
 	/* Append the newly created iface stat struct to the list. */
+	spin_lock_irqsave(&iface_list_lock, flags);
 	list_add_tail(&new_iface->if_link, &iface_list);
+	spin_unlock_irqrestore(&iface_list_lock, flags);
+
 	proc_entry = proc_mkdir(ifname, iface_parent);
+	new_iface->proc_ptr = proc_entry;
 
 	/* Keep reference to iface_stat so we know what iface to read stats from. */
 	create_proc_read_entry("tx_bytes", S_IRUGO, proc_entry, read_proc_entry,
@@ -204,6 +260,275 @@ void iface_stat_update(struct net_device *dev) {
 		pr_debug("iface_stat: Updating stats for dev %s which went down\n", dev->name);
 	} else
 		pr_debug("iface_stat: Did not update stats for dev %s which went down\n", dev->name);
+}
+
+/* Create a new entry for tracking the specified uid within the interface */
+static void create_if_uid_stat(struct iface_stat *iface_entry, uid_t uid) {
+	struct proc_dir_entry *proc_entry;
+	struct uid_stat *uid_entry;
+	struct uid_stat *new_uid = NULL;
+	char uid_s[32];
+	bool uid_entry_exists = false;
+	unsigned long flags;
+
+	spin_lock_irqsave(&iface_entry->uid_list_lock, flags);
+	list_for_each_entry(uid_entry, &(iface_entry->uid_list), u_link) {
+		if (uid_entry->uid == uid) {
+			uid_entry_exists = true; /* Uid for this device exists */
+			spin_unlock_irqrestore(&iface_entry->uid_list_lock, flags);
+			return;
+		}
+	}
+	spin_unlock_irqrestore(&iface_entry->uid_list_lock, flags);
+
+	if (uid_entry_exists)
+		return;
+
+	/* 
+	 * Create a new stat entry for tracking this uid under this device.
+	 * KMalloc might sleep, so check again later if entry exists.
+	 */
+	if ((new_uid = kmalloc(sizeof(struct uid_stat), GFP_KERNEL)) == NULL) {
+		pr_err("KMalloc error");
+		return;
+	}
+
+	new_uid->uid = uid;
+	/* Counters start at 1 UDP packet of 72 bytes which is usually a DNS request.
+	 * We can track 4GB of network traffic.
+	 */
+	new_uid->tx_bytes_tcp = 0;
+	new_uid->rx_bytes_tcp = 0;
+	new_uid->tx_packets_tcp = 0;
+	new_uid->rx_packets_tcp = 0;
+	new_uid->tx_bytes_udp = 72;
+	new_uid->rx_bytes_udp = 0;
+	new_uid->tx_packets_udp = 1;
+	new_uid->rx_packets_udp = 0;
+
+	spin_lock_irqsave(&iface_entry->uid_list_lock, flags);
+	/* 
+	 * Check again if the uid_entry has been created while we were allocating
+	 * memory. This race condition is possible when a new uid tx/rx multiple 
+	 * packets before the first workqueue was able to create the uid_entry, in 
+	 * which case multiple workqueues might be trying to create the same uid_entry.
+	 */
+	list_for_each_entry(uid_entry, &(iface_entry->uid_list), u_link) {
+		if (uid_entry->uid == uid) {
+			uid_entry_exists = true; /* Found uid for this device */
+			spin_unlock_irqrestore(&iface_entry->uid_list_lock, flags);
+			kfree(new_uid);
+			return;
+		}
+	}
+	/* Append the newly created uid stat struct to the list. */
+	list_add_tail(&new_uid->u_link, &(iface_entry->uid_list));
+	spin_unlock_irqrestore(&iface_entry->uid_list_lock, flags);
+
+	sprintf(uid_s, "%d", uid);
+	proc_entry = proc_mkdir(uid_s, iface_entry->proc_ptr);
+
+	/* Keep reference to uid_stat so we know what uid to read stats from. */
+	create_proc_read_entry("tx_bytes_tcp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->tx_bytes_tcp);
+
+	create_proc_read_entry("rx_bytes_tcp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->rx_bytes_tcp);
+
+	create_proc_read_entry("tx_packets_tcp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->tx_packets_tcp);
+
+	create_proc_read_entry("rx_packets_tcp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->rx_packets_tcp);
+
+	create_proc_read_entry("tx_bytes_udp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->tx_bytes_udp);
+
+	create_proc_read_entry("rx_bytes_udp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->rx_bytes_udp);
+
+	create_proc_read_entry("tx_packets_udp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->tx_packets_udp);
+
+	create_proc_read_entry("rx_packets_udp", S_IRUGO, proc_entry, read_proc_entry,
+			(void *) &new_uid->rx_packets_udp);
+
+	pr_debug("iface_stat: Adding new uid entry for %d under device %s\n",
+			uid, iface_entry->iface_name);
+}
+
+/*
+ * iface_worker_func() is run in process context.
+ */
+static void iface_worker_func(struct work_struct *work)
+{
+	create_work_struct_t *create_work = (create_work_struct_t *)work;
+	create_if_uid_stat(create_work->iface_entry, create_work->uid);
+	kfree((void *)work);
+}
+
+static int if_uid_stat_update(const char *ifname, uid_t uid, int bytes,
+		enum tx_rx which, enum tcp_udp transport)
+{
+	struct uid_stat *uid_entry;
+	struct iface_stat *iface_entry;
+	create_work_struct_t *create_work;
+	unsigned long flags;
+	bool iface_entry_exists = false;
+	bool uid_entry_exists = false;
+
+	/* Find the entry for tracking the specified uid within the interface */
+	if (ifname == NULL) {
+		pr_err("iface_stat: Supplied with a NULL device name\n");
+		return -1;
+	}
+
+	/* Iterate over interfaces */
+	spin_lock_irqsave(&iface_list_lock, flags);
+	list_for_each_entry(iface_entry, &iface_list, if_link) {
+		if (!strcmp(ifname, iface_entry->iface_name)) {
+			iface_entry_exists = true;
+			break;
+		}
+	}
+	spin_unlock_irqrestore(&iface_list_lock, flags);
+
+	if (!iface_entry_exists) {
+		pr_err("iface_stat: Update request for invalid interface\n");
+		return -1;
+	}
+
+	/* Make sure (sanity check) that interface is active */
+	if (iface_entry->active == false) {
+		pr_err("iface_stat: Error in logic. Update request for inactive interface.\n");
+		return -1;
+	}
+
+	/* Loop over uid list under this interface */
+	spin_lock_irqsave(&iface_entry->uid_list_lock, flags);
+	list_for_each_entry(uid_entry, &(iface_entry->uid_list), u_link) {
+		if (uid_entry->uid == uid) {
+			uid_entry_exists = true;  /* Found uid for this device */
+			break; 
+		}
+	}
+	spin_unlock_irqrestore(&iface_entry->uid_list_lock, flags);
+
+	if (!uid_entry_exists) {
+		/* 
+		 * Create a new stat entry in a workqueue outside the critical path 
+		 * of a network packet. Might miss accounting for the first "few" packets.
+		 */
+		create_work = (create_work_struct_t *) kmalloc(sizeof(create_work_struct_t), GFP_ATOMIC);
+		if (create_work == NULL) {
+			pr_err("iface_stat: Error allocating memory in kmalloc(GFP_ATOMIC)\n");
+			return -1;
+		}
+
+		INIT_WORK((struct work_struct *)create_work, iface_worker_func);
+		create_work->iface_entry = iface_entry;
+		create_work->uid = uid;
+		schedule_work((struct work_struct *)create_work);
+		return -1;
+	}
+
+	switch (which) {
+		case TX:
+			spin_lock_irqsave(&iface_entry->uid_list_lock, flags);
+			if(transport == TCP) {
+				uid_entry->tx_bytes_tcp += bytes;
+				uid_entry->tx_packets_tcp += 1;
+			} else {
+				uid_entry->tx_bytes_udp += bytes;
+				uid_entry->tx_packets_udp += 1;
+			}
+			spin_unlock_irqrestore(&iface_list_lock, flags);
+			break;
+		case RX:
+			spin_lock_irqsave(&iface_entry->uid_list_lock, flags);
+			if(transport == TCP) {
+				uid_entry->rx_bytes_tcp += bytes;
+				uid_entry->rx_packets_tcp += 1;
+			} else {
+				uid_entry->rx_bytes_udp += bytes;
+				uid_entry->rx_packets_udp += 1;
+			}
+			spin_unlock_irqrestore(&iface_list_lock, flags);
+			break;
+		default:
+			pr_debug("iface_stat: impossible to get here\n");
+	}
+
+	return 0;
+}
+
+void if_uid_stat_update_tx_tcp(const char *devname, uid_t uid, int bytes)
+{
+	if (0 != if_uid_stat_update(devname, uid, bytes, TX, TCP))
+		pr_debug("iface_stat: Error updating tx_tcp stats.\n");
+}
+
+void if_uid_stat_update_rx_tcp(const char *devname, uid_t uid, int bytes)
+{
+	if (0 != if_uid_stat_update(devname, uid, bytes, RX, TCP))
+		pr_debug("iface_stat: Error updating rx_tcp stats.\n");
+}
+
+void if_uid_stat_update_tx_udp(const char *devname, uid_t uid, int bytes)
+{
+	if (0 != if_uid_stat_update(devname, uid, bytes, TX, UDP))
+		pr_debug("iface_stat: Error updating tx stats for non-TCP traffic.\n");
+}
+
+void if_uid_stat_update_rx_udp(const char *devname, uid_t uid, int bytes)
+{
+	if (0 != if_uid_stat_update(devname, uid, bytes, RX, UDP))
+		pr_debug("iface_stat: Error updating rx_udp stats.\n");
+}
+
+void debug_print_skbuff_contents(const struct sk_buff *skb, const char *ifname, int uid, int success, int tx) {
+	unsigned saddr, daddr;
+	const struct iphdr *iph = ip_hdr(skb);
+	int prot = iph->protocol;
+	prot = prot & (MAX_INET_PROTOS - 1);
+
+	if (success == 1)
+		return;
+
+	switch(prot) {
+		case IPPROTO_TCP:
+			saddr = *((unsigned *) &(iph->saddr));
+			daddr = *((unsigned *) &(iph->daddr));
+			pr_debug("iface_stat: uid %d, dev %s, %s %s proto TCP\t %pI4 -> %pI4 %d bytes\n",
+					uid,
+					ifname,
+					tx == 1 ? "TX" : "RX",
+					success == 1 ? "success" : "error",
+					(void *)&saddr, (void *)&daddr,
+					skb->len);
+			break;
+		case IPPROTO_UDP:
+			saddr = *((unsigned *) &(iph->saddr));
+			daddr = *((unsigned *) &(iph->daddr));
+			pr_debug("iface_stat: uid %d, dev %s, %s %s proto UDP\t %pI4 -> %pI4 %d bytes\n",
+					uid,
+					ifname,
+					tx == 1 ? "TX" : "RX",
+					success == 1 ? "success" : "error",
+					(void *)&saddr, (void *)&daddr,
+					skb->len);
+			break;
+		default:
+			pr_debug("iface_stat: uid %d, dev %s, %s %s proto (%u)\t %pI4 -> %pI4 %d bytes\n",
+					uid,
+					ifname,
+					tx == 1 ? "TX" : "RX",
+					success == 1 ? "success" : "error",
+					prot,
+					(void *)&saddr, (void *)&daddr,
+					skb->len);
+			break;
+	}
 }
 
 static int __init iface_stat_init(void)

@@ -82,6 +82,8 @@
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
 
+#include <linux/iface_stat.h>
+
 int sysctl_tcp_tw_reuse __read_mostly;
 int sysctl_tcp_low_latency __read_mostly;
 
@@ -1618,7 +1620,9 @@ int tcp_v4_rcv(struct sk_buff *skb)
 	struct tcphdr *th;
 	struct sock *sk;
 	int ret;
+	struct net_device *in_dev = skb->dev;
 	struct net *net = dev_net(skb->dev);
+	int pkt_length = skb->len;
 
 	if (skb->pkt_type != PACKET_HOST)
 		goto discard_it;
@@ -1698,6 +1702,8 @@ process:
 	bh_unlock_sock(sk);
 
 	sock_put(sk);
+
+	if_uid_stat_update_rx_tcp(in_dev->name, sock_i_uid((struct sock *)sk), pkt_length);
 
 	return ret;
 
