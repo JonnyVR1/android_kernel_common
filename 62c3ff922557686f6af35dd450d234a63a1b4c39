@@ -9,3 +9,11 @@ UUID: AAAA+3//32Y=
 Bytes: 100
 Adding entries to the end of a makefile usually creates merge conflicts. Sorted entries work better.
 
+29
+Sat Mar 05 05:31:24 2011 +0000
+Author: Jun Nakajima <1005562@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//32Y=
+UUID: AAAA/H///TU=
+Bytes: 35
+I'll put the entry in a sorted way.
+
