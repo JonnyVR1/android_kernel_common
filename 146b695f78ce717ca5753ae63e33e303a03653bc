@@ -9,10 +9,26 @@ UUID: AAAA+3//32Q=
 Bytes: 29
 why do you need to pass NULL?
 
+394
+Sat Mar 05 07:01:41 2011 +0000
+Author: Jun Nakajima <1005562@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//32Q=
+UUID: AAAA/H///TY=
+Bytes: 148
+We wanted to clarify the first argument of dma_map_sg() is ignored for X86_32, but I agree that it would be correct if we put "dev" as the argument.
+
 475
 Tue Feb 22 23:59:48 2011 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA+3//32M=
 Bytes: 3
 ...
+
+475
+Sat Mar 05 07:01:41 2011 +0000
+Author: Jun Nakajima <1005562@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA+3//32M=
+UUID: AAAA/H///TM=
+Bytes: 255
+Same reason as the above. The first argument of dma_alloc_coherent() is ignored for X86_32. We used dma_alloc_coherent() because dma_alloc_writecombine() is ARM-specific. I agree that it would be correct if we put "dev" as the argument. Same for the rest.
 
