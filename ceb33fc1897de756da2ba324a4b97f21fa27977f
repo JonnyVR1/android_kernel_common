@@ -1,0 +1,75 @@
+Revision: ceb33fc1897de756da2ba324a4b97f21fa27977f
+Patch-set: 3
+File: drivers/misc/iface_stat.c
+
+80
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///LI=
+Bytes: 119
+and transport type, direction, and bytes to be put in the uid_stat when the worker_func runs. This will avoid the loss.
+
+287
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///Lw=
+Bytes: 104
+Imagine seeing "KMalloc error" in the logs.
+You might want to add at least a driver name in the message.
+
+293
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///Ls=
+Bytes: 23
+Where did it come from?
+
+309
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///Lg=
+Bytes: 569
+So if there is an rx-flood, a bucketload of worker threads are started up and they all rush and all allocate, and if things don't go belly up, they all kfree.
+
+Maybe serialize kmalloc in the worker_func ?
+
+Have an iface_entry->pending_worker_uid_list, look up the uid in here and add it if needed.
+If it was there, then hang around until it vanishes so as not to kmalloc+free unnecessarily.
+If it was not there, kmalloc().
+In all cases, update with the tx/rx data passed in worker_struct.
+
+The other advantage of doing it in that way, is that early counts are not lost.
+
+366
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///Lk=
+Bytes: 40
+"which" what?
+Maybe call it "direction".
+
+425
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///LM=
+Bytes: 129
+Maybe add the wanted transport, direction, and bytes.
+Like that the worker_func will be able to count them once the entry exists.
+
+427
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///Lo=
+Bytes: 57
+Why -1?
+Should it be just as fatal as the kmalloc() fail?
+
+File: net/ipv4/ip_output.c
+
+186
+Tue Mar 08 00:58:07 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H///KM=
+Bytes: 47
+nit: one-shot mask+assign as is done elsewhere.
+
