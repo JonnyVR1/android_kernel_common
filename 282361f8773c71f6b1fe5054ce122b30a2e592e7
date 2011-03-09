@@ -1,0 +1,29 @@
+Revision: 282361f8773c71f6b1fe5054ce122b30a2e592e7
+Patch-set: 1
+File: drivers/misc/goldfish_audio.c
+
+38
+Wed Mar 09 21:34:15 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+7k=
+Bytes: 71
+remove trailing whitespace, also
+reg_base should be a void* not a char*
+
+290
+Wed Mar 09 21:34:15 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+7g=
+Bytes: 502
+please move the mapping and allocing of the reg base and buffers into a separate helper function (same with unmapping+freeing). This way you don't have to litter the code with config_x86/config_arm tests all over the place and contain all that ugliness.
+
+
+Also, it seems that the goldfish machine arm code should be exporting an ioremap interface that will hide the IO_ADDRESS stuff behind it. This will allow us to remove this ifdef/elif stuff with x86 since we really should be using ioremap on both.
+
+292
+Wed Mar 09 21:34:15 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+7c=
+Bytes: 36
+shouldn't this be r->end - r->start?
+
