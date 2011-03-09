@@ -9,6 +9,14 @@ UUID: AAAA/H///LI=
 Bytes: 119
 and transport type, direction, and bytes to be put in the uid_stat when the worker_func runs. This will avoid the loss.
 
+80
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///LI=
+UUID: AAAA/H///Es=
+Bytes: 4
+Done
+
 287
 Tue Mar 08 00:58:07 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,12 +25,28 @@ Bytes: 104
 Imagine seeing "KMalloc error" in the logs.
 You might want to add at least a driver name in the message.
 
+287
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///Lw=
+UUID: AAAA/H///Eo=
+Bytes: 4
+Done
+
 293
 Tue Mar 08 00:58:07 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/H///Ls=
 Bytes: 23
 Where did it come from?
+
+293
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///Ls=
+UUID: AAAA/H///Ek=
+Bytes: 115
+This was by observation. Adding the details of the packet to the work_struct eliminates the need to do this. Fixed.
 
 309
 Tue Mar 08 00:58:07 2011 +0000
@@ -40,6 +64,16 @@ In all cases, update with the tx/rx data passed in worker_struct.
 
 The other advantage of doing it in that way, is that early counts are not lost.
 
+309
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///Lg=
+UUID: AAAA/H//+6E=
+Bytes: 683
+I am using the shared workqueue created by the kernel, so only one thread per processor will be actively servicing the queue. Besides, I believe the default behavior is to service the queue on the same processor it was requested from. So the possibility of having multiple worker threads trying to run two different create request instances for the same uid_stat are pretty remote. The current approach will provide correctness eve in that case, and I believe we should not optimize for the rare case by using another lock.
+
+I have made the changes to the work_struct so now, no info is lost. Subsequent work_requests just end up updating the stats if they have already been created.
+
 366
 Tue Mar 08 00:58:07 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,6 +81,14 @@ UUID: AAAA/H///Lk=
 Bytes: 40
 "which" what?
 Maybe call it "direction".
+
+366
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///Lk=
+UUID: AAAA/H///Eg=
+Bytes: 4
+Done
 
 425
 Tue Mar 08 00:58:07 2011 +0000
@@ -56,6 +98,14 @@ Bytes: 129
 Maybe add the wanted transport, direction, and bytes.
 Like that the worker_func will be able to count them once the entry exists.
 
+425
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///LM=
+UUID: AAAA/H///Ec=
+Bytes: 4
+Done
+
 427
 Tue Mar 08 00:58:07 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,6 +113,14 @@ UUID: AAAA/H///Lo=
 Bytes: 57
 Why -1?
 Should it be just as fatal as the kmalloc() fail?
+
+427
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///Lo=
+UUID: AAAA/H///EY=
+Bytes: 171
+This happens every time the first packet is seen for a uid, and leads to the creation of a new stat entry using the work_struct. This should not be fatal as kmalloc error.
 
 File: net/ipv4/ip_output.c
 
@@ -72,4 +130,12 @@ Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/H///KM=
 Bytes: 47
 nit: one-shot mask+assign as is done elsewhere.
+
+186
+Wed Mar 09 22:37:38 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///KM=
+UUID: AAAA/H///Ew=
+Bytes: 4
+Done
 
