@@ -20,6 +20,14 @@ please move the mapping and allocing of the reg base and buffers into a separate
 
 Also, it seems that the goldfish machine arm code should be exporting an ioremap interface that will hide the IO_ADDRESS stuff behind it. This will allow us to remove this ifdef/elif stuff with x86 since we really should be using ioremap on both.
 
+290
+Wed Mar 09 21:43:04 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+7g=
+UUID: AAAA/H//+7Q=
+Bytes: 174
+another thought is, can you provide an arch_ioremap for x86 goldfish mach to also do mtrr_add? So that we don;t have to have this kind of ifdef/elif in every goldfish driver?
+
 292
 Wed Mar 09 21:34:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
