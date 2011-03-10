@@ -13,3 +13,14 @@ For at least the uids, you should look into a moving it to an rb_tree.
 
 Also, you have also now added a point of contention for every packet since they all have to take the iface_list_lock before being dispatched to update the right stat structure.
 
+429
+Thu Mar 10 23:44:17 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+uM=
+UUID: AAAA/H//+uE=
+Bytes: 738
+Yes, there are currently two list walks (although the interface list should never really exceed  members - cellular, WiFi, Ethernet/bluetooth). In this version, I chose to replicate the strategy of uid_stats which also does a list walk on uids (iface_stats will replace uid_stats in the near future). I could move from the list to rb_tree in pass 2 or this version if you sa so.
+
+
+About the iface_list_lock, it does add a point of contention for every packet, but I tried hard to move it to a point where its not done before the packet is dispatched, but after. I am updating stats just before kfree(sk_buff) is called for any outgoing/incoming packet - knowing that a kfree is done outside the critical path and as a low priority action.
+
