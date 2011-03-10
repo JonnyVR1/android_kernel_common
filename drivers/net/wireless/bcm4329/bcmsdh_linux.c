@@ -643,6 +643,17 @@ int bcmsdh_register_oob_intr(void * dhdp)
 	return 0;
 }
 
+void bcmsdh_set_irq(int flag)
+{
+	if (flag) {
+		enable_irq(sdhcinfo->oob_irq);
+		set_irq_wake(sdhcinfo->oob_irq, 1);
+	} else {
+		set_irq_wake(sdhcinfo->oob_irq, 0);
+		disable_irq(sdhcinfo->oob_irq);
+	}
+}
+
 void bcmsdh_unregister_oob_intr(void)
 {
 	SDLX_MSG(("%s: Enter\n", __FUNCTION__));
