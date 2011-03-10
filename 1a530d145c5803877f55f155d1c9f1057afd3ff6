@@ -1,0 +1,11 @@
+Revision: 1a530d145c5803877f55f155d1c9f1057afd3ff6
+Patch-set: 1
+File: drivers/net/wireless/bcm4329/bcmsdh_linux.c
+
+650
+Thu Mar 10 01:19:12 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+4M=
+Bytes: 32
+enable_irq_wake is more readable
+
