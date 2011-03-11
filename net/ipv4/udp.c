@@ -101,6 +101,8 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/uid_stat.h>
+#include <linux/iface_stat.h>
+
 #include <net/net_namespace.h>
 #include <net/icmp.h>
 #include <net/route.h>
@@ -1578,6 +1580,8 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 	struct rtable *rt = skb_rtable(skb);
 	__be32 saddr, daddr;
 	struct net *net = dev_net(skb->dev);
+	struct net_device *in_dev = skb->dev;
+	int pkt_length = skb->len + ip_hdrlen(skb);
 
 	/*
 	 *  Validate the packet.
@@ -1612,6 +1616,10 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 	if (sk != NULL) {
 		int ret = udp_queue_rcv_skb(sk, skb);
 		sock_put(sk);
+
+		if_uid_stat_update_rx(in_dev->name,
+					sock_i_uid((struct sock *)sk),
+					pkt_length, IPPROTO_UDP);
 
 		/* a return value > 0 means to resubmit the input, but
 		 * it wants the return to be -protocol, or 0

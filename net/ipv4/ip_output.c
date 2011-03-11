@@ -80,6 +80,7 @@
 #include <linux/mroute.h>
 #include <linux/netlink.h>
 #include <linux/tcp.h>
+#include <linux/iface_stat.h>
 
 int sysctl_ip_default_ttl __read_mostly = IPDEFTTL;
 
@@ -201,6 +202,11 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 		kfree_skb(skb);
 		skb = skb2;
 	}
+
+	if (skb->sk)
+		if_uid_stat_update_tx(skb->dev->name,
+				sock_i_uid((struct sock *)(skb->sk)),
+				skb->len, ip_hdr(skb)->protocol);
 
 	if (dst->hh)
 		return neigh_hh_output(dst->hh, skb);
