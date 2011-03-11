@@ -36,3 +36,11 @@ No, it will fail to compile. Should I wrap this and other relevant places with i
 
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE
 
+2028
+Fri Mar 11 19:31:33 2011 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+k0=
+UUID: AAAA/H//+kg=
+Bytes: 25
+Wrapped these in #ifdefs.
+
