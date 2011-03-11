@@ -1,0 +1,20 @@
+Revision: 30170bc43175b3ae4b5e996450f296427b2b0ae5
+Patch-set: 1
+File: net/ipv4/tcp_ipv4.c
+
+2024
+Fri Mar 11 07:33:27 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+qE=
+Bytes: 76
+the families are mutually exclusive.
+ else if (...)
+to avoid the extra test?
+
+2028
+Fri Mar 11 07:33:27 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+p4=
+Bytes: 47
+Will this still work if IPV6 is not configured?
+
