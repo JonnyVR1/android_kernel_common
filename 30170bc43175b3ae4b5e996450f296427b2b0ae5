@@ -11,10 +11,28 @@ the families are mutually exclusive.
  else if (...)
 to avoid the extra test?
 
+2024
+Fri Mar 11 18:32:22 2011 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+qE=
+UUID: AAAA/H//+kw=
+Bytes: 39
+I thought the compiler did that for us?
+
 2028
 Fri Mar 11 07:33:27 2011 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/H//+p4=
 Bytes: 47
 Will this still work if IPV6 is not configured?
+
+2028
+Fri Mar 11 18:32:22 2011 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+p4=
+UUID: AAAA/H//+k0=
+Bytes: 150
+No, it will fail to compile. Should I wrap this and other relevant places with ifdefs like so?
+
+#if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE
 
