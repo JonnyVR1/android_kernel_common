@@ -89,3 +89,11 @@ UUID: AAAA/H//+tY=
 Bytes: 49
 so how about if_uid_stat_update_(t|r)x(skb, len)?
 
+211
+Fri Mar 11 00:31:36 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+tY=
+UUID: AAAA/H//+tQ=
+Bytes: 146
+That won't work either. In tcp_ipv4.c skb->dev = NULL; has been called before I update, which makes determining the incoming interface impossible.
+
