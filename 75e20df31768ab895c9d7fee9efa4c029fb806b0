@@ -2,6 +2,27 @@ Revision: 75e20df31768ab895c9d7fee9efa4c029fb806b0
 Patch-set: 5
 File: drivers/misc/iface_stat.c
 
+77
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+t4=
+Bytes: 79
+this is not a type, but a structure, please rename to "create_stat_work_struct"
+
+234
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+t0=
+Bytes: 90
+do not typecast to void *, it is superfluous. This applies to everywhere else in the file.
+
+420
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+t8=
+Bytes: 60
+you should use container_of to get to your container struct.
+
 429
 Thu Mar 10 23:33:20 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,4 +44,30 @@ Yes, there are currently two list walks (although the interface list should neve
 
 
 About the iface_list_lock, it does add a point of contention for every packet, but I tried hard to move it to a point where its not done before the packet is dispatched, but after. I am updating stats just before kfree(sk_buff) is called for any outgoing/incoming packet - knowing that a kfree is done outside the critical path and as a low priority action.
+
+490
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+tw=
+Bytes: 90
+instead of typecasting to work_struct, just pass &create_work->create_work to be explicit.
+
+496
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+ts=
+Bytes: 77
+same as above, do not typecast here, but instead do &create_work->create_work
+
+File: net/ipv4/ip_output.c
+
+211
+Fri Mar 11 00:14:07 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/H//+to=
+Bytes: 567
+You should not do the test for protocol here, but rather do it inside your stat function. Also, you should just pass the whole skb into your stat update function and pull out all the relevant info there. So, your interface should probably just look like:
+int if_uid_update_tx(struct sk_buff *skb);
+
+This will let you control how to dispatch inside your function based on the protocol, pull out exactly what you need from skb->sk (uid), get the inferface info and packet len, etc. This will also mean that your change to ip_output.c is minimal and is easy to maintain.
 
