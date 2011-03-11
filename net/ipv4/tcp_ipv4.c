@@ -68,6 +68,7 @@
 #include <net/tcp.h>
 #include <net/transp_v6.h>
 #include <net/ipv6.h>
+#include <net/ip6_route.h>
 #include <net/inet_common.h>
 #include <net/timewait_sock.h>
 #include <net/xfrm.h>
@@ -1969,12 +1970,38 @@ void tcp_v4_destroy_sock(struct sock *sk)
 }
 EXPORT_SYMBOL(tcp_v4_destroy_sock);
 
+static int tcp_is_local(struct net *net, __be32 addr) {
+	struct rtable *rt;
+	struct flowi fl = { .nl_u = { .ip4_u = { .daddr = addr } } };
+	if (ip_route_output_key(net, &rt, &fl) || !rt)
+		return 0;
+	return rt->u.dst.dev && (rt->u.dst.dev->flags & IFF_LOOPBACK);
+}
+
+static int tcp_is_local6(struct net *net, struct in6_addr *addr) {
+	struct rt6_info *rt6 = rt6_lookup(net, addr, addr, 0, 0);
+	return rt6 && rt6->rt6i_dev && (rt6->rt6i_dev->flags & IFF_LOOPBACK);
+}
+
 /*
- * tcp_v4_nuke_addr - destroy all sockets on the given local address
+ * tcp_nuke_addr - destroy all sockets on the given local address
+ * if local address is the unspecified address (0.0.0.0 or ::), destroy all
+ * sockets with local addresses that are not configured.
  */
-void tcp_v4_nuke_addr(__u32 saddr)
+int tcp_nuke_addr(struct net *net, struct sockaddr *addr)
 {
+	int family = addr->sa_family;
 	unsigned int bucket;
+
+	struct in_addr *in;
+	struct in6_addr *in6;
+	if (family == AF_INET) {
+		in = &((struct sockaddr_in *)addr)->sin_addr;
+	} else if (family == AF_INET6) {
+		in6 = &((struct sockaddr_in6 *)addr)->sin6_addr;
+	} else {
+		return -EAFNOSUPPORT;
+	}
 
 	for (bucket = 0; bucket < tcp_hashinfo.ehash_mask; bucket++) {
 		struct hlist_nulls_node *node;
@@ -1986,8 +2013,25 @@ restart:
 		sk_nulls_for_each(sk, node, &tcp_hashinfo.ehash[bucket].chain) {
 			struct inet_sock *inet = inet_sk(sk);
 
-			if (inet->inet_rcv_saddr != saddr)
+			if (family == AF_INET) {
+				__be32 s4 = inet->inet_rcv_saddr;
+				if (in->s_addr != s4 &&
+				    !(in->s_addr == INADDR_ANY &&
+				      !tcp_is_local(net, s4)))
+					continue;
+			}
+
+			if (family == AF_INET6) {
+				struct in6_addr *s6;
+				if (!inet->pinet6)
+					continue;
+				s6 = &inet->pinet6->rcv_saddr;
+				if (!ipv6_addr_equal(in6, s6) &&
+				    !(ipv6_addr_equal(in6, &in6addr_any) &&
+				      !tcp_is_local6(net, s6)))
 				continue;
+			}
+
 			if (sysctl_ip_dynaddr && sk->sk_state == TCP_SYN_SENT)
 				continue;
 			if (sock_flag(sk, SOCK_DEAD))
@@ -2010,6 +2054,8 @@ restart:
 		}
 		spin_unlock_bh(lock);
 	}
+
+	return 0;
 }
 
 #ifdef CONFIG_PROC_FS
