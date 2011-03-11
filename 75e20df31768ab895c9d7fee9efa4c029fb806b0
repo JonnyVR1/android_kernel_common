@@ -145,3 +145,13 @@ UUID: AAAA/H//+ko=
 Bytes: 343
 There is another reason why this interface makes more sense instead of passing the entire packet. There are services like mediaserver, download-manager, sync, backup manager - that act on behalf of other applications. So they could use this interface to correctly attribute the transfered bytes to the applications that requested the transfer.
 
+211
+Fri Mar 11 19:15:41 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+ko=
+UUID: AAAA/H//+kM=
+Bytes: 607
+well no, they can't use this interface since those are userspace processes. You'll need to expose this interface to userspace first (we'll have to be very careful when designing that interface). And when the time comes for you to need to do that, i'm sure your interface will change slightly anyway, because they always do (which is ok).
+
+In any case, I now understand the constraints from tcp_ipv4 etc. However, I still don't like doing the if (TCP) here in it_output. I would prefer that you add 'protocol' as an argument to your function, and have your internals do the right thing based on the protocol.
+
