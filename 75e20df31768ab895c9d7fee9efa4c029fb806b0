@@ -9,6 +9,14 @@ UUID: AAAA/H//+t4=
 Bytes: 79
 this is not a type, but a structure, please rename to "create_stat_work_struct"
 
+77
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+t4=
+UUID: AAAA/H//+rg=
+Bytes: 4
+Done
+
 234
 Fri Mar 11 00:14:07 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: AAAA/H//+t0=
 Bytes: 90
 do not typecast to void *, it is superfluous. This applies to everywhere else in the file.
 
+234
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+t0=
+UUID: AAAA/H//+rc=
+Bytes: 4
+Done
+
 420
 Fri Mar 11 00:14:07 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/H//+t8=
 Bytes: 60
 you should use container_of to get to your container struct.
+
+420
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+t8=
+UUID: AAAA/H//+qY=
+Bytes: 4
+Done
 
 429
 Thu Mar 10 23:33:20 2011 +0000
@@ -52,12 +76,28 @@ UUID: AAAA/H//+tw=
 Bytes: 90
 instead of typecasting to work_struct, just pass &create_work->create_work to be explicit.
 
+490
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+tw=
+UUID: AAAA/H//+q0=
+Bytes: 4
+Done
+
 496
 Fri Mar 11 00:14:07 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/H//+ts=
 Bytes: 77
 same as above, do not typecast here, but instead do &create_work->create_work
+
+496
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+ts=
+UUID: AAAA/H//+q4=
+Bytes: 4
+Done
 
 File: net/ipv4/ip_output.c
 
@@ -96,4 +136,12 @@ Parent: AAAA/H//+tY=
 UUID: AAAA/H//+tQ=
 Bytes: 146
 That won't work either. In tcp_ipv4.c skb->dev = NULL; has been called before I update, which makes determining the incoming interface impossible.
+
+211
+Fri Mar 11 18:40:27 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H//+tQ=
+UUID: AAAA/H//+ko=
+Bytes: 343
+There is another reason why this interface makes more sense instead of passing the entire packet. There are services like mediaserver, download-manager, sync, backup manager - that act on behalf of other applications. So they could use this interface to correctly attribute the transfered bytes to the applications that requested the transfer.
 
