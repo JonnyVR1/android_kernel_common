@@ -16,6 +16,8 @@
 #ifndef __IFACE_STAT_H
 #define __IFACE_STAT_H
 
+#include <linux/inetdevice.h>
+
 /*
  * Contains definitions for persistent data usage tracking per
  * network interface.
@@ -37,12 +39,29 @@ void create_iface_stat(const struct in_device *in_dev);
  */
 void iface_stat_update(struct net_device *dev);
 
+void if_uid_stat_update_tx(const char *devname, uid_t uid,
+				int bytes, int proto);
+void if_uid_stat_update_rx(const char *devname, uid_t uid,
+				int bytes, int proto);
+
+void debug_print_skbuff_contents(const struct sk_buff *skb, const char* ifname,
+					int uid, int success, int tx);
+
 #else
 
 static inline void create_iface_stat(in_dev)
 { }
 
 static inline void iface_stat_update(dev)
+{ }
+
+static inline void if_uid_stat_update_tx(devname, uid, bytes, proto)
+{ }
+
+static inline void if_uid_stat_update_rx(devname, uid, bytes, proto)
+{ }
+
+static inline void debug_print_skbuff_contents(skb, ifname, uid, success, tx)
 { }
 
 #endif
