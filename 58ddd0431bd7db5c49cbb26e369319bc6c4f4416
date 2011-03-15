@@ -32,6 +32,14 @@ UUID: AAAA/H///ic=
 Bytes: 4
 Done
 
+212
+Tue Mar 15 00:34:34 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/H///ic=
+UUID: AAAA/X///7k=
+Bytes: 124
+iface_parent is not much of an improvement. This is a global pointer to a directory in /proc. Why are you calling it parent?
+
 File: include/linux/iface_stat.h
 
 45
