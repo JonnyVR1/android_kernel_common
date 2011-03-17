@@ -58,15 +58,21 @@ static void evdev_pass_event(struct evdev_client *client,
 {
 	/*
 	 * Interrupts are disabled, just acquire the lock.
-	 * Make sure we don't leave with the client buffer
-	 * "empty" by having client->head == client->tail.
+	 * When the client buffer is full, replace the tail with SYN_DROPPED
+	 * to let the client know that events were dropped.  Ensure that the
+	 * head and tail never coincide so the buffer does not appear "empty".
 	 */
 	spin_lock(&client->buffer_lock);
 	wake_lock_timeout(&client->wake_lock, 5 * HZ);
-	do {
-		client->buffer[client->head++] = *event;
-		client->head &= client->bufsize - 1;
-	} while (client->head == client->tail);
+	client->buffer[client->head++] = *event;
+	client->head &= client->bufsize - 1;
+	if (client->head == client->tail) {
+		client->tail = (client->tail + 1) & (client->bufsize - 1);
+		client->buffer[client->tail].time = event->time;
+		client->buffer[client->tail].type = EV_SYN;
+		client->buffer[client->tail].code = SYN_DROPPED;
+		client->buffer[client->tail].value = 0;
+	}
 	spin_unlock(&client->buffer_lock);
 
 	if (event->type == EV_SYN)
