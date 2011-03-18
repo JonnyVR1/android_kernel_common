@@ -11,3 +11,17 @@ get rid of {} for single line statements.
 
 Also, this is not quite right. Not every device would have generated an event, so you can't just blindly generate sync events. You'd need to track which device generated events and only sync those.
 
+138
+Fri Mar 18 22:38:22 2011 +0000
+Author: Jeff Brown <1003957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///YE=
+UUID: AAAA/X///WA=
+Bytes: 421
+I'll fix the braces.
+
+The redundant syncs are harmless, if I'm reading the code correctly.
+
+See drivers/input/input.c.  On EV_SYN / SYN_REPORT if dev->sync is true (no sync needed) then the disposition of the event will be INPUT_IGNORE_EVENT.  So the event will not be passed down to the handlers.
+
+We can of course track ourselves whether a sync is needed, or even check the value of dev->sync before calling input_sync.
+
