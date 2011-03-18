@@ -1,0 +1,18 @@
+Revision: ccf2b725740a935caac144b4f6f6324bd145fa41
+Patch-set: 1
+File: drivers/input/input.c
+
+1713
+Fri Mar 18 22:20:26 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///W8=
+Bytes: 45
+Is there a reason behind limiting this to 20?
+
+1721
+Fri Mar 18 22:20:26 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///Ww=
+Bytes: 56
+Why 10, is that the largest number of events per finger?
+
