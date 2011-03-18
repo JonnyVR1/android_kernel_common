@@ -9,10 +9,28 @@ UUID: AAAA/X///W8=
 Bytes: 45
 Is there a reason behind limiting this to 20?
 
+1713
+Fri Mar 18 23:27:18 2011 +0000
+Author: Jeff Brown <1003957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///W8=
+UUID: AAAA/X///VE=
+Bytes: 177
+A driver could plausibly set the range for tracking id to maxint but most set it to 16.  (min=0, max=15)
+
+Doesn't need to be 20 but should probably be bounded.  Any suggestions?
+
 1721
 Fri Mar 18 22:20:26 2011 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/X///Ww=
 Bytes: 56
 Why 10, is that the largest number of events per finger?
+
+1721
+Fri Mar 18 23:27:18 2011 +0000
+Author: Jeff Brown <1003957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///Ww=
+UUID: AAAA/X///VA=
+Bytes: 125
+Arbitrary choice.  The largest number of events per finger is currently 14 as of 2.6.38.  We could set this to 16 to be safe.
 
