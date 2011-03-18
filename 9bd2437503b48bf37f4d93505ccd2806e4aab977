@@ -1,0 +1,13 @@
+Revision: 9bd2437503b48bf37f4d93505ccd2806e4aab977
+Patch-set: 1
+File: drivers/input/misc/gpio_matrix.c
+
+138
+Fri Mar 18 21:52:44 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///YE=
+Bytes: 240
+get rid of {} for single line statements.
+
+Also, this is not quite right. Not every device would have generated an event, so you can't just blindly generate sync events. You'd need to track which device generated events and only sync those.
+
