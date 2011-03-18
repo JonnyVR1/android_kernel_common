@@ -1,0 +1,11 @@
+Revision: ccf2b725740a935caac144b4f6f6324bd145fa41
+Base-for-patch-set: 1
+File: drivers/hid/hid-input.c
+
+542
+Fri Mar 18 22:49:39 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///VU=
+Bytes: 42
+Does the new code select that same number?
+
