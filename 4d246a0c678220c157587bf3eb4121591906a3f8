@@ -1,0 +1,18 @@
+Revision: 4d246a0c678220c157587bf3eb4121591906a3f8
+Patch-set: 1
+File: drivers/input/misc/gpio_input.c
+
+65
+Sat Mar 19 00:57:22 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///UU=
+Bytes: 29
+bool is preferred these days.
+
+134
+Sat Mar 19 00:57:22 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///UQ=
+Bytes: 8
+use true
+
