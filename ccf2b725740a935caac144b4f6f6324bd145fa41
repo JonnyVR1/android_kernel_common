@@ -17,3 +17,11 @@ UUID: AAAA/X///Uw=
 Bytes: 162
 Not necessarily.  It selects a number that is dependent on the number of slots that the device uses.  Typically the new number will be larger than the old number.
 
+542
+Sat Mar 19 03:45:28 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///Uw=
+UUID: AAAA/X///Tk=
+Bytes: 2
+OK
+
