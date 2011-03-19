@@ -9,6 +9,16 @@ UUID: AAAA/X///UU=
 Bytes: 29
 bool is preferred these days.
 
+65
+Sat Mar 19 01:44:19 2011 +0000
+Author: Jeff Brown <1003957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///UU=
+UUID: AAAA/X///UE=
+Bytes: 106
+Ah, I didn't think that was the case in the kernel.
+
+I use bool everywhere in the framework of course.  :)
+
 134
 Sat Mar 19 00:57:22 2011 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
