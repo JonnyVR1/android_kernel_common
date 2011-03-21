@@ -2,6 +2,45 @@ Revision: a1677cc643f2926779cfd98e51c337c9aa9dda7c
 Patch-set: 8
 File: drivers/misc/iface_stat.c
 
+285
+Mon Mar 21 21:38:57 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X///Is=
+Bytes: 3690
+Here is the reason why I schedule away the work, instead of creating the new uid_stat entry right there and inserting it in the list. The uid_stat_update function is called from a software interrupt context when a packet has been received. We are updating stats at the point when the IP layer has assembled the packet and is about to enqueue the packet to the TCP socket buffer. This seems to be the right place as any lower in the stack than this point - we would not know which TCP socket the packet is intended for, and hence which app is responsible for this traffic. Any upper in the stack, and we would have lost info on the IP layer headers. At this point, if I create a fresh uid_stat entry then kmalloc can sleep (unless I use GFP_ATOMIC instead of GFP_KERNEL - which seems hard to justify). The exception is something like - 
+
+  
+<3>[   58.570343] BUG: sleeping function called from invalid context at mm/slab.c:3102
+<3>[   58.570526] in_atomic(): 1, irqs_disabled(): 0, pid: 266, name: droid.wallpaper
+<4>[   58.570831] Backtrace: 
+<4>[   58.571197] [<c002ba30>] (dump_backtrace+0x0/0x110) from [<c035142c>] (dump_stack+0x18/0x1c)
+<4>[   58.571502]  r7:00000000 r6:c62085c4 r5:000000d0 r4:c7c00120
+<4>[   58.572326] [<c0351414>] (dump_stack+0x0/0x1c) from [<c0053ecc>] (__might_sleep+0x120/0x140)
+<4>[   58.572662] [<c0053dac>] (__might_sleep+0x0/0x140) from [<c00c1680>] (kmem_cache_alloc+0x34/0xcc)
+<4>[   58.573028] [<c00c164c>] (kmem_cache_alloc+0x0/0xcc) from [<c01d1268>] (if_uid_stat_update+0x240/0x588)
+<4>[   58.573333]  r7:00000000 r6:c62085c4 r5:c62085a0 r4:00000000
+<4>[   58.574157] [<c01d1028>] (if_uid_stat_update+0x0/0x588) from [<c01d15e0>] (if_uid_stat_update_rx+0x30/0x74)
+<4>[   58.574462] [<c01d15b0>] (if_uid_stat_update_rx+0x0/0x74) from [<c02bb288>] (tcp_v4_rcv+0x630/0x898)
+<4>[   58.574798]  r4:c7177a80
+<4>[   58.575134] [<c02bac58>] (tcp_v4_rcv+0x0/0x898) from [<c029d684>] (ip_local_deliver_finish+0x134/0x23c)
+<4>[   58.575439] [<c029d550>] (ip_local_deliver_finish+0x0/0x23c) from [<c029d818>] (ip_local_deliver+0x8c/0x9c)
+<4>[   58.575775]  r9:c05253e8 r8:00000000 r7:c7177b2c r6:c05253c8 r5:c6adb050
+<4>[   58.576721] r4:c7177a80
+<4>[   58.577209] [<c029d78c>] (ip_local_deliver+0x0/0x9c) from [<c029d24c>] (ip_rcv_finish+0x358/0x378)
+<4>[   58.577545]  r4:c7177a80
+<4>[   58.577880] [<c029cef4>] (ip_rcv_finish+0x0/0x378) from [<c029d518>] (ip_rcv+0x2ac/0x2e4)
+<4>[   58.578063]  r8:00000000 r7:c7177b2c r6:c05253c8 r5:c7da6400 r4:c7177a80
+<4>[   58.579162] [<c029d26c>] (ip_rcv+0x0/0x2e4) from [<c0254040>] (__netif_receive_skb+0x3d8/0x43c)
+<4>[   58.579498]  r5:c7da6400 r4:c7177a80
+<4>[   58.579986] [<c0253c68>] (__netif_receive_skb+0x0/0x43c) from [<c0254130>] (process_backlog+0x8c/0x140)
+<4>[   58.580291] [<c02540a4>] (process_backlog+0x0/0x140) from [<c025444c>] (net_rx_action+0x70/0x15c)
+<4>[   58.580627] [<c02543dc>] (net_rx_action+0x0/0x15c) from [<c00614ec>] (__do_softirq+0x78/0x100)
+<4>[   58.580963] [<c0061474>] (__do_softirq+0x0/0x100) from [<c00615c0>] (irq_exit+0x4c/0xb0)
+<4>[   58.581146] [<c0061574>] (irq_exit+0x0/0xb0) from [<c0027078>] (asm_do_IRQ+0x78/0x94)
+<4>[   58.581481] [<c0027000>] (asm_do_IRQ+0x0/0x94) from [<c0027cec>] (__irq_usr+0x4c/0x80)
+
+Which is why, I decided to offload the update function to use a workqueue and use kmalloc(GFP_ATOMIC) to only create the workqueue. Even if I were to choose GFP_ATOMIC to create the uid_Stat right then and there when it was not found during the update, it would be a terrible idea, because different apps may start receiving incoming packets simultaneously and start eating up precious kernel memory in interrupt context, all with irqs_disabled, creating a crisis.
+
 287
 Fri Mar 18 18:27:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +75,14 @@ struct uid_stat {
 
 Then this function would just take a struct traff_stat * and an int as argument. With current design though, it would not  actually work because you have that work you schedule and you need these parameters. But, to be honest, I don't actually understand WHY you schedule away that work. In the time sensitive part you *already* walk the interface list and the uid list, so you already *know* that it does not exist. You then allocate memory for the work and schedule away to do the same list walks again. Why can't you just allocate the uid_stat struct right there and then and insert it into the list? This will get rid of these races, get rid of the scheduling, simplify a bunch of the stuff and make the code cleaner in the process. Am I missing something?
 
+287
+Mon Mar 21 21:38:57 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///bM=
+UUID: AAAA/X///JQ=
+Bytes: 893
+Since this is a static local function, there is no real advantage to changing the function parameter format from multiple arguments to a single struct traff_stat *. In fact, here is what I think might be the drawbacks of that approach: Given that you buy the argument of the need to schedule workqueues, what this approach might lead to is - unnecessary allocation of memory for the remaining entries in the struct (if the packet is tcp, then all udp entries in the struct are useless). Since we know exactly what we are updating, I think this would be unnecessary work for no real advantage. For example, the number of packets are simply updated by one for every update operation, so the traff_stat structure only really needs one entry of bytes. Similarly, if the update function is for tx, then  struct traff_stat rx would unnecessarily ask for memory allocation in the workqueue scheduled.
+
 427
 Fri Mar 18 18:27:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,10 +90,26 @@ UUID: AAAA/X///fg=
 Bytes: 12
 remove void*
 
+427
+Mon Mar 21 21:38:57 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///fg=
+UUID: AAAA/X///J0=
+Bytes: 4
+Done
+
 568
 Fri Mar 18 18:27:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/X///fc=
 Bytes: 20
 remove all the void*
+
+568
+Mon Mar 21 21:38:57 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///fc=
+UUID: AAAA/X///Jc=
+Bytes: 4
+Done
 
