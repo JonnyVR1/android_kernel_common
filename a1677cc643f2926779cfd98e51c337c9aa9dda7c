@@ -83,6 +83,18 @@ UUID: AAAA/X///JQ=
 Bytes: 893
 Since this is a static local function, there is no real advantage to changing the function parameter format from multiple arguments to a single struct traff_stat *. In fact, here is what I think might be the drawbacks of that approach: Given that you buy the argument of the need to schedule workqueues, what this approach might lead to is - unnecessary allocation of memory for the remaining entries in the struct (if the packet is tcp, then all udp entries in the struct are useless). Since we know exactly what we are updating, I think this would be unnecessary work for no real advantage. For example, the number of packets are simply updated by one for every update operation, so the traff_stat structure only really needs one entry of bytes. Similarly, if the update function is for tx, then  struct traff_stat rx would unnecessarily ask for memory allocation in the workqueue scheduled.
 
+287
+Tue Mar 22 17:51:00 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/X///JQ=
+UUID: AAAA/X///Dw=
+Bytes: 1109
+it's not about function parameter format but rather about the completely needless switch statements (since you already know which fields to update in the caller), and also effectively a copy and paste of the same 2 lines of code 4 times.
+
+I don't understand why you need to schedule work. You are currently ALWAYS allocating a work_struct item for every new uid under GFP_ATOMIC, so I don't buy your argument that you are somehow allocating less now than you would with my approach. You are "wasting" the same "precious" kernel memory that you were saying you want to protect. Also, you are already "wasting" the extra memory in your struct since I don't see any unions for the members you mention.
+
+The only thing I see here that cannot be done in atomic context is the proc entry creation. I think the problem is that you ar etrying to do everything on the first packet. Can't you hook in at the time the UDP/TCP socket is created and create your uid structure then? You know you can't send data without having the socket created, so you don't need to postpone you struct and proc entry creation until then.
+
 427
 Fri Mar 18 18:27:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
