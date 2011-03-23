@@ -1,0 +1,27 @@
+Revision: ac3c786093c0eac1adcca10c49a8726aed3c97c8
+Patch-set: 11
+File: drivers/misc/iface_stat.c
+
+373
+Wed Mar 23 18:45:46 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X//+60=
+Bytes: 112
+Fixed a bug here. Duplicate workqueue functions update the existing uid_stat entries, instead of just returning.
+
+547
+Wed Mar 23 18:45:46 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X//+6w=
+Bytes: 38
+Got rid of a vestigial debug function.
+
+File: include/linux/iface_stat.h
+
+46
+Wed Mar 23 18:45:46 2011 +0000
+Author: ashishsharma <1005412@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/X//+6s=
+Bytes: 52
+Got rid of the vestigial debug function declaration.
+
