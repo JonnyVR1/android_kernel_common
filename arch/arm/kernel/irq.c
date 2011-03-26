@@ -66,6 +66,7 @@ int show_interrupts(struct seq_file *p, void *v)
 			sprintf(cpuname, "CPU%d", cpu);
 			seq_printf(p, " %10s", cpuname);
 		}
+		seq_printf(p, " %10s", "wake");
 		seq_putc(p, '\n');
 	}
 
@@ -79,6 +80,7 @@ int show_interrupts(struct seq_file *p, void *v)
 		seq_printf(p, "%3d: ", i);
 		for_each_present_cpu(cpu)
 			seq_printf(p, "%10u ", kstat_irqs_cpu(i, cpu));
+		seq_printf(p, "%10u ", desc->kstat_wakeirqs);
 		seq_printf(p, " %10s", desc->chip->name ? : "-");
 		seq_printf(p, "  %s", action->name);
 		for (action = action->next; action; action = action->next)
