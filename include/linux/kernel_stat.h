@@ -32,6 +32,7 @@ struct kernel_stat {
 	struct cpu_usage_stat	cpustat;
 #ifndef CONFIG_GENERIC_HARDIRQS
        unsigned int irqs[NR_IRQS];
+	unsigned int wakeirqs[NR_IRQS];
 #endif
 	unsigned int softirqs[NR_SOFTIRQS];
 };
@@ -41,6 +42,10 @@ DECLARE_PER_CPU(struct kernel_stat, kstat);
 #define kstat_cpu(cpu)	per_cpu(kstat, cpu)
 /* Must have preemption disabled for this to be meaningful. */
 #define kstat_this_cpu	__get_cpu_var(kstat)
+
+#ifndef CONFIG_GENERIC_HARDIRQS
+static unsigned int wakeirqs[NR_IRQS];
+#endif
 
 extern unsigned long long nr_context_switches(void);
 
@@ -60,6 +65,11 @@ static inline unsigned int kstat_irqs_cpu(unsigned int irq, int cpu)
 {
        return kstat_cpu(cpu).irqs[irq];
 }
+
+static inline void kstat_incr_wakeirqs(unsigned int irq)
+{
+	wakeirqs[irq]++;
+}
 #else
 #include <linux/irq.h>
 extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
@@ -67,7 +77,12 @@ extern unsigned int kstat_irqs_cpu(unsigned int irq, int cpu);
 	((DESC)->kstat_irqs[smp_processor_id()])
 #define kstat_incr_irqs_this_cpu(irqno, DESC) \
 	((DESC)->kstat_irqs[smp_processor_id()]++)
-
+#define kstat_incr_wakeirqs(irqno)			\
+do {							\
+	struct irq_desc *desc = irq_to_desc(irq);	\
+	if (desc)					\
+		desc->kstat_wakeirqs++;			\
+} while (0)
 #endif
 
 static inline void kstat_incr_softirqs_this_cpu(unsigned int irq)

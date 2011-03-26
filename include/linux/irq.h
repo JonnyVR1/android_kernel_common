@@ -176,6 +176,7 @@ struct irq_desc {
 	unsigned int		irq;
 	struct timer_rand_state *timer_rand_state;
 	unsigned int            *kstat_irqs;
+	unsigned int		kstat_wakeirqs;
 #ifdef CONFIG_INTR_REMAP
 	struct irq_2_iommu      *irq_2_iommu;
 #endif
