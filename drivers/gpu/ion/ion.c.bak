@@ -1,0 +1,328 @@
+#include <linux/err.h>
+#include <linux/mutex.h>
+#include <linux/rbtree.h>
+#include <linux/sched.h>
+#include <linux/slab.h>
+
+#include "ion.h"
+#include "ion_priv.h"
+
+struct ion_handle *ion_handle_create(struct ion_client *client,
+				     struct ion_allocation *allocation)
+{
+	struct ion_handle *handle;
+
+	handle = kzalloc(sizeof(struct ion_handle), GFP_KERNEL);
+	if (!handle)
+		return ERR_PTR(-ENOMEM);
+	kref_init(&handle->ref);
+	handle->client = client;
+	handle->allocation = allocation;
+	handle->map_cnt = 0;
+	handle->mapping = NULL;
+
+	return handle;
+}
+
+static void ion_handle_destroy(struct kref *kref)
+{
+	struct ion_handle *handle = container_of(kref, struct ion_handle, ref);
+	/* XXX:
+	   if (handle->map_cnt)
+	   unmap 
+	 */
+	ion_allocation_put(handle->allocation);
+
+	kfree(handle);
+}
+
+static void ion_handle_get(struct ion_handle *handle)
+{
+	kref_get(&handle->ref);
+}
+
+static int ion_handle_put(struct ion_handle *handle)
+{
+	return kref_put(&handle->ref, ion_handle_destroy);
+}
+
+struct ion_handle *ion_id_to_handle(struct ion_client *client, void *id)
+{
+	return id;
+}
+
+void *ion_handle_to_id(struct ion_client *client, struct ion_handle *handle)
+{
+	return handle;
+}
+
+struct ion_allocation *ion_allocation_create(struct ion_heap *heap,
+					     struct ion_device *dev,
+					     unsigned long len,
+					     unsigned long align,
+					     unsigned long flags)
+{
+	struct ion_allocation *alloc;
+	int ret;
+
+	alloc = kzalloc(sizeof(struct ion_allocation), GFP_KERNEL);
+	if (!alloc)
+		return ERR_PTR(-ENOMEM);
+
+	alloc->heap = heap;
+	kref_init(&alloc->ref);
+
+	ret = heap->ops->allocate(heap, alloc, len, align, flags);
+	if (ret)
+		return ERR_PTR(ret);
+	ion_device_add(dev, alloc);
+	alloc->dev = dev;
+	return alloc;
+}
+
+static void ion_allocation_destroy(struct kref *kref)
+{
+	struct ion_allocation *alloc = container_of(kref, struct ion_allocation,
+						    ref);
+	alloc->heap->ops->free(alloc);
+	ion_device_remove(alloc->dev, alloc);
+	kfree(alloc);
+}
+
+void ion_allocation_get(struct ion_allocation *allocation)
+{
+	kref_get(&allocation->ref);
+}
+
+int ion_allocation_put(struct ion_allocation *allocation)
+{
+	return kref_put(&allocation->ref, ion_allocation_destroy);
+}
+
+struct ion_allocation *ion_handle_get_allocation(struct ion_handle *handle)
+{
+	ion_allocation_get(handle->allocation);
+	return handle->allocation;
+}
+
+static struct ion_handle *ion_client_lookup(struct ion_client *client,
+					    struct ion_allocation *allocation)
+{
+	struct rb_node *n = client->handles.rb_node;
+
+	while (n) {
+		struct ion_handle *handle = rb_entry(n, struct ion_handle,
+						     node);
+		if (allocation < handle->allocation)
+			n = n->rb_left;
+		else if (allocation > handle->allocation)
+			n = n->rb_right;
+		else
+			return handle;
+	}
+	return NULL;
+}
+
+static void ion_client_add(struct ion_client *client, struct ion_handle *handle)
+{
+	struct rb_node **p = &client->handles.rb_node;
+	struct rb_node *parent = NULL;
+	struct ion_handle *entry;
+
+	while (*p) {
+		parent = *p;
+		entry = rb_entry(parent, struct ion_handle, node);
+
+		if (handle->allocation < entry->allocation)
+			p = &(*p)->rb_left;
+		else if (handle->allocation > entry->allocation)
+			p = &(*p)->rb_right;
+		else
+			WARN(1, "%s: allocation already found.", __func__);
+	}
+
+	rb_link_node(&handle->node, parent, p);
+	rb_insert_color(&handle->node, &client->handles);
+}
+
+void *ion_alloc(struct ion_client *client, size_t len, size_t align,
+		unsigned int flags)
+{
+	struct ion_heap *heap;
+	struct ion_allocation *allocation;
+	struct ion_handle *handle;
+
+	/* traverse the list of suituable heaps in the client->mapper */
+	/* allocation from a heap */
+	/* XXX: need to work out a way to traverse these in a defined order */
+#if 0
+	list_for_each_entry(heap, client->dev->heaps, list) {
+		if (ion_heap_mask(heap->id) & client->mapper->heap_mask) {
+			allocation = ion_allocation_create(heap, client->dev,
+							   len, align, flags); 	
+			if (!IS_ERR_OR_NULL(allocation))
+				break;
+		}
+	}
+#endif
+	handle = ion_handle_create(client, allocation);
+	mutex_lock(&client->lock);
+	ion_client_add(client, handle);
+	mutex_unlock(&client->lock);
+	return ion_handle_to_id(client, handle);
+}
+
+void ion_free(struct ion_client *client, void *id)
+{
+	struct ion_handle *handle = ion_id_to_handle(client, id);
+	ion_handle_put(handle);
+}
+
+void *ion_map(struct ion_client *client, void *id)
+{
+	struct ion_handle *handle = ion_id_to_handle(client, id);
+	void *mapping;
+	void *addr;
+
+	mutex_lock(&client->lock);
+	if (handle->map_cnt == 0) {
+		addr = client->mapper->ops->map(client->mapper,
+						handle->allocation,
+						&mapping);
+		if (IS_ERR_OR_NULL(addr))
+			return addr;
+		handle->mapping = mapping;
+		handle->addr = addr;
+	} else {
+		addr = handle->addr;
+	}
+	handle->map_cnt++;
+	mutex_unlock(&client->lock);
+	return addr;
+}
+
+void ion_unmap(struct ion_client *client, void *id)
+{
+	struct ion_handle *handle = ion_id_to_handle(client, id);
+
+	mutex_lock(&client->lock);
+	if (handle->map_cnt == 1)
+		client->mapper->ops->unmap(client->mapper, handle->allocation,
+					   handle->mapping);
+	handle->map_cnt--;
+	mutex_unlock(&client->lock);
+}
+
+int ion_map_user(struct ion_client *client, struct ion_handle *handle,
+		 struct vm_area_struct *vma)
+{
+	struct ion_handle *handle = ion_id_to_handle(client, id);
+	int ret;
+
+	if (!client->mapper->ops->user_map) {
+		pr_err("%s: this mapper does not define a method for mapping "
+		       "to userspace\n", __func__);
+		return -EINVAL;
+	}
+	if ((vma->vm_end - vma->vm_start > handle->allocation->size) ||
+	    (vma->vm_end - vma->vm_start + (vma->vm_pgoff << PAGE_SHIFT) >
+	     handle->allocation->size)) {
+		pr_err("%s: trying to map larger area than handle has available"
+		       "\n", __func__);
+		return -EINVAL;
+	}
+
+	/* map the memory into the client */
+	ion_map(client, id);
+	/* now map it to userspace */
+	ret = client->mapper->ops->map_user(client->mapper, handle->allocation,
+					    vma);
+	/* if the map failed, drop the map count on the handle */
+	if (ret)
+		ion_unmap(client, id);
+	return ret;
+}
+
+struct ion_allocation *ion_share_user(struct ion_client *client, void *id)
+{
+	struct ion_handle *handle = ion_id_to_handle(client, id);
+	ion_allocation_get(handle->allocation);
+	return handle->allocation;
+}
+
+void ion_import_user(struct ion_client *client,
+		     struct ion_allocation *allocation)
+{
+	struct ion_handle *handle = NULL;
+
+	mutex_lock(&client->lock);
+	handle = ion_client_lookup(client, allocation);
+	if (!IS_ERR_OR_NULL(handle)) {
+		ion_handle_get(handle);
+		goto end;
+	}
+	ion_allocation_get(allocation);
+	handle = ion_handle_create(client, allocation);
+	ion_client_add(client, handle);
+end:
+	mutex_unlock(&client->lock);
+}
+
+int ion_import(struct ion_client *client, struct ion_client *from, void *id)
+{
+	/* check that the allocation is not already in the client */
+	struct ion_handle *handle = ion_id_to_handle(from, id);
+	struct ion_allocation *allocation = handle->allocation;
+
+	ion_import_user(client, allocation);
+	return 0;
+}
+
+struct ion_client *ion_client_create(struct ion_device *dev,
+				     const char *name,
+				     struct ion_mapper *mapper)
+{
+	struct ion_client *client;
+	struct task_struct *task;
+
+	client = kzalloc(sizeof(struct ion_client), GFP_KERNEL);
+	if (!client)
+		return ERR_PTR(-ENOMEM);
+	client->dev = dev;
+	client->handles = RB_ROOT;
+	client->mapper = mapper;
+	mutex_init(&client->lock);
+	client->name = name;
+	get_task_struct(current->group_leader);
+	task_lock(current->group_leader);
+	/* don't bother to store task struct for kernel threads,
+	   they can't be killed anyway */
+	if (current->group_leader->flags & PF_KTHREAD) {
+		put_task_struct(current->group_leader);
+		task = NULL;
+	} else {
+		task = current->group_leader;
+	}
+	task_unlock(current->group_leader);
+	client->task = task;
+
+	return client;
+}
+
+void ion_client_destroy(struct ion_client *client)
+{
+	struct rb_node *node;
+	int ret;
+
+	while ((node = rb_first(&client->handles))) {
+		struct ion_handle *handle = rb_entry(node, struct ion_handle,
+						     node);
+		rb_erase(&handle->node, &client->handles);
+		do {
+			ret = ion_handle_put(handle);	
+		} while (!ret);
+	}
+	if (client->task)
+		put_task_struct(client->task);
+	kfree(client);
+}
