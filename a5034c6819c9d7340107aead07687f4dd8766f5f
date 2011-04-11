@@ -2,6 +2,62 @@ Revision: a5034c6819c9d7340107aead07687f4dd8766f5f
 Patch-set: 4
 File: drivers/gpu/ion/ion.c
 
+85
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//++E=
+Bytes: 7
+pointer
+
+100
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+90=
+Bytes: 63
+static?  also, comments on locking the rb tree would be usefull
+
+123
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+70=
+Bytes: 104
+static?  and more lock comments here - create has the lock taken already, destroy takes the lock itself?
+
+139
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+7w=
+Bytes: 70
+it's a little weird that create calls allocate, and destroy calls free
+
+271
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+6A=
+Bytes: 50
+kernel style requires /* and */ on their own lines
+
+281
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+7I=
+Bytes: 76
+Is there any reason you might want to handle an error differently than null?
+
+289
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+7U=
+Bytes: 171
+it would be simpler to have ion_handle_create take the reference to the buffer.  in this case, you would have to drop the reference implicitly created by ion_buffer_create
+
+300
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+64=
+Bytes: 114
+ion_free seems a little misleading, since this will undo ion_alloc or ion_import, but I don't like ion_put either.
+
 337
 Mon Apr 11 14:44:30 2011 +0000
 Author: Dan Murphy <1004816@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -13,6 +69,41 @@ If so how far?  And how would I recover the map_cnt for the given handle?
 
 When ion_vma_close is called this function assumes that there may only be one map.
 
+337
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+6M=
+Bytes: 18
+warn on map_cnt==0
+
+366
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+7M=
+Bytes: 79
+it would be simpler to have ion_handle_create take the reference to the buffer.
+
+367
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+50=
+Bytes: 26
+ion_handle_create can fail
+
+474
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+54=
+Bytes: 68
+Does this work if you mix kernel and non-kernel threads in a client?
+
+674
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+5w=
+Bytes: 19
+ion_import can fail
+
 File: drivers/gpu/ion/ion_heap.c
 
 33
@@ -21,6 +112,24 @@ Author: Dan Murphy <1004816@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/n///Cg=
 Bytes: 24
 ion_kmalloc_heap_create?
+
+File: drivers/gpu/ion/ion_system_heap.c
+
+23
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+5s=
+Bytes: 44
+maybe rename these sysmem and sysmem_contig?
+
+File: drivers/gpu/ion/ion_system_mapper.c
+
+51
+Mon Apr 11 19:53:51 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+5o=
+Bytes: 6
+static
 
 File: drivers/gpu/ion/tegra/Makefile
 
