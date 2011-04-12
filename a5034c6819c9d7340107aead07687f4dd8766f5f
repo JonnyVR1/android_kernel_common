@@ -113,6 +113,13 @@ UUID: AAAA/n///Cg=
 Bytes: 24
 ion_kmalloc_heap_create?
 
+34
+Tue Apr 12 18:24:48 2011 +0000
+Author: Rob Clark <1006181@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+vs=
+Bytes: 146
+What is the approach to support other memory allocations?  For example hw which requires contiguous memory, or otherwise special kinds of memory..
+
 File: drivers/gpu/ion/ion_system_heap.c
 
 23
