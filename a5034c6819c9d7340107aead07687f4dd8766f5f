@@ -30,6 +30,14 @@ UUID: AAAA/n//+7w=
 Bytes: 70
 it's a little weird that create calls allocate, and destroy calls free
 
+139
+Tue Apr 12 19:04:44 2011 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/n//+7w=
+UUID: AAAA/n//+vg=
+Bytes: 60
+I'm open to suggestions, what do you think makes more sense?
+
 271
 Mon Apr 11 19:53:51 2011 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,6 +104,16 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/n//+54=
 Bytes: 68
 Does this work if you mix kernel and non-kernel threads in a client?
+
+474
+Tue Apr 12 19:04:44 2011 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/n//+54=
+UUID: AAAA/n//+vI=
+Bytes: 612
+Why would you do that?  Basically it'll work as long as the context you call ion_client_lookup from is the same one you called ion_client_create from.  Client lookup is only used to find the canonical client on a mmap call path from userspace so I suppose if you did something really weird like created a client in a kernel thread and then later morphed it into a file descriptor backed client somehow you wouldn't be able to find the right task.  As far as I'm concerned that's "unsupported"
+
+The kernel_clients rb tree is only used to track clients for debug purposes to print metadata about them from debugfs.
 
 674
 Mon Apr 11 19:53:51 2011 +0000
