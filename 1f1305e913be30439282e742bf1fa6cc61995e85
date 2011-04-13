@@ -1,0 +1,24 @@
+Revision: 1f1305e913be30439282e742bf1fa6cc61995e85
+Patch-set: 5
+File: drivers/gpu/ion/ion.c
+
+654
+Wed Apr 13 15:44:30 2011 +0000
+Author: Rob Clark <1006181@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+n4=
+Bytes: 293
+as mentioned y'day (just capture here for posterity), it would be nice if you let the heap implementation optionally provide a fault handler.. could be useful to track cache cleanness, and also probably other usages in cases where you have a GART/GTT or something that vaguely looks like one..
+
+File: include/linux/ion.h
+
+206
+Wed Apr 13 15:44:30 2011 +0000
+Author: Rob Clark <1006181@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+nk=
+Bytes: 844
+fwiw GEM does not try to standardize the allocation ioctl/api..  I think if you do you end up having to rev the API each time a new SoC comes along with something new and crazier.  Instead memory allocation is done by a vendor provided userspace driver (either their xorg driver, or hw specific vaapi/vdpau driver).  So when a buffer object (bo) is allocated for multimedia, maybe some of the options passed down to vendor specific kernel part would be different compared to bo's allocated for graphics pixmaps..  and might differ from gpu to gpu.
+
+Instead the approach is to standardize the API for passing around / manipulating buffers once they are allocated.
+
+I'm not sure if that sort of approach fits in with the Android userspace architecture.. but I guess there is vendor specific OMX implementation, gralloc, etc.  So I guess it might?
+
