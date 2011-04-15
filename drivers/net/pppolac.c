@@ -21,6 +21,7 @@
  * only works on IPv4 due to the lack of UDP encapsulation support in IPv6. */
 
 #include <linux/module.h>
+#include <linux/jiffies.h>
 #include <linux/workqueue.h>
 #include <linux/skbuff.h>
 #include <linux/file.h>
@@ -53,14 +54,28 @@ static inline union unaligned *unaligned(void *ptr)
 	return (union unaligned *)ptr;
 }
 
+struct meta {
+	__u32 sequence;
+	__u32 timestamp;
+};
+
+static inline struct meta *skb_meta(struct sk_buff *skb)
+{
+	return (struct meta *)skb->cb;
+}
+
+/******************************************************************************/
+
 static int pppolac_recv_core(struct sock *sk_udp, struct sk_buff *skb)
 {
 	struct sock *sk = (struct sock *)sk_udp->sk_user_data;
 	struct pppolac_opt *opt = &pppox_sk(sk)->proto.lac;
+	struct meta *meta = skb_meta(skb);
+	__u32 now = jiffies;
 	__u8 bits;
 	__u8 *ptr;
 
-	/* Drop the packet if it is too short. */
+	/* Drop the packet if L2TP header is missing. */
 	if (skb->len < sizeof(struct udphdr) + 6)
 		goto drop;
 
@@ -99,9 +114,12 @@ static int pppolac_recv_core(struct sock *sk_udp, struct sk_buff *skb)
 	if (unaligned(ptr)->u32 != opt->local)
 		goto drop;
 
-	/* Check the sequence if it is present. According to RFC 2661 section
-	 * 5.4, the only thing to do is to update opt->sequencing. */
-	opt->sequencing = bits & L2TP_SEQUENCE_BIT;
+	/* Check the sequence if it is present. */
+	if (bits & L2TP_SEQUENCE_BIT) {
+		meta->sequence = ptr[4] << 8 | ptr[5];
+		if ((__s16)(meta->sequence - opt->recv_sequence) < 0)
+			goto drop;
+	}
 
 	/* Skip PPP address and control if they are present. */
 	if (skb->len >= 2 && skb->data[0] == PPP_ADDR &&
@@ -112,7 +130,50 @@ static int pppolac_recv_core(struct sock *sk_udp, struct sk_buff *skb)
 	if (skb->len >= 1 && skb->data[0] & 1)
 		skb_push(skb, 1)[0] = 0;
 
-	/* Finally, deliver the packet to PPP channel. */
+	/* Drop the packet if PPP protocol is missing. */
+	if (skb->len < 2)
+		goto drop;
+
+	/* Perform reordering if sequencing is enabled. */
+	atomic_set(&opt->sequencing, bits & L2TP_SEQUENCE_BIT);
+	if (bits & L2TP_SEQUENCE_BIT) {
+		struct sk_buff *skb1;
+
+		/* Insert the packet into receive queue in order. */
+		skb_set_owner_r(skb, sk_udp);
+		skb_queue_walk(&sk->sk_receive_queue, skb1) {
+			struct meta *meta1 = skb_meta(skb1);
+			__s16 order = meta->sequence - meta1->sequence;
+			if (order == 0)
+				goto drop;
+			if (order < 0) {
+				meta->timestamp = meta1->timestamp;
+				skb_insert(skb1, skb, &sk->sk_receive_queue);
+				skb = NULL;
+				break;
+			}
+		}
+		if (skb) {
+			meta->timestamp = now;
+			skb_queue_tail(&sk->sk_receive_queue, skb);
+		}
+
+		/* Remove packets from receive queue as many as possible. */
+		skb_queue_walk_safe(&sk->sk_receive_queue, skb, skb1) {
+			meta = skb_meta(skb);
+			if (now - meta->timestamp < HZ &&
+					meta->sequence != opt->recv_sequence)
+				break;
+			skb_unlink(skb, &sk->sk_receive_queue);
+			opt->recv_sequence = (__u16)(meta->sequence + 1);
+			skb_orphan(skb);
+			ppp_input(&pppox_sk(sk)->chan, skb);
+		}
+		return NET_RX_SUCCESS;
+	}
+
+	/* Flush receive queue if sequencing is disabled. */
+	skb_queue_purge(&sk->sk_receive_queue);
 	skb_orphan(skb);
 	ppp_input(&pppox_sk(sk)->chan, skb);
 	return NET_RX_SUCCESS;
@@ -163,14 +224,14 @@ static int pppolac_xmit(struct ppp_channel *chan, struct sk_buff *skb)
 	skb->data[1] = PPP_CTRL;
 
 	/* Install L2TP header. */
-	if (opt->sequencing) {
+	if (atomic_read(&opt->sequencing)) {
 		skb_push(skb, 10);
 		skb->data[0] = L2TP_SEQUENCE_BIT;
-		skb->data[6] = opt->sequence >> 8;
-		skb->data[7] = opt->sequence;
+		skb->data[6] = opt->xmit_sequence >> 8;
+		skb->data[7] = opt->xmit_sequence;
 		skb->data[8] = 0;
 		skb->data[9] = 0;
-		opt->sequence++;
+		opt->xmit_sequence++;
 	} else {
 		skb_push(skb, 6);
 		skb->data[0] = 0;
@@ -283,6 +344,7 @@ static int pppolac_release(struct socket *sock)
 	if (sk->sk_state != PPPOX_NONE) {
 		struct sock *sk_udp = (struct sock *)pppox_sk(sk)->chan.private;
 		lock_sock(sk_udp);
+		skb_queue_purge(&sk->sk_receive_queue);
 		pppox_unbind_sock(sk);
 		udp_sk(sk_udp)->encap_type = 0;
 		udp_sk(sk_udp)->encap_rcv = NULL;
