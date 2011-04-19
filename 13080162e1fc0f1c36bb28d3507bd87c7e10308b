@@ -1,0 +1,17 @@
+Revision: 13080162e1fc0f1c36bb28d3507bd87c7e10308b
+Patch-set: 1
+File: drivers/net/pppopns.c
+
+127
+Tue Apr 19 01:02:26 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/n//+MA=
+Bytes: 194
+The sequence is _u32.
+This diff seems iffy around INT32_MAX. E.g.
+  meta->sequence = 0xffffffff;
+  meta1->sequence = 0x7fffffff;
+vs
+  meta->sequence = 0x7fffffff;
+  meta1->sequence = 0xffffffff;
+
