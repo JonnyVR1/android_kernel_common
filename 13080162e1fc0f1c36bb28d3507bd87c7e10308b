@@ -25,3 +25,19 @@ This logic is used to determine which packet should go before the other. PPTP us
 
 Your examples shows two sequences on the opposite sides of 32-bit space. It will not happen due to the check in line 102. Even it happens, there is no way to tell which one should go first.
 
+127
+Tue Apr 19 03:57:51 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/n//+L4=
+UUID: AAAA/n//+Lg=
+Bytes: 427
+> It will not happen due to the check in line 102. 
+
+Which is also affected.
+
+Maybe just add a comment on 102 saying that it works because in normal operation we'll never see sequence numbers separated by as much as 2^31 within 1sec. Except at 10Mb/s with tons of small  empty packets :)
+
+In the other file the wrap around happens at 5Mb/s in 1sec.
+
+A comment is ok, as after 1sec the mishandled packet will be considered lost.
+
