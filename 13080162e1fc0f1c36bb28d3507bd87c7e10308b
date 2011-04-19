@@ -15,3 +15,13 @@ vs
   meta->sequence = 0x7fffffff;
   meta1->sequence = 0xffffffff;
 
+127
+Tue Apr 19 02:13:37 2011 +0000
+Author: Chia-chi Yeh <1001923@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAA/n//+MA=
+UUID: AAAA/n//+L4=
+Bytes: 415
+This logic is used to determine which packet should go before the other. PPTP uses 32-bit sequences, so sequences will wrap around UINT32_MAX. As a result, we know that 2 should go before 3 and 0xffffffff should go before 0.
+
+Your examples shows two sequences on the opposite sides of 32-bit space. It will not happen due to the check in line 102. Even it happens, there is no way to tell which one should go first.
+
