@@ -58,6 +58,24 @@ struct dpm_drv_wd_data {
 
 static int async_error;
 
+static void dpm_drv_wd_start(struct device *dev, struct timer_list *timer,
+			     struct dpm_drv_wd_data *data)
+{
+	data->dev = dev;
+	data->tsk = get_current();
+	init_timer_on_stack(timer);
+	timer->expires = jiffies + HZ * 12;
+	timer->function = dpm_drv_timeout;
+	timer->data = (unsigned long)data;
+	add_timer(timer);
+}
+
+static void dpm_drv_wd_stop(struct timer_list *timer)
+{
+	del_timer_sync(timer);
+	destroy_timer_on_stack(timer);
+}
+
 /**
  * device_pm_init - Initialize the PM-related part of a device object.
  * @dev: Device object being initialized.
@@ -513,12 +531,17 @@ static int legacy_resume(struct device *dev, int (*cb)(struct device *dev))
 static int device_resume(struct device *dev, pm_message_t state, bool async)
 {
 	int error = 0;
+	struct timer_list timer;
+	struct dpm_drv_wd_data data;
 
 	TRACE_DEVICE(dev);
 	TRACE_RESUME(0);
 
 	if (dev->parent && dev->parent->power.in_suspend)
 		dpm_wait(dev->parent, async);
+
+	dpm_drv_wd_start(dev, &timer, &data);
+
 	device_lock(dev);
 
 	dev->power.in_suspend = false;
@@ -558,6 +581,9 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
 
  End:
 	device_unlock(dev);
+
+	dpm_drv_wd_stop(&timer);
+
 	complete_all(&dev->power.completion);
 
 	TRACE_RESUME(error);
@@ -866,13 +892,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
 
 	dpm_wait_for_children(dev, async);
 
-	data.dev = dev;
-	data.tsk = get_current();
-	init_timer_on_stack(&timer);
-	timer.expires = jiffies + HZ * 12;
-	timer.function = dpm_drv_timeout;
-	timer.data = (unsigned long)&data;
-	add_timer(&timer);
+	dpm_drv_wd_start(dev, &timer, &data);
 
 	device_lock(dev);
 
@@ -921,8 +941,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
  End:
 	device_unlock(dev);
 
-	del_timer_sync(&timer);
-	destroy_timer_on_stack(&timer);
+	dpm_drv_wd_stop(&timer);
 
 	complete_all(&dev->power.completion);
 
