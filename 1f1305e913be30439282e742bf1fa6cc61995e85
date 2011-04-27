@@ -9,7 +9,44 @@ UUID: AAAA/n//+n4=
 Bytes: 293
 as mentioned y'day (just capture here for posterity), it would be nice if you let the heap implementation optionally provide a fault handler.. could be useful to track cache cleanness, and also probably other usages in cases where you have a GART/GTT or something that vaguely looks like one..
 
+File: drivers/gpu/ion/ion_priv.h
+
+97
+Wed Apr 27 15:00:17 2011 +0000
+Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///vY=
+Bytes: 41
+Do you mean kernel-space virtual address?
+
 File: include/linux/ion.h
+
+114
+Wed Apr 27 15:00:17 2011 +0000
+Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///vU=
+Bytes: 47
+Same question as below for ion_allocation_data.
+
+132
+Wed Apr 27 15:00:17 2011 +0000
+Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///vg=
+Bytes: 117
+Do you mean kernel-space virtual address?  If you really mean physical, return address should be an unsigned integer.
+
+203
+Wed Apr 27 15:00:17 2011 +0000
+Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///vs=
+Bytes: 210
+This is fine for a linear (1D) allocation.  Will the same API be used for other (e.g. 2D) allocation for architectures that have 2-dimensional memory layout?  If yes, how will the other dimensions be specified?
+
+204
+Wed Apr 27 15:00:17 2011 +0000
+Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///vQ=
+Bytes: 325
+If you need to allocate multiple co-aligned buffers, will this be expected to be done in one alloc call?  E.g. on some 2D architectures NV12/NV21/etc buffers need to be coaligned if they are mapped contiguously (as 1 buffer) to user space.  Other option is to require user space to always handle each sub-buffer individually.
 
 206
 Wed Apr 13 15:44:30 2011 +0000
