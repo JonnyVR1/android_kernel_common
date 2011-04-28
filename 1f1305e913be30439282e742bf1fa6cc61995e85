@@ -2,12 +2,45 @@ Revision: 1f1305e913be30439282e742bf1fa6cc61995e85
 Patch-set: 5
 File: drivers/gpu/ion/ion.c
 
+334
+Thu Apr 28 08:18:16 2011 +0000
+Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///oA=
+Bytes: 165
+If this function covers IOMMU mappings, this doesn't need to be pointer type but an integral type because CPU is unable to access the device address mapped for IOMMU
+
+516
+Thu Apr 28 08:18:16 2011 +0000
+Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///oE=
+Bytes: 180
+I think this is wrong.
+because the initial node, '*p' is not the node in kernel_clients.
+Thus the new ion_client is linked in user_clients but reordering is done in kernel_clients.
+
 654
 Wed Apr 13 15:44:30 2011 +0000
 Author: Rob Clark <1006181@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/n//+n4=
 Bytes: 293
 as mentioned y'day (just capture here for posterity), it would be nice if you let the heap implementation optionally provide a fault handler.. could be useful to track cache cleanness, and also probably other usages in cases where you have a GART/GTT or something that vaguely looks like one..
+
+774
+Thu Apr 28 08:18:16 2011 +0000
+Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///oQ=
+Bytes: 106
+Did you intended to let users know kernel virtual address as a handle?
+Doesn't it have a security problem?
+
+988
+Thu Apr 28 08:18:16 2011 +0000
+Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAA/3///oI=
+Bytes: 229
+I think you assumed that we need just one mapper for user's address space. I think we need more than one mapper for users.
+Users may want non-cacheable mapping rather than cacheable mapping.
+Otherwise, passing flags seems enough.
 
 File: drivers/gpu/ion/ion_priv.h
 
