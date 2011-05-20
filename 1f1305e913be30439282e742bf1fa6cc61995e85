@@ -2,12 +2,33 @@ Revision: 1f1305e913be30439282e742bf1fa6cc61995e85
 Patch-set: 5
 File: drivers/gpu/ion/ion.c
 
+35
+Fri May 20 06:32:24 2011 +0000
+Author: Venkata Dumpa <1004936@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABAH///+Q=
+Bytes: 17
+can it be static?
+
+61
+Fri May 20 06:32:24 2011 +0000
+Author: Venkata Dumpa <1004936@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABAH///zg=
+Bytes: 71
+order of member documentation is not as per order of members in struct.
+
 334
 Thu Apr 28 08:18:16 2011 +0000
 Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/3///oA=
 Bytes: 165
 If this function covers IOMMU mappings, this doesn't need to be pointer type but an integral type because CPU is unable to access the device address mapped for IOMMU
+
+460
+Fri May 20 06:32:24 2011 +0000
+Author: Venkata Dumpa <1004936@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABAn//+5g=
+Bytes: 134
+Does each client of ion mem manger need to pass a mapper? where does the clients that call this api in kernel supposed to get it from?
 
 498
 Thu May 19 06:51:03 2011 +0000
@@ -39,6 +60,13 @@ UUID: AAAA/3///oQ=
 Bytes: 106
 Did you intended to let users know kernel virtual address as a handle?
 Doesn't it have a security problem?
+
+801
+Fri May 20 06:32:24 2011 +0000
+Author: Venkata Dumpa <1004936@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABAn///C0=
+Bytes: 58
+Where would the file created here gets destroyed and when?
 
 988
 Thu Apr 28 08:18:16 2011 +0000
