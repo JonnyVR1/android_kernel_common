@@ -1,0 +1,8 @@
+Change-Id: I6990e9491e6dae6ade8f2fd0c6e3dd4b14c942aa
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Tue, 21 Dec 2010 15:00:37 -0700
+Reviewed-on: https://review.source.android.com/19619
+Project: kernel/common
+Branch: refs/heads/android-2.6.35

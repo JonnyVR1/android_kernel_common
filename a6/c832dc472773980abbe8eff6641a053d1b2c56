@@ -1,0 +1,8 @@
+Change-Id: Ia6c832dc472773980abbe8eff6641a053d1b2c56
+Code-Review+2: Dima Zavin <dima@android.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Fri, 02 Jul 2010 14:59:58 -0700
+Reviewed-on: https://review.source.android.com/15645
+Project: kernel/common
+Branch: refs/heads/android-2.6.35-rc3

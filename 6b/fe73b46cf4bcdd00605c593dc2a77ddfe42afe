@@ -1,0 +1,8 @@
+Change-Id: I6bfe73b46cf4bcdd00605c593dc2a77ddfe42afe
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Code-Review+2: Mike Lockwood <lockwood%android.com@gtempaccount.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Mon, 16 Aug 2010 12:14:37 -0700
+Reviewed-on: https://review.source.android.com/16501
+Project: kernel/common
+Branch: refs/heads/android-2.6.35
