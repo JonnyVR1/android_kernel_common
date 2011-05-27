@@ -101,10 +101,10 @@ static int goldfish_rtc_probe(struct platform_device *pdev)
 
 	return 0;
 
-	free_irq(qrtc->irq, qrtc);
 request_irq:
 	rtc_device_unregister(qrtc->rtc);
 err_rtc_device_register_failed:
+	free_irq(qrtc->irq, qrtc);
 err_no_irq:
 err_no_io_base:
 	kfree(qrtc);
