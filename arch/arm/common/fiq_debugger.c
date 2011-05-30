@@ -928,9 +928,11 @@ err_register_fiq:
 	if (pdata->uart_free)
 		pdata->uart_free(pdev);
 err_uart_init:
-	kfree(state);
-	if (state->clk)
+	if (state->clk) {
+		clk_disable(state->clk);
 		clk_put(state->clk);
+	}
+	kfree(state);
 	return ret;
 }
 
