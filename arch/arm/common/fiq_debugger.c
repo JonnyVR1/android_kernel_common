@@ -839,6 +839,11 @@ static int fiq_debugger_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 	state = kzalloc(sizeof(*state), GFP_KERNEL);
+	if (state == NULL) {
+		pr_err("Failed to allocate fiq debugger state\n");
+		return -ENOMEM;
+	}
+
 	state->handler.fiq = debug_fiq;
 	state->handler.resume = debug_resume;
 	setup_timer(&state->sleep_timer, sleep_timer_expired,
