@@ -28,7 +28,9 @@
 
 #include <asm/cputime.h>
 
+static spinlock_t idle_replace_lock;
 static void (*pm_idle_old)(void);
+static struct timer_list idle_replace_timer;
 static atomic_t active_count = ATOMIC_INIT(0);
 
 struct cpufreq_interactive_cpuinfo {
@@ -344,7 +346,9 @@ static void cpufreq_interactive_idle(void)
 	int pending;
 
 	if (!pcpu->governor_enabled) {
-		pm_idle_old();
+		if (pm_idle_old)
+			pm_idle_old();
+
 		return;
 	}
 
@@ -392,7 +396,9 @@ static void cpufreq_interactive_idle(void)
 		}
 	}
 
-	pm_idle_old();
+	if (pm_idle_old)
+		pm_idle_old();
+
 	pcpu->idling = 0;
 	smp_wmb();
 
@@ -527,6 +533,19 @@ static void cpufreq_interactive_freq_down(struct work_struct *work)
 	}
 }
 
+static void cpufreq_interactive_set_idle(unsigned long data)
+{
+	spin_lock(&idle_replace_lock);
+
+	if (!pm_idle_old) {
+		pm_idle_old = pm_idle;
+		pm_idle = cpufreq_interactive_idle;
+	}
+
+	del_timer(&idle_replace_timer);
+	spin_unlock(&idle_replace_lock);
+}
+
 static ssize_t show_go_maxspeed_load(struct kobject *kobj,
 				     struct attribute *attr, char *buf)
 {
@@ -600,8 +619,10 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *new_policy,
 		if (rc)
 			return rc;
 
-		pm_idle_old = pm_idle;
-		pm_idle = cpufreq_interactive_idle;
+		init_timer(&idle_replace_timer);
+		idle_replace_timer.function = cpufreq_interactive_set_idle;
+		idle_replace_timer.expires = jiffies + msecs_to_jiffies(2000);
+		add_timer(&idle_replace_timer);
 		break;
 
 	case CPUFREQ_GOV_STOP:
@@ -623,7 +644,16 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *new_policy,
 		sysfs_remove_group(cpufreq_global_kobject,
 				&interactive_attr_group);
 
-		pm_idle = pm_idle_old;
+		spin_lock(&idle_replace_lock);
+
+		if (pm_idle_old) {
+			pm_idle = pm_idle_old;
+			pm_idle_old = NULL;
+		} else {
+			del_timer(&idle_replace_timer);
+		}
+
+		spin_unlock(&idle_replace_lock);
 		break;
 
 	case CPUFREQ_GOV_LIMITS:
@@ -675,6 +705,7 @@ static int __init cpufreq_interactive_init(void)
 
 	spin_lock_init(&up_cpumask_lock);
 	spin_lock_init(&down_cpumask_lock);
+	spin_lock_init(&idle_replace_lock);
 
 #if DEBUG
 	spin_lock_init(&dbgpr_lock);
