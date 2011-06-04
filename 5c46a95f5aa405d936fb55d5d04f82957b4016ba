@@ -1,0 +1,95 @@
+Revision: 5c46a95f5aa405d936fb55d5d04f82957b4016ba
+Patch-set: 1
+File: drivers/mmc/core/assd.c
+
+33
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///hw=
+Bytes: 18
+this is not needed
+
+57
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///hs=
+Bytes: 23
+either define it or not
+
+59
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///ho=
+Bytes: 22
+what is this used for?
+
+87
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///hk=
+Bytes: 44
+what happens of you have more than one host?
+
+105
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///hg=
+Bytes: 63
+why are you dumping more than 1023 character to the kernel log?
+
+145
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///g8=
+Bytes: 92
+what does this comment mean? That 1 means group 2? If so make an enum and pass the name here
+
+207
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///g0=
+Bytes: 33
+can you use msleep_interruptible?
+
+225
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///gk=
+Bytes: 15
+use a goto here
+
+252
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///gc=
+Bytes: 28
+what does this comment mean?
+
+413
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///gM=
+Bytes: 60
+if buf came from user-space it should be tagged with __user.
+
+443
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///gI=
+Bytes: 7
+msleep?
+
+478
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///gE=
+Bytes: 3
+...
+
+550
+Sat Jun 04 01:21:11 2011 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABB3///f8=
+Bytes: 90
+did you define thise ioctl numbers? If so put them in a header file and use the _IO macros
+
