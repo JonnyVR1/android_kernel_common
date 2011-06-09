@@ -278,6 +278,13 @@ static void report_pen_events(struct w8001 *w8001, struct w8001_coord *coord)
 	input_report_key(dev, BTN_TOUCH, coord->tsw);
 	input_report_key(dev, BTN_STYLUS, coord->f1);
 	input_report_key(dev, w8001->type, coord->rdy);
+
+	input_report_abs(dev, ABS_MT_POSITION_X, coord->x);
+	input_report_abs(dev, ABS_MT_POSITION_Y, coord->y);
+	input_report_abs(dev, ABS_MT_PRESSURE, coord->pen_pressure);
+	input_report_abs(dev, ABS_MT_TOOL_TYPE, MT_TOOL_PEN);
+
+	input_mt_sync(dev);
 	input_sync(dev);
 
 	if (!coord->rdy)
@@ -298,6 +305,11 @@ static void report_single_touch(struct w8001 *w8001, struct w8001_coord *coord)
 	input_report_key(dev, BTN_TOUCH, coord->tsw);
 	input_report_key(dev, BTN_TOOL_FINGER, coord->tsw);
 
+	input_report_abs(dev, ABS_MT_POSITION_X, x);
+	input_report_abs(dev, ABS_MT_POSITION_Y, y);
+	input_report_abs(dev, ABS_MT_TOOL_TYPE, MT_TOOL_FINGER);
+
+	input_mt_sync(dev);
 	input_sync(dev);
 
 	w8001->type = coord->tsw ? BTN_TOOL_FINGER : KEY_RESERVED;
@@ -485,6 +497,8 @@ static int w8001_setup(struct w8001 *w8001)
 						0, touch.y, 0, 0);
 			input_set_abs_params(dev, ABS_MT_TOOL_TYPE,
 						0, MT_TOOL_MAX, 0, 0);
+			input_set_abs_params(dev, ABS_MT_PRESSURE,
+						0, coord.pen_pressure, 0, 0);
 
 			strlcat(w8001->name, " 2FG", sizeof(w8001->name));
 			if (w8001->max_pen_x && w8001->max_pen_y)
