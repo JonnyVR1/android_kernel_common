@@ -279,10 +279,12 @@ static void report_pen_events(struct w8001 *w8001, struct w8001_coord *coord)
 	input_report_key(dev, BTN_STYLUS, coord->f1);
 	input_report_key(dev, w8001->type, coord->rdy);
 
-	input_report_abs(dev, ABS_MT_POSITION_X, coord->x);
-	input_report_abs(dev, ABS_MT_POSITION_Y, coord->y);
-	input_report_abs(dev, ABS_MT_PRESSURE, coord->pen_pressure);
-	input_report_abs(dev, ABS_MT_TOOL_TYPE, MT_TOOL_PEN);
+	if (coord->pen_pressure > 0) {
+		input_report_abs(dev, ABS_MT_POSITION_X, coord->x);
+		input_report_abs(dev, ABS_MT_POSITION_Y, coord->y);
+		input_report_abs(dev, ABS_MT_PRESSURE, coord->pen_pressure);
+		input_report_abs(dev, ABS_MT_TOOL_TYPE, MT_TOOL_PEN);
+	}
 
 	input_mt_sync(dev);
 	input_sync(dev);
