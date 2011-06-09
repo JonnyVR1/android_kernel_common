@@ -377,7 +377,10 @@ static irqreturn_t w8001_interrupt(struct serio *serio,
 	/* 2 finger touch packet */
 	case W8001_PKTLEN_TOUCH2FG - 1:
 		w8001->idx = 0;
-		parse_multi_touch(w8001);
+		if (w8001->type != BTN_TOOL_PEN &&
+		    w8001->type != BTN_TOOL_RUBBER) {
+			parse_multi_touch(w8001);
+		}
 		break;
 	}
 
