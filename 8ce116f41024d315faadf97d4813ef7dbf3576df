@@ -1,0 +1,20 @@
+Revision: 8ce116f41024d315faadf97d4813ef7dbf3576df
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/Makefile
+
+26
+Mon Jun 13 19:37:44 2011 +0000
+Author: Howard M. Harte <1000582@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCH///IY=
+Bytes: 44
+Let's remove the ANDROID #ifdefs altogether.
+
+File: drivers/net/wireless/bcmdhd/bcmsdh_sdmmc.c
+
+680
+Mon Jun 13 19:37:44 2011 +0000
+Author: Howard M. Harte <1000582@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCH///IQ=
+Bytes: 43
+Let's remove the ANDROID #ifdef altogether.
+
