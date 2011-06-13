@@ -1,0 +1,9 @@
+Change-Id: I864c15716c38cbb8e7936933e57f50c755c2d17d
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Code-Review+1: Franky Lin <frankyl@broadcom.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Mon, 13 Jun 2011 10:23:20 -0700
+Reviewed-on: https://review.source.android.com/23696
+Project: kernel/common
+Branch: refs/heads/linux-bcm43xx-2.6.39
