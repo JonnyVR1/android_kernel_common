@@ -1,0 +1,11 @@
+Revision: c454d826a5b02019ecc08aacfb4954589dfa4e36
+Patch-set: 2
+File: net/netfilter/xt_qtaguid.c
+
+722
+Wed Jun 15 23:36:03 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCX///tA=
+Bytes: 40
+you can update the comment now... Yay :)
+
