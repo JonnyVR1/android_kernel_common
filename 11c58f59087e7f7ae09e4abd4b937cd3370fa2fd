@@ -51,6 +51,13 @@ UUID: AAABCX///wo=
 Bytes: 4
 NULL
 
+318
+Wed Jun 15 22:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCX///wU=
+Bytes: 25
+newline before this line.
+
 345
 Wed Jun 15 22:41:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
