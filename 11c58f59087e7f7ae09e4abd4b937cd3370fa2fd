@@ -145,3 +145,21 @@ UUID: AAABCX///tI=
 Bytes: 150
 no, it makes the function names "symmetrical". You can also get rid of this function and change line 378 to point to yours, but I don't see the point.
 
+345
+Wed Jun 15 23:56:33 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///tI=
+UUID: AAABCX///sw=
+Bytes: 397
+Done
+
+Not only the names, but also the call graph.
+
+iptables calls
+  socket_mt*_v() which calls
+     socket_match*()
+
+Then looking at socket_match4() and then seeing socket_match6() one can quickly see "same name" + "similar layout" probably "same functionality"
+
+But with the optim, one has to look into socket_mt6_v1() to determine that it is actually very similar to the socket_match() of ipv4.
+
