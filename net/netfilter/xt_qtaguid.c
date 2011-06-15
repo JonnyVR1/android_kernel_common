@@ -17,17 +17,12 @@
 #include <linux/netfilter/xt_qtaguid.h>
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
-#include <net/icmp.h>
-#include <net/netfilter/nf_tproxy_core.h>
-#include <net/protocol.h>
 #include <net/sock.h>
 #include <net/tcp.h>
 #include <net/udp.h>
 
-#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
-#define XT_SOCKET_HAVE_CONNTRACK 1
-#include <net/netfilter/nf_conntrack.h>
-#endif
+#include <linux/netfilter/xt_socket.h>
+
 
 /*---------------------------------------------------------------------------*/
 /*
@@ -734,137 +729,20 @@ err:
  * TODO: once this file goes upstream, change xt_socket.c to export the needed
  * functionnality, and use here.
  */
-static int
-extract_icmp_fields(const struct sk_buff *skb,
-		    u8 *protocol,
-		    __be32 *raddr,
-		    __be32 *laddr,
-		    __be16 *rport,
-		    __be16 *lport)
-{
-	unsigned int outside_hdrlen = ip_hdrlen(skb);
-	struct iphdr *inside_iph, _inside_iph;
-	struct icmphdr *icmph, _icmph;
-	__be16 *ports, _ports[2];
-
-	icmph = skb_header_pointer(skb, outside_hdrlen,
-				   sizeof(_icmph), &_icmph);
-	if (icmph == NULL)
-		return 1;
-
-	switch (icmph->type) {
-	case ICMP_DEST_UNREACH:
-	case ICMP_SOURCE_QUENCH:
-	case ICMP_REDIRECT:
-	case ICMP_TIME_EXCEEDED:
-	case ICMP_PARAMETERPROB:
-		break;
-	default:
-		return 1;
-	}
-
-	inside_iph = skb_header_pointer(skb, outside_hdrlen +
-					sizeof(struct icmphdr),
-					sizeof(_inside_iph), &_inside_iph);
-	if (inside_iph == NULL)
-		return 1;
-
-	if (inside_iph->protocol != IPPROTO_TCP &&
-	    inside_iph->protocol != IPPROTO_UDP)
-		return 1;
-
-	ports = skb_header_pointer(skb, outside_hdrlen +
-				   sizeof(struct icmphdr) +
-				   (inside_iph->ihl << 2),
-				   sizeof(_ports), &_ports);
-	if (ports == NULL)
-		return 1;
-
-	/* the inside IP packet is the one quoted from our side, thus
-	 * its saddr is the local address */
-	*protocol = inside_iph->protocol;
-	*laddr = inside_iph->saddr;
-	*lport = ports[0];
-	*raddr = inside_iph->daddr;
-	*rport = ports[1];
-
-	return 0;
-}
-
 static struct sock *qtaguid_find_sk(const struct sk_buff *skb,
-				struct xt_action_param *par)
+				    struct xt_action_param *par)
 {
-	const struct iphdr *iph = ip_hdr(skb);
-	struct udphdr _hdr, *hp = NULL;
 	struct sock *sk;
-	__be32 daddr, saddr;
-	__be16 dport, sport;
-	u8 protocol;
-#ifdef XT_SOCKET_HAVE_CONNTRACK
-	struct nf_conn const *ct;
-	enum ip_conntrack_info ctinfo;
-#endif
 
-	if (iph->protocol == IPPROTO_UDP || iph->protocol == IPPROTO_TCP) {
-		hp = skb_header_pointer(skb, ip_hdrlen(skb),
-					sizeof(_hdr), &_hdr);
-		if (hp == NULL)
-			return NULL;
-
-		protocol = iph->protocol;
-		saddr = iph->saddr;
-		sport = hp->source;
-		daddr = iph->daddr;
-		dport = hp->dest;
-
-	} else if (iph->protocol == IPPROTO_ICMP) {
-		if (extract_icmp_fields(skb, &protocol, &saddr, &daddr,
-					&sport, &dport))
-			return NULL;
-	} else {
-		return NULL;
-	}
-
-#ifdef XT_SOCKET_HAVE_CONNTRACK
-	/* Do the lookup with the original socket address in case this is a
-	 * reply packet of an established SNAT-ted connection. */
-
-	ct = nf_ct_get(skb, &ctinfo);
-	if (ct && !nf_ct_is_untracked(ct) &&
-	    ((iph->protocol != IPPROTO_ICMP &&
-	      ctinfo == IP_CT_IS_REPLY + IP_CT_ESTABLISHED) ||
-	     (iph->protocol == IPPROTO_ICMP &&
-	      ctinfo == IP_CT_IS_REPLY + IP_CT_RELATED)) &&
-	    (ct->status & IPS_SRC_NAT_DONE)) {
-
-		daddr = ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3.ip;
-		dport = (iph->protocol == IPPROTO_TCP) ?
-			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.tcp.port :
-			ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u.udp.port;
-	}
-#endif
-
-	sk = nf_tproxy_get_sock_v4(dev_net(skb->dev), protocol,
-				   saddr, daddr, sport, dport, par->in, false);
-	pr_debug("xt_qtaguid: proto %u %08x:%u -> %08x:%u (orig %08x:%u) "
-		"sock %p->sk_state=%d\n",
-		protocol, ntohl(saddr), ntohs(sport),
-		ntohl(daddr), ntohs(dport),
-		ntohl(iph->daddr), hp ? ntohs(hp->dest) : 0,
-		sk, sk ? sk->sk_state : -1);
-	/* Seems to be issues on the file ptr for TCP+TIME_WAIT SKs. Zap.
+	sk = xt_socket_get4_sk(skb, par);
+	/* TODO: is this fixed?
+	 * Seems to be issues on the file ptr for TCP+TIME_WAIT SKs.
 	 * http://kerneltrap.org/mailarchive/linux-netdev/2010/10/21/6287959
 	 */
-	if (sk) {
-		pr_debug("xt_qtaguid: %p->sk_proto=%u vs protocol=%u "
-			"->sk_state=%d\n", sk, sk->sk_protocol, protocol,
+	if (sk)
+		pr_debug("xt_qtaguid: %p->sk_proto=%u "
+			"->sk_state=%d\n", sk, sk->sk_protocol,
 			sk->sk_state);
-		if ((protocol == IPPROTO_TCP || sk->sk_protocol == IPPROTO_TCP)
-			&& (sk->sk_state == TCP_TIME_WAIT)) {
-			nf_tproxy_put_sock(sk);
-			sk = NULL;
-		}
-	}
 	return sk;
 }
 
@@ -1003,7 +881,7 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 
 put_sock_ret_res:
 	if (got_sock)
-		nf_tproxy_put_sock(sk);
+		xt_socket_put_sk(sk);
 ret_res:
 	pr_debug("xt_qtaguid[%d]: left %d\n", par->hooknum, res);
 	return res;
