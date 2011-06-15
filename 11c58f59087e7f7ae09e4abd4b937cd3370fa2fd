@@ -137,3 +137,11 @@ UUID: AAABCX///vg=
 Bytes: 49
 It makes ipv4 and ipv6 handling more symmetrical.
 
+345
+Wed Jun 15 23:30:48 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///vg=
+UUID: AAABCX///tI=
+Bytes: 150
+no, it makes the function names "symmetrical". You can also get rid of this function and change line 378 to point to yours, but I don't see the point.
+
