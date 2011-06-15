@@ -30,12 +30,28 @@ UUID: AAABB3///hk=
 Bytes: 44
 what happens of you have more than one host?
 
+87
+Wed Jun 15 10:03:50 2011 +0000
+Author: Robert Hockauf <1002811@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABB3///hk=
+UUID: AAABCX///3o=
+Bytes: 482
+For each SD memory card the function assd_probe is called. This function ensures that only one ASSD capable SD memory card is used. The variable assd_host holds the host where the ASSD capable SD memory card is inserted. If more than one ASSD capable SD memory card is available, only the one that gets the first probe is used. The others are ignored. In most cases you'll have not more than one SD memory card slot, that's why only one ASSD capable SD memory card is supported yet.
+
 105
 Sat Jun 04 01:21:11 2011 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABB3///hg=
 Bytes: 63
 why are you dumping more than 1023 character to the kernel log?
+
+105
+Wed Jun 15 10:03:50 2011 +0000
+Author: Robert Hockauf <1002811@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABB3///hg=
+UUID: AAABCX///3k=
+Bytes: 264
+This function is used for debug only. It shows a Secure Token. The maximum size of a Secure Token is 510 bytes. Written in hexadecimal form (two characters per byte) the maximum size is 1020 bytes. Together with seven bytes overhead the maximum size is 1027 bytes.
 
 145
 Sat Jun 04 01:21:11 2011 +0000
