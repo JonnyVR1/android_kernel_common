@@ -9,12 +9,28 @@ UUID: AAABCX///w8=
 Bytes: 12
 return NULL?
 
+123
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///w8=
+UUID: AAABCX///wM=
+Bytes: 4
+Done
+
 134
 Wed Jun 15 22:41:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABCX///xA=
 Bytes: 11
 return NULL
+
+134
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///xA=
+UUID: AAABCX///wE=
+Bytes: 4
+Done
 
 136
 Wed Jun 15 22:41:15 2011 +0000
@@ -23,12 +39,28 @@ UUID: AAABCX///w4=
 Bytes: 12
 return NULL;
 
+136
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///w4=
+UUID: AAABCX///wA=
+Bytes: 4
+Done
+
 175
 Wed Jun 15 22:41:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABCX///w0=
 Bytes: 35
 missing a newline before this line.
+
+175
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///w0=
+UUID: AAABCX///v4=
+Bytes: 4
+Done
 
 287
 Wed Jun 15 22:41:15 2011 +0000
@@ -37,12 +69,28 @@ UUID: AAABCX///ww=
 Bytes: 4
 NULL
 
+287
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///ww=
+UUID: AAABCX///vw=
+Bytes: 4
+Done
+
 297
 Wed Jun 15 22:41:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABCX///ws=
 Bytes: 4
 NULL
+
+297
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///ws=
+UUID: AAABCX///vs=
+Bytes: 4
+Done
 
 299
 Wed Jun 15 22:41:15 2011 +0000
@@ -51,6 +99,14 @@ UUID: AAABCX///wo=
 Bytes: 4
 NULL
 
+299
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///wo=
+UUID: AAABCX///vk=
+Bytes: 4
+Done
+
 318
 Wed Jun 15 22:47:45 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,10 +114,26 @@ UUID: AAABCX///wU=
 Bytes: 25
 newline before this line.
 
+318
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///wU=
+UUID: AAABCX///vA=
+Bytes: 4
+Done
+
 345
 Wed Jun 15 22:41:15 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABCX///wk=
 Bytes: 118
 why do you need the extra function here? why can't you just call the above function socket_mt6_v1 and remove this one?
+
+345
+Wed Jun 15 23:11:40 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABCX///wk=
+UUID: AAABCX///vg=
+Bytes: 49
+It makes ipv4 and ipv6 handling more symmetrical.
 
