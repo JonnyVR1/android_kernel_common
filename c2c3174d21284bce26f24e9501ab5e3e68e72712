@@ -1,0 +1,11 @@
+Revision: c2c3174d21284bce26f24e9501ab5e3e68e72712
+Patch-set: 1
+File: drivers/net/wireless/bcm4329/linux_osl.c
+
+363
+Thu Jun 16 16:51:25 2011 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABC3////o=
+Bytes: 118
+The "trick" is used that skb_8k are placed just after skb_4k so it is possible for free purpose to use skb_4k pointer.
+
