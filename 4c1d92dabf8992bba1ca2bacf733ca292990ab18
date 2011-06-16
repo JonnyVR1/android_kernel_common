@@ -1,0 +1,11 @@
+Revision: 4c1d92dabf8992bba1ca2bacf733ca292990ab18
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_custom_gpio.c
+
+256
+Thu Jun 16 16:54:46 2011 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABC3////Y=
+Bytes: 25
+As we spoke, it is 2.6.36
+
