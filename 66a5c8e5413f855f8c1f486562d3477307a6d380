@@ -1,0 +1,18 @@
+Revision: 66a5c8e5413f855f8c1f486562d3477307a6d380
+Patch-set: 4
+File: net/netfilter/Kconfig
+
+941
+Thu Jun 16 00:20:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCX///sI=
+Bytes: 20
+typo, onwer -> owner
+
+945
+Thu Jun 16 00:20:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABCX///sA=
+Bytes: 138
+is the reason why we are replacing "owner" because userspace tools assume "owner" exists? I'm not sure I understand why we are doing that?
+
