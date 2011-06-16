@@ -182,7 +182,7 @@ void *wifi_get_country_code(char *ccode)
 	}
 	return NULL;
 }
-#endif 
+#endif
 
 static int wifi_probe(struct platform_device *pdev)
 {
