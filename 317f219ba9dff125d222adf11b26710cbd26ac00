@@ -1,0 +1,11 @@
+Revision: 317f219ba9dff125d222adf11b26710cbd26ac00
+Patch-set: 6
+File: net/netfilter/xt_qtaguid.c
+
+447
+Mon Jun 20 19:16:46 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABDX///pw=
+Bytes: 29
+newline between ) and return.
+
