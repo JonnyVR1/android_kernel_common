@@ -1,0 +1,8 @@
+Change-Id: Ifa150fc81938fda9247b595de74e981ac6b1888b
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Thu, 23 Jun 2011 11:26:52 -0700
+Reviewed-on: https://review.source.android.com/24060
+Project: kernel/common
+Branch: refs/heads/android-3.0
