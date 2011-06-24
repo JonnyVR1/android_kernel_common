@@ -1,0 +1,20 @@
+Revision: 47df4f25aa90dafdee99bf2024549d043b67d1ce
+Patch-set: 1
+File: include/linux/cpu.h
+
+180
+Fri Jun 24 22:13:41 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABDX//+ak=
+Bytes: 59
+don't extern idle_notifier, add an idle_notifier_call_chain
+
+File: kernel/cpu.c
+
+598
+Fri Jun 24 22:13:41 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABDX//+ag=
+Bytes: 31
+put this at the top of the file
+
