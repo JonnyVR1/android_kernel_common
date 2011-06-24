@@ -1,0 +1,11 @@
+Revision: 2c33879b16298abf53aa447fb07a7779c36213cf
+Patch-set: 1
+File: arch/arm/kernel/process.c
+
+187
+Fri Jun 24 22:14:31 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABDX//+aY=
+Bytes: 28
+use idle_notifier_call_chain
+
