@@ -1,0 +1,11 @@
+Revision: 0bf2a3d9bba6c27ce9a02b0a675cd556b1cb24a0
+Patch-set: 1
+File: arch/arm/kernel/leds.c
+
+135
+Fri Jun 24 22:16:38 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABDX//+aQ=
+Bytes: 66
+no need to check ret again, just combine this with the block above
+
