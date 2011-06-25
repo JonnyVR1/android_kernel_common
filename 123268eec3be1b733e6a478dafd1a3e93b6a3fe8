@@ -1,0 +1,11 @@
+Revision: 123268eec3be1b733e6a478dafd1a3e93b6a3fe8
+Patch-set: 2
+File: arch/x86/kernel/process_64.c
+
+62
+Sat Jun 25 02:22:01 2011 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEH///+4=
+Bytes: 44
+put the NULL inside idle_notifier_call_chain
+
