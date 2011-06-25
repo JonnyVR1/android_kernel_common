@@ -9,6 +9,14 @@ UUID: AAABDX//+ak=
 Bytes: 59
 don't extern idle_notifier, add an idle_notifier_call_chain
 
+180
+Sat Jun 25 02:18:40 2011 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABDX//+ak=
+UUID: AAABEH////U=
+Bytes: 4
+Done
+
 File: kernel/cpu.c
 
 598
@@ -17,4 +25,12 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABDX//+ag=
 Bytes: 31
 put this at the top of the file
+
+598
+Sat Jun 25 02:18:40 2011 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABDX//+ag=
+UUID: AAABEH////M=
+Bytes: 75
+existing entries already grouped with functions, we agreed to leave it here
 
