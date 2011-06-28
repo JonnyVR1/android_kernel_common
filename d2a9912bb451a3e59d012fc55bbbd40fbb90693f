@@ -1,0 +1,18 @@
+Revision: d2a9912bb451a3e59d012fc55bbbd40fbb90693f
+Patch-set: 1
+File: net/netfilter/xt_qtaguid.c
+
+739
+Tue Jun 28 05:03:50 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///4s=
+Bytes: 25
+extra space in front of &
+
+747
+Tue Jun 28 05:03:50 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///4w=
+Bytes: 13
+missing a tab
+
