@@ -1,0 +1,11 @@
+Revision: bcdf51c6acdd5bbe96aa4fab7f44e8f25f8f1858
+Patch-set: 2
+File: net/netfilter/xt_qtaguid.c
+
+953
+Tue Jun 28 06:39:49 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///3g=
+Bytes: 36
+won't this only have a limit of 256?
+
