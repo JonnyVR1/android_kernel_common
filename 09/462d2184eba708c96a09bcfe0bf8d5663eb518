@@ -1,0 +1,8 @@
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Code-Review+1: Howard M. Harte <hharte@broadcom.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Wed, 29 Jun 2011 15:23:49 -0700
+Reviewed-on: https://review.source.android.com/24232
+Project: kernel/common
+Branch: refs/heads/linux-bcm43xx-2.6.39
