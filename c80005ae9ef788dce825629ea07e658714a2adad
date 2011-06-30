@@ -1,0 +1,18 @@
+Revision: c80005ae9ef788dce825629ea07e658714a2adad
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+298
+Thu Jun 30 07:40:32 2011 +0000
+Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Us=
+Bytes: 24
+^heap->prio^heap->type ?
+
+377
+Thu Jun 30 07:40:32 2011 +0000
+Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///UM=
+Bytes: 38
+mutex still held (6 places next 3 fns)
+
