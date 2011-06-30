@@ -37,6 +37,14 @@ UUID: AAABEX///Us=
 Bytes: 24
 ^heap->prio^heap->type ?
 
+298
+Thu Jun 30 17:57:35 2011 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///Us=
+UUID: AAABEX///Qk=
+Bytes: 156
+it's a bad name -- i'm going to change it to id.  type is insufficient as a platform might have multiple heaps of the same type (ie multiple carveout heaps)
+
 377
 Thu Jun 30 07:40:32 2011 +0000
 Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -57,6 +65,14 @@ Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABEX///Tg=
 Bytes: 205
 should this be a put? Are you guaranteed that noone else has a ref on the handle? I guess if they did then they'd have a ref on the client too? Maybe put a BUG_ON here, or in destroy if ->ref->cnt is != 0?
+
+668
+Thu Jun 30 17:57:35 2011 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///Tg=
+UUID: AAABEX///Qc=
+Bytes: 257
+handles are client local -- the client is getting destroyed, the handles should too. the underlying buffers will be refcounted correctly (theoretically you could call handle_put n times where n is the number of times your referenced it but that seems silly.
 
 848
 Thu Jun 30 08:47:45 2011 +0000
