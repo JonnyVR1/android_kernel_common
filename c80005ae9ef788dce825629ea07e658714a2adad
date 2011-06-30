@@ -2,6 +2,27 @@ Revision: c80005ae9ef788dce825629ea07e658714a2adad
 Patch-set: 1
 File: drivers/gpu/ion/ion.c
 
+85
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Tw=
+Bytes: 7
+s/an/a/
+
+90
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Ts=
+Bytes: 40
+update comment for current struct fields
+
+124
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///To=
+Bytes: 67
+I'd bug here since we'd want to find out if it ever happens, right?
+
 298
 Thu Jun 30 07:40:32 2011 +0000
 Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -15,4 +36,57 @@ Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABEX///UM=
 Bytes: 38
 mutex still held (6 places next 3 fns)
+
+623
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Tk=
+Bytes: 67
+maybe add a helper function to insert a client given a client tree?
+
+668
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Tg=
+Bytes: 205
+should this be a put? Are you guaranteed that noone else has a ref on the handle? I guess if they did then they'd have a ref on the client too? Maybe put a BUG_ON here, or in destroy if ->ref->cnt is != 0?
+
+848
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Tc=
+Bytes: 58
+need to drop the mutex, will need a new err label probably
+
+942
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///TY=
+Bytes: 17
+drop client->lock
+
+File: drivers/gpu/ion/ion_carveout_heap.c
+
+55
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///TQ=
+Bytes: 64
+should be a nop if addr == ION_CARVEOUT_ALLOCATE_FAIL, or a WARN
+
+132
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///TM=
+Bytes: 30
+newline after var declarations
+
+File: include/linux/ion.h
+
+55
+Thu Jun 30 08:47:45 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///TI=
+Bytes: 69
+why not just defined it in the enum as ION_NUM_HEAPS = ION_HEAP_END ?
 
