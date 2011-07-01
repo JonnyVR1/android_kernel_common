@@ -9,6 +9,19 @@ UUID: AAABEX///HI=
 Bytes: 106
 is the conversion to irq disabling ones really necessary? I thought the network stack was full of BH love?
 
+53
+Fri Jul 01 07:15:26 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///HI=
+UUID: AAABEX///GY=
+Bytes: 292
+I thought the _bh stuff was just old.
+
+And then wasn't sure if it was sufficient ... the netfilter Oopses I have where with asm_do_IRQ().
+But now that you mention BH-love I checked again and the asm_do_IRQ are all followed by soft_IRQ. So  *_bh would work in these cases.
+
+I'll put them back.
+
 144
 Fri Jul 01 06:11:25 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +29,34 @@ UUID: AAABEX///G4=
 Bytes: 16
 IS_ERR_OR_NULL()
 
+144
+Fri Jul 01 07:15:26 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///G4=
+UUID: AAABEX///Gc=
+Bytes: 4
+Done
+
 225
 Fri Jul 01 06:11:25 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAABEX///Gs=
 Bytes: 39
 why did you remove q->quota = e->quota?
+
+225
+Fri Jul 01 07:15:26 2011 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///Gs=
+UUID: AAABEX///Gg=
+Bytes: 404
+Copying of current quota back to the iptable's
+struct matchinfo is useless:
+  - those are per CPU: they will change randomly based on which
+    cpu gets to update the value.
+  - they prevent matching a rule: e.g.
+      -A chain -m quota2 --name q1 --quota 123
+     can't be followed by
+      -D chain -m quota2 --name q1 --quota 123
+    as the 123 will be compared to the struct matchinfo's quota member.
 
