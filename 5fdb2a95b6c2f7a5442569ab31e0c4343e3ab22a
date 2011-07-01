@@ -1,0 +1,25 @@
+Revision: 5fdb2a95b6c2f7a5442569ab31e0c4343e3ab22a
+Patch-set: 1
+File: net/netfilter/xt_quota2.c
+
+53
+Fri Jul 01 06:11:25 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///HI=
+Bytes: 106
+is the conversion to irq disabling ones really necessary? I thought the network stack was full of BH love?
+
+144
+Fri Jul 01 06:11:25 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///G4=
+Bytes: 16
+IS_ERR_OR_NULL()
+
+225
+Fri Jul 01 06:11:25 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX///Gs=
+Bytes: 39
+why did you remove q->quota = e->quota?
+
