@@ -22,6 +22,14 @@ But now that you mention BH-love I checked again and the asm_do_IRQ are all foll
 
 I'll put them back.
 
+53
+Fri Jul 01 07:24:58 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///GY=
+UUID: AAABEX///GA=
+Bytes: 285
+i'm honestly not sure about bh vs not bh, I just know the network stack is full of _bh poop. Do you ever get called from irq context? Sorry, I didn't mean to make you thrash. I'm not totally sure what the right thing to do here is as i don't know netfilter and when what gets called :(
+
 144
 Fri Jul 01 06:11:25 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -59,4 +67,12 @@ struct matchinfo is useless:
      can't be followed by
       -D chain -m quota2 --name q1 --quota 123
     as the 123 will be compared to the struct matchinfo's quota member.
+
+225
+Fri Jul 01 07:24:58 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAABEX///Gg=
+UUID: AAABEX///F4=
+Bytes: 6
+ah, ok
 
