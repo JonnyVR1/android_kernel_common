@@ -1,0 +1,8 @@
+Change-Id: Ib9ea0a971aad8721742ab2a3962350125260b6c0
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Verified+1: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-by: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Submitted-at: Fri, 01 Jul 2011 17:06:54 -0700
+Reviewed-on: https://review.source.android.com/24307
+Project: kernel/common
+Branch: refs/heads/android-3.0
