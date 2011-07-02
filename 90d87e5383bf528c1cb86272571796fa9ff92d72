@@ -2,6 +2,13 @@ Revision: 90d87e5383bf528c1cb86272571796fa9ff92d72
 Patch-set: 1
 File: drivers/gpu/ion/ion.c
 
+649
+Sat Jul 02 03:55:02 2011 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX//+8Q=
+Bytes: 103
+you'll leak your ref on the task. you have to put_task_struct if you looked up the client successfully.
+
 650
 Sat Jul 02 03:53:20 2011 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
