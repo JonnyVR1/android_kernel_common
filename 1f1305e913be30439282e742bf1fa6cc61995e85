@@ -53,6 +53,13 @@ UUID: AAAA/n//+n4=
 Bytes: 293
 as mentioned y'day (just capture here for posterity), it would be nice if you let the heap implementation optionally provide a fault handler.. could be useful to track cache cleanness, and also probably other usages in cases where you have a GART/GTT or something that vaguely looks like one..
 
+697
+Mon Jul 04 13:57:44 2011 +0000
+Author: Mark Underwood <1006840@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX//+xA=
+Bytes: 52
+Why are we getting a kernel address for this buffer?
+
 774
 Thu Apr 28 08:18:16 2011 +0000
 Author: KyongHo Cho <1006275@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -77,6 +84,24 @@ I think you assumed that we need just one mapper for user's address space. I thi
 Users may want non-cacheable mapping rather than cacheable mapping.
 Otherwise, passing flags seems enough.
 
+File: drivers/gpu/ion/ion_heap.c
+
+31
+Mon Jul 04 13:57:44 2011 +0000
+Author: Mark Underwood <1006840@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX//+xM=
+Bytes: 225
+Is the intention to stick with switch cases for the different heap types? It would be cleaner if each heap registered a structure of callbacks. This would also allow heaps to come and go which might be required in the future.
+
+File: drivers/gpu/ion/ion_mapper.c
+
+29
+Mon Jul 04 13:57:44 2011 +0000
+Author: Mark Underwood <1006840@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX//+xE=
+Bytes: 226
+Is the intention to stick with switch cases for the different mappers? It would be cleaner if each mapper registered a structure of callbacks. This would also allow mappers to come and go which might be required in the future.
+
 File: drivers/gpu/ion/ion_priv.h
 
 97
@@ -85,6 +110,17 @@ Author: Lajos Molnar <1006279@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAA/3///vY=
 Bytes: 41
 Do you mean kernel-space virtual address?
+
+File: drivers/gpu/ion/tegra/tegra_ion.c
+
+34
+Mon Jul 04 13:57:44 2011 +0000
+Author: Mark Underwood <1006840@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAABEX//+xI=
+Bytes: 412
+I wonder if some of this init could be done at subsystem init time. It would save having the same code duplicated for each system.
+
+I'm also wondering who's job it is to do this init? It's easier for SoC's as you can define a common point to do this, but in the x86 environment it's harder as you might have multiple ION devices (e.g. an “ion” GPU and an “ion” camera driver) which are being hot-plugged.
 
 File: include/linux/ion.h
 
