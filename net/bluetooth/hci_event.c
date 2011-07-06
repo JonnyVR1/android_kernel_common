@@ -822,6 +822,33 @@ static void hci_cs_exit_sniff_mode(struct hci_dev *hdev, __u8 status)
 	hci_dev_unlock(hdev);
 }
 
+static void hci_cs_disconnect(struct hci_dev *hdev, __u8 status)
+{
+	struct hci_cp_disconnect *cp;
+	struct hci_conn *conn;
+
+	BT_DBG("%s status 0x%x", hdev->name, status);
+
+	if (!status)
+		return;
+
+	cp = hci_sent_cmd_data(hdev, HCI_OP_DISCONNECT);
+	if (!cp)
+		return ;
+
+	hci_dev_lock(hdev);
+
+	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(cp->handle));
+	if (conn) {
+		conn->state = BT_CLOSED;
+		hci_proto_connect_cfm(conn, status);
+		hci_conn_del(conn);
+	}
+
+	hci_dev_unlock(hdev);
+	return ;
+}
+
 static inline void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	__u8 status = *((__u8 *) skb->data);
@@ -1376,6 +1403,10 @@ static inline void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb)
 
 	case HCI_OP_EXIT_SNIFF_MODE:
 		hci_cs_exit_sniff_mode(hdev, ev->status);
+		break;
+
+	case HCI_OP_DISCONNECT:
+		hci_cs_disconnect(hdev, ev->status);
 		break;
 
 	default:
