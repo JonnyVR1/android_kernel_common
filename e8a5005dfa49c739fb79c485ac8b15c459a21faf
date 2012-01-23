@@ -1,0 +1,11 @@
+Revision: e8a5005dfa49c739fb79c485ac8b15c459a21faf
+Patch-set: 1
+File: drivers/rtc/alarm-dev.c
+
+16
+Mon Jan 23 17:47:45 2012 +0000
+Author: Bruce J Beare <1003360@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAACRn///+w=
+Bytes: 42
+Perhaps ifndef CONFIG_X86 would be better.
+
