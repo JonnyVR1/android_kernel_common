@@ -1,0 +1,11 @@
+Revision: 845f61b7dc7372fc38538de9b58937ef2352a10e
+Patch-set: 2
+File: /COMMIT_MSG
+
+7
+Mon Jan 23 22:18:41 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAACTX////8=
+Bytes: 44
+This could use a prefix, e.g. "rtc: alarm: "
+
