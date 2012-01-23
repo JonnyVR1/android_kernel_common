@@ -9,6 +9,14 @@ UUID: AAACRn///+w=
 Bytes: 42
 Perhaps ifndef CONFIG_X86 would be better.
 
+16
+Mon Jan 23 18:31:10 2012 +0000
+Author: Daniel Fages <1010184@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAACRn///+w=
+UUID: AAACSH////4=
+Bytes: 242
+We discussed that with Ed. It seems that no other architecture other than ARM has this "asm/mach/time.h" file (at least we didn't find) - that's why we decided to use #ifdef __arm__ (ok that should be CONFIG_ARM) instead of #ifndef CONFIG_X86
+
 17
 Mon Jan 23 18:26:12 2012 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
