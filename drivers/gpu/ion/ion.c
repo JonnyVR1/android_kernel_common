@@ -596,11 +596,12 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 	}
 	mutex_unlock(&client->lock);
 
-	seq_printf(s, "%16.16s: %16.16s\n", "heap_name", "size_in_bytes");
+	seq_printf(s, "%16.16s: %16.16s %16.16s\n",
+			"heap_name", "size_in_bytes", "refcount");
 	for (i = 0; i < ION_NUM_HEAPS; i++) {
 		if (!names[i])
 			continue;
-		seq_printf(s, "%16.16s: %16u %d\n", names[i], sizes[i],
+		seq_printf(s, "%16.16s: %16u %16d\n", names[i], sizes[i],
 			   atomic_read(&client->ref.refcount));
 	}
 	return 0;
