@@ -62,6 +62,10 @@ int cap_netlink_send(struct sock *sk, struct sk_buff *skb)
 
 int cap_netlink_recv(struct sk_buff *skb, int cap)
 {
+#ifdef CONFIG_ANDROID_PARANOID_NETWORK
+	if (cap == CAP_NET_ADMIN && in_egroup_p(AID_NET_ADMIN))
+		return 0;
+#endif
 	if (!cap_raised(current_cap(), cap))
 		return -EPERM;
 	return 0;
