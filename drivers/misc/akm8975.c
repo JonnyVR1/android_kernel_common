@@ -23,14 +23,10 @@
 #include <linux/interrupt.h>
 #include <linux/i2c.h>
 #include <linux/slab.h>
-#include <linux/irq.h>
 #include <linux/miscdevice.h>
-#include <linux/gpio.h>
 #include <linux/uaccess.h>
-#include <linux/delay.h>
 #include <linux/input.h>
 #include <linux/workqueue.h>
-#include <linux/freezer.h>
 #include <linux/akm8975.h>
 #include <linux/earlysuspend.h>
 
@@ -42,10 +38,9 @@
 #endif
 
 #define AK8975DRV_DATA_DBG 0
-#define MAX_FAILURE_COUNT 10
 
 struct akm8975_data {
-	struct i2c_client *this_client;
+	struct i2c_client *client;
 	struct akm8975_platform_data *pdata;
 	struct input_dev *input_dev;
 	struct work_struct work;
@@ -59,7 +54,7 @@ struct akm8975_data {
 * Because misc devices can not carry a pointer from driver register to
 * open, we keep this global. This limits the driver to a single instance.
 */
-struct akm8975_data *akmd_data;
+static struct akm8975_data *akmd_data;
 
 static DECLARE_WAIT_QUEUE_HEAD(open_wq);
 
@@ -84,8 +79,7 @@ static ssize_t akm8975_store(struct device *dev, struct device_attribute *attr,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	unsigned long val;
-	strict_strtoul(buf, 10, &val);
-	if (val > 0xff)
+	if (kstrtoul(buf, 10, &val) < 0 || val > 0xff)
 		return -EINVAL;
 	i2c_smbus_write_byte_data(client, AK8975_REG_CNTL, val);
 	return count;
@@ -96,13 +90,13 @@ static int akm8975_i2c_rxdata(struct akm8975_data *akm, char *buf, int length)
 {
 	struct i2c_msg msgs[] = {
 		{
-			.addr = akm->this_client->addr,
+			.addr = akm->client->addr,
 			.flags = 0,
 			.len = 1,
 			.buf = buf,
 		},
 		{
-			.addr = akm->this_client->addr,
+			.addr = akm->client->addr,
 			.flags = I2C_M_RD,
 			.len = length,
 			.buf = buf,
@@ -111,9 +105,9 @@ static int akm8975_i2c_rxdata(struct akm8975_data *akm, char *buf, int length)
 
 	FUNCDBG("called");
 
-	if (i2c_transfer(akm->this_client->adapter, msgs, 2) < 0) {
+	if (i2c_transfer(akm->client->adapter, msgs, 2) < 0) {
 		pr_err("akm8975_i2c_rxdata: transfer error\n");
-		return EIO;
+		return -EIO;
 	} else
 		return 0;
 }
@@ -122,7 +116,7 @@ static int akm8975_i2c_txdata(struct akm8975_data *akm, char *buf, int length)
 {
 	struct i2c_msg msgs[] = {
 		{
-			.addr = akm->this_client->addr,
+			.addr = akm->client->addr,
 			.flags = 0,
 			.len = length,
 			.buf = buf,
@@ -131,7 +125,7 @@ static int akm8975_i2c_txdata(struct akm8975_data *akm, char *buf, int length)
 
 	FUNCDBG("called");
 
-	if (i2c_transfer(akm->this_client->adapter, msgs, 1) < 0) {
+	if (i2c_transfer(akm->client->adapter, msgs, 1) < 0) {
 		pr_err("akm8975_i2c_txdata: transfer error\n");
 		return -EIO;
 	} else
@@ -140,7 +134,7 @@ static int akm8975_i2c_txdata(struct akm8975_data *akm, char *buf, int length)
 
 static void akm8975_ecs_report_value(struct akm8975_data *akm, short *rbuf)
 {
-	struct akm8975_data *data = i2c_get_clientdata(akm->this_client);
+	struct akm8975_data *data = i2c_get_clientdata(akm->client);
 
 	FUNCDBG("called");
 
@@ -197,7 +191,7 @@ static void akm8975_ecs_close_done(struct akm8975_data *akm)
 
 static int akm_aot_open(struct inode *inode, struct file *file)
 {
-	int ret = -1;
+	int ret;
 
 	FUNCDBG("called");
 	if (atomic_cmpxchg(&open_flag, 0, 1) == 0) {
@@ -222,8 +216,8 @@ static int akm_aot_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int akm_aot_ioctl(struct inode *inode, struct file *file,
-	      unsigned int cmd, unsigned long arg)
+static long akm_aot_ioctl(struct file *file, unsigned int cmd,
+					unsigned long arg)
 {
 	void __user *argp = (void __user *) arg;
 	short flag;
@@ -244,14 +238,12 @@ static int akm_aot_ioctl(struct inode *inode, struct file *file,
 		if (copy_from_user(&flag, argp, sizeof(flag)))
 			return -EFAULT;
 		break;
-	default:
-		break;
 	}
 
 	mutex_lock(&akm->flags_lock);
 	switch (cmd) {
 	case ECS_IOCTL_APP_SET_MFLAG:
-	  m_flag = flag;
+		m_flag = flag;
 		break;
 	case ECS_IOCTL_APP_GET_MFLAG:
 		flag = m_flag;
@@ -275,6 +267,7 @@ static int akm_aot_ioctl(struct inode *inode, struct file *file,
 		flag = akmd_delay;
 		break;
 	default:
+		mutex_unlock(&akm->flags_lock);
 		return -ENOTTY;
 	}
 	mutex_unlock(&akm->flags_lock);
@@ -287,8 +280,6 @@ static int akm_aot_ioctl(struct inode *inode, struct file *file,
 		if (copy_to_user(argp, &flag, sizeof(flag)))
 			return -EFAULT;
 		break;
-	default:
-		break;
 	}
 
 	return 0;
@@ -296,7 +287,7 @@ static int akm_aot_ioctl(struct inode *inode, struct file *file,
 
 static int akmd_open(struct inode *inode, struct file *file)
 {
-	int err = 0;
+	int err;
 
 	FUNCDBG("called");
 	err = nonseekable_open(inode, file);
@@ -316,13 +307,12 @@ static int akmd_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int akmd_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
-		      unsigned long arg)
+static long akmd_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	void __user *argp = (void __user *) arg;
 
 	char rwbuf[16];
-	int ret = -1;
+	int ret;
 	int status;
 	short value[12];
 	short delay;
@@ -340,9 +330,6 @@ static int akmd_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 	case ECS_IOCTL_SET_YPR:
 		if (copy_from_user(&value, argp, sizeof(value)))
 			return -EFAULT;
-		break;
-
-	default:
 		break;
 	}
 
@@ -402,8 +389,6 @@ static int akmd_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 		if (copy_to_user(argp, &delay, sizeof(delay)))
 			return -EFAULT;
 		break;
-	default:
-		break;
 	}
 
 	return 0;
@@ -416,7 +401,7 @@ static void akm_work_func(struct work_struct *work)
 	    container_of(work, struct akm8975_data, work);
 
 	FUNCDBG("called");
-	enable_irq(akm->this_client->irq);
+	enable_irq(akm->client->irq);
 }
 
 static irqreturn_t akm8975_interrupt(int irq, void *dev_id)
@@ -424,19 +409,23 @@ static irqreturn_t akm8975_interrupt(int irq, void *dev_id)
 	struct akm8975_data *akm = dev_id;
 	FUNCDBG("called");
 
-	disable_irq_nosync(akm->this_client->irq);
+	disable_irq_nosync(akm->client->irq);
 	schedule_work(&akm->work);
 	return IRQ_HANDLED;
 }
 
 static int akm8975_power_off(struct akm8975_data *akm)
 {
+	int err;
+
 #if AK8975DRV_CALL_DBG
 	pr_info("%s\n", __func__);
 #endif
-	if (akm->pdata->power_off)
-		akm->pdata->power_off();
-
+	if (akm->pdata->power_off) {
+		err = akm->pdata->power_off();
+		if (err < 0)
+			return err;
+	}
 	return 0;
 }
 
@@ -488,7 +477,7 @@ static void akm8975_early_suspend(struct early_suspend *handler)
 #if AK8975DRV_CALL_DBG
 	pr_info("%s\n", __func__);
 #endif
-	akm8975_suspend(akm->this_client, PMSG_SUSPEND);
+	akm8975_suspend(akm->client, PMSG_SUSPEND);
 }
 
 static void akm8975_early_resume(struct early_suspend *handler)
@@ -499,7 +488,7 @@ static void akm8975_early_resume(struct early_suspend *handler)
 #if AK8975DRV_CALL_DBG
 	pr_info("%s\n", __func__);
 #endif
-	akm8975_resume(akm->this_client);
+	akm8975_resume(akm->client);
 }
 #endif
 
@@ -515,7 +504,8 @@ static int akm8975_init_client(struct i2c_client *client)
 				"akm8975", data);
 
 	if (ret < 0) {
-		pr_err("akm8975_init_client: request irq failed\n");
+		dev_err(&client->dev,
+				"akm8975_init_client: request irq failed\n");
 		goto err;
 	}
 
@@ -530,21 +520,21 @@ static int akm8975_init_client(struct i2c_client *client)
 
 	return 0;
 err:
-  return ret;
+return ret;
 }
 
 static const struct file_operations akmd_fops = {
 	.owner = THIS_MODULE,
 	.open = akmd_open,
 	.release = akmd_release,
-	.ioctl = akmd_ioctl,
+	.unlocked_ioctl = akmd_ioctl,
 };
 
 static const struct file_operations akm_aot_fops = {
 	.owner = THIS_MODULE,
 	.open = akm_aot_open,
 	.release = akm_aot_release,
-	.ioctl = akm_aot_ioctl,
+	.unlocked_ioctl = akm_aot_ioctl,
 };
 
 static struct miscdevice akm_aot_device = {
@@ -573,7 +563,8 @@ int akm8975_probe(struct i2c_client *client,
 	}
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-		dev_err(&client->dev, "platform data is NULL. exiting.\n");
+		dev_err(&client->dev,
+			"adapter does not support i2c-bus. exiting.\n");
 		err = -ENODEV;
 		goto exit_check_functionality_failed;
 	}
@@ -597,13 +588,13 @@ int akm8975_probe(struct i2c_client *client,
 		goto exit_power_on_failed;
 
 	akm8975_init_client(client);
-	akm->this_client = client;
+	akm->client = client;
 	akmd_data = akm;
 
 	akm->input_dev = input_allocate_device();
 	if (!akm->input_dev) {
 		err = -ENOMEM;
-		dev_err(&akm->this_client->dev,
+		dev_err(&akm->client->dev,
 			"input device allocate failed\n");
 		goto exit_input_dev_alloc_failed;
 	}
@@ -639,20 +630,23 @@ int akm8975_probe(struct i2c_client *client,
 
 	err = input_register_device(akm->input_dev);
 	if (err) {
-		pr_err("akm8975_probe: Unable to register input device: %s\n",
-					 akm->input_dev->name);
+		dev_err(&client->dev,
+			"akm8975_probe: Unable to register input device: %s\n",
+			 akm->input_dev->name);
 		goto exit_input_register_device_failed;
 	}
 
 	err = misc_register(&akmd_device);
 	if (err) {
-		pr_err("akm8975_probe: akmd_device register failed\n");
+		dev_err(&client->dev,
+			"akm8975_probe: akmd_device register failed\n");
 		goto exit_misc_device_register_failed;
 	}
 
 	err = misc_register(&akm_aot_device);
 	if (err) {
-		pr_err("akm8975_probe: akm_aot_device register failed\n");
+		dev_err(&client->dev,
+			"akm8975_probe: akm_aot_device register failed\n");
 		goto exit_misc_device_register_failed;
 	}
 
