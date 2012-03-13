@@ -168,4 +168,30 @@ config SYS_HYPERVISOR
 	bool
 	default n
 
+config SYNC
+       bool "Synchronization framework"
+       default n
+       select ANON_INODES
+       help
+         This option enables the framework for synchronization between multiple
+	 drivers.
+
+config SW_SYNC
+       bool "Software synchronization objects"
+       default n
+       depends on SYNC
+       help
+         A sync object driver that uses waitqueues and a counter to coordinate
+         syncrhronization.  Useful when there is no hardware primitive backing
+         the synchronization.
+
+config SW_SYNC_USER
+       bool "Userspace API for SW_SYNC"
+       default n
+       depends on SW_SYNC
+       help
+         provides a user space API to the sw sync object.
+
+         *WARNING* improper use of this can result in deadlocking kernel
+	 drivers from userspace.
 endmenu
