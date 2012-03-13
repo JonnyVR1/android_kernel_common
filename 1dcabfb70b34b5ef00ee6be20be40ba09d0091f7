@@ -1,5 +1,14 @@
 Revision: 1dcabfb70b34b5ef00ee6be20be40ba09d0091f7
 Patch-set: 2
+File: drivers/base/sw_sync.c
+
+2
+Tue Mar 13 00:10:24 2012 +0000
+Author: Paul Eastham <1001902@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAD03////4=
+Bytes: 13
+^sync^sw_sync
+
 File: include/linux/sync.h
 
 100
