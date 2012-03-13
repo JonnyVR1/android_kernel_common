@@ -1,0 +1,8 @@
+work in progress docs.  mostly a place to jot down notes that should end up in
+the docs
+
+Assumtions:
+
+sync_pts will start as un-signaled.  A some point they will transition to signaled.  They will never revert to unsignaled.
+
+sync_pt->test() and sync_pt->compare can be called in atomic context.
