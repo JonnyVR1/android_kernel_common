@@ -39,6 +39,10 @@ struct sync_fence;
  *			 -1 if a will signabl before b
  * @free_pt:		called before sync_pt is freed
  * @release_obj:	called before sync_obj is freed
+ * @print_obj:		print aditional debug information about sync_obj.
+ *			  should not print a newline
+ * @print_pt:		print aditional debug information about sync_pt.
+ *			  should not print a newline
  */
 struct sync_obj_ops {
 	const char *driver_name;
@@ -57,6 +61,12 @@ struct sync_obj_ops {
 
 	/* optional */
 	void (*release_obj)(struct sync_obj *sync_obj);
+
+	/* optional */
+	void (*print_obj)(struct seq_file *s, struct sync_obj *sync_obj);
+
+	/* optional */
+	void (*print_pt)(struct seq_file *s, struct sync_pt *sync_pt);
 };
 
 /**
@@ -68,6 +78,7 @@ struct sync_obj_ops {
  * @child_list_lock:	lock protecting @child_list_head, destroyed, and
  *			  sync_pt.status
  * @active_list_head:	list of active (unsignaled/errored) sync_pts
+ * @sync_obj_list:	membership in global sync_obj_list
  */
 struct sync_obj {
 	const struct sync_obj_ops	*ops;
@@ -80,6 +91,8 @@ struct sync_obj {
 
 	struct list_head	active_list_head;
 	spinlock_t		active_list_lock;
+
+	struct list_head	sync_obj_list;
 };
 
 /**
@@ -119,6 +132,7 @@ struct sync_pt {
  * @status:		1: signaled, 0:active, <0: error
  *
  * @wq:			wait queue for fence signaling
+ * @sync_fence_list:	membership in global fence list
  */
 struct sync_fence {
 	struct file		*file;
@@ -132,6 +146,8 @@ struct sync_fence {
 	int			status;
 
 	wait_queue_head_t	wq;
+
+	struct list_head	sync_fence_list;
 };
 
 /**
@@ -279,9 +295,6 @@ int sync_fence_wait_async(struct sync_fence *fence,
  * if @timeout = 0
  */
 int sync_fence_wait(struct sync_fence *fence, long timeout);
-
-/* useful for sync driver's debug print handlers */
-const char *sync_status_str(int status);
 
 #endif /* __KERNEL__ */
 
