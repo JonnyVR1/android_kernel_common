@@ -26,7 +26,7 @@ struct sync_fence;
 
 /**
  * struct sync_obj_ops - sync object implementation ops
- * @name:		name of the implentation
+ * @driver_name:	name of the implentation
  * @dup:		duplicate a sync_pt
  * @has_signaled:	returns:
  *			  1 if pt has signaled
@@ -40,7 +40,7 @@ struct sync_fence;
  * @release_obj:	called before sync_obj is freed
  */
 struct sync_obj_ops {
-	const char *name;
+	const char *driver_name;
 
 	/* required */
 	struct sync_pt *(*dup)(struct sync_pt *pt);
@@ -61,6 +61,7 @@ struct sync_obj_ops {
 /**
  * struct sync_obj - sync object
  * @ops:		ops that define the implementaiton of the sync_obj
+ * @name:		name of the sync_obj. Useful for debugging
  * @destoryed:		set when sync_obj is destroyed
  * @child_list_head:	list of children sync_pts for this sync_obj
  * @child_list_lock:	lock protecting @child_list_head, destroyed, and
@@ -69,6 +70,7 @@ struct sync_obj_ops {
  */
 struct sync_obj {
 	const struct sync_obj_ops	*ops;
+	char			name[32];
 
 	bool			destroyed; /* protected by child_list_lock */
 
@@ -104,6 +106,7 @@ struct sync_pt {
 /**
  * struct sync_fence - sync fence
  * @file:		file representing this fence
+ * @name:		name of sync_fence.  Useful for debugging
  * @pt_list_head:	list of sync_pts in ths fence.  immutable once fence
  *			  is created
  * @waiter_list_head:	list of asynchronous waiters on this fence
@@ -114,6 +117,7 @@ struct sync_pt {
  */
 struct sync_fence {
 	struct file		*file;
+	char			name[32];
 
 	/* this list is immutable once the fence is created */
 	struct list_head	pt_list_head;
@@ -146,13 +150,14 @@ struct sync_fence_waiter {
  * sync_obj_create() - creates a sync object
  * @ops:	specifies the implemention ops for the object
  * @size:	size to allocate for this obj
+ * @name:	sync_obj name
  *
  * Creates a new sync_obj which will use the implemetation specified by
  * @ops.  @size bytes will be allocated allowing for implemntation specific
  * data to be kept after the generic sync_obj stuct.
  */
-struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size);
-
+struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size,
+				 const char *name);
 
 /**
  * sync_obj_destory() - destorys a sync object
@@ -195,12 +200,13 @@ void sync_pt_free(struct sync_pt *pt);
 
 /**
  * sync_fence_create() - creates a sync fence
+ * @name:	name of fence to create
  * @pt:		sync_pt to add to the fence
  *
  * Creates a fence containg @pt.  Once this is called, the fence takes
  * ownership of @pt.
  */
-struct sync_fence *sync_fence_create(struct sync_pt *pt);
+struct sync_fence *sync_fence_create(const char *name, struct sync_pt *pt);
 
 /*
  * API for sync_fence consumers
@@ -208,13 +214,15 @@ struct sync_fence *sync_fence_create(struct sync_pt *pt);
 
 /**
  * sync_fence_merge() - merge two fences
+ * @name:	name of new fence
  * @a:		fence a
  * @b:		fence b
  *
  * Creates a new fence which contains copies of all the sync_pts in both
  * @a and @b.  @a and @b remain valid, independant fences.
  */
-struct sync_fence *sync_fence_merge(struct sync_fence *a, struct sync_fence *b);
+struct sync_fence *sync_fence_merge(const char *name,
+				    struct sync_fence *a, struct sync_fence *b);
 
 /**
  * sync_fence_fdget() - get a fence from an fd
@@ -267,7 +275,22 @@ int sync_fence_wait_async(struct sync_fence *fence,
  */
 int sync_fence_wait(struct sync_fence *fence, long timeout);
 
+/* useful for sync driver's debug print handlers */
+const char *sync_status_str(int status);
+
 #endif /* __KERNEL__ */
+
+/**
+ * struct sync_merge_data - data passed to merge ioctl
+ * @fd2:	file descriptor of second fence
+ * @name:	name of new fence
+ * @fence:	returns the fd of the new fence to userspace
+ */
+struct sync_merge_data {
+	__s32	fd2; /* fd of second fence */
+	char	name[32]; /* name of new fence */
+	__s32	fence; /* fd on newly created fence */
+};
 
 #define SYNC_IOC_MAGIC		'>'
 
@@ -281,10 +304,10 @@ int sync_fence_wait(struct sync_fence *fence, long timeout);
 /**
  * DOC: SYNC_IOC_MERGE - merge two fences
  *
- * Pass the ioctl the fd of the second fence.  Creates a new fence containing
- * copies of the sync_pts in both the calling fd and passed fd.  Returns the
- * new fence's fd.
+ * Takes a struct sync_merge_data.  Creates a new fence containing copies of
+ * the sync_pts in both the calling fd and sync_merge_data.fd2.  Returns the
+ * new fence's fd in sync_merge_data.fence
  */
-#define SYNC_IOC_MERGE		_IOWR(SYNC_IOC_MAGIC, 1, __u32)
+#define SYNC_IOC_MERGE		_IOWR(SYNC_IOC_MAGIC, 1, struct sync_merge_data)
 
 #endif /* _LINUX_SYNC_H */
