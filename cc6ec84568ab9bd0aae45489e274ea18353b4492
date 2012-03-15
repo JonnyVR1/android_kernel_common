@@ -1,0 +1,20 @@
+Revision: cc6ec84568ab9bd0aae45489e274ea18353b4492
+Patch-set: 4
+File: drivers/base/Kconfig
+
+193
+Thu Mar 15 01:57:52 2012 +0000
+Author: Jamie Gennis <1003793@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAD8X///9c=
+Bytes: 9
+s/and/an/
+
+File: drivers/base/sync.c
+
+395
+Thu Mar 15 01:57:52 2012 +0000
+Author: Jamie Gennis <1003793@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAD8X///9Y=
+Bytes: 93
+Can this take a timeout argument?  (or perhaps make an ioctl-specific one that has a timeout)
+
