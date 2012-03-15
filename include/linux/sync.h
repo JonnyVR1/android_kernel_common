@@ -25,7 +25,7 @@ struct sync_pt;
 struct sync_fence;
 
 struct sync_obj_ops {
-	const char * name;
+	const char * driver_name;
 
 	/* required */
 	struct sync_pt *(*dup)(struct sync_pt *pt);
@@ -58,6 +58,7 @@ struct sync_obj_ops {
 
 struct sync_obj {
 	const struct sync_obj_ops	*ops;
+	char			name[32];
 
 	bool			destroyed; /* protected by child_list_lock */
 
@@ -82,6 +83,7 @@ struct sync_pt {
 
 struct sync_fence {
 	struct file		*file;
+	char			name[32];
 
 	/* this list is immutable once the fence is created */
 	struct list_head	pt_list_head;
@@ -100,15 +102,17 @@ struct sync_fence_waiter {
 	void *callback_data;
 };
 
-struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size);
+struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size,
+				 const char *name);
 void sync_obj_destroy(struct sync_obj *obj);
 void sync_obj_signal(struct sync_obj *obj);
 
 struct sync_pt *sync_pt_create(struct sync_obj *parent, int size);
 void sync_pt_free(struct sync_pt *pt);
 
-struct sync_fence *sync_fence_create(struct sync_pt *pt);
-struct sync_fence *sync_fence_merge(struct sync_fence *a, struct sync_fence *b);
+struct sync_fence *sync_fence_create(const char *name, struct sync_pt *pt);
+struct sync_fence *sync_fence_merge(const char *name,
+				    struct sync_fence *a, struct sync_fence *b);
 struct sync_fence *sync_fence_fdget(int fd);
 void sync_fence_put(struct sync_fence *fence);
 void sync_fence_install(struct sync_fence *fence, int fd);
@@ -119,12 +123,21 @@ int sync_fence_wait_async(struct sync_fence *fence,
 			  void *callback_data);
 int sync_fence_wait(struct sync_fence *fence, long timeout);
 
+/* useful for sync driver's debug print handlers */
+const char *sync_status_str(int status);
+
 #endif /* __KERNEL__ */
+
+struct sync_merge_data {
+	__s32	fd2; /* fd of second fence */
+	char	name[32]; /* name of new fence */
+	__s32	fence; /* fd on newly created fence */
+};
 
 #define SYNC_IOC_MAGIC		'>'
 
 /* pass timeout in msecs.  zero for infinte timeout */
 #define SYNC_IOC_WAIT		_IOW(SYNC_IOC_MAGIC, 0, __u32)
-#define SYNC_IOC_MERGE		_IOWR(SYNC_IOC_MAGIC, 1, __u32)
+#define SYNC_IOC_MERGE		_IOWR(SYNC_IOC_MAGIC, 1, struct sync_merge_data)
 
 #endif /* _LINUX_SYNC_H */
