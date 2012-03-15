@@ -55,6 +55,22 @@ struct sync_obj_ops {
 	/* optional */
 	void (*release_obj)(struct sync_obj *sync_obj);
 
+	/* optional
+	 *
+	 * print aditional debug info about sync_obj.
+	 *
+	 * should not print new line
+	 */
+	void (*print_obj)(struct seq_file *s, struct sync_obj *sync_obj);
+
+	/* optional
+	 *
+	 * print aditional debug info about sync_pt.
+	 *
+	 * should not print new line
+	 */
+	void (*print_pt)(struct seq_file *s, struct sync_pt *sync_pt);
+
 };
 
 struct sync_obj {
@@ -68,6 +84,8 @@ struct sync_obj {
 
 	struct list_head	active_list_head;
 	spinlock_t		active_list_lock;
+
+	struct list_head	sync_obj_list;
 };
 
 struct sync_pt {
@@ -95,6 +113,8 @@ struct sync_fence {
 	int			status;
 
 	wait_queue_head_t	wq;
+
+	struct list_head	sync_fence_list;
 };
 
 struct sync_fence_waiter {
@@ -124,9 +144,6 @@ int sync_fence_wait_async(struct sync_fence *fence,
 			  void (*callback)(struct sync_fence *, void *data),
 			  void *callback_data);
 int sync_fence_wait(struct sync_fence *fence, long timeout);
-
-/* useful for sync driver's debug print handlers */
-const char *sync_status_str(int status);
 
 #endif /* __KERNEL__ */
 
