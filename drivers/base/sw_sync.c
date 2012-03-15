@@ -67,17 +67,18 @@ static int sw_sync_pt_compare(struct sync_pt *a, struct sync_pt *b)
 }
 
 struct sync_obj_ops sw_sync_obj_ops = {
-	.name = "sw_sync",
+	.driver_name = "sw_sync",
 	.dup = sw_sync_pt_dup,
 	.test = sw_sync_pt_test,
 	.compare = sw_sync_pt_compare,
 };
 
 
-struct sw_sync_obj *sw_sync_obj_create(void)
+struct sw_sync_obj *sw_sync_obj_create(const char *name)
 {
 	struct sw_sync_obj *obj = (struct sw_sync_obj *)
-		sync_obj_create(&sw_sync_obj_ops, sizeof(struct sw_sync_obj));
+		sync_obj_create(&sw_sync_obj_ops, sizeof(struct sw_sync_obj),
+				name);
 
 	return obj;
 }
@@ -100,8 +101,11 @@ void sw_sync_obj_inc(struct sw_sync_obj *obj, u32 inc)
 int sw_sync_open(struct inode *inode, struct file *file)
 {
 	struct sw_sync_obj *obj;
+	char task_comm[TASK_COMM_LEN];
 
-	obj = sw_sync_obj_create();
+	get_task_comm(task_comm, current);
+
+	obj = sw_sync_obj_create(task_comm);
 	if (obj == NULL)
 		return -ENOMEM;
 
@@ -120,28 +124,30 @@ int sw_sync_release(struct inode *inode, struct file *file)
 long sw_sync_ioctl_create_fence(struct sw_sync_obj *obj, unsigned long arg)
 {
 	int fd = get_unused_fd();
-	u32 value;
 	int err;
 	struct sync_pt *pt;
 	struct sync_fence *fence;
+	struct sw_sync_create_fence_data data;
 
-	if (copy_from_user(&value, (void __user*)arg, sizeof(value)))
+	if (copy_from_user(&data, (void __user*)arg, sizeof(data)))
 		return -EFAULT;
 
-	pt = sw_sync_pt_create(obj, value);
+	pt = sw_sync_pt_create(obj, data.value);
 	if (pt == NULL) {
 		err = -ENOMEM;
 		goto err;
 	}
 
-	fence = sync_fence_create(pt);
+	fence = sync_fence_create(data.name, pt);
 	if (fence == NULL) {
 		sync_pt_free(pt);
 		err = -ENOMEM;
 		goto err;
 	}
 
-	if (copy_to_user((void __user*)arg, &fd, sizeof(value))) {
+	data.fence = fd;
+
+	if (copy_to_user((void __user*)arg, &data, sizeof(data))) {
 		sync_fence_put(fence);
 		err = -EFAULT;
 		goto err;
