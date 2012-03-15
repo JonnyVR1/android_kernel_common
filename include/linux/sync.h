@@ -16,6 +16,7 @@
 #include <linux/types.h>
 #ifdef __KERNEL__
 
+#include <linux/ktime.h>
 #include <linux/list.h>
 #include <linux/spinlock.h>
 #include <linux/wait.h>
@@ -79,6 +80,7 @@ struct sync_pt {
 	struct list_head	pt_list;
 
 	int			status; /* protected by parent->active_list_lock */
+	ktime_t			timestamp;
 };
 
 struct sync_fence {
