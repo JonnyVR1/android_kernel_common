@@ -66,11 +66,28 @@ static int sw_sync_pt_compare(struct sync_pt *a, struct sync_pt *b)
 	return sw_sync_cmp(pt_a->value, pt_b->value);
 }
 
+static void sw_sync_print_obj(struct seq_file *s, struct sync_obj *sync_obj)
+{
+	struct sw_sync_obj *obj = (struct sw_sync_obj *)sync_obj;
+
+	seq_printf(s, "%d", obj->value);
+}
+
+static void sw_sync_print_pt(struct seq_file *s, struct sync_pt *sync_pt)
+{
+	struct sw_sync_pt *pt = (struct sw_sync_pt *)sync_pt;
+	struct sw_sync_obj *obj = (struct sw_sync_obj *)sync_pt->parent;
+
+	seq_printf(s, "%d / %d",pt->value, obj->value);
+}
+
 struct sync_obj_ops sw_sync_obj_ops = {
 	.driver_name = "sw_sync",
 	.dup = sw_sync_pt_dup,
 	.test = sw_sync_pt_test,
 	.compare = sw_sync_pt_compare,
+	.print_obj = sw_sync_print_obj,
+	.print_pt = sw_sync_print_pt,
 };
 
 
