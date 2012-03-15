@@ -27,7 +27,8 @@
 static void sync_fence_signal_pt(struct sync_pt *pt);
 static int _sync_pt_has_signaled(struct sync_pt *pt);
 
-struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size)
+struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size,
+	const char *name)
 {
 	struct sync_obj *obj;
 
@@ -39,6 +40,7 @@ struct sync_obj *sync_obj_create(const struct sync_obj_ops *ops, int size)
 		return NULL;
 
 	obj->ops = ops;
+	strlcpy(obj->name, name, sizeof(obj->name));
 
 	INIT_LIST_HEAD(&obj->child_list_head);
 	spin_lock_init(&obj->child_list_lock);
@@ -196,7 +198,7 @@ static struct file_operations sync_fence_fops = {
 	.unlocked_ioctl = sync_fence_ioctl,
 };
 
-static struct sync_fence *sync_fence_alloc(void)
+static struct sync_fence *sync_fence_alloc(const char *name)
 {
 	struct sync_fence *fence;
 
@@ -208,6 +210,8 @@ static struct sync_fence *sync_fence_alloc(void)
 					 fence, 0);
 	if (fence->file == NULL)
 		goto err;
+
+	strlcpy(fence->name, name, sizeof(fence->name));
 
 	INIT_LIST_HEAD(&fence->pt_list_head);
 	INIT_LIST_HEAD(&fence->waiter_list_head);
@@ -222,14 +226,14 @@ err:
 }
 
 /* TODO: implement a create which takes more that one sync_pt */
-struct sync_fence *sync_fence_create(struct sync_pt *pt)
+struct sync_fence *sync_fence_create(const char *name, struct sync_pt *pt)
 {
 	struct sync_fence *fence;
 
 	if (pt->fence)
 		return NULL;
 
-	fence = sync_fence_alloc();
+	fence = sync_fence_alloc(name);
 	if (fence == NULL)
 		return NULL;
 
@@ -317,12 +321,13 @@ static int sync_fence_get_status(struct sync_fence *fence)
 	return status;
 }
 
-struct sync_fence *sync_fence_merge(struct sync_fence *a, struct sync_fence *b)
+struct sync_fence *sync_fence_merge(const char *name,
+				    struct sync_fence *a, struct sync_fence *b)
 {
 	struct sync_fence *fence;
 	int err;
 
-	fence = sync_fence_alloc();
+	fence = sync_fence_alloc(name);
 	if (fence == NULL)
 		return NULL;
 
@@ -459,26 +464,29 @@ static long sync_fence_ioctl_wait(struct sync_fence *fence, unsigned long arg)
 static long sync_fence_ioctl_merge(struct sync_fence *fence, unsigned long arg)
 {
 	int fd = get_unused_fd();
-	int value;
 	int err;
 	struct sync_fence *fence2, *fence3;
+	struct sync_merge_data data;
 
-	if (copy_from_user(&value, (void __user*)arg, sizeof(value)))
+	if (copy_from_user(&data, (void __user*)arg, sizeof(data)))
 		return -EFAULT;
 
-	fence2 = sync_fence_fdget(value);
+	fence2 = sync_fence_fdget(data.fd2);
 	if (fence2 == NULL) {
 		err = -ENOENT;
 		goto err_put_fd;
 	}
 
-	fence3 = sync_fence_merge(fence, fence2);
+	data.name[sizeof(data.name) - 1] = '\0';
+	fence3 = sync_fence_merge(data.name, fence, fence2);
 	if (fence3 == NULL) {
 		err = -ENOMEM;
 		goto err_put_fence2;
 	}
 
-	if (copy_to_user((void __user*)arg, &fd, sizeof(value))) {
+	data.fence = fd;
+
+	if (copy_to_user((void __user*)arg, &data, sizeof(data))) {
 		err = -EFAULT;
 		goto err_put_fence3;
 	}
