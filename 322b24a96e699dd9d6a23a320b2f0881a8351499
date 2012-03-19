@@ -126,6 +126,14 @@ UUID: AAAEC3///+8=
 Bytes: 137
 only the caller of sync_obj_create should call sync_obj_destroy so it won't race by design.  Will add that to the function document docs.
 
+56
+Mon Mar 19 20:19:56 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAEC3///+8=
+UUID: AAAEC3///9g=
+Bytes: 95
+but someone else could be calling sync_obj_remove_pt (like sync_pt_free or a put on sync_fence)
+
 85
 Mon Mar 19 06:48:34 2012 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
