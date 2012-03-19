@@ -1,0 +1,192 @@
+Revision: 322b24a96e699dd9d6a23a320b2f0881a8351499
+Patch-set: 5
+File: drivers/base/Kconfig
+
+193
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////k=
+Bytes: 25
+s/creates and/provides a/
+
+File: drivers/base/sw_sync.c
+
+36
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+A=
+Bytes: 82
+separate into just the var declaration and then the creation. Will be much clearer
+
+49
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///98=
+Bytes: 47
+create a temp variable, will be easier to read.
+
+145
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///94=
+Bytes: 57
+cant remember now, but will this also delete the sync_pt?
+
+File: drivers/base/sync.c
+
+25
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+8=
+Bytes: 32
+why is this not with the others?
+
+28
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+4=
+Bytes: 78
+why not just reorder the functions and then not need the forward declarations?
+
+35
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+0=
+Bytes: 112
+maybe return ERR_PTR() instead so you can return different error codes between EINVAL here and ENOMEM @ line 39?
+
+56
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+s=
+Bytes: 205
+you can double free the object I think. If you set destroyed, then  the list_empty will be true both here and in sync_obj_remove_pt. You are not holding any locks in either place at the time of comparison.
+
+85
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+w=
+Bytes: 14
+remove newline
+
+125
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+o=
+Bytes: 47
+need to also make sure parent is not destroyed?
+
+210
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+g=
+Bytes: 18
+missing whitespace
+
+226
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+c=
+Bytes: 81
+what happens when this functions is called on a sync_pt that already has a fence?
+
+328
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+Y=
+Bytes: 77
+can't you just break here since there's no point continuing through the loop?
+
+334
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+U=
+Bytes: 36
+use proper coding style for comments
+
+392
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+Q=
+Bytes: 56
+new interfaces are suggested to be in msecs, not jiffies
+
+481
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+M=
+Bytes: 42
+verify that f_op == your_ops just in case?
+
+File: include/linux/sync.h
+
+28
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////c=
+Bytes: 77
+inconsistent white space in the struct. should probably just remove this tab.
+
+40
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////U=
+Bytes: 57
+suggest has_signalled or is_signalled, test is too broad.
+
+49
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////Y=
+Bytes: 30
+no space between * and compare
+
+52
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+I=
+Bytes: 5
+ditto
+
+55
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///+E=
+Bytes: 5
+ditto
+
+90
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////M=
+Bytes: 29
+signaled? do you mean status?
+
+99
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////I=
+Bytes: 43
+why is one argument named and other is not?
+
+103
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////E=
+Bytes: 31
+you plan to add docs for these?
+
+124
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////g=
+Bytes: 283
+this collides with the ALSA sequencer. Considering that it is not uncommon to have alsa compiled in the kernel, you may want to think of a different range. 's' seems to have been used by some obscure multi-port serial device driver. May be less chance of it actually being ever used.
+
+127
+Mon Mar 19 06:48:34 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn////A=
+Bytes: 121
+are you going to support poll for async wait from userspace? I guess I'll find out when I make it further in the review..
+
