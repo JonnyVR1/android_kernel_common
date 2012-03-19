@@ -1,0 +1,18 @@
+Revision: ebcfe9a0c68b8f8024a83f62fc1fe030971a0aa1
+Patch-set: 1
+File: include/linux/sync.h
+
+64
+Mon Mar 19 07:02:35 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///9U=
+Bytes: 36
+remove space between * and print_obj
+
+72
+Mon Mar 19 07:02:35 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///9Q=
+Bytes: 5
+ditto
+
