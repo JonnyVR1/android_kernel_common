@@ -1,0 +1,27 @@
+Revision: c7a24ac223ebe3a49d725f6bf0fef08c9a197139
+Patch-set: 1
+File: drivers/base/sw_sync.c
+
+141
+Mon Mar 19 06:55:21 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///9o=
+Bytes: 77
+should ensure that data.name is null terminated as it's coming from userspace
+
+File: drivers/base/sync.c
+
+222
+Mon Mar 19 06:55:21 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///9k=
+Bytes: 31
+remove space between * and name
+
+456
+Mon Mar 19 06:55:21 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAECn///9g=
+Bytes: 35
+ensure data.name is null terminated
+
