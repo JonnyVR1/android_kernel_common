@@ -1,0 +1,39 @@
+Revision: 49f9dbc2836288009f612fb49c322b949848b850
+Patch-set: 8
+File: include/linux/sync.h
+
+73
+Thu Mar 22 07:23:13 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////4=
+Bytes: 69
+i think the preferred method is to put the comment on the line above.
+
+183
+Thu Mar 22 07:23:13 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////0=
+Bytes: 15
+s/stuct/struct/
+
+215
+Thu Mar 22 07:23:13 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////w=
+Bytes: 26
+s/independant/independent/
+
+265
+Thu Mar 22 07:23:13 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////s=
+Bytes: 25
+s/indefintly/indefinitely
+
+277
+Thu Mar 22 07:23:13 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////o=
+Bytes: 26
+s/miliseconds/milliseconds
+
