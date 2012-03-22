@@ -1,0 +1,11 @@
+Revision: c60a59c9f769baa2744d63f6841f71304e2c68a0
+Patch-set: 4
+File: drivers/base/sync.c
+
+598
+Thu Mar 22 07:36:54 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////M=
+Bytes: 102
+is 4k due to PAGE_SIZE? if so, use PAGE_SIZE. Otherwise, use SZ_4K. Also, use size = min(size, <blah>)
+
