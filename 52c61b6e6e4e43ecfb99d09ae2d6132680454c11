@@ -1,0 +1,19 @@
+Revision: 52c61b6e6e4e43ecfb99d09ae2d6132680454c11
+Patch-set: 4
+File: drivers/base/sync.c
+
+473
+Thu Mar 22 07:33:10 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////Y=
+Bytes: 131
+this won't compile as this patch seems busted. it's got like half the change.
+you deleted value, but you are still copying into it.
+
+490
+Thu Mar 22 07:33:10 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAEK3////U=
+Bytes: 26
+need to copy data, not fd.
+
