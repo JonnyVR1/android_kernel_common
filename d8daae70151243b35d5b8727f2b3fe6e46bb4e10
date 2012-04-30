@@ -1,0 +1,105 @@
+Revision: d8daae70151243b35d5b8727f2b3fe6e46bb4e10
+Patch-set: 9
+File: include/linux/sync.h
+
+65
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////8=
+Bytes: 23
+s/@destoryed/@destroyed
+
+68
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////0=
+Bytes: 111
+This conflicts with the comment on sync_pt.status below that indicates active_list_lock is the protecting lock.
+
+69
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////4=
+Bytes: 45
+Need a description of @active_list_lock here.
+
+103
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////w=
+Bytes: 82
+Seems to conflict with sync_timeline comments about the protection of this member.
+
+158
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////I=
+Bytes: 129
+Might be good to indicate here that @size must be >= sizeof(struct sync_timeline), or make size simply represent the extra bytes.
+
+164
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////s=
+Bytes: 63
+s/sync_timeline_destory/sync_timeline_destroy
+s/destory/destroy
+
+168
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////o=
+Bytes: 19
+s/childern/children
+
+177
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////k=
+Bytes: 10
+s/it's/its
+
+187
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////g=
+Bytes: 176
+s/chiled/child
+
+Similar to sync_timeline_create(), it might be good to indicate here that @size must be >= sizeof(struct sync_pt), or make size simply represent the extra bytes
+
+238
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////c=
+Bytes: 28
+s/refernnce of /reference on
+
+242
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////Y=
+Bytes: 10
+s/it's/its
+
+248
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////U=
+Bytes: 16
+s/instal/install
+
+256
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////M=
+Bytes: 8
+s/and/an
+
+261
+Mon Apr 30 23:04:31 2012 +0000
+Author: Jesse Barker <1011408@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAFLX////Q=
+Bytes: 95
+Would be good to see explicit 'success' return value even if it is generally assumed to be '0'.
+
