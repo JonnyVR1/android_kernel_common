@@ -17,11 +17,13 @@
 #ifndef _ION_PRIV_H
 #define _ION_PRIV_H
 
+#include <linux/ion.h>
 #include <linux/kref.h>
 #include <linux/mm_types.h>
 #include <linux/mutex.h>
 #include <linux/rbtree.h>
-#include <linux/ion.h>
+#include <linux/shrinker.h>
+#include <linux/types.h>
 
 struct ion_buffer *ion_handle_buffer(struct ion_handle *handle);
 
@@ -170,5 +172,36 @@ void ion_carveout_free(struct ion_heap *heap, ion_phys_addr_t addr,
  * physical address, this is used to indicate allocation failed
  */
 #define ION_CARVEOUT_ALLOCATE_FAIL -1
+
+/**
+ * functions for creating and destroying a heap pool -- allows you
+ * to keep a pool of pre allocated memory to use from your heap.  Keeping
+ * a pool of memory that is ready for dma, ie any cached mapping have been
+ * invalidated from the cache, provides a significant peformance benefit on
+ * many systems */
+struct ion_mem_pool {
+	int count;
+	struct list_head items;
+	struct shrinker shrinker;
+	struct mutex mutex;
+	void *(*alloc)(struct ion_mem_pool *pool);
+	void (*free)(struct ion_mem_pool *pool, struct page *page);
+	gfp_t gfp_mask;
+	void *priv;
+};
+struct ion_mem_pool *ion_mem_pool_create(
+	void *(*alloc)(struct ion_mem_pool *),
+	void (*free)(struct ion_mem_pool *, struct page *),
+	gfp_t gfp_mask, void *priv);
+void ion_mem_pool_destroy(struct ion_mem_pool *);
+void *ion_mem_pool_alloc(struct ion_mem_pool *);
+void ion_mem_pool_free(struct ion_mem_pool *, struct page *);
+
+/*
+ * alloc and free methods for a heap pool that uses alloc/free_page to get the
+ * memory
+ */
+void *ion_mem_pool_alloc_page(struct ion_mem_pool *, gfp_t);
+void ion_mem_pool_free_page(struct ion_mem_pool *, void *);
 
 #endif /* _ION_PRIV_H */
