@@ -25,33 +25,28 @@
 #include <linux/vmalloc.h>
 #include "ion_priv.h"
 
-struct page_info {
-	struct page *page;
-	unsigned long order;
-	struct list_head list;
-};
-
-static struct page_info *alloc_largest_available(unsigned long size)
+static int alloc_largest_available(int current_order, unsigned long size,
+						struct list_head *page_list)
 {
 	static unsigned int orders[] = {8, 4, 0};
 	struct page *page;
-	struct page_info *info;
-	int i;
 
-	for (i = 0; i < ARRAY_SIZE(orders); i++) {
-		if (size < (1 << orders[i]) * PAGE_SIZE)
+	if (current_order >= ARRAY_SIZE(orders))
+		return -EINVAL;
+
+	for (; current_order < ARRAY_SIZE(orders); current_order++) {
+		if (size < (1 << orders[current_order]) * PAGE_SIZE)
 			continue;
 		page = alloc_pages(GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP |
-				   __GFP_NOWARN | __GFP_NORETRY, orders[i]);
+			   __GFP_NOWARN | __GFP_NORETRY, orders[current_order]);
 		if (!page)
 			continue;
-		split_page(page, orders[i]);
-		info = kmap(page);
-		info->page = page;
-		info->order = orders[i];
-		return info;
+		*(int *)kmap(page) = orders[current_order];
+		kunmap(page);
+		list_add_tail(&page->lru, page_list);
+		return current_order;
 	}
-	return NULL;
+	return -ENOMEM;
 }
 
 static int ion_system_heap_allocate(struct ion_heap *heap,
@@ -63,17 +58,16 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 	struct scatterlist *sg;
 	int ret;
 	struct list_head pages;
-	struct page_info *info, *tmp_info;
-	int i;
+	struct page *page;
+	int i = 0;
 	long size_remaining = PAGE_ALIGN(size);
 
 	INIT_LIST_HEAD(&pages);
 	while (size_remaining > 0) {
-		info = alloc_largest_available(size_remaining);
-		if (!info)
+		i = alloc_largest_available(i, size_remaining, &pages);
+		if (i < 0)
 			goto err;
-		list_add_tail(&info->list, &pages);
-		size_remaining -= (1 << info->order) * PAGE_SIZE;
+		size_remaining -= (1 << i) * PAGE_SIZE;
 	}
 
 	table = kmalloc(sizeof(struct sg_table), GFP_KERNEL);
@@ -85,15 +79,16 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 		goto err1;
 
 	sg = table->sgl;
-	list_for_each_entry_safe(info, tmp_info, &pages, list) {
-		struct page *page = info->page;
-		for (i = 0; i < (1 << info->order); i++) {
+	list_for_each_entry(page, &pages, lru) {
+		int order = *(int *)kmap(page);
+		kunmap(page);
+
+		for (i = 0; i < (1 << order); i++) {
 			sg_set_page(sg, page + i, PAGE_SIZE, 0);
 			sg = sg_next(sg);
 		}
-		list_del(&info->list);
-		memset(info, 0, sizeof(struct page_info));
-		kunmap(page);
+
+		list_del(&page->lru);
 	}
 
 	dma_sync_sg_for_device(NULL, table->sgl, table->nents,
@@ -104,10 +99,12 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 err1:
 	kfree(table);
 err:
-	list_for_each_entry(info, &pages, list) {
-		for (i = 0; i < (1 << info->order); i++)
-			__free_page(info->page + i);
-		kunmap(info->page);
+	list_for_each_entry(page, &pages, lru) {
+		int order = *(int *)kmap(page);
+		kunmap(page);
+		for (i = 0; i < (1 << order); i++)
+			__free_page(page + i);
+		list_del(&page->lru);
 	}
 	return -ENOMEM;
 }
