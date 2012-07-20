@@ -1,0 +1,15 @@
+#
+# BTHID Configuration
+#
+
+config BTHID
+	tristate "Bluetooth HID driver"
+	default y
+	depends on HID
+	---help---
+	  Android Bluetooth HID driver.
+	  This driver is required if you want to use Bluetooth devices with
+	  HID interface.
+
+	  Say Y here to compile support for Bluetooth HID devices into the
+	  kernel or say M to compile it as module (bthid).
