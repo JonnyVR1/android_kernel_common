@@ -1,0 +1,11 @@
+Revision: 5c4d1bb09291ff33d6a73254fb07df493604ec13
+Patch-set: 3
+File: drivers/power/android_battery.c
+
+279
+Fri Aug 03 21:56:13 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH+3//+a0=
+Bytes: 49
+Would it be better to pass in a ktime value here?
+
