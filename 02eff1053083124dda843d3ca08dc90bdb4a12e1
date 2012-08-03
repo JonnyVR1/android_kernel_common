@@ -1,0 +1,18 @@
+Revision: 02eff1053083124dda843d3ca08dc90bdb4a12e1
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+339
+Fri Aug 03 02:27:23 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH+3//++U=
+Bytes: 101
+I don't think this is the correct timebase. If the wall clock changes, your battery monitor may stop.
+
+351
+Fri Aug 03 02:27:23 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH+3//++I=
+Bytes: 119
+If your work function is already running it could release this before you run again, but you may not care in this case.
+
