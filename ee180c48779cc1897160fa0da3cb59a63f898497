@@ -1,0 +1,11 @@
+Revision: ee180c48779cc1897160fa0da3cb59a63f898497
+Patch-set: 1
+File: /COMMIT_MSG
+
+8
+Fri Aug 03 23:41:55 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIC3////I=
+Bytes: 75
+you should describe the feature and the justification in the commit message
+
