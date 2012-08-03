@@ -1,0 +1,29 @@
+Revision: 07619ca4190e80385a8efdbbc66dbdca55b56880
+Patch-set: 1
+File: /COMMIT_MSG
+
+9
+Fri Aug 03 00:40:52 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH/X///Jc=
+Bytes: 9
+destroyed
+
+File: drivers/base/sync.c
+
+97
+Fri Aug 03 00:40:52 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH/X///Jg=
+Bytes: 5
+their
+
+File: include/linux/sync.h
+
+83
+Fri Aug 03 00:40:52 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH/H///HU=
+Bytes: 9
+reference
+
