@@ -9,3 +9,11 @@ UUID: AAAH+3//+a0=
 Bytes: 49
 Would it be better to pass in a ktime value here?
 
+279
+Fri Aug 03 22:44:09 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAH+3//+a0=
+UUID: AAAH/H//+gE=
+Bytes: 234
+Since the caller is using cpp symbols for seconds it seems OK to construct the ktime_t here, suppose we could redefine the symbols to do the ktime_set(n,0), or have the function callers do it, or let me know if you have a better idea.
+
