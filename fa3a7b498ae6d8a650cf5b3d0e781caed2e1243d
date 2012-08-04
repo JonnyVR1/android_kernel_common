@@ -9,3 +9,13 @@ UUID: AAAH+3//+SI=
 Bytes: 44
 What happens if the temperature is negative?
 
+336
+Sat Aug 04 15:04:06 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAH+3//+SI=
+UUID: AAAICn///8U=
+Bytes: 82
+All hell breaks loose, but it freezes over.
+
+Yeah I'll fix negative cases, thanks.
+
