@@ -1,0 +1,11 @@
+Revision: fa3a7b498ae6d8a650cf5b3d0e781caed2e1243d
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+336
+Sat Aug 04 02:51:28 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAH+3//+SI=
+Bytes: 44
+What happens if the temperature is negative?
+
