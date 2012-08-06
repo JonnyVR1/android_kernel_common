@@ -1,0 +1,11 @@
+Revision: 706b0edf9db9b6a01b0e1282cedba6d752792c50
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+336
+Mon Aug 06 21:18:12 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIC3///is=
+Bytes: 51
+I don't think this works for small negative values.
+
