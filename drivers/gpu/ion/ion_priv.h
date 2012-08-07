@@ -136,6 +136,14 @@ struct ion_heap {
 };
 
 /**
+ * ion_buffer_cached - this ion buffer is cached
+ * @buffer:		buffer
+ *
+ * indicates whether this ion buffer is cached
+ */
+bool ion_buffer_cached(struct ion_buffer *buffer);
+
+/**
  * ion_buffer_fault_user_mappings - fault in user mappings of this buffer
  * @buffer:		buffer
  *
