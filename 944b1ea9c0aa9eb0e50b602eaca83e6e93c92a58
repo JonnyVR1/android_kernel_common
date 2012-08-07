@@ -9,3 +9,11 @@ UUID: AAAIC3///QM=
 Bytes: 128
 why do you bother printing the - manually and doing an abs(batt / 10)? why not just print (batt_temp / 10), abs(batt_temp % 10)?
 
+364
+Tue Aug 07 05:17:17 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIC3///QM=
+UUID: AAAIEn////Q=
+Bytes: 55
+Because it drops the "-" in the cases of -0.1 .. -0.9 .
+
