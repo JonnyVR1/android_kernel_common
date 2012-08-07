@@ -1,0 +1,11 @@
+Revision: 944b1ea9c0aa9eb0e50b602eaca83e6e93c92a58
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+364
+Tue Aug 07 03:35:05 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIC3///QM=
+Bytes: 128
+why do you bother printing the - manually and doing an abs(batt / 10)? why not just print (batt_temp / 10), abs(batt_temp % 10)?
+
