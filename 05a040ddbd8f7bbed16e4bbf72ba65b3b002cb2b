@@ -9,10 +9,26 @@ UUID: AAAIEX//+u8=
 Bytes: 74
 This is not a second if CONFIG_KTIME_SCALAR is not set on a 32 bit system.
 
+281
+Wed Aug 08 22:23:59 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIEX//+u8=
+UUID: AAAIEX//+uU=
+Bytes: 29
+Will fix to use ktime_to_ns()
+
 288
 Wed Aug 08 21:20:55 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAIEX//+u4=
 Bytes: 35
 What happens if the rtc ticks here?
+
+288
+Wed Aug 08 22:23:59 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIEX//+u4=
+UUID: AAAIEX//+rU=
+Bytes: 154
+Will change margin to be 2 seconds and hold a wakeup source for that amount of time if an alarm is found to be expiring within the margin at suspend time.
 
