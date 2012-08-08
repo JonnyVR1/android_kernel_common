@@ -278,9 +278,8 @@ static int alarmtimer_suspend(struct device *dev)
 	}
 	if (min.tv64 == 0)
 		return 0;
-
-	/* XXX - Should we enforce a minimum sleep time? */
-	WARN_ON(min.tv64 < NSEC_PER_SEC);
+	if (min.tv64 < NSEC_PER_SEC)
+		return -EBUSY;
 
 	/* Setup an rtc timer to fire that far in the future */
 	rtc_timer_cancel(rtc, &rtctimer);
