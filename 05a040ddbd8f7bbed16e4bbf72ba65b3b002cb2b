@@ -1,0 +1,18 @@
+Revision: 05a040ddbd8f7bbed16e4bbf72ba65b3b002cb2b
+Patch-set: 1
+File: kernel/time/alarmtimer.c
+
+281
+Wed Aug 08 21:20:55 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIEX//+u8=
+Bytes: 74
+This is not a second if CONFIG_KTIME_SCALAR is not set on a 32 bit system.
+
+288
+Wed Aug 08 21:20:55 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIEX//+u4=
+Bytes: 35
+What happens if the rtc ticks here?
+
