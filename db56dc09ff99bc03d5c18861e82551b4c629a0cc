@@ -9,3 +9,11 @@ UUID: AAAIEX//+W0=
 Bytes: 104
 This will trigger on other failures as well. Do we want to reject suspend if it fails for other reasons?
 
+298
+Thu Aug 09 03:14:33 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIEX//+W0=
+UUID: AAAIEX//+Ws=
+Bytes: 279
+It seems safest to not suspend if there's a chance we won't resume to service the next alarm (because it wasn't properly set).  But maybe there's an error we can get on every attempt and it would be better to suspend anyway.  I figured we'd tackle that case later if it crops up.
+
