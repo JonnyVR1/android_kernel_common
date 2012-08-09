@@ -1,0 +1,11 @@
+Revision: db56dc09ff99bc03d5c18861e82551b4c629a0cc
+Patch-set: 3
+File: kernel/time/alarmtimer.c
+
+298
+Thu Aug 09 03:11:08 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIEX//+W0=
+Bytes: 104
+This will trigger on other failures as well. Do we want to reject suspend if it fails for other reasons?
+
