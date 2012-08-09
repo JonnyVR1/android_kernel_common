@@ -1,0 +1,11 @@
+Revision: a845b34bbc04da3377c864e7738fb7efda56d127
+Patch-set: 2
+File: kernel/time/alarmtimer.c
+
+295
+Thu Aug 09 02:36:46 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIEX//+Yg=
+Bytes: 109
+This return -ETIME if you try to set an alarm that is not in the future, but it does not check in a safe way.
+
