@@ -18,3 +18,68 @@ UUID: AAAIM3///7g=
 Bytes: 35
 please clean up no carriage return.
 
+1
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX////Y=
+Bytes: 17
+get rid of the \r
+
+File: drivers/bthid/bthid.c
+
+56
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINH///80=
+Bytes: 57
+use dev_dbg, we don't want the kernel log spammed by this
+
+80
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIM3///8U=
+Bytes: 26
+remove commented out code.
+
+96
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX////E=
+Bytes: 85
+kernel style requires braces on the same line everywhere except function definitions.
+
+100
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX////Q=
+Bytes: 42
+what's the point of copying the data here?
+
+229
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX///+8=
+Bytes: 108
+use goto to jump to a label at the end of the function to do cleanup instead of duplicating kfree everywhere
+
+233
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX///+w=
+Bytes: 59
+the driver should not log anything during normal operation.
+
+239
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINH///8U=
+Bytes: 23
+use dev_err for errors.
+
+283
+Fri Aug 10 01:28:59 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAINX///+s=
+Bytes: 21
+need to clean up here
+
