@@ -1,0 +1,20 @@
+Revision: 435770f6749d346c2073c2c96422809d4b544991
+Patch-set: 1
+File: drivers/bthid/Kconfig
+
+10
+Fri Aug 10 01:16:00 2012 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIM3///7k=
+Bytes: 97
+This looks like a broadcom driver.  Is there any reason to call it "android" instead of broadcom?
+
+File: drivers/bthid/Makefile
+
+1
+Fri Aug 10 01:16:00 2012 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIM3///7g=
+Bytes: 35
+please clean up no carriage return.
+
