@@ -1,0 +1,13 @@
+Revision: d7510c926d10f3b09536be556b0a7244415cee76
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+5579
+Mon Aug 13 19:34:05 2012 +0000
+Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIR3///og=
+Bytes: 100
+time_util.h defines
+unsigned long long timespec_to_microsec(struct timespec *time_spec)
+if you like.
+
