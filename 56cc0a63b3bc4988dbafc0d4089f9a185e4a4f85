@@ -1,0 +1,11 @@
+Revision: 56cc0a63b3bc4988dbafc0d4089f9a185e4a4f85
+Base-for-patch-set: 1
+File: drivers/devfreq/Makefile
+
+6
+Tue Aug 14 03:24:41 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIRn///Wg=
+Bytes: 43
+suggest leave blank line to avoid conflicts
+
