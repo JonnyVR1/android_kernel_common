@@ -1,0 +1,18 @@
+Revision: 56cc0a63b3bc4988dbafc0d4089f9a185e4a4f85
+Patch-set: 1
+File: kernel/power/qos.c
+
+546
+Tue Aug 14 18:06:12 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIXH///uA=
+Bytes: 51
+surround this (546-586) with #ifdef CONFIG_DEBUG_FS
+
+604
+Tue Aug 14 18:06:12 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIW3///sw=
+Bytes: 22
+#ifdef CONFIG_DEBUG_FS
+
