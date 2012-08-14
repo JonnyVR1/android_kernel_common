@@ -1,0 +1,27 @@
+Revision: 235123de27de437f68b43852638f7f9de2644b7f
+Patch-set: 1
+File: drivers/devfreq/Makefile
+
+4
+Tue Aug 14 18:11:58 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIW3///ss=
+Bytes: 21
+missing tab before +=
+
+File: drivers/devfreq/governor_pm_qos.c
+
+35
+Tue Aug 14 18:11:58 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIaX///3s=
+Bytes: 87
+unsigned maybe? I guess we'll have other problems when requesting > 2TB of bandwidth :)
+
+68
+Tue Aug 14 18:11:58 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIXH///s0=
+Bytes: 82
+also, validate bytes_per_sec_per_hz to be non-zero to avoid divide by 0 on line 40
+
