@@ -1,0 +1,33 @@
+Revision: be33304bd87ca7eae045dfa3c32ff14b01866111
+Patch-set: 3
+File: drivers/gpu/ion/ion_mem_pool.c
+
+16
+Wed Aug 15 17:22:51 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIW3///ow=
+Bytes: 18
+remove/comment out
+
+80
+Wed Aug 15 17:22:51 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIbX///04=
+Bytes: 95
+if this failed, you'd leak the page. You probably have to tell the pool to pool->free the page?
+
+103
+Wed Aug 15 17:22:51 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIbn///tc=
+Bytes: 66
+is this supposed to return how much you freed or how much is left?
+
+132
+Wed Aug 15 17:22:51 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIbH///sM=
+Bytes: 82
+do you need to unregister the shrinker?
+Also, mutex_destroy() for mutex debugging.
+
