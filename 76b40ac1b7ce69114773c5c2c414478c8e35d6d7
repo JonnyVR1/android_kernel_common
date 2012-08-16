@@ -1,0 +1,27 @@
+Revision: 76b40ac1b7ce69114773c5c2c414478c8e35d6d7
+Patch-set: 1
+File: /COMMIT_MSG
+
+13
+Thu Aug 16 03:28:19 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfH///+s=
+Bytes: 52
+Change-Id: I76b40ac1b7ce69114773c5c2c414478c8e35d6d7
+
+File: drivers/usb/gadget/f_audio_source.c
+
+626
+Thu Aug 16 03:28:19 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfH///+w=
+Bytes: 71
+Need INIT_LIST_HEAD(&_audio_dev.idle_reqs) to ensure list starts empty?
+
+764
+Thu Aug 16 03:28:19 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfH///+o=
+Bytes: 45
+Need check for already in use, or impossible?
+
