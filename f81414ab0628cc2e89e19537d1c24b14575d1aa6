@@ -1,0 +1,18 @@
+Revision: f81414ab0628cc2e89e19537d1c24b14575d1aa6
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Thu Aug 16 18:09:06 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIgH///yM=
+Bytes: 14
+typo: disabled
+
+9
+Thu Aug 16 18:09:06 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIgH///0M=
+Bytes: 27
+add Change-ID (for android)
+
