@@ -26,3 +26,23 @@ UUID: AAAIf3///z8=
 Bytes: 151
 Yeah it will. This gets called at kernel init, and audio_source_bind_config isn't called until USB is connected with the audio_source function enabled.
 
+827
+Thu Aug 16 18:28:57 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfn///tA=
+Bytes: 485
+why do you need this to be done at runtime? Since it's static and only initialized once, just define it directly right before bind_config:
+
+static struct audio_dev _audio_dev = {
+  .func = {
+       .name = "audio_source",
+       .bind = audio_bind,
+       .unbind = audio_unbind,
+       .set_alt = audio_set_alt,
+       .setup = audio_setup,
+       .disable = audio_disable,
+   },
+  .lock = __SPIN_LOCK_UNLOCKED(_audio_dev.lock),
+  .idle_reqs = LIST_HEAD_INIT(_audio_dev.idle_reqs),
+};
+
