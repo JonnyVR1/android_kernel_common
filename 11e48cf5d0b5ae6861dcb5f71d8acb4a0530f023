@@ -18,3 +18,11 @@ UUID: AAAIfH///+Q=
 Bytes: 72
 assuming this runs before audio_source_bind_config could be first called
 
+827
+Thu Aug 16 15:11:46 2012 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIfH///+Q=
+UUID: AAAIf3///z8=
+Bytes: 151
+Yeah it will. This gets called at kernel init, and audio_source_bind_config isn't called until USB is connected with the audio_source function enabled.
+
