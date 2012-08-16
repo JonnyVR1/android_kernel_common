@@ -1,0 +1,20 @@
+Revision: 11e48cf5d0b5ae6861dcb5f71d8acb4a0530f023
+Patch-set: 2
+File: /COMMIT_MSG
+
+13
+Thu Aug 16 03:57:02 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfH///+M=
+Bytes: 139
+Gerrit matched this up with the previous change assigned ID I76b40ac1b7ce69114773c5c2c414478c8e35d6d7, so it's more complicated than I knew
+
+File: drivers/usb/gadget/f_audio_source.c
+
+827
+Thu Aug 16 03:57:02 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIfH///+Q=
+Bytes: 72
+assuming this runs before audio_source_bind_config could be first called
+
