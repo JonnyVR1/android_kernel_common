@@ -46,3 +46,11 @@ static struct audio_dev _audio_dev = {
   .idle_reqs = LIST_HEAD_INIT(_audio_dev.idle_reqs),
 };
 
+827
+Thu Aug 16 18:33:08 2012 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIfn///tA=
+UUID: AAAIgH///wg=
+Bytes: 26
+Good point - I'll fix that
+
