@@ -243,7 +243,6 @@ struct audio_dev {
 
 	struct list_head		idle_reqs;
 	struct usb_ep			*in_ep;
-	struct usb_endpoint_descriptor	*in_desc;
 
 	spinlock_t			lock;
 
@@ -261,6 +260,7 @@ struct audio_dev {
 	/* number of frames sent since start_time */
 	s64				frames_sent;
 };
+static struct audio_dev _audio_dev;
 
 static inline struct audio_dev *func_to_audio(struct usb_function *f)
 {
@@ -620,7 +620,10 @@ audio_unbind(struct usb_configuration *c, struct usb_function *f)
 		audio_request_free(req, audio->in_ep);
 
 	snd_card_free_when_closed(audio->card);
-	kfree(audio);
+	audio->card = NULL;
+	audio->pcm = NULL;
+	audio->substream = NULL;
+	audio->in_ep = NULL;
 }
 
 static void audio_pcm_playback_start(struct audio_dev *audio)
@@ -758,27 +761,12 @@ int audio_source_bind_config(struct usb_configuration *c,
 	config->card = -1;
 	config->device = -1;
 
-	audio = kzalloc(sizeof *audio, GFP_KERNEL);
-	if (!audio)
-		return -ENOMEM;
-
-	audio->func.name = "audio_source";
-
-	spin_lock_init(&audio->lock);
-
-	audio->func.bind = audio_bind;
-	audio->func.unbind = audio_unbind;
-	audio->func.set_alt = audio_set_alt;
-	audio->func.setup = audio_setup;
-	audio->func.disable = audio_disable;
-	audio->in_desc = &fs_as_in_ep_desc;
-
-	INIT_LIST_HEAD(&audio->idle_reqs);
+	audio = &_audio_dev;
 
 	err = snd_card_create(SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
 			THIS_MODULE, 0, &card);
 	if (err)
-		goto snd_card_fail;
+		return err;
 
 	snd_card_set_dev(card, &c->cdev->gadget->dev);
 
@@ -817,7 +805,23 @@ add_fail:
 register_fail:
 pcm_fail:
 	snd_card_free(audio->card);
-snd_card_fail:
-	kfree(audio);
 	return err;
 }
+
+static int __init audio_source_init(void)
+{
+	_audio_dev.func.name = "audio_source";
+
+	spin_lock_init(&_audio_dev.lock);
+
+	_audio_dev.func.bind = audio_bind;
+	_audio_dev.func.unbind = audio_unbind;
+	_audio_dev.func.set_alt = audio_set_alt;
+	_audio_dev.func.setup = audio_setup;
+	_audio_dev.func.disable = audio_disable;
+
+	INIT_LIST_HEAD(&_audio_dev.idle_reqs);
+	return 0;
+}
+
+module_init(audio_source_init);
