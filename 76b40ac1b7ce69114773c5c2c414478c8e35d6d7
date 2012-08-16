@@ -17,6 +17,14 @@ UUID: AAAIgH////o=
 Bytes: 89
 I'm not sure what you mean here.  I didn't think we used gerrit change IDs in the kernel.
 
+13
+Thu Aug 16 03:45:29 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIgH////o=
+UUID: AAAIfH///+g=
+Bytes: 117
+We do, esp. as gerrit will create a new change instead of a new patchset if this doesn't appear in the commit header.
+
 File: drivers/usb/gadget/f_audio_source.c
 
 626
@@ -34,6 +42,14 @@ UUID: AAAIfn////k=
 Bytes: 69
 The while loop above that calls audio_req_get() will empty this list.
 
+626
+Thu Aug 16 03:45:29 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIfn////k=
+UUID: AAAIfH///+c=
+Bytes: 2
+ok
+
 764
 Thu Aug 16 03:28:19 2012 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,4 +64,12 @@ Parent: AAAIfH///+o=
 UUID: AAAIgH////s=
 Bytes: 98
 Not a problem - this will not get called twice without audio_source_unbind being called inbetween.
+
+764
+Thu Aug 16 03:45:29 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAIgH////s=
+UUID: AAAIfH///+Y=
+Bytes: 2
+ok
 
