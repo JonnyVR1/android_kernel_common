@@ -1,0 +1,11 @@
+Revision: e2b8a84d24242b1f47d952cd17dc2c2dcbe72dc9
+Patch-set: 2
+File: include/linux/pm_qos.h
+
+17
+Mon Aug 20 22:01:39 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIrn///Vw=
+Bytes: 42
+Are these class ids visible to user-space?
+
