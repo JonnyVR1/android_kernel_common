@@ -1,0 +1,11 @@
+Revision: 018c71e6449c8a181a975db222953b7e87dc0114
+Patch-set: 2
+File: drivers/devfreq/Makefile
+
+7
+Tue Aug 21 05:11:18 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAIxn///+8=
+Bytes: 30
+unnecessary white space change
+
