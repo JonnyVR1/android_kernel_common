@@ -72,3 +72,11 @@ UUID: AAAI13///3I=
 Bytes: 146
 the kmalloc here and then kfree in ion_system_heap_free_pagelist is a little scary.  could the kfree be moved after ion_system_heap_free_pagelist?
 
+197
+Tue Aug 21 23:38:59 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAI13///3I=
+UUID: AAAI2X///5s=
+Bytes: 345
+that's hard because free_pagelist is also consolidating into larger chunks as it frees, so items that are contiguous have their list entries freed and are joined up with the previous entry.  After ionsystem_heap_free_pagelist, the list no longer exists.  I suppose I could build a second list of free'd items but that seems unnecessarily complex
+
