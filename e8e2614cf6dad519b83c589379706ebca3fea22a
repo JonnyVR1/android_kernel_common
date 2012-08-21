@@ -1,0 +1,74 @@
+Revision: e8e2614cf6dad519b83c589379706ebca3fea22a
+Patch-set: 3
+File: drivers/gpu/ion/ion_system_heap.c
+
+28
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI2H///8s=
+Bytes: 14
+could be const
+
+29
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI2X///+4=
+Bytes: 14
+could be const
+
+53
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI2X///+c=
+Bytes: 149
+dma_unmap_page for symmetry?  that will trigger unnecessary cache operations though.  a comment that it is just used for cache operations would help.
+
+132
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI2H///6Y=
+Bytes: 304
+it would be nice to avoid these temporary allocations.  if you passed the struct page_info into alloc_largest_available, you could do something fancier here, like put the first ones on the stack and then kmalloc if more are necessary, but that would get pretty ugly.  or you could kmalloc them in blocks.
+
+177
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI13///4g=
+Bytes: 21
+no need to initialize
+
+178
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI13///3k=
+Bytes: 51
+LIST_HEAD(pages) then you won't need INIT_LIST_HEAD
+
+182
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI13///38=
+Bytes: 117
+sg_miter_start would do the mapping for you, although it's probably more complicated than doing the mapping yourself.
+
+185
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI13///4w=
+Bytes: 74
+this would be a reasonable use of kmap if you don't need to set the pgprot
+
+187
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI2X///9Q=
+Bytes: 28
+why is the memset necessary?
+
+197
+Tue Aug 21 23:09:18 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI13///3I=
+Bytes: 146
+the kmalloc here and then kfree in ion_system_heap_free_pagelist is a little scary.  could the kfree be moved after ion_system_heap_free_pagelist?
+
