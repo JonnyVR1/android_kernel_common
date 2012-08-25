@@ -99,7 +99,7 @@ bool sp_in_stack(unsigned long orig_sp, unsigned long sp)
  * Note that with framepointer enabled, even the leaf functions have the same
  * prologue and epilogue, therefore we can ignore the LR value in this case.
  */
-int notrace unwind_frame(struct stackframe *frame)
+int notrace unwind_frame(struct stackframe *frame, int depth)
 {
 	unsigned long fp = frame->fp;
 	unsigned long sp = frame->sp;
@@ -137,12 +137,14 @@ int notrace unwind_frame(struct stackframe *frame)
 void notrace walk_stackframe(struct stackframe *frame,
 		     int (*fn)(struct stackframe *, void *), void *data)
 {
+	int depth = 0;
+
 	while (1) {
 		int ret;
 
 		if (fn(frame, data))
 			break;
-		ret = unwind_frame(frame);
+		ret = unwind_frame(frame, depth++);
 		if (ret < 0)
 			break;
 	}

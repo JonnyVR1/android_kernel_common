@@ -8,7 +8,7 @@ struct stackframe {
 	unsigned long pc;
 };
 
-extern int unwind_frame(struct stackframe *frame);
+extern int unwind_frame(struct stackframe *frame, int depth);
 extern void walk_stackframe(struct stackframe *frame,
 			    int (*fn)(struct stackframe *, void *), void *data);
 
