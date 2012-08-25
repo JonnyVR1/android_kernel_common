@@ -40,6 +40,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/export.h>
+#include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -235,12 +236,18 @@ static unsigned long unwind_get_byte(struct unwind_ctrl_block *ctrl)
 	return ret;
 }
 
+static bool ptr_in_stack(unsigned long orig_sp, void *vsp)
+{
+	return addr_in_stack(orig_sp, (unsigned long)vsp);
+}
+
 /*
  * Execute the current unwind instruction.
  */
 static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 {
 	unsigned long insn = unwind_get_byte(ctrl);
+	unsigned long orig_sp = ctrl->vrs[SP];
 
 	pr_debug("%s: insn = %08lx\n", __func__, insn);
 
@@ -264,8 +271,11 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 		/* pop R4-R15 according to mask */
 		load_sp = mask & (1 << (13 - 4));
 		while (mask) {
-			if (mask & 1)
+			if (mask & 1) {
+				if (!ptr_in_stack(orig_sp, vsp))
+					return -URC_FAILURE;
 				ctrl->vrs[reg] = *vsp++;
+			}
 			mask >>= 1;
 			reg++;
 		}
@@ -279,10 +289,16 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 		int reg;
 
 		/* pop R4-R[4+bbb] */
-		for (reg = 4; reg <= 4 + (insn & 7); reg++)
+		for (reg = 4; reg <= 4 + (insn & 7); reg++) {
+			if (!ptr_in_stack(orig_sp, vsp))
+				return -URC_FAILURE;
 			ctrl->vrs[reg] = *vsp++;
-		if (insn & 0x80)
+		}
+		if (insn & 0x80) {
+			if (!ptr_in_stack(orig_sp, vsp))
+				return -URC_FAILURE;
 			ctrl->vrs[14] = *vsp++;
+		}
 		ctrl->vrs[SP] = (unsigned long)vsp;
 	} else if (insn == 0xb0) {
 		if (ctrl->vrs[PC] == 0)
@@ -302,8 +318,11 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 
 		/* pop R0-R3 according to mask */
 		while (mask) {
-			if (mask & 1)
+			if (mask & 1) {
+				if (!ptr_in_stack(orig_sp, vsp))
+					return -URC_FAILURE;
 				ctrl->vrs[reg] = *vsp++;
+			}
 			mask >>= 1;
 			reg++;
 		}
@@ -327,18 +346,16 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
  * Unwind a single frame starting with *sp for the symbol at *pc. It
  * updates the *pc and *sp with the new values.
  */
-int unwind_frame(struct stackframe *frame)
+int unwind_frame(struct stackframe *frame, int depth)
 {
-	unsigned long high, low;
 	const struct unwind_idx *idx;
 	struct unwind_ctrl_block ctrl;
 
-	/* only go to a higher address on the stack */
-	low = frame->sp;
-	high = ALIGN(low, THREAD_SIZE);
-
 	pr_debug("%s(pc = %08lx lr = %08lx sp = %08lx)\n", __func__,
 		 frame->pc, frame->lr, frame->sp);
+
+	if (!sp_addr_valid(frame->sp))
+		return -URC_FAILURE;
 
 	if (!kernel_text_address(frame->pc))
 		return -URC_FAILURE;
@@ -386,7 +403,7 @@ int unwind_frame(struct stackframe *frame)
 		int urc = unwind_exec_insn(&ctrl);
 		if (urc < 0)
 			return urc;
-		if (ctrl.vrs[SP] < low || ctrl.vrs[SP] >= high)
+		if (!sp_in_stack(frame->sp, ctrl.vrs[SP]))
 			return -URC_FAILURE;
 	}
 
@@ -395,6 +412,10 @@ int unwind_frame(struct stackframe *frame)
 
 	/* check for infinite loop */
 	if (frame->pc == ctrl.vrs[PC])
+		return -URC_FAILURE;
+
+	/* only leaf functions can possibly not modify sp */
+	if (depth != 0 && frame->sp == ctrl.vrs[SP])
 		return -URC_FAILURE;
 
 	frame->fp = ctrl.vrs[FP];
@@ -409,6 +430,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 {
 	struct stackframe frame;
 	register unsigned long current_sp asm ("sp");
+	int depth = 0;
 
 	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
 
@@ -443,7 +465,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		int urc;
 		unsigned long where = frame.pc;
 
-		urc = unwind_frame(&frame);
+		urc = unwind_frame(&frame, depth++);
 		if (urc < 0)
 			break;
 		dump_backtrace_entry(where, frame.pc, frame.sp - 4);

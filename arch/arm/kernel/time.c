@@ -51,6 +51,7 @@ EXPORT_SYMBOL(rtc_lock);
 unsigned long profile_pc(struct pt_regs *regs)
 {
 	struct stackframe frame;
+	int depth = 0;
 
 	if (!in_lock_functions(regs->ARM_pc))
 		return regs->ARM_pc;
@@ -60,7 +61,7 @@ unsigned long profile_pc(struct pt_regs *regs)
 	frame.lr = regs->ARM_lr;
 	frame.pc = regs->ARM_pc;
 	do {
-		int ret = unwind_frame(&frame);
+		int ret = unwind_frame(&frame, depth++);
 		if (ret < 0)
 			return 0;
 	} while (in_lock_functions(frame.pc));
