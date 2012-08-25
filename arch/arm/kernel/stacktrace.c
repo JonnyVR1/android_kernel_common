@@ -1,8 +1,86 @@
 #include <linux/export.h>
+#include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 
 #include <asm/stacktrace.h>
+
+#define STACK_MAX(sp) (round_down(sp, THREAD_SIZE) + THREAD_START_SP)
+
+/**
+ * sp_addr_valid - verify a stack pointer
+ * @sp: current stack pointer
+ *
+ * Returns true if sp is a pointer inside a memory area that could be a stack.
+ * Does not verify that sp is inside an actual stack (i.e. does not check for
+ * STACK_MAGIC).
+ *
+ * If sp_addr_valid(sp) returns true, then the kernel will not fault if it
+ * accesses memory in the range
+ * [sp, round_down(sp, THREAD_SIZE) + THREAD_START_SP)
+ */
+bool sp_addr_valid(unsigned long sp)
+{
+	unsigned long high;
+	unsigned int pfn;
+	unsigned int start_pfn;
+	unsigned int end_pfn;
+
+	if (!IS_ALIGNED(sp, 4))
+		return false;
+
+	if ((sp & (THREAD_SIZE - 1)) > THREAD_START_SP)
+		return false;
+
+	if ((sp & (THREAD_SIZE - 1)) < sizeof(struct thread_info))
+		return false;
+
+	high = STACK_MAX(sp);
+
+	if (!virt_addr_valid(sp) || !virt_addr_valid(high))
+		return false;
+
+	start_pfn = page_to_pfn(virt_to_page(sp));
+	end_pfn = page_to_pfn(virt_to_page(high));
+	for (pfn = start_pfn; pfn <= end_pfn; pfn++)
+		if (!pfn_valid(pfn))
+			return false;
+
+	return true;
+}
+
+/**
+ * addr_in_stack - verify a pointer is inside a specified stack
+ * @orig_sp: stack pointer at the bottom of the stack
+ * @sp: address to be verified
+ *
+ * Returns true if sp is in the stack bounded at the bottom by orig_sp, in the
+ * range [orig_sp, round_down(orig_sp, THREAD_SIZE) + THREAD_START_SP)
+ *
+ * If orig_sp is valid (see sp_addr_valid), then the kernel will not fault if it
+ * accesses a pointer where ptr_in_stack returns true.
+ */
+bool addr_in_stack(unsigned long orig_sp, unsigned long sp)
+{
+	return (sp >= orig_sp && sp < STACK_MAX(orig_sp) && IS_ALIGNED(sp, 4));
+}
+
+/**
+ * sp_in_stack - verify a stack pointer is inside a specified stack
+ * @orig_sp: stack pointer at the bottom of the stack
+ * @sp: stack pointer to be verified
+ *
+ * Returns true if sp is in the stack bounded at the bottom by orig_sp, in the
+ * range [orig_sp, round_down(orig_sp, THREAD_SIZE) + THREAD_START_SP]
+ *
+ * If sp_in_stack returns true,
+ * addr_in_stack(vsp, x) == addr_in_stack(orig_sp, x)
+ */
+bool sp_in_stack(unsigned long orig_sp, unsigned long sp)
+{
+	return (sp >= orig_sp && sp <= STACK_MAX(orig_sp) && IS_ALIGNED(sp, 4));
+}
+
 
 #if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
 /*
@@ -23,21 +101,34 @@
  */
 int notrace unwind_frame(struct stackframe *frame)
 {
-	unsigned long high, low;
 	unsigned long fp = frame->fp;
+	unsigned long sp = frame->sp;
 
-	/* only go to a higher address on the stack */
-	low = frame->sp;
-	high = ALIGN(low, THREAD_SIZE);
+	if (!sp_addr_valid(sp))
+		return -EINVAL;
 
-	/* check current frame pointer is within bounds */
-	if (fp < (low + 12) || fp + 4 >= high)
+	/* Check current frame pointer is within the stack bounds. */
+	if (!addr_in_stack(sp, fp))
+		return -EINVAL;
+
+	if (fp < 12 || !addr_in_stack(sp, fp - 12))
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */
 	frame->fp = *(unsigned long *)(fp - 12);
 	frame->sp = *(unsigned long *)(fp - 8);
 	frame->pc = *(unsigned long *)(fp - 4);
+
+	/* Ensure the next stack pointer is in the same stack */
+	if (!sp_in_stack(sp, frame->sp))
+		return -EINVAL;
+
+	/*
+	 * Ensure the next stack pointer is above this frame to guarantee
+	 * bounded execution.
+	 */
+	if (frame->sp < fp)
+		return -EINVAL;
 
 	return 0;
 }
