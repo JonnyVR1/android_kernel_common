@@ -1,4 +1,5 @@
 #include <linux/export.h>
+#include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 
@@ -28,16 +29,44 @@ int notrace unwind_frame(struct stackframe *frame)
 
 	/* only go to a higher address on the stack */
 	low = frame->sp;
-	high = ALIGN(low, THREAD_SIZE);
+
+	/*
+	 * low + 1 here ensures that high > sp, consistent with the
+	 * definition of current_thread_info().
+	 * We subtract 1 to compute the highest allowable byte address.
+	 * Otherwise, we might get high == 0 which would confuse our
+	 * comparisons.
+	 */
+	high = ALIGN(low + 1, THREAD_SIZE) - 1;
+
+	if (!virt_addr_valid(low) || !virt_addr_valid(high))
+		return -EINVAL;
 
 	/* check current frame pointer is within bounds */
-	if (fp < (low + 12) || fp + 4 >= high)
+	if (fp < 12 || fp - 12 < low || fp > high)
+		return -EINVAL;
+
+	if (!IS_ALIGNED(fp, 4))
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */
 	frame->fp = *(unsigned long *)(fp - 12);
 	frame->sp = *(unsigned long *)(fp - 8);
 	frame->pc = *(unsigned long *)(fp - 4);
+
+	/*
+	 * ensure the next stack pointer is above this one to guarantee
+	 * bounded execution
+	 */
+	if (frame->sp < fp || frame->sp > high)
+		return -EINVAL;
+
+	/* Do not claim the frame is valid if if is obviously corrupt: */
+	if (!IS_ALIGNED(frame->sp, 4))
+		return -EINVAL;
+
+	if (!IS_ALIGNED(frame->fp, 4))
+		return -EINVAL;
 
 	return 0;
 }
