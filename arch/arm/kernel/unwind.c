@@ -40,6 +40,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/export.h>
+#include <linux/mm.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -97,6 +98,18 @@ static LIST_HEAD(unwind_tables);
 	long offset = (((long)*(ptr)) << 1) >> 1;	\
 	(unsigned long)(ptr) + offset;			\
 })
+
+static bool valid_stack_addr(unsigned long sp, unsigned long *_vsp)
+{
+	unsigned long low;
+	unsigned long high;
+	unsigned long vsp = (unsigned long)_vsp;
+
+	low = round_down(sp, THREAD_SIZE) + sizeof(struct thread_info);
+	high = ALIGN(sp + 1, THREAD_SIZE) - 1;
+
+	return (vsp >= low && vsp <= high && IS_ALIGNED(vsp, 4));
+}
 
 /*
  * Binary search in the unwind index. The entries are
@@ -241,6 +254,7 @@ static unsigned long unwind_get_byte(struct unwind_ctrl_block *ctrl)
 static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 {
 	unsigned long insn = unwind_get_byte(ctrl);
+	unsigned long orig_sp = ctrl->vrs[SP];
 
 	pr_debug("%s: insn = %08lx\n", __func__, insn);
 
@@ -264,8 +278,11 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 		/* pop R4-R15 according to mask */
 		load_sp = mask & (1 << (13 - 4));
 		while (mask) {
-			if (mask & 1)
+			if (mask & 1) {
+				if (!valid_stack_addr(orig_sp, vsp))
+					return -URC_FAILURE;
 				ctrl->vrs[reg] = *vsp++;
+			}
 			mask >>= 1;
 			reg++;
 		}
@@ -279,10 +296,16 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 		int reg;
 
 		/* pop R4-R[4+bbb] */
-		for (reg = 4; reg <= 4 + (insn & 7); reg++)
+		for (reg = 4; reg <= 4 + (insn & 7); reg++) {
+			if (!valid_stack_addr(orig_sp, vsp))
+				return -URC_FAILURE;
 			ctrl->vrs[reg] = *vsp++;
-		if (insn & 0x80)
+		}
+		if (insn & 0x80) {
+			if (!valid_stack_addr(orig_sp, vsp))
+				return -URC_FAILURE;
 			ctrl->vrs[14] = *vsp++;
+		}
 		ctrl->vrs[SP] = (unsigned long)vsp;
 	} else if (insn == 0xb0) {
 		if (ctrl->vrs[PC] == 0)
@@ -302,8 +325,11 @@ static int unwind_exec_insn(struct unwind_ctrl_block *ctrl)
 
 		/* pop R0-R3 according to mask */
 		while (mask) {
-			if (mask & 1)
+			if (mask & 1) {
+				if (!valid_stack_addr(orig_sp, vsp))
+					return -URC_FAILURE;
 				ctrl->vrs[reg] = *vsp++;
+			}
 			mask >>= 1;
 			reg++;
 		}
@@ -335,12 +361,23 @@ int unwind_frame(struct stackframe *frame)
 
 	/* only go to a higher address on the stack */
 	low = frame->sp;
-	high = ALIGN(low, THREAD_SIZE);
+
+	/*
+	 * low + 1 here ensures that high > sp, consistent with the
+	 * definition of current_thread_info().
+	 * We subtract 1 to compute the highest allowable byte address.
+	 * Otherwise, we might get high == 0 which would confuse our
+	 * comparisons.
+	 */
+	high = ALIGN(low + 1, THREAD_SIZE) - 1;
 
 	pr_debug("%s(pc = %08lx lr = %08lx sp = %08lx)\n", __func__,
 		 frame->pc, frame->lr, frame->sp);
 
 	if (!kernel_text_address(frame->pc))
+		return -URC_FAILURE;
+
+	if (!virt_addr_valid(low) || !virt_addr_valid(high))
 		return -URC_FAILURE;
 
 	idx = unwind_find_idx(frame->pc);
@@ -386,7 +423,7 @@ int unwind_frame(struct stackframe *frame)
 		int urc = unwind_exec_insn(&ctrl);
 		if (urc < 0)
 			return urc;
-		if (ctrl.vrs[SP] < low || ctrl.vrs[SP] >= high)
+		if (ctrl.vrs[SP] < low || ctrl.vrs[SP] > high)
 			return -URC_FAILURE;
 	}
 
@@ -396,6 +433,12 @@ int unwind_frame(struct stackframe *frame)
 	/* check for infinite loop */
 	if (frame->pc == ctrl.vrs[PC])
 		return -URC_FAILURE;
+
+	if (frame->sp == ctrl.vrs[SP] && frame->same_sp_count++ > 128)
+		return -URC_FAILURE;
+
+	if (frame->sp != ctrl.vrs[SP])
+		frame->same_sp_count = 0;
 
 	frame->fp = ctrl.vrs[FP];
 	frame->sp = ctrl.vrs[SP];
@@ -438,6 +481,8 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		frame.lr = 0;
 		frame.pc = thread_saved_pc(tsk);
 	}
+
+	frame.same_sp_count = 0;
 
 	while (1) {
 		int urc;

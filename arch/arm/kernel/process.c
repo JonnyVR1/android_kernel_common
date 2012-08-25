@@ -632,6 +632,7 @@ unsigned long get_wchan(struct task_struct *p)
 	frame.sp = thread_saved_sp(p);
 	frame.lr = 0;			/* recovered from the stack */
 	frame.pc = thread_saved_pc(p);
+	frame.same_sp_count = 0;
 	do {
 		int ret = unwind_frame(&frame);
 		if (ret < 0)

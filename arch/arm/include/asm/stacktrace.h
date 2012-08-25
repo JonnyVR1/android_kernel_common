@@ -6,6 +6,7 @@ struct stackframe {
 	unsigned long sp;
 	unsigned long lr;
 	unsigned long pc;
+	int same_sp_count;
 };
 
 extern int unwind_frame(struct stackframe *frame);

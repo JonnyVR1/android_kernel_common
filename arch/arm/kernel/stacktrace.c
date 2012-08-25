@@ -75,6 +75,8 @@ int notrace unwind_frame(struct stackframe *frame)
 void notrace walk_stackframe(struct stackframe *frame,
 		     int (*fn)(struct stackframe *, void *), void *data)
 {
+	frame->same_sp_count = 0;
+
 	while (1) {
 		int ret;
 
