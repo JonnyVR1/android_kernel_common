@@ -1,0 +1,23 @@
+Revision: ed3e9b3c70457e21a2c141ad4d44aaab8febeb5f
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+246
+Wed Aug 29 18:14:42 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI6X//97I=
+Bytes: 80
+Follow coding style guidelines for multi-line comments.
+
+/*
+ * stuff
+ * here
+ */
+
+294
+Wed Aug 29 18:14:42 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI63//96A=
+Bytes: 85
+remove from handle before doing the buffer_put, otherwise can't buffer be freed here?
+
