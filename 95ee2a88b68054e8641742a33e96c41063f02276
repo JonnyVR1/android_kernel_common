@@ -1,0 +1,11 @@
+Revision: 95ee2a88b68054e8641742a33e96c41063f02276
+Patch-set: 1
+File: drivers/w1/masters/ds2482.c
+
+426
+Fri Aug 31 23:17:24 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI6X//7xA=
+Bytes: 58
+where do you request this gpio and set it to be an output?
+
