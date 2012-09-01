@@ -9,10 +9,26 @@ UUID: AAAI6X//7wk=
 Bytes: 42
 do you want to copy this in probe instead?
 
+425
+Sat Sep 01 00:31:04 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAI6X//7wk=
+UUID: AAAI6n//8Yo=
+Bytes: 4
+Done
+
 426
 Fri Aug 31 23:17:24 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAI6X//7xA=
 Bytes: 58
 where do you request this gpio and set it to be an output?
+
+426
+Sat Sep 01 00:31:04 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAI6X//7xA=
+UUID: AAAI6n//8Yk=
+Bytes: 4
+Done
 
