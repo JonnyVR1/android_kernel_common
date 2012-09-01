@@ -1,0 +1,18 @@
+Revision: 00446c509ffe9349d36ce19d06069652e0efd82c
+Patch-set: 2
+File: drivers/w1/masters/ds2482.c
+
+514
+Sat Sep 01 00:38:37 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI6X//7r4=
+Bytes: 31
+a conditional seem simpler here
+
+548
+Sat Sep 01 00:38:37 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI6X//7r0=
+Bytes: 41
+do you want to put it pack in sleep mode?
+
