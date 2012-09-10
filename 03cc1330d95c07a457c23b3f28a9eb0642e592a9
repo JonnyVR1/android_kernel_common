@@ -1,0 +1,18 @@
+Revision: 03cc1330d95c07a457c23b3f28a9eb0642e592a9
+Patch-set: 1
+File: sound/soc/soc-dapm.c
+
+2125
+Mon Sep 10 20:44:53 2012 +0000
+Author: Simon Wilson <1004565@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI+n///pw=
+Bytes: 28
+Missing mutex_unlock() here.
+
+2844
+Mon Sep 10 20:44:53 2012 +0000
+Author: Simon Wilson <1004565@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAI+n///ps=
+Bytes: 9
+Also here
+
