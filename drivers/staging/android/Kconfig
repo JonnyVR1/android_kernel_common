@@ -32,6 +32,12 @@ config ANDROID_PERSISTENT_RAM
 	select REED_SOLOMON_ENC8
 	select REED_SOLOMON_DEC8
 
+config ANDROID_LOGGER_DUMPER
+	tristate "Android log kernel dumper"
+	help
+	 uses the Android logger dumping interface to dump the logger buffers
+	 to kernel console using printk's.
+
 config ANDROID_RAM_CONSOLE
 	bool "Android RAM buffer console"
 	depends on !S390 && !UML && HAVE_MEMBLOCK
