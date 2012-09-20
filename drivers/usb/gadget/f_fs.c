@@ -1519,7 +1519,7 @@ static int ffs_func_eps_enable(struct ffs_function *func)
 	spin_lock_irqsave(&func->ffs->eps_lock, flags);
 	do {
 		struct usb_endpoint_descriptor *ds;
-		ds = ep->descs[ep->descs[1] ? 1 : 0];
+		ds = ep->descs[ffs->gadget->speed == USB_SPEED_HIGH ? 1 : 0];
 
 		ep->ep->driver_data = ep;
 		ep->ep->desc = ds;
