@@ -1,0 +1,12 @@
+Revision: 6d6d4981baaf2a01222b353c0796e7a54e0c9917
+Patch-set: 2
+File: drivers/usb/gadget/f_fs.c
+
+1522
+Sat Sep 22 21:32:31 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJUX//+0o=
+Bytes: 100
+could you put add a var for this like desc_idx = <blah>
+so it's easier to read? Otherwise, looks ok.
+
