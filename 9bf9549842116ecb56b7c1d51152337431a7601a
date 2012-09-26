@@ -1,0 +1,11 @@
+Revision: 9bf9549842116ecb56b7c1d51152337431a7601a
+Patch-set: 2
+File: drivers/gpu/ion/ion_system_heap.c
+
+124
+Wed Sep 26 04:53:30 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJa3///Uw=
+Bytes: 95
+i'd put  { } around the if clause for clarity if you end up rebasing/reuploading, otherwise ok.
+
