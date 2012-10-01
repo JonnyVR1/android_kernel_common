@@ -9,6 +9,14 @@ UUID: AAAJuH///B0=
 Bytes: 59
 this seems like an unrelated change to  the mem_pool stuff.
 
+1237
+Mon Oct 01 22:55:41 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJuH///B0=
+UUID: AAAJuH//+0k=
+Bytes: 178
+I added debug code to the system heap in the next patch in the stack so we could print the number of patches in the page pool.  I can make this part of that patch if you'd prefer
+
 File: drivers/gpu/ion/ion_page_pool.c
 
 16
@@ -31,6 +39,14 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAJt3///XM=
 Bytes: 44
 this will probably break horribly on non-ARM
+
+40
+Mon Oct 01 22:55:41 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJt3///XM=
+UUID: AAAJuH//+zM=
+Bytes: 12
+suggestions?
 
 132
 Mon Oct 01 20:17:04 2012 +0000
