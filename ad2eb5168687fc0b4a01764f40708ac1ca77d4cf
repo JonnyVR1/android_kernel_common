@@ -1,0 +1,25 @@
+Revision: ad2eb5168687fc0b4a01764f40708ac1ca77d4cf
+Patch-set: 5
+File: drivers/gpu/ion/ion_page_pool.c
+
+30
+Mon Oct 01 20:17:04 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJuX///Y4=
+Bytes: 48
+this can allocate more than 1 page, alloc_pages?
+
+40
+Mon Oct 01 20:17:04 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJt3///XM=
+Bytes: 44
+this will probably break horribly on non-ARM
+
+132
+Mon Oct 01 20:17:04 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJuX///Yw=
+Bytes: 51
+pages isn't the right word here.  objects?  chunks?
+
