@@ -1,6 +1,22 @@
 Revision: ad2eb5168687fc0b4a01764f40708ac1ca77d4cf
 Patch-set: 5
+File: drivers/gpu/ion/ion.c
+
+1237
+Mon Oct 01 20:26:09 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJuH///B0=
+Bytes: 59
+this seems like an unrelated change to  the mem_pool stuff.
+
 File: drivers/gpu/ion/ion_page_pool.c
+
+16
+Mon Oct 01 20:26:09 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJuX///YY=
+Bytes: 82
+remove line (though since you don't have any pr_dbg/dev_dbg, it's a nop right now)
 
 30
 Mon Oct 01 20:17:04 2012 +0000
