@@ -9,6 +9,14 @@ UUID: AAAJt3///Ws=
 Bytes: 18
 PAGE_SIZE << order
 
+43
+Tue Oct 02 21:49:03 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJt3///Ws=
+UUID: AAAJ2H///8k=
+Bytes: 4
+Done
+
 100
 Mon Oct 01 20:23:50 2012 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,28 @@ UUID: AAAJuX///Yc=
 Bytes: 47
 are !cached and split_pages mutually exclusive?
 
+100
+Tue Oct 02 21:49:03 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJuX///Yc=
+UUID: AAAJuX///JI=
+Bytes: 71
+yes, split pages only applies to cached'
+
+split_pages = cached && fault
+
 356
 Mon Oct 01 20:23:50 2012 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAJuH///CA=
 Bytes: 19
 if (heap->pools[i])
+
+356
+Tue Oct 02 21:49:03 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJuH///CA=
+UUID: AAAJ2H///8g=
+Bytes: 4
+Done
 
