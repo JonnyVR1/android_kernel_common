@@ -1,0 +1,18 @@
+Revision: b1e872a10648e3ada53b6a51cc3c1bef31e013b5
+Patch-set: 1
+File: mm/vmscan.c
+
+220
+Fri Oct 05 21:10:57 2012 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ9H///d4=
+Bytes: 38
+why not just do the %pf in seq_printf?
+
+245
+Fri Oct 05 21:10:57 2012 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ9H///d0=
+Bytes: 23
+white space only change
+
