@@ -117,7 +117,7 @@ static int ion_page_pool_shrink(struct shrinker *shrinker,
 	mutex_lock(&pool->mutex);
 	for (i = 0; i < sc->nr_to_scan && pool->count; i++) {
 		struct ion_page_pool_item *item;
-		struct page *page;
+		struct page *page, *removed_page;
 
 		item = list_first_entry(&pool->items, struct ion_page_pool_item, list);
 		page = item->page;
@@ -125,7 +125,8 @@ static int ion_page_pool_shrink(struct shrinker *shrinker,
 			list_move_tail(&item->list, &pool->items);
 			continue;
 		}
-		BUG_ON(page != ion_page_pool_remove(pool));
+		removed_page = ion_page_pool_remove(pool);
+		BUG_ON(page != removed_page);
 		ion_page_pool_free_pages(pool, page);
 		nr_freed += (1 << pool->order);
 	}
