@@ -1,0 +1,11 @@
+Revision: 01ceb9f89c6bb1d2e4256c96172132e6eeb10747
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+361
+Sat Oct 06 03:19:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ63///GE=
+Bytes: 118
+This does not look safe. If you need a lock around the charge_source, why do you not need a lock around the wake_lock?
+
