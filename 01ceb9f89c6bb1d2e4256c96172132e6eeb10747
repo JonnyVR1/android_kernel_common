@@ -9,3 +9,11 @@ UUID: AAAJ63///GE=
 Bytes: 118
 This does not look safe. If you need a lock around the charge_source, why do you not need a lock around the wake_lock?
 
+361
+Sat Oct 06 06:15:48 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJ63///GE=
+UUID: AAAJ7H///Jo=
+Bytes: 358
+The mutex here just makes sure the printk reports the same state as the call to android_bat_charge_source_changed passed.  The wakelock ensures the charger worker can update charger state prior to suspending again.  Grabbing the wakelock didn't seem to be a part of the state to be kept consistent under the mutex.  But tell me more if I'm missing something.
+
