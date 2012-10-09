@@ -37,6 +37,7 @@ static atomic_t active_count = ATOMIC_INIT(0);
 struct cpufreq_interactive_cpuinfo {
 	int cpu;
 	struct delayed_work timer;
+	u64 nexttimer;
 	int timer_idlecancel;
 	u64 time_in_idle;
 	u64 idle_exit_time;
@@ -104,6 +105,25 @@ struct cpufreq_governor cpufreq_gov_interactive = {
 	.max_transition_latency = 10000000,
 	.owner = THIS_MODULE,
 };
+
+static void cpufreq_interactive_timer_resched(int cpu)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu =
+		&per_cpu(cpuinfo, cpu);
+
+	schedule_delayed_work_on(cpu, &pcpu->timer,
+				 usecs_to_jiffies(timer_rate));
+	pcpu->nexttimer = ktime_to_us(ktime_get()) + timer_rate;
+}
+
+static void cpufreq_interactive_timer_immediate(int cpu)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu =
+		&per_cpu(cpuinfo, cpu);
+
+	schedule_work_on(cpu, &pcpu->timer.work);
+	pcpu->nexttimer = ktime_to_us(ktime_get());
+}
 
 static void cpufreq_interactive_timer(struct work_struct *work)
 {
@@ -274,8 +294,7 @@ rearm:
 
 		pcpu->time_in_idle =
 			get_cpu_idle_time_us(cpu, &pcpu->idle_exit_time);
-		schedule_delayed_work_on(cpu, &pcpu->timer,
-					 usecs_to_jiffies(timer_rate));
+		cpufreq_interactive_timer_resched(cpu);
 	}
 
 exit:
@@ -309,9 +328,7 @@ static void cpufreq_interactive_idle_start(void)
 			pcpu->time_in_idle = get_cpu_idle_time_us(
 				smp_processor_id(), &pcpu->idle_exit_time);
 			pcpu->timer_idlecancel = 0;
-			schedule_delayed_work_on(
-				smp_processor_id(), &pcpu->timer,
-				usecs_to_jiffies(timer_rate));
+			cpufreq_interactive_timer_resched(smp_processor_id());
 		}
 #endif
 	} else {
@@ -364,9 +381,11 @@ static void cpufreq_interactive_idle_end(void)
 			get_cpu_idle_time_us(smp_processor_id(),
 					     &pcpu->idle_exit_time);
 		pcpu->timer_idlecancel = 0;
-		schedule_delayed_work_on(
-			smp_processor_id(), &pcpu->timer,
-			usecs_to_jiffies(timer_rate));
+		cpufreq_interactive_timer_resched(smp_processor_id());
+	} else if (delayed_work_pending(&pcpu->timer) &&
+		   ktime_to_us(ktime_get()) > pcpu->nexttimer) {
+		__cancel_delayed_work(&pcpu->timer);
+		cpufreq_interactive_timer_immediate(smp_processor_id());
 	}
 }
 
@@ -691,6 +710,7 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 				pcpu->target_set_time;
 			pcpu->governor_enabled = 1;
 			smp_wmb();
+			cpufreq_interactive_timer_resched(j);
 		}
 
 		if (!hispeed_freq)
