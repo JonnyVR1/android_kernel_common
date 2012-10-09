@@ -39,6 +39,7 @@ static atomic_t active_count = ATOMIC_INIT(0);
 
 struct cpufreq_interactive_cpuinfo {
 	struct timer_list cpu_timer;
+	u64 nexttimer;
 	int timer_idlecancel;
 	u64 time_in_idle;
 	u64 idle_exit_time;
@@ -111,6 +112,16 @@ struct cpufreq_governor cpufreq_gov_interactive = {
 	.max_transition_latency = 10000000,
 	.owner = THIS_MODULE,
 };
+
+static void cpufreq_interactive_timer_resched(int cpu)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu =
+		&per_cpu(cpuinfo, cpu);
+
+	mod_timer_pinned(&pcpu->cpu_timer,
+			 jiffies + usecs_to_jiffies(timer_rate));
+	pcpu->nexttimer = ktime_to_us(ktime_get()) + timer_rate;
+}
 
 static void cpufreq_interactive_timer(unsigned long data)
 {
@@ -264,12 +275,20 @@ rearm:
 
 		pcpu->time_in_idle = get_cpu_idle_time_us(
 			data, &pcpu->idle_exit_time);
-		mod_timer_pinned(&pcpu->cpu_timer,
-				 jiffies + usecs_to_jiffies(timer_rate));
+		cpufreq_interactive_timer_resched(data);
 	}
 
 exit:
 	return;
+}
+
+static void cpufreq_interactive_timer_immediate(int cpu)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu =
+		&per_cpu(cpuinfo, cpu);
+
+	del_timer(&pcpu->cpu_timer);
+	cpufreq_interactive_timer(cpu);
 }
 
 static void cpufreq_interactive_idle_start(void)
@@ -302,9 +321,7 @@ static void cpufreq_interactive_idle_start(void)
 			pcpu->time_in_idle = get_cpu_idle_time_us(
 				smp_processor_id(), &pcpu->idle_exit_time);
 			pcpu->timer_idlecancel = 0;
-			mod_timer_pinned(
-				&pcpu->cpu_timer,
-				jiffies + usecs_to_jiffies(timer_rate));
+			cpufreq_interactive_timer_resched(smp_processor_id());
 		}
 #endif
 	} else {
@@ -341,9 +358,10 @@ static void cpufreq_interactive_idle_end(void)
 			get_cpu_idle_time_us(smp_processor_id(),
 					     &pcpu->idle_exit_time);
 		pcpu->timer_idlecancel = 0;
-		mod_timer_pinned(
-			&pcpu->cpu_timer,
-			jiffies + usecs_to_jiffies(timer_rate));
+		cpufreq_interactive_timer_resched(smp_processor_id());
+	} else if (!governidle && timer_pending(&pcpu->cpu_timer) &&
+		   ktime_to_us(ktime_get()) > pcpu->nexttimer) {
+		cpufreq_interactive_timer_immediate(smp_processor_id());
 	}
 
 }
