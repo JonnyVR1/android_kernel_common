@@ -11,6 +11,14 @@ if you use:
   static struct plist_head pools = PLIST_HEAD_INIT(pools);
 you won't need the pure initcall.
 
+29
+Wed Oct 10 22:01:12 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJ/3///Do=
+UUID: AAAKAH///Ps=
+Bytes: 7
+will do
+
 221
 Wed Oct 10 21:58:51 2012 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +26,28 @@ UUID: AAAJ/3///EI=
 Bytes: 177
 this might be simpler if you take the lock before the for loop, compute the number to scan in this pool with min(nr_to_scan, high_count + low_count), and iterate to that number.
 
+221
+Wed Oct 10 22:01:12 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJ/3///EI=
+UUID: AAAKAH///P0=
+Bytes: 119
+strong feeling here?  that means we'll be holding the lock for a while which will block any threads trying to allocate.
+
 264
 Wed Oct 10 21:58:51 2012 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAJ/3///Dw=
 Bytes: 114
 why 16?  seems like the cost of replacing one of these objects is pretty small compared to reading a page off disk
+
+264
+Wed Oct 10 22:01:12 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAJ/3///Dw=
+UUID: AAAKAH///QE=
+Bytes: 123
+i dont' know, it's what we did in lowmemorykiller -- i'm happy wiht just dfault instead if you think that makes more sense.
 
 File: drivers/gpu/ion/ion_priv.h
 
