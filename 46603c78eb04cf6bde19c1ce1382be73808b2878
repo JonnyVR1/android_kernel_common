@@ -1,0 +1,36 @@
+Revision: 46603c78eb04cf6bde19c1ce1382be73808b2878
+Patch-set: 1
+File: drivers/gpu/ion/ion_page_pool.c
+
+29
+Wed Oct 10 21:58:51 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ/3///Do=
+Bytes: 104
+if you use:
+  static struct plist_head pools = PLIST_HEAD_INIT(pools);
+you won't need the pure initcall.
+
+221
+Wed Oct 10 21:58:51 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ/3///EI=
+Bytes: 177
+this might be simpler if you take the lock before the for loop, compute the number to scan in this pool with min(nr_to_scan, high_count + low_count), and iterate to that number.
+
+264
+Wed Oct 10 21:58:51 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ/3///Dw=
+Bytes: 114
+why 16?  seems like the cost of replacing one of these objects is pretty small compared to reading a page off disk
+
+File: drivers/gpu/ion/ion_priv.h
+
+232
+Wed Oct 10 21:58:51 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAJ/3///Dg=
+Bytes: 58
+list instead of plist, and its a list node not a list head
+
