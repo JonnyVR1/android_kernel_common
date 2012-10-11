@@ -457,6 +457,7 @@ struct sync_fence *sync_fence_merge(const char *name,
 		goto err;
 
 	fence->status = sync_fence_get_status(fence);
+	smp_wmb();
 
 	return fence;
 err:
@@ -555,6 +556,16 @@ int sync_fence_cancel_async(struct sync_fence *fence,
 }
 EXPORT_SYMBOL(sync_fence_cancel_async);
 
+static bool sync_fence_check(struct sync_fence *fence)
+{
+	/*
+	 * Make sure that reads to fence->status are ordered with writes
+	 * because we are checking status w/o locking
+	 */
+	smp_rmb();
+	return fence->status != 0;
+}
+
 int sync_fence_wait(struct sync_fence *fence, long timeout)
 {
 	int err = 0;
@@ -562,7 +573,7 @@ int sync_fence_wait(struct sync_fence *fence, long timeout)
 	if (timeout > 0) {
 		timeout = msecs_to_jiffies(timeout);
 		err = wait_event_interruptible_timeout(fence->wq,
-						       fence->status != 0,
+						       sync_fence_check(fence),
 						       timeout);
 	} else if (timeout < 0) {
 		err = wait_event_interruptible(fence->wq, fence->status != 0);
@@ -628,6 +639,8 @@ static unsigned int sync_fence_poll(struct file *file, poll_table *wait)
 	struct sync_fence *fence = file->private_data;
 
 	poll_wait(file, &fence->wq, wait);
+
+	smp_rmb();
 
 	if (fence->status == 1)
 		return POLLIN;
@@ -747,6 +760,7 @@ static long sync_fence_ioctl_fence_info(struct sync_fence *fence,
 		return -ENOMEM;
 
 	strlcpy(data->name, fence->name, sizeof(data->name));
+	smp_rmb();
 	data->status = fence->status;
 	len = sizeof(struct sync_fence_info_data);
 
