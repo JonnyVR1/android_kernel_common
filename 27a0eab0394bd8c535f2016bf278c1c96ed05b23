@@ -1,0 +1,18 @@
+Revision: 27a0eab0394bd8c535f2016bf278c1c96ed05b23
+Patch-set: 3
+File: drivers/base/sync.c
+
+460
+Thu Oct 11 21:01:23 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKEX///+s=
+Bytes: 11
+unnecessary
+
+763
+Thu Oct 11 21:01:23 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKEX///+w=
+Bytes: 12
+unneccessary
+
