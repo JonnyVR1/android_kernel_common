@@ -144,7 +144,8 @@ struct sync_pt {
  *			  is created
  * @waiter_list_head:	list of asynchronous waiters on this fence
  * @waiter_list_lock:	lock protecting @waiter_list_head and @status
- * @status:		1: signaled, 0:active, <0: error
+ * @status:		1: signaled, 0:active, <0: error.  If accesed outside
+ *                        any locks, call smp_rmb() first;
  *
  * @wq:			wait queue for fence signaling
  * @sync_fence_list:	membership in global fence list
