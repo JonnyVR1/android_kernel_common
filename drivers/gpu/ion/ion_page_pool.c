@@ -22,12 +22,15 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/shrinker.h>
+#include <linux/workqueue.h>
 #include "ion_priv.h"
 
 /* #define DEBUG_PAGE_POOL_SHRINKER */
 
 static struct plist_head pools = PLIST_HEAD_INIT(pools);
 static struct shrinker shrinker;
+static void shrink_work_func(struct work_struct *unused);
+DECLARE_DELAYED_WORK(shrink_work, shrink_work_func);
 
 struct ion_page_pool_item {
 	struct page *page;
@@ -91,6 +94,9 @@ static struct page *ion_page_pool_remove(struct ion_page_pool *pool, bool high)
 					struct ion_page_pool_item, list);
 		pool->low_count--;
 	}
+
+	if (pool->low_count + pool->high_count < pool->min)
+		pool->min = pool->low_count + pool->high_count;
 
 	list_del(&item->list);
 	page = item->page;
@@ -240,6 +246,7 @@ struct ion_page_pool *ion_page_pool_create(gfp_t gfp_mask, unsigned int order)
 		return NULL;
 	pool->high_count = 0;
 	pool->low_count = 0;
+	pool->min = 0;
 	INIT_LIST_HEAD(&pool->low_items);
 	INIT_LIST_HEAD(&pool->high_items);
 	pool->gfp_mask = gfp_mask;
@@ -257,12 +264,38 @@ void ion_page_pool_destroy(struct ion_page_pool *pool)
 	kfree(pool);
 }
 
+static void shrink_work_func(struct work_struct *unused)
+{
+	struct ion_page_pool *pool;
+
+	plist_for_each_entry(pool, &pools, list) {
+		int i, min;
+		mutex_lock(&pool->mutex);
+		min = pool->min;
+		for (i = 0; i < min; i++) {
+			struct page *page = NULL;
+
+			if (pool->low_count) {
+				page = ion_page_pool_remove(pool, false);
+			} else if (pool->high_count) {
+				page = ion_page_pool_remove(pool, true);
+			}
+			if (page)
+				ion_page_pool_free_pages(pool, page);
+		}
+		pool->min = pool->high_count + pool->low_count;
+		mutex_unlock(&pool->mutex);
+	}
+	schedule_delayed_work(&shrink_work, HZ*30);
+}
+
 static int __init ion_page_pool_init(void)
 {
 	shrinker.shrink = ion_page_pool_shrink;
 	shrinker.seeks = DEFAULT_SEEKS;
 	shrinker.batch = 0;
 	register_shrinker(&shrinker);
+	schedule_delayed_work(&shrink_work, HZ*30);
 #ifdef DEBUG_PAGE_POOL_SHRINKER
 	debugfs_create_file("ion_pools_shrink", 0644, NULL, NULL,
 			    &debug_drop_pools_fops);
