@@ -9,6 +9,14 @@ UUID: AAAKcn///kQ=
 Bytes: 115
 snprintf used by pt_value_str won't guarantee that value is null terminated, should probably do value[63] = 0 here;
 
+853
+Tue Oct 16 23:51:11 2012 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAKcn///kQ=
+UUID: AAAKcn///jY=
+Bytes: 82
+you're thinking of strncpy.  I'm pretty sure snprintf guarantees null termination.
+
 File: include/linux/sync.h
 
 43
