@@ -1,0 +1,11 @@
+Revision: fe9ab3c17fdcf7e17d6100d3fee9158c3a6aed13
+Patch-set: 2
+File: include/linux/sync.h
+
+43
+Tue Oct 16 23:43:46 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKcn///kk=
+Bytes: 10
+deprecated
+
