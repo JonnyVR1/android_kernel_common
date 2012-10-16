@@ -513,7 +513,7 @@ static void sync_fence_signal_pt(struct sync_pt *pt)
 			list_del(pos);
 			waiter->callback(fence, waiter);
 		}
-		wake_up(&fence->wq);
+		wake_up_interruptible_all(&fence->wq);
 	}
 }
 
