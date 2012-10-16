@@ -67,15 +67,22 @@ struct sync_timeline_ops {
 	/* optional */
 	void (*release_obj)(struct sync_timeline *sync_timeline);
 
-	/* optional */
+	/* depricated */
 	void (*print_obj)(struct seq_file *s,
 			  struct sync_timeline *sync_timeline);
 
-	/* optional */
+	/* depricated */
 	void (*print_pt)(struct seq_file *s, struct sync_pt *sync_pt);
 
 	/* optional */
 	int (*fill_driver_data)(struct sync_pt *syncpt, void *data, int size);
+
+	/* optional */
+	void (*timeline_value_str)(struct sync_timeline *timeline, char *str,
+				   int size);
+
+	/* optional */
+	void (*pt_value_str)(struct sync_pt *pt, char *str, int size);
 };
 
 /**
