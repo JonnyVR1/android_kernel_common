@@ -1,0 +1,7 @@
+Code-Review+2: Colin Cross <ccross@android.com>
+Verified+1: Ken Sumrall <ksumrall@android.com>
+Submitted-by: Ken Sumrall <ksumrall@android.com>
+Submitted-at: Mon, 15 Oct 2012 17:51:59 -0700
+Reviewed-on: https://android-review.googlesource.com/44770
+Project: kernel/common
+Branch: refs/heads/android-3.4
