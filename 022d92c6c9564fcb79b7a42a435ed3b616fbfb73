@@ -1,0 +1,21 @@
+Revision: 022d92c6c9564fcb79b7a42a435ed3b616fbfb73
+Patch-set: 1
+File: drivers/power/android_battery.c
+
+426
+Wed Oct 17 02:51:11 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKcn///RQ=
+Bytes: 32
+Would "not-charging" be clearer?
+
+432
+Wed Oct 17 02:51:11 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKcn///RA=
+Bytes: 203
+Would it be clearer to match your comment more closely:
+!(battery->charging_status == POWER_SUPPLY_STATUS_FULL && 
+!battery->recharging ||
+battery->charging_status == POWER_SUPPLY_STATUS_NOT_CHARGING)
+
