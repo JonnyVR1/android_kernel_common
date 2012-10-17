@@ -1,0 +1,8 @@
+Change-Id: I7e9affbeed6053b7b622d3a9263c491c67162770
+Code-Review+2: Colin Cross <ccross@android.com>
+Verified+1: Colin Cross <ccross@android.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Wed, 17 Oct 2012 16:28:34 -0700
+Reviewed-on: https://android-review.googlesource.com/44930
+Project: kernel/common
+Branch: refs/heads/android-3.4
