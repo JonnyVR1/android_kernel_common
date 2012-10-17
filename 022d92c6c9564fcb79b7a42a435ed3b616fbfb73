@@ -9,6 +9,14 @@ UUID: AAAKcn///RQ=
 Bytes: 32
 Would "not-charging" be clearer?
 
+426
+Wed Oct 17 03:35:38 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAKcn///RQ=
+UUID: AAAKdH///xc=
+Bytes: 4
+Done
+
 432
 Wed Oct 17 02:51:11 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,4 +26,12 @@ Would it be clearer to match your comment more closely:
 !(battery->charging_status == POWER_SUPPLY_STATUS_FULL && 
 !battery->recharging ||
 battery->charging_status == POWER_SUPPLY_STATUS_NOT_CHARGING)
+
+432
+Wed Oct 17 03:35:38 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAKcn///RA=
+UUID: AAAKdH///xY=
+Bytes: 4
+Done
 
