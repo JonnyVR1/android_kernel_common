@@ -1,0 +1,11 @@
+Revision: 61c6b1791cb4110fa1c22206906a095035277146
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd.h
+
+635
+Mon Oct 22 21:31:48 2012 +0000
+Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKnX///2g=
+Bytes: 54
+Is KEEP_ALIVE_PACKET_PERIOD_30_SEC gone from the code?
+
