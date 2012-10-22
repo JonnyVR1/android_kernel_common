@@ -9,3 +9,11 @@ UUID: AAAKnX///2g=
 Bytes: 54
 Is KEEP_ALIVE_PACKET_PERIOD_30_SEC gone from the code?
 
+635
+Mon Oct 22 21:38:42 2012 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAKnX///2g=
+UUID: AAAKnn///ik=
+Bytes: 23
+Yes, it was a dead code
+
