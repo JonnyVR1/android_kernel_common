@@ -1,0 +1,11 @@
+Revision: 371ebd8c02f1bbd070e81a16d7aac5edcb5d1f93
+Patch-set: 1
+File: drivers/staging/android/logger.c
+
+671
+Tue Oct 23 20:38:15 2012 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAKoH///f0=
+Bytes: 45
+EPERM is probably a better return value here.
+
