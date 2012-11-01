@@ -9,6 +9,16 @@ UUID: AAALP3///u0=
 Bytes: 4
 why?
 
+10
+Thu Nov 01 22:00:02 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALP3///u0=
+UUID: AAALPH//+58=
+Bytes: 370
+In hopes of avoiding idle wakeups that do nothing other than run the governor worker to find out the system is very idle -- stretch the next governor timer wakeup to the next timer run.  The ondemand governor does this as well.  It tends to save power in certain use cases, although performance impacts are still being evaluated.
+
+Do you want this in the commit message?
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 765
