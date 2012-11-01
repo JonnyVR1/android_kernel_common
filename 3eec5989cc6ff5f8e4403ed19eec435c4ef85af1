@@ -1,0 +1,11 @@
+Revision: 3eec5989cc6ff5f8e4403ed19eec435c4ef85af1
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+765
+Thu Nov 01 14:20:09 2012 +0000
+Author: Chris Fries <1004359@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALMn///5w=
+Bytes: 67
+What's the advantage of deferrable work vs init_timer_deferrable()?
+
