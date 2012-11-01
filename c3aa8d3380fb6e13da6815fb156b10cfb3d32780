@@ -1,0 +1,20 @@
+Revision: c3aa8d3380fb6e13da6815fb156b10cfb3d32780
+Patch-set: 1
+File: arch/arm/common/fiq_debugger.c
+
+712
+Thu Nov 01 18:15:34 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALPX///uA=
+Bytes: 36
+this should be moved after the flush
+
+1042
+Thu Nov 01 18:15:34 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALPX///tk=
+Bytes: 481
+I still don't like holding this lock for so long under userspace control.  the serial core just fills the tx fifo here, and then turns on tx interrupts to refill it when it runs low.  8250 console write locks the port, turns off tx interrupts, and then writes as much data as it wants.  that means serial console lines will never be broken up, but tty data will be broken up based on fifo size.
+
+the most similar way to do that here is to keep write_room very small, like 16 bytes.
+
