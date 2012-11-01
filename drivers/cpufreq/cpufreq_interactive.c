@@ -20,6 +20,7 @@
 #include <linux/cpumask.h>
 #include <linux/cpufreq.h>
 #include <linux/module.h>
+#include <linux/moduleparam.h>
 #include <linux/mutex.h>
 #include <linux/sched.h>
 #include <linux/tick.h>
@@ -92,6 +93,11 @@ static unsigned long above_hispeed_delay_val;
  */
 
 static int boost_val;
+
+static bool governidle;
+module_param(governidle, bool, 0644);
+MODULE_PARM_DESC(governidle,
+	"Set to 1 to wake up CPUs from idle to lower speed (default 0)");
 
 static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		unsigned int event);
@@ -257,11 +263,12 @@ rearm_if_notmax:
 rearm:
 	if (!timer_pending(&pcpu->cpu_timer)) {
 		/*
-		 * If already at min: if that CPU is idle, don't set timer.
-		 * Else cancel the timer if that CPU goes idle.  We don't
+		 * If governing speed in idle and already at min:
+		 * If that CPU is idle, don't set timer, else
+		 * cancel the timer if that CPU goes idle.  We don't
 		 * need to re-evaluate speed until the next idle exit.
 		 */
-		if (pcpu->target_freq == pcpu->policy->min) {
+		if (governidle && pcpu->target_freq == pcpu->policy->min) {
 			smp_rmb();
 
 			if (pcpu->idling)
@@ -285,6 +292,9 @@ static void cpufreq_interactive_idle_start(void)
 	struct cpufreq_interactive_cpuinfo *pcpu =
 		&per_cpu(cpuinfo, smp_processor_id());
 	int pending;
+
+	if (!governidle)
+		return;
 
 	if (!pcpu->governor_enabled)
 		return;
@@ -340,8 +350,10 @@ static void cpufreq_interactive_idle_end(void)
 	if (!pcpu->governor_enabled)
 		return;
 
-	pcpu->idling = 0;
-	smp_wmb();
+	if (governidle) {
+		pcpu->idling = 0;
+		smp_wmb();
+	}
 
 	/*
 	 * Arm the timer for 1-2 ticks later if not already, and if the timer
@@ -759,7 +771,10 @@ static int __init cpufreq_interactive_init(void)
 	/* Initalize per-cpu timers */
 	for_each_possible_cpu(i) {
 		pcpu = &per_cpu(cpuinfo, i);
-		init_timer(&pcpu->cpu_timer);
+		if (governidle)
+			init_timer(&pcpu->cpu_timer);
+		else
+			init_timer_deferrable(&pcpu->cpu_timer);
 		pcpu->cpu_timer.function = cpufreq_interactive_timer;
 		pcpu->cpu_timer.data = i;
 	}
