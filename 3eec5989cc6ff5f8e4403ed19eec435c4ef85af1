@@ -19,6 +19,14 @@ In hopes of avoiding idle wakeups that do nothing other than run the governor wo
 
 Do you want this in the commit message?
 
+10
+Fri Nov 02 00:13:02 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALPH//+58=
+UUID: AAALP3///pk=
+Bytes: 513
+Yes, but I don't think this justifies moving from a timer to a work queue. There are three independent changes here. Running the timer on the same cpu, using a deferred timer, and running the timer in thread context. The first seems reasonable on any system (however, it my not make any practical difference if the timer ends up running on the same cpu anyway). The second should only happen on systems where the frequency does not affect idle power consumption. The last change does not seem to have any benefit.
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 765
