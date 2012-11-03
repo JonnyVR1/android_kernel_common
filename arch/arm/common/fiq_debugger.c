@@ -1253,6 +1253,9 @@ static int fiq_debugger_probe(struct platform_device *pdev)
 
 	INIT_WORK(&state->work, debug_work);
 	spin_lock_init(&state->work_lock);
+#ifdef CONFIG_FIQ_DEBUGGER_CONSOLE
+	spin_lock_init(&state->console_lock);
+#endif
 
 	platform_set_drvdata(pdev, state);
 
