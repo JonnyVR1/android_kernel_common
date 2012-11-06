@@ -9,6 +9,14 @@ UUID: AAALRn///Mo=
 Bytes: 30
 Don't you want this writeable?
 
+98
+Tue Nov 06 18:46:37 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRn///Mo=
+UUID: AAALRn///AE=
+Bytes: 91
+Yeah I should make it writeable, thanks.  I really expect it to be set on the command line.
+
 353
 Tue Nov 06 05:06:45 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: AAALRn///MY=
 Bytes: 32
 why does governidle affect this?
 
+353
+Tue Nov 06 18:46:37 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRn///MY=
+UUID: AAALRn//+/M=
+Bytes: 151
+There's no need to keep track of idling status if we're not doing our own timer management in idle.  Might as well skip the associated memory barriers.
+
 378
 Tue Nov 06 05:06:45 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRn///Mg=
 Bytes: 20
 why did this change?
+
+378
+Tue Nov 06 18:46:37 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRn///Mg=
+UUID: AAALRn//+/4=
+Bytes: 59
+After effects of intermediate version.  I'll get rid of it.
 
