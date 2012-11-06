@@ -1,0 +1,25 @@
+Revision: 1261228fb66e523c20e51b0ec2d57a191c484fb7
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+98
+Tue Nov 06 05:06:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRn///Mo=
+Bytes: 30
+Don't you want this writeable?
+
+353
+Tue Nov 06 05:06:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRn///MY=
+Bytes: 32
+why does governidle affect this?
+
+378
+Tue Nov 06 05:06:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRn///Mg=
+Bytes: 20
+why did this change?
+
