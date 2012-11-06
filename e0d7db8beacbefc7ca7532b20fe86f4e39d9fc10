@@ -1,0 +1,11 @@
+Revision: e0d7db8beacbefc7ca7532b20fe86f4e39d9fc10
+Patch-set: 4
+File: drivers/cpufreq/cpufreq_interactive.c
+
+98
+Tue Nov 06 23:25:43 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+qI=
+Bytes: 71
+I still prefer the S_... macros, just or in S_IWUSR to to what you had.
+
