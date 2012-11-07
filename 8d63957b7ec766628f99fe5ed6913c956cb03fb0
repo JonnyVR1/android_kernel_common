@@ -1,0 +1,25 @@
+Revision: 8d63957b7ec766628f99fe5ed6913c956cb03fb0
+Patch-set: 5
+File: drivers/cpufreq/cpufreq_interactive.c
+
+96
+Wed Nov 07 03:33:01 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZY=
+Bytes: 243
+while this file does not currently follow this convention, I prefer to have all the global variables in this file use the same common prefix as the functions in this file so you can immediately see that they are not locals where they are used.
+
+99
+Wed Nov 07 03:33:01 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+Zc=
+Bytes: 32
+lower the speed or reduce speed?
+
+274
+Wed Nov 07 03:33:01 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZU=
+Bytes: 69
+This slows down the ramp down after running at max speed. Is that OK?
+
