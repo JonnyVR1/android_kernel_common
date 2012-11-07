@@ -1,0 +1,18 @@
+Revision: 157dad78aa516002f0563e29e3edb768dff6debc
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+123
+Wed Nov 07 00:13:28 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+kU=
+Bytes: 74
+do you need this, or can you just check directly if the timer has expired.
+
+324
+Wed Nov 07 00:13:28 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+kM=
+Bytes: 29
+is this code still reachable?
+
