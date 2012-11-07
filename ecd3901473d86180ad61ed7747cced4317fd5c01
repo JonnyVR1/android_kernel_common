@@ -1,0 +1,46 @@
+Revision: ecd3901473d86180ad61ed7747cced4317fd5c01
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+116
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZM=
+Bytes: 21
+why not pass pcpu in?
+
+122
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZI=
+Bytes: 4
+cpu?
+
+140
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZE=
+Bytes: 21
+is this still needed?
+
+278
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+ZA=
+Bytes: 21
+why not pass pcpu in?
+
+335
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+Y8=
+Bytes: 51
+" == 0 && pcpu->governor_enabled" is not needed ...
+
+338
+Wed Nov 07 03:40:45 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+Y0=
+Bytes: 68
+... which means "timer_pending(&pcpu->cpu_timer)" is not needed here
+
