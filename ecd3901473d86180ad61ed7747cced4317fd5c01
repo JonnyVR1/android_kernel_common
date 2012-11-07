@@ -9,12 +9,28 @@ UUID: AAALRX//+ZM=
 Bytes: 21
 why not pass pcpu in?
 
+116
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+ZM=
+UUID: AAALR3//+nY=
+Bytes: 4
+Done
+
 122
 Wed Nov 07 03:40:45 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//+ZI=
 Bytes: 4
 cpu?
+
+122
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+ZI=
+UUID: AAALR3//+nc=
+Bytes: 40
+Will keep this and get rid of cpu param.
 
 140
 Wed Nov 07 03:40:45 2012 +0000
@@ -23,12 +39,28 @@ UUID: AAALRX//+ZE=
 Bytes: 21
 is this still needed?
 
+140
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+ZE=
+UUID: AAALR3//+n0=
+Bytes: 51
+Should do (just in case) for pcpu->governor_enabled
+
 278
 Wed Nov 07 03:40:45 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//+ZA=
 Bytes: 21
 why not pass pcpu in?
+
+278
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+ZA=
+UUID: AAALR3//+no=
+Bytes: 4
+Done
 
 335
 Wed Nov 07 03:40:45 2012 +0000
@@ -37,10 +69,26 @@ UUID: AAALRX//+Y8=
 Bytes: 51
 " == 0 && pcpu->governor_enabled" is not needed ...
 
+335
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+Y8=
+UUID: AAALR3//+nw=
+Bytes: 4
+Done
+
 338
 Wed Nov 07 03:40:45 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//+Y0=
 Bytes: 68
 ... which means "timer_pending(&pcpu->cpu_timer)" is not needed here
+
+338
+Wed Nov 07 04:39:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+Y0=
+UUID: AAALR3//+ns=
+Bytes: 4
+Done
 
