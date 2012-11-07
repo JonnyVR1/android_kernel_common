@@ -9,10 +9,26 @@ UUID: AAALRX//+kU=
 Bytes: 74
 do you need this, or can you just check directly if the timer has expired.
 
+123
+Wed Nov 07 01:23:14 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+kU=
+UUID: AAALR3//+1Y=
+Bytes: 4
+Done
+
 324
 Wed Nov 07 00:13:28 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//+kM=
 Bytes: 29
 is this code still reachable?
+
+324
+Wed Nov 07 01:23:14 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+kM=
+UUID: AAALR3//+0o=
+Bytes: 48
+Yes, if managing speed in idle and speed is max.
 
