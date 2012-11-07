@@ -1,0 +1,11 @@
+Revision: 164c2f77060d2f3be3005efdc67338814daf86b3
+Patch-set: 4
+File: drivers/cpufreq/cpufreq_interactive.c
+
+314
+Wed Nov 07 03:21:47 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//+bs=
+Bytes: 45
+checking pcpu->governor_enabled is not needed
+
