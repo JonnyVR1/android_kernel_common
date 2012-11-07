@@ -16,10 +16,26 @@ UUID: AAALRX//+Zc=
 Bytes: 32
 lower the speed or reduce speed?
 
+99
+Wed Nov 07 04:29:06 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+Zc=
+UUID: AAALR3//+oY=
+Bytes: 37
+You're right, "reduce" is more clear.
+
 274
 Wed Nov 07 03:33:01 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//+ZU=
 Bytes: 69
 This slows down the ramp down after running at max speed. Is that OK?
+
+274
+Wed Nov 07 04:29:06 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//+ZU=
+UUID: AAALR3//+oU=
+Bytes: 66
+I'll restore the previous behavior for this, just for consistency.
 
