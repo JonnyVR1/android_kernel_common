@@ -1,0 +1,11 @@
+Revision: 0fdce3726eb24bba0133b0017c0fa33527fe4c9f
+Patch-set: 5
+File: drivers/cpufreq/cpufreq_interactive.c
+
+44
+Thu Nov 08 05:27:32 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//9mQ=
+Bytes: 33
+This also seems to be unused now.
+
