@@ -1,0 +1,11 @@
+Revision: 430d3d4539a0d441679ca32cc7c3876f97a07da6
+Patch-set: 6
+File: drivers/cpufreq/cpufreq_interactive.c
+
+109
+Thu Nov 08 22:22:53 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//88Y=
+Bytes: 31
+this should go next to now_idle
+
