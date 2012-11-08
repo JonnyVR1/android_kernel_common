@@ -1,0 +1,18 @@
+Revision: e26198009b5ac7ae12e3eece812147c0bd1cbe83
+Patch-set: 4
+File: drivers/cpufreq/cpufreq_interactive.c
+
+130
+Thu Nov 08 05:37:26 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//9mI=
+Bytes: 76
+Why delete idle_exit_time but not time_in_idle. They serve the same purpose.
+
+274
+Thu Nov 08 05:37:26 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//9mE=
+Bytes: 32
+Do you need a function for this?
+
