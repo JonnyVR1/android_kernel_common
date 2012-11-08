@@ -9,10 +9,26 @@ UUID: AAALRX//9mI=
 Bytes: 76
 Why delete idle_exit_time but not time_in_idle. They serve the same purpose.
 
+130
+Thu Nov 08 06:51:49 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//9mI=
+UUID: AAALR3//9zE=
+Bytes: 4
+Done
+
 274
 Thu Nov 08 05:37:26 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALRX//9mE=
 Bytes: 32
 Do you need a function for this?
+
+274
+Thu Nov 08 06:51:49 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALRX//9mE=
+UUID: AAALR3//9zA=
+Bytes: 44
+Naah, will move it inline to its one caller.
 
