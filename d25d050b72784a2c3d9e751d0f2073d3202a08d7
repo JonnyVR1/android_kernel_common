@@ -1,0 +1,11 @@
+Revision: d25d050b72784a2c3d9e751d0f2073d3202a08d7
+Patch-set: 1
+File: arch/arm/kernel/stacktrace.c
+
+40
+Fri Nov 09 02:06:48 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//8tA=
+Bytes: 100
+I would remove this change. If the bottom of the stack contained a dummy frame this would ignore it.
+
