@@ -1,0 +1,11 @@
+Revision: 5cd3cb998ccd74ba2d36e3aa24797e551dce22d3
+Patch-set: 1
+File: arch/arm/kernel/stacktrace.c
+
+78
+Fri Nov 09 02:11:28 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALRX//8s0=
+Bytes: 85
+Does this ever get called with a real stackframe? If so you are corrupting the stack.
+
