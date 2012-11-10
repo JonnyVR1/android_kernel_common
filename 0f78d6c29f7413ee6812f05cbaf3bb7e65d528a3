@@ -1,0 +1,18 @@
+Revision: 0f78d6c29f7413ee6812f05cbaf3bb7e65d528a3
+Patch-set: 2
+File: arch/arm/kernel/stacktrace.c
+
+31
+Sat Nov 10 05:12:37 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALWn///aY=
+Bytes: 65
+Why not add "offset = sp & (THREAD_SIZE - 1)" and use that below.
+
+63
+Sat Nov 10 05:12:37 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALWn///aQ=
+Bytes: 39
+why not pass in the size of sp as well.
+
