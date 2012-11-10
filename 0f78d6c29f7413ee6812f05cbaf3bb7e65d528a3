@@ -16,3 +16,11 @@ UUID: AAALWn///aQ=
 Bytes: 39
 why not pass in the size of sp as well.
 
+63
+Sat Nov 10 22:17:38 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALWn///aQ=
+UUID: AAALc3///80=
+Bytes: 121
+what do you mean by "size of sp"?  do you just want to avoid the round_down(...) + THREAD_SIZE_SP calculation every time?
+
