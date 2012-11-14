@@ -180,7 +180,20 @@ static void cpufreq_interactive_timer(unsigned long data)
 		if (pcpu->target_freq < hispeed_freq) {
 			new_freq = hispeed_freq;
 		} else {
-			new_freq = pcpu->policy->cur * cpu_load / target_load;
+			if (pcpu->policy->cur > hispeed_freq) {
+				new_freq = pcpu->policy->cur * cpu_load / 99;
+
+				if (new_freq < hispeed_freq) {
+					new_freq = pcpu->policy->cur * cpu_load
+						/ target_load;
+
+					if (new_freq > hispeed_freq)
+						new_freq = hispeed_freq;
+				}
+			} else {
+				new_freq = pcpu->policy->cur * cpu_load /
+					target_load;
+			}
 
 			if (pcpu->target_freq >= hispeed_freq &&
 			    new_freq > pcpu->target_freq &&
