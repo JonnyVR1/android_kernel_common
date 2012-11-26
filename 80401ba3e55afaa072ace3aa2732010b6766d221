@@ -1,0 +1,20 @@
+Revision: 80401ba3e55afaa072ace3aa2732010b6766d221
+Patch-set: 1
+File: /COMMIT_MSG
+
+8
+Mon Nov 26 21:26:03 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALu3//+kA=
+Bytes: 53
+Normally want more text here describing what's fixed.
+
+File: net/ipv4/fib_semantics.c
+
+1117
+Mon Nov 26 21:26:03 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALu3//+j0=
+Bytes: 86
+some folks prefer !fi->fib_dev, but I see the == NULL convention is already used here.
+
