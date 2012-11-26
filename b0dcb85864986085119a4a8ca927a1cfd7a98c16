@@ -18,3 +18,11 @@ UUID: AAALu3//+k0=
 Bytes: 30
 kernel style usually: !dev_out
 
+2755
+Mon Nov 26 21:33:01 2012 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALu3//+k0=
+UUID: AAALu3//+jo=
+Bytes: 105
+You are right, but in this function they originally used dev_out == NULL, so I didn't change their style.
+
