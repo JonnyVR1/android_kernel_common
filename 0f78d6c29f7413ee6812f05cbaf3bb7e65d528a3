@@ -32,10 +32,26 @@ UUID: AAALc3///KY=
 Bytes: 163
 You use this to check if data can be read from the stack, but you hardcode the size to 4 bytes. You use it below to check if 16 bytes pointed to by fp-12 is valid.
 
+63
+Mon Nov 26 22:59:58 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALc3///KY=
+UUID: AAALw3///bk=
+Bytes: 254
+I think taking a size here will make this function unnecessarily complicated.  All accesses are going to be 32 bit, this function just makes sure that an access won't fault.  unwind_frame controls the rage that is accessed, and easily validates it first.
+
 111
 Tue Nov 13 00:55:38 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAALc3///Kk=
 Bytes: 97
 "fp - 4"? You never read the pc storred at fp, and it is not clear if it is required to be there.
+
+111
+Mon Nov 26 22:59:58 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAALc3///Kk=
+UUID: AAALw3///bg=
+Bytes: 92
+Well something has to be there, otherwise fp would be off by 4, or the frames would overlap.
 
