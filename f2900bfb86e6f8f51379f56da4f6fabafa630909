@@ -1,0 +1,27 @@
+Revision: f2900bfb86e6f8f51379f56da4f6fabafa630909
+Patch-set: 1
+File: /COMMIT_MSG
+
+9
+Tue Nov 27 01:19:39 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALw3///X4=
+Bytes: 22
+say what the option is
+
+File: kernel/trace/trace_functions_graph.c
+
+68
+Tue Nov 27 01:19:39 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALw3///X0=
+Bytes: 42
+does this need to be documented somewhere?
+
+458
+Tue Nov 27 01:19:39 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAALw3///aA=
+Bytes: 36
+avoid unnecessary whitespace changes
+
