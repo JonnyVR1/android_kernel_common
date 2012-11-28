@@ -1,0 +1,34 @@
+Revision: b0b3e3296863e153469980d6fbb63df3e6db4010
+Patch-set: 1
+File: /COMMIT_MSG
+
+18
+Wed Nov 28 23:01:46 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAL/X//+y4=
+Bytes: 90
+The actual speed is useful without this change so you could add this in a separate change.
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+72
+Wed Nov 28 23:01:46 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAL/X//+1I=
+Bytes: 33
+Why is this not initialized here?
+
+184
+Wed Nov 28 23:01:46 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAL/X//+0Y=
+Bytes: 148
+Why divide by 100 and then multiply by 100? Are you trying to truncate something? Also, this calculation is not correct when frequency just changed.
+
+448
+Wed Nov 28 23:01:46 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAL/X//+zY=
+Bytes: 60
+Use the macros from linux/stat.h to specify the permissions.
+
