@@ -1,0 +1,11 @@
+Revision: 9700cc55e13fc5ca94cbbb2f8a1f37d15165fc39
+Patch-set: 1
+File: /COMMIT_MSG
+
+12
+Wed Nov 28 23:06:06 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: AAAL/X//+yU=
+Bytes: 153
+I don't think that is a good idea. A background task will make the device less responsive if it uses enough cpu to raise the frequency below the minimum.
+
