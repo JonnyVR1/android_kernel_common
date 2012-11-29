@@ -9,6 +9,14 @@ UUID: AAAL/X//+y4=
 Bytes: 90
 The actual speed is useful without this change so you could add this in a separate change.
 
+18
+Thu Nov 29 02:29:35 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAL/X//+y4=
+UUID: MGyf9evs
+Bytes: 4
+Done
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 72
@@ -18,6 +26,14 @@ UUID: AAAL/X//+1I=
 Bytes: 33
 Why is this not initialized here?
 
+72
+Thu Nov 29 02:29:35 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAL/X//+1I=
+UUID: MGwcCdhM
+Bytes: 4
+Done
+
 184
 Wed Nov 28 23:01:46 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +41,28 @@ UUID: AAAL/X//+0Y=
 Bytes: 148
 Why divide by 100 and then multiply by 100? Are you trying to truncate something? Also, this calculation is not correct when frequency just changed.
 
+184
+Thu Nov 29 02:29:35 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAL/X//+0Y=
+UUID: MG.cGQiY
+Bytes: 107
+Fixing the unnecessary divide and multiply.
+
+Deferring the accounting for load vs. speed to another change.
+
 448
 Wed Nov 28 23:01:46 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: AAAL/X//+zY=
 Bytes: 60
 Use the macros from linux/stat.h to specify the permissions.
+
+448
+Thu Nov 29 02:29:35 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: AAAL/X//+zY=
+UUID: MGycUWkk
+Bytes: 4
+Done
 
