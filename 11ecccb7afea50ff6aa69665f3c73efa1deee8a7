@@ -1,0 +1,11 @@
+Revision: 11ecccb7afea50ff6aa69665f3c73efa1deee8a7
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+183
+Thu Nov 29 04:43:27 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MIELLkqA
+Bytes: 115
+A TODO comment would be useful here. pcpu->policy->cur * cpu_load is not correct if the frequency recently changed.
+
