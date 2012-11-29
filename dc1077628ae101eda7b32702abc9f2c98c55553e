@@ -1,0 +1,11 @@
+Revision: dc1077628ae101eda7b32702abc9f2c98c55553e
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+183
+Thu Nov 29 04:58:50 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MIMJVYsI
+Bytes: 30
+Can this be made more generic?
+
