@@ -1,0 +1,20 @@
+Revision: b489ada88583663e99caf6a984e23aab6fcce53c
+Patch-set: 2
+File: /COMMIT_MSG
+
+13
+Thu Nov 29 04:57:11 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MICJFLhQ
+Bytes: 50
+If the load is above 99% why are you ramping down?
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+179
+Thu Nov 29 04:57:11 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MIAJMqjw
+Bytes: 146
+Would it make more sense to move the code out of this if statement instead and restrict this to only handle the special jump to hispeed_freq case?
+
