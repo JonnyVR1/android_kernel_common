@@ -9,6 +9,14 @@ UUID: MICJFLhQ
 Bytes: 50
 If the load is above 99% why are you ramping down?
 
+13
+Thu Nov 29 21:23:41 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: MICJFLhQ
+UUID: MOsg0j94
+Bytes: 164
+This text was written before we decided a go_hispeed_load of 99-100% is probably wanted to match the new code.  I'll remove this since it's not likely to be useful.
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 179
@@ -17,4 +25,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: MIAJMqjw
 Bytes: 146
 Would it make more sense to move the code out of this if statement instead and restrict this to only handle the special jump to hispeed_freq case?
+
+179
+Thu Nov 29 21:23:41 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: MIAJMqjw
+UUID: MPWWyZgU
+Bytes: 109
+I'll try rearranging and see if it looks better that way, but there's some overlap between the various cases.
 
