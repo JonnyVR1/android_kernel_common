@@ -1,0 +1,11 @@
+Revision: 36349492258a4350e8c810feb7274dfba59474c9
+Patch-set: 1
+File: drivers/gpu/ion/ion_chunk_heap.c
+
+98
+Wed Dec 05 20:45:57 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MketaDVA
+Bytes: 112
+if you are trying to avoid cache flushing on allocate, you need to cache flush in ion_chunk_heap_create as well.
+
