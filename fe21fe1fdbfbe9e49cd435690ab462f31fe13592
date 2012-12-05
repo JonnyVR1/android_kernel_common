@@ -9,3 +9,11 @@ UUID: MkcuNCT4
 Bytes: 73
 you could reverse the prio in the plist and then use plist_for_each_entry
 
+411
+Wed Dec 05 22:10:36 2012 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: MkcuNCT4
+UUID: MkAzlazE
+Bytes: 160
+the ids are set by the board files...so it's weird code to swap the id's on insertion, or this code to traverse it in reverse.  Do you have a strong preference?
+
