@@ -1,0 +1,18 @@
+Revision: 58466c26209a46a851e45488429d0374979ebf3d
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+1345
+Wed Dec 05 19:35:00 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MkSvRNR0
+Bytes: 55
+this is unnecessary if you move the error message below
+
+1371
+Wed Dec 05 19:35:00 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: MkWvXPRQ
+Bytes: 65
+i think this error message makes more sense inside the else above
+
