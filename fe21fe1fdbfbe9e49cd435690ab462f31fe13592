@@ -17,3 +17,11 @@ UUID: MkAzlazE
 Bytes: 160
 the ids are set by the board files...so it's weird code to swap the id's on insertion, or this code to traverse it in reverse.  Do you have a strong preference?
 
+411
+Wed Dec 05 22:37:37 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: MkAzlazE
+UUID: MkXoyaPE
+Bytes: 169
+you never use the prio field except for insertion, and the priority is the reverse of the id number, so I would suggest flipping them on insertion, but either way works.
+
