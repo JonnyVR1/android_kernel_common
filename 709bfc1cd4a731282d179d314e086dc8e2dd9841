@@ -1,0 +1,18 @@
+Revision: 709bfc1cd4a731282d179d314e086dc8e2dd9841
+Patch-set: 4
+File: drivers/cpufreq/cpufreq_interactive.c
+
+75
+Sat Dec 08 01:46:36 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1KLEZvE
+Bytes: 11
+ARRAY_SIZE?
+
+551
+Sat Dec 08 01:46:36 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1IKuii8
+Bytes: 78
+cp+1? Why are you looking for newlines? They are not allowed sysfs separators.
+
