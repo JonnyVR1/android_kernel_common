@@ -9,12 +9,28 @@ UUID: M1OJgLpk
 Bytes: 94
 The code below may be simpler if you initialize this to a default load array with one element.
 
+73
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1OJgLpk
+UUID: M1CLX1hQ
+Bytes: 4
+Done
+
 129
 Sat Dec 08 00:01:10 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M1OLK7ps
 Bytes: 51
 _target_load? tl looks the same a t1 in some fonts.
+
+129
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1OLK7ps
+UUID: M1ILUyg4
+Bytes: 4
+Done
 
 137
 Sat Dec 08 00:01:10 2012 +0000
@@ -23,12 +39,28 @@ UUID: M1ELAIno
 Bytes: 61
 I prefer goto for this so you have a single unlock statement.
 
+137
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1ELAIno
+UUID: M1MKsEqk
+Bytes: 8
+Removed.
+
 159
 Sat Dec 08 00:01:10 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M1AJFehM
 Bytes: 8
 UINT_MAX
+
+159
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1AJFehM
+UUID: M1KKxBgE
+Bytes: 4
+Done
 
 504
 Sat Dec 08 00:01:10 2012 +0000
@@ -37,12 +69,28 @@ UUID: M1IJwSmc
 Bytes: 41
 not needed if you preinitialize the array
 
+504
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1IJwSmc
+UUID: M1AK3OvM
+Bytes: 4
+Done
+
 506
 Sat Dec 08 00:01:10 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M1CJzVnU
 Bytes: 17
 "{" is not needed
+
+506
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1CJzVnU
+UUID: M1OK7Dt0
+Bytes: 4
+Done
 
 533
 Sat Dec 08 00:01:10 2012 +0000
@@ -51,10 +99,26 @@ UUID: M1AITuhs
 Bytes: 35
 why check this here and again later
 
+533
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1AITuhs
+UUID: M1EKhQqk
+Bytes: 4
+Done
+
 537
 Sat Dec 08 00:01:10 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M1OIXjgM
 Bytes: 29
 this loop can be much simpler
+
+537
+Sat Dec 08 01:25:08 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1OIXjgM
+UUID: M1CKetnA
+Bytes: 4
+Done
 
