@@ -1,0 +1,60 @@
+Revision: 849add15e7b11793c7314dc40084f26373f56976
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+73
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1OJgLpk
+Bytes: 94
+The code below may be simpler if you initialize this to a default load array with one element.
+
+129
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1OLK7ps
+Bytes: 51
+_target_load? tl looks the same a t1 in some fonts.
+
+137
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1ELAIno
+Bytes: 61
+I prefer goto for this so you have a single unlock statement.
+
+159
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1AJFehM
+Bytes: 8
+UINT_MAX
+
+504
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1IJwSmc
+Bytes: 41
+not needed if you preinitialize the array
+
+506
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1CJzVnU
+Bytes: 17
+"{" is not needed
+
+533
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1AITuhs
+Bytes: 35
+why check this here and again later
+
+537
+Sat Dec 08 00:01:10 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1OIXjgM
+Bytes: 29
+this loop can be much simpler
+
