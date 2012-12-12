@@ -40,8 +40,11 @@ static atomic_t active_count = ATOMIC_INIT(0);
 struct cpufreq_interactive_cpuinfo {
 	struct timer_list cpu_timer;
 	int timer_idlecancel;
+	spinlock_t load_lock; /* protects the next 4 fields */
 	u64 time_in_idle;
 	u64 time_in_idle_timestamp;
+	u64 cputime_speedadj;
+	u64 cputime_speedadj_timestamp;
 	struct cpufreq_policy *policy;
 	struct cpufreq_frequency_table *freq_table;
 	unsigned int target_freq;
@@ -120,9 +123,13 @@ static void cpufreq_interactive_timer_resched(
 {
 	mod_timer_pinned(&pcpu->cpu_timer,
 			 jiffies + usecs_to_jiffies(timer_rate));
+	spin_lock(&pcpu->load_lock);
 	pcpu->time_in_idle =
 		get_cpu_idle_time_us(smp_processor_id(),
 				     &pcpu->time_in_idle_timestamp);
+	pcpu->cputime_speedadj = 0;
+	pcpu->cputime_speedadj_timestamp = pcpu->time_in_idle_timestamp;
+	spin_unlock(&pcpu->load_lock);
 }
 
 static unsigned int freq_to_targetload(unsigned int freq)
@@ -229,15 +236,57 @@ static unsigned int choose_freq(
 	return freq;
 }
 
+static unsigned int update_load(int cpu, u64 *now)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu = &per_cpu(cpuinfo, cpu);
+	u64 now_idle;
+	unsigned int delta_idle;
+	unsigned int delta_time;
+	unsigned int near_delta_time;
+
+	now_idle = get_cpu_idle_time_us(cpu, now);
+	delta_idle = (unsigned int)(now_idle - pcpu->time_in_idle);
+	near_delta_time = (unsigned int)(*now - pcpu->time_in_idle_timestamp);
+	delta_time = (unsigned int) (*now - pcpu->cputime_speedadj_timestamp);
+
+	pcpu->cputime_speedadj += (u64) (near_delta_time - delta_idle) *
+		pcpu->policy->cur;
+
+	pcpu->time_in_idle = now_idle;
+	pcpu->time_in_idle_timestamp = *now;
+	return delta_time;
+}
+
+static int evaluate_load(int cpu, u64 *now)
+{
+	struct cpufreq_interactive_cpuinfo *pcpu = &per_cpu(cpuinfo, cpu);
+	unsigned int delta_time;
+	u64 cputime_speedadj;
+	int ret;
+
+	spin_lock(&pcpu->load_lock);
+	delta_time = update_load(cpu, now);
+
+	if (!delta_time) {
+		ret = -ENODATA;
+		goto out;
+	}
+
+	cputime_speedadj = pcpu->cputime_speedadj;
+	do_div(cputime_speedadj, delta_time);
+	ret = (unsigned int) cputime_speedadj * 100 / pcpu->policy->cur;
+
+out:
+	spin_unlock(&pcpu->load_lock);
+	return ret;
+}
+
 static void cpufreq_interactive_timer(unsigned long data)
 {
 	u64 now;
-	unsigned int delta_idle;
-	unsigned int delta_time;
 	int cpu_load;
 	struct cpufreq_interactive_cpuinfo *pcpu =
 		&per_cpu(cpuinfo, data);
-	u64 now_idle;
 	unsigned int new_freq;
 	unsigned int index;
 	unsigned long flags;
@@ -247,20 +296,13 @@ static void cpufreq_interactive_timer(unsigned long data)
 	if (!pcpu->governor_enabled)
 		goto exit;
 
-	now_idle = get_cpu_idle_time_us(data, &now);
-	delta_idle = (unsigned int)(now_idle - pcpu->time_in_idle);
-	delta_time = (unsigned int)(now - pcpu->time_in_idle_timestamp);
+	cpu_load = evaluate_load(data, &now);
 
 	/*
-	 * If timer ran less than 1ms after short-term sample started, retry.
+	 * If timer ran immediately after short-term sample started, retry.
 	 */
-	if (delta_time < 1000)
+	if (cpu_load < 0)
 		goto rearm;
-
-	if (delta_idle > delta_time)
-		cpu_load = 0;
-	else
-		cpu_load = 100 * (delta_time - delta_idle) / delta_time;
 
 	if ((cpu_load >= go_hispeed_load || boost_val) &&
 	    pcpu->target_freq < hispeed_freq)
@@ -496,6 +538,33 @@ static void cpufreq_interactive_boost(void)
 	if (anyboost)
 		wake_up_process(speedchange_task);
 }
+
+static int cpufreq_interactive_notifier(
+	struct notifier_block *nb, unsigned long val, void *data)
+{
+	struct cpufreq_freqs *freq = data;
+	struct cpufreq_interactive_cpuinfo *pcpu;
+	int cpu;
+	u64 now;
+
+	if (val == CPUFREQ_POSTCHANGE) {
+		pcpu = &per_cpu(cpuinfo, freq->cpu);
+
+		for_each_cpu(cpu, pcpu->policy->cpus) {
+			struct cpufreq_interactive_cpuinfo *pjcpu =
+				&per_cpu(cpuinfo, cpu);
+			spin_lock(&pjcpu->load_lock);
+			update_load(cpu, &now);
+			spin_unlock(&pjcpu->load_lock);
+		}
+	}
+
+	return 0;
+}
+
+static struct notifier_block cpufreq_notifier_block = {
+	.notifier_call = cpufreq_interactive_notifier,
+};
 
 static ssize_t show_target_loads(
 	struct kobject *kobj, struct attribute *attr, char *buf)
@@ -816,6 +885,8 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			return rc;
 
 		idle_notifier_register(&cpufreq_interactive_idle_nb);
+		cpufreq_register_notifier(
+			&cpufreq_notifier_block, CPUFREQ_TRANSITION_NOTIFIER);
 		break;
 
 	case CPUFREQ_GOV_STOP:
@@ -829,6 +900,8 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		if (atomic_dec_return(&active_count) > 0)
 			return 0;
 
+		cpufreq_unregister_notifier(
+			&cpufreq_notifier_block, CPUFREQ_TRANSITION_NOTIFIER);
 		idle_notifier_unregister(&cpufreq_interactive_idle_nb);
 		sysfs_remove_group(cpufreq_global_kobject,
 				&interactive_attr_group);
@@ -867,6 +940,7 @@ static int __init cpufreq_interactive_init(void)
 			init_timer_deferrable(&pcpu->cpu_timer);
 		pcpu->cpu_timer.function = cpufreq_interactive_timer;
 		pcpu->cpu_timer.data = i;
+		spin_lock_init(&pcpu->load_lock);
 	}
 
 	spin_lock_init(&target_loads_lock);
