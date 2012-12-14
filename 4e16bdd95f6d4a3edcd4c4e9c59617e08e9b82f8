@@ -1,0 +1,20 @@
+Revision: 4e16bdd95f6d4a3edcd4c4e9c59617e08e9b82f8
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+415
+Fri Dec 14 17:46:01 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M7.gjzbw
+Bytes: 20
+s/heap type/heap id/
+
+File: include/linux/ion.h
+
+48
+Fri Dec 14 17:46:01 2012 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M7.vy5ys
+Bytes: 145
+sizeof(unsigned int)*8? Or ideally, it would be a long and you could use BITS_PER_LONG, but you defined it as 'unsigned int',  so sizeof() it is.
+
