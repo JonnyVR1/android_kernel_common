@@ -9,3 +9,11 @@ UUID: M1Lmr3No
 Bytes: 53
 Is this using the same timer as get_cpu_idle_time_us?
 
+481
+Fri Dec 14 22:52:54 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1Lmr3No
+UUID: M1HnGlJk
+Bytes: 162
+Yes, get_cpu_idle_time_us() calls update_ts_time_stats() calls ktime_to_us(now), now is a param from get_cpu_idle_time_us() that passes the result of ktime_get().
+
