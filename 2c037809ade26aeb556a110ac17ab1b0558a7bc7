@@ -1,0 +1,25 @@
+Revision: 2c037809ade26aeb556a110ac17ab1b0558a7bc7
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+249
+Fri Dec 14 23:08:40 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1PmMRI4
+Bytes: 76
+I would use a local variable for "now" since you are using it several times.
+
+250
+Fri Dec 14 23:08:40 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1FlhGJo
+Bytes: 70
+why is this calculated here and not in evaluate_load where it is used?
+
+277
+Fri Dec 14 23:08:40 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1Dnf7Do
+Bytes: 63
+why are you converting this to a load at the current frequency?
+
