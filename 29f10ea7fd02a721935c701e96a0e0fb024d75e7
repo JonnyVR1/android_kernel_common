@@ -1,0 +1,11 @@
+Revision: 29f10ea7fd02a721935c701e96a0e0fb024d75e7
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+481
+Fri Dec 14 22:43:16 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1Lmr3No
+Bytes: 53
+Is this using the same timer as get_cpu_idle_time_us?
+
