@@ -1,0 +1,18 @@
+Revision: f5fe1bd21c7dde11d2d86962d843aeb3d938cc2e
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+255
+Sat Dec 15 09:55:47 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M738D7U0
+Bytes: 25
+you could just return it.
+
+259
+Sat Dec 15 09:55:47 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M71.NUeE
+Bytes: 77
+with three output arguments is it worth it to have this as a helper function?
+
