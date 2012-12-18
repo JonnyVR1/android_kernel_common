@@ -1,0 +1,32 @@
+Revision: 48e1e652fa05454457113d658435c4634c1afbb6
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+244
+Tue Dec 18 05:16:57 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1KZG-rk
+Bytes: 79
+Why is it called near_...? Is it not the same time period delta_idle refers to?
+
+250
+Tue Dec 18 05:16:57 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1OYnZiA
+Bytes: 171
+Don't use a space after a cast (unless you are casting to void). Also, if you add a helper variable for this (e.g. active_time) you can avoid both the cast and line split.
+
+278
+Tue Dec 18 05:16:57 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1CYyDmM
+Bytes: 30
+Don't use a space after a cast
+
+286
+Tue Dec 18 05:16:57 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1AY1Ukg
+Bytes: 3
+...
+
