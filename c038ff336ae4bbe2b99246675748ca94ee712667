@@ -1,0 +1,11 @@
+Revision: c038ff336ae4bbe2b99246675748ca94ee712667
+Patch-set: 1
+File: lib/Kconfig.debug
+
+183
+Tue Dec 18 23:08:35 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M1M3VIgs
+Bytes: 91
+Do you want you add some text describing how often the other_cpu hardlockup detection runs?
+
