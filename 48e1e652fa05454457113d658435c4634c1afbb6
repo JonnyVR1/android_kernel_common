@@ -9,12 +9,28 @@ UUID: M1KZG-rk
 Bytes: 79
 Why is it called near_...? Is it not the same time period delta_idle refers to?
 
+244
+Tue Dec 18 06:59:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1KZG-rk
+UUID: M1.PGOmk
+Bytes: 135
+I'll drop the "near_".  At one point there were two loads calculated by this function, but it still didn't make sense back then either.
+
 250
 Tue Dec 18 05:16:57 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M1OYnZiA
 Bytes: 171
 Don't use a space after a cast (unless you are casting to void). Also, if you add a helper variable for this (e.g. active_time) you can avoid both the cast and line split.
+
+250
+Tue Dec 18 06:59:47 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M1OYnZiA
+UUID: M18PJfns
+Bytes: 2
+ok
 
 278
 Tue Dec 18 05:16:57 2012 +0000
