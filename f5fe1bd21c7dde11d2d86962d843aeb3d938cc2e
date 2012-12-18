@@ -9,10 +9,26 @@ UUID: M738D7U0
 Bytes: 25
 you could just return it.
 
+255
+Tue Dec 18 03:37:17 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M738D7U0
+UUID: M1AZPEmU
+Bytes: 61
+Ah, yeah, now that the previous function return is gone, duh.
+
 259
 Sat Dec 15 09:55:47 2012 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M71.NUeE
 Bytes: 77
 with three output arguments is it worth it to have this as a helper function?
+
+259
+Tue Dec 18 03:37:17 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M71.NUeE
+UUID: M1GY21uU
+Bytes: 38
+Good point.  Will just move it inline.
 
