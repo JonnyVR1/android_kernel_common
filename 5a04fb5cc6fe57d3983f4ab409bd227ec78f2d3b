@@ -9,6 +9,14 @@ UUID: M-6PVeug
 Bytes: 37
 I don't think that is a good default.
 
+13
+Wed Dec 19 04:34:01 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M-6PVeug
+UUID: M-kRKDqs
+Bytes: 55
+OK, using 80ms which is 4 times the default timer rate.
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 421
@@ -17,4 +25,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: M-4NbHoU
 Bytes: 21
 is this still needed?
+
+421
+Wed Dec 19 04:34:01 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: M-4NbHoU
+UUID: M-kTpLng
+Bytes: 253
+I believe this code is still useful to catch idle wakeups that do not run the timer list.  The timer slack would eventually kick in, on systems that use it anyway, but so long as we're exiting idle and we have an expired timer, might as well service it.
 
