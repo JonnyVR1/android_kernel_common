@@ -1,0 +1,20 @@
+Revision: 5a04fb5cc6fe57d3983f4ab409bd227ec78f2d3b
+Patch-set: 1
+File: /COMMIT_MSG
+
+13
+Wed Dec 19 04:20:07 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M-6PVeug
+Bytes: 37
+I don't think that is a good default.
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+421
+Wed Dec 19 04:20:07 2012 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: M-4NbHoU
+Bytes: 21
+is this still needed?
+
