@@ -1,0 +1,11 @@
+Revision: a740c140313a8f58051b50fee96aec2d03783c06
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+922
+Fri Dec 21 00:07:17 2012 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: NFRsGPig
+Bytes: 147
+del_timer_sync seems unnecessary, the CPUFREQ_GOV_START and CPUFREQ_GOV_STOP should already be sequenced such that the timer is never started here.
+
