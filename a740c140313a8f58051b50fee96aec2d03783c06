@@ -9,3 +9,11 @@ UUID: NFRsGPig
 Bytes: 147
 del_timer_sync seems unnecessary, the CPUFREQ_GOV_START and CPUFREQ_GOV_STOP should already be sequenced such that the timer is never started here.
 
+922
+Fri Dec 21 01:46:24 2012 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: NFRsGPig
+UUID: NGP-aQzs
+Bytes: 99
+Done.  I got paranoid about the race with idle exit, but it should be covered by the semaphore now.
+
