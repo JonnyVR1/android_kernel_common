@@ -1,0 +1,11 @@
+Revision: 42e477adde78a12ed5eb58fbc0b277cdaadb6f94
+Patch-set: 1
+File: net/netfilter/xt_qtaguid.c
+
+240
+Sat Jan 05 00:01:38 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: NtLHe2gc
+Bytes: 76
+for completeness, maybe check both uid and gid, with either being sufficent.
+
