@@ -9,3 +9,11 @@ UUID: N8V3vPt0
 Bytes: 39
 What is the purpose of this permission?
 
+1837
+Wed Jan 09 21:11:12 2013 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: N8V3vPt0
+UUID: OA4Wopn0
+Bytes: 89
+Lets one UID impersonate another UID over binder. It is currently not used in the policy.
+
