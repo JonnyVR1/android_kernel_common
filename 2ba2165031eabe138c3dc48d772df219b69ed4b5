@@ -1,0 +1,11 @@
+Revision: 2ba2165031eabe138c3dc48d772df219b69ed4b5
+Patch-set: 3
+File: security/selinux/hooks.c
+
+1837
+Wed Jan 09 21:02:02 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: N8V3vPt0
+Bytes: 39
+What is the purpose of this permission?
+
