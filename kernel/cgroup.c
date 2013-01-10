@@ -3981,7 +3981,10 @@ static int cgroup_rmdir(struct inode *unused_dir, struct dentry *dentry)
 	/* the vfs holds both inode->i_mutex already */
 again:
 	mutex_lock(&cgroup_mutex);
-	if (!cgroup_css_sets_empty(cgrp)) {
+	read_lock(&css_set_lock);
+	ret = cgroup_css_sets_empty(cgrp);
+	read_unlock(&css_set_lock);
+	if (!ret) {
 		mutex_unlock(&cgroup_mutex);
 		return -EBUSY;
 	}
