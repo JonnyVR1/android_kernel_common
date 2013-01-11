@@ -9,10 +9,27 @@ UUID: N8XNlCj0
 Bytes: 34
 this comment is no longer accurate
 
+291
+Fri Jan 11 08:43:20 2013 +0000
+Author: Hans De Goede <1018677@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: N8XNlCj0
+UUID: N-ywjMg0
+Bytes: 199
+Right, the new text should probably be something like:
+"A tasks will sleep when cgroup->count != 0 or cgroup->count == 0 && list_empty(&cgroup->children) && subsys has some reference to css->refcnt."
+
 4031
 Fri Jan 11 01:52:56 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: N8bMaEtA
 Bytes: 105
 I think this check makes more sense inside cgroup_clear_css_refs, since it already returns false on busy.
+
+4031
+Fri Jan 11 08:43:20 2013 +0000
+Author: Hans De Goede <1018677@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: N8bMaEtA
+UUID: N-4waZtA
+Bytes: 127
+That would work too, as long as it is done as the first thing in cgroup_clear_css_refs(), so before actually clearing any refs.
 
