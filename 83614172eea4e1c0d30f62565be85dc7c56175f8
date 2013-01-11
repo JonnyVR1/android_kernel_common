@@ -9,3 +9,11 @@ UUID: N8fP3OlI
 Bytes: 37
 shouldn't the same lock be held here?
 
+4019
+Fri Jan 11 08:46:38 2013 +0000
+Author: Hans De Goede <1018677@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: N8fP3OlI
+UUID: N-.x9mto
+Bytes: 145
+Ah yes, good one, or better simply move the locking into cgroup_css_sets_empty(), since we're now adding locking around the only 2 callers of it.
+
