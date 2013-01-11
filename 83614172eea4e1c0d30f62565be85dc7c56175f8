@@ -1,0 +1,11 @@
+Revision: 83614172eea4e1c0d30f62565be85dc7c56175f8
+Patch-set: 2
+File: kernel/cgroup.c
+
+4019
+Fri Jan 11 02:03:23 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: N8fP3OlI
+Bytes: 37
+shouldn't the same lock be held here?
+
