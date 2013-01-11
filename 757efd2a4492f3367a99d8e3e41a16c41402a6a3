@@ -1,0 +1,18 @@
+Revision: 757efd2a4492f3367a99d8e3e41a16c41402a6a3
+Patch-set: 3
+File: kernel/cgroup.c
+
+291
+Fri Jan 11 01:52:56 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: N8XNlCj0
+Bytes: 34
+this comment is no longer accurate
+
+4031
+Fri Jan 11 01:52:56 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: N8bMaEtA
+Bytes: 105
+I think this check makes more sense inside cgroup_clear_css_refs, since it already returns false on busy.
+
