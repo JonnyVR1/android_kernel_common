@@ -1,0 +1,27 @@
+Revision: 37218e3a35ce8fc4e17b5796b25fd8627229ff12
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Mon Jan 14 23:33:30 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ON.uLkc4
+Bytes: 20
+needs a subject line
+
+File: drivers/gpu/ion/ion_heap.c
+
+96
+Mon Jan 14 23:33:30 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ON4uYzSE
+Bytes: 67
+maybe ion_heap_buffer_zero, since it doesn't affect the whole heap?
+
+98
+Mon Jan 14 23:33:30 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ON6uVieg
+Bytes: 10
+extra line
+
