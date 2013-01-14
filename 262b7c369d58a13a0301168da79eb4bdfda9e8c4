@@ -9,3 +9,11 @@ UUID: OI4E-Uds
 Bytes: 61
 what prevents this from getting incremented after this check?
 
+3916
+Mon Jan 14 21:52:01 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: OI4E-Uds
+UUID: OI.EQnWA
+Bytes: 66
+It's only ever incremented under cgroup_mutex, which is held here.
+
