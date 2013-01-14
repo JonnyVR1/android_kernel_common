@@ -1,0 +1,8 @@
+Change-Id: I688bd82a7f7be47dc07aa46264564450e24dfa32
+Code-Review+2: Erik Gilling <konkers@android.com>
+Verified+1: Erik Gilling <konkers@android.com>
+Submitted-by: Erik Gilling <konkers@android.com>
+Submitted-at: Mon, 14 Jan 2013 13:44:04 -0800
+Reviewed-on: https://android-review.googlesource.com/49665
+Project: kernel/common
+Branch: refs/heads/android-3.4
