@@ -110,6 +110,7 @@ struct cpuidle_coupled {
 	int online_count;
 	int refcnt;
 	int prevent;
+	atomic_t barrier_pc;
 };
 
 #define WAITING_BITS 16
@@ -157,7 +158,14 @@ static cpumask_t cpuidle_coupled_poked;
  */
 void cpuidle_coupled_parallel_barrier(struct cpuidle_device *dev, atomic_t *a)
 {
+	atomic_t *barrier_pc = dev->coupled->barrier_pc;
 	int n = dev->coupled->online_count;
+	int old_caller;
+	int caller = _RET_IP_;
+
+	/* Check if two parallel barriers are in use at the same time */
+	old_caller = atomic_xchg(barrier_pc, caller);
+	BUG_ON(old_caller && old_caller != caller);
 
 	smp_mb__before_atomic_inc();
 	atomic_inc(a);
@@ -166,6 +174,8 @@ void cpuidle_coupled_parallel_barrier(struct cpuidle_device *dev, atomic_t *a)
 		cpu_relax();
 
 	if (atomic_inc_return(a) == n * 2) {
+		atomic_set(barrier_pc, 0);
+		smp_wmb();
 		atomic_set(a, 0);
 		return;
 	}
