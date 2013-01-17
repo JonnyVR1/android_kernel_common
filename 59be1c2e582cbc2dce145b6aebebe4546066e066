@@ -1,0 +1,11 @@
+Revision: 59be1c2e582cbc2dce145b6aebebe4546066e066
+Patch-set: 3
+File: drivers/cpuidle/coupled.c
+
+568
+Thu Jan 17 03:28:32 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: OcDLJUHw
+Bytes: 23
+Is this barrier needed?
+
