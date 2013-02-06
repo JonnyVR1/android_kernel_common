@@ -1,0 +1,11 @@
+Revision: edb1cff49334aa7bb0504af155340243380ac023
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+848
+Wed Feb 06 21:37:49 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PknB18FU
+Bytes: 232
+This is what we have now but we've seen problems with this. the vm_close may get called if a client upmaps a partial range but we don't reincrement the mapcount when vm_open is called again. Is there some way to compensate for this?
+
