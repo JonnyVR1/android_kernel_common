@@ -842,6 +842,11 @@ static void ion_vm_close(struct vm_area_struct *vma)
 		pr_debug("%s: deleting %p\n", __func__, vma);
 		break;
 	}
+
+	if (!buffer->heap->ops->unmap_user)
+		goto end;
+	buffer->heap->ops->unmap_user(buffer->heap, buffer, vma);
+end:
 	mutex_unlock(&buffer->lock);
 }
 
