@@ -1,0 +1,9 @@
+Change-Id: Iab3801efc6d2e7b4610071ac87c6977ac9042ad9
+Code-Review+2: jp abgrall <jpa@google.com>
+Verified+1: jp abgrall <jpa@google.com>
+Code-Review+1: Jeff Sharkey <jsharkey@android.com>
+Submitted-by: jp abgrall <jpa@google.com>
+Submitted-at: Thu, 07 Feb 2013 19:18:00 +0000
+Reviewed-on: https://android-review.googlesource.com/51327
+Project: kernel/common
+Branch: refs/heads/android-3.4
