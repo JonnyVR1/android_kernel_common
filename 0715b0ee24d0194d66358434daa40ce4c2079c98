@@ -9,12 +9,28 @@ UUID: PkFXtPuU
 Bytes: 32
 this should probably be optional
 
+119
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkFXtPuU
+UUID: Pkv-Rq-s
+Bytes: 4
+Done
+
 120
 Thu Feb 07 00:07:17 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: PkDX6up0
 Bytes: 16
 this is optional
+
+120
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkDX6up0
+UUID: Pkt-W5-E
+Bytes: 4
+Done
 
 File: android/configs/android-recommended.cfg
 
@@ -25,12 +41,28 @@ UUID: PkLUTShk
 Bytes: 69
 I think this should be off for new kernels, bluedroid doesn't use it.
 
+10
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkLUTShk
+UUID: Pkr-bIxg
+Bytes: 4
+Done
+
 22
 Thu Feb 07 00:07:17 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: PkPUy8qo
 Bytes: 63
 I think this and DM_CRYPT are required for encrypted containers
+
+22
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkPUy8qo
+UUID: Pkp-gX8M
+Bytes: 4
+Done
 
 25
 Thu Feb 07 00:07:17 2013 +0000
@@ -39,10 +71,26 @@ UUID: PkLVaKus
 Bytes: 44
 Erik, should this be in the required config?
 
+25
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkLVaKus
+UUID: Pkh-Nj1g
+Bytes: 4
+Done
+
 26
 Thu Feb 07 00:07:17 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: PkBVsVo8
 Bytes: 63
 Not sure about this one, wouldn't it be off on any nVidia chip?
+
+26
+Thu Feb 07 16:35:27 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: PkBVsVo8
+UUID: Pkv-6y2k
+Bytes: 4
+Done
 
