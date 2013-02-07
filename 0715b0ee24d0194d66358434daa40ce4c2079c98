@@ -1,0 +1,48 @@
+Revision: 0715b0ee24d0194d66358434daa40ce4c2079c98
+Patch-set: 1
+File: android/configs/android-base.cfg
+
+119
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkFXtPuU
+Bytes: 32
+this should probably be optional
+
+120
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkDX6up0
+Bytes: 16
+this is optional
+
+File: android/configs/android-recommended.cfg
+
+10
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkLUTShk
+Bytes: 69
+I think this should be off for new kernels, bluedroid doesn't use it.
+
+22
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkPUy8qo
+Bytes: 63
+I think this and DM_CRYPT are required for encrypted containers
+
+25
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkLVaKus
+Bytes: 44
+Erik, should this be in the required config?
+
+26
+Thu Feb 07 00:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: PkBVsVo8
+Bytes: 63
+Not sure about this one, wouldn't it be off on any nVidia chip?
+
