@@ -70,6 +70,7 @@ struct ion_buffer {
 	int kmap_cnt;
 	void *vaddr;
 	int dmap_cnt;
+	int umap_cnt;
 	struct sg_table *sg_table;
 	unsigned long *dirty;
 	struct list_head vmas;

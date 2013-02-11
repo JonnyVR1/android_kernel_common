@@ -822,6 +822,7 @@ static void ion_vm_open(struct vm_area_struct *vma)
 		return;
 	vma_list->vma = vma;
 	mutex_lock(&buffer->lock);
+	buffer->umap_cnt++;
 	list_add(&vma_list->list, &buffer->vmas);
 	mutex_unlock(&buffer->lock);
 	pr_debug("%s: adding %p\n", __func__, vma);
@@ -842,6 +843,8 @@ static void ion_vm_close(struct vm_area_struct *vma)
 		pr_debug("%s: deleting %p\n", __func__, vma);
 		break;
 	}
+	buffer->umap_cnt--;
+	BUG_ON(buffer->umap_cnt < 0);
 	mutex_unlock(&buffer->lock);
 }
 
