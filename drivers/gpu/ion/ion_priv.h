@@ -91,6 +91,10 @@ struct ion_buffer {
  * @map_kernel		map memory to the kernel
  * @unmap_kernel	unmap memory to the kernel
  * @map_user		map memory to userspace
+ * @user_cnt_inc	callback to happen when the buffer is mapped into
+ *			userspace
+ * @user_cnt_dec	callback to happen when the buffer is unmapped from
+ *			userspace
  */
 struct ion_heap_ops {
 	int (*allocate) (struct ion_heap *heap,
@@ -106,6 +110,8 @@ struct ion_heap_ops {
 	void (*unmap_kernel) (struct ion_heap *heap, struct ion_buffer *buffer);
 	int (*map_user) (struct ion_heap *mapper, struct ion_buffer *buffer,
 			 struct vm_area_struct *vma);
+	void (*user_cnt_inc) (struct ion_heap *heap, struct ion_buffer *buffer);
+	void (*user_cnt_dec) (struct ion_heap *heap, struct ion_buffer *buffer);
 };
 
 /**
