@@ -1,0 +1,26 @@
+Revision: 0607b9c776acf61cb796b8572cf8cfb8b2dc1377
+Patch-set: 1
+File: include/trace/events/gpu.h
+
+12
+Sat Feb 23 01:38:45 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOZ1-s3M
+Bytes: 42
+shouldn't this be 
+ns + (NSEC_PER_SEC / 2)
+
+18
+Sat Feb 23 01:38:45 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOV3ZO3c
+Bytes: 16
+ditto from above
+
+79
+Sat Feb 23 01:38:45 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOd2z6yY
+Bytes: 88
+the prev fields here seem like they are just repeats of the data from the previous event
+
