@@ -45,6 +45,7 @@ struct ion_device {
 	struct plist_head heaps;
 	long (*custom_ioctl) (struct ion_client *client, unsigned int cmd,
 			      unsigned long arg);
+	int (*restrict_access) (struct ion_heap *heap, unsigned long flags);
 	struct rb_root clients;
 	struct dentry *debug_root;
 };

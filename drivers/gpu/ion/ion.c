@@ -346,6 +346,8 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 		/* if the caller didn't specify this heap id */
 		if (!((1 << heap->id) & heap_id_mask))
 			continue;
+		if (dev->restrict_access && dev->restrict_access(heap, flags))
+			continue;
 		buffer = ion_buffer_create(heap, dev, len, align, flags);
 		if (!IS_ERR_OR_NULL(buffer))
 			break;
