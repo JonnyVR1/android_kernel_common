@@ -46,6 +46,7 @@ struct ion_device {
 	long (*custom_ioctl) (struct ion_client *client, unsigned int cmd,
 			      unsigned long arg);
 	int (*restrict_access) (struct ion_heap *heap, unsigned long flags);
+	void (*buffer_destroy) (struct ion_buffer *buffer);
 	struct rb_root clients;
 	struct dentry *debug_root;
 };

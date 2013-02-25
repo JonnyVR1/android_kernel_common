@@ -163,6 +163,8 @@ static void ion_buffer_destroy(struct kref *kref)
 		buffer->heap->ops->unmap_kernel(buffer->heap, buffer);
 	buffer->heap->ops->unmap_dma(buffer->heap, buffer);
 	buffer->heap->ops->free(buffer);
+	if (dev->buffer_destroy)
+		dev->buffer_destroy(buffer);
 	mutex_lock(&dev->buffer_lock);
 	rb_erase(&buffer->node, &dev->buffers);
 	mutex_unlock(&dev->buffer_lock);
