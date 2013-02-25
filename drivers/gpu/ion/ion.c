@@ -1022,6 +1022,28 @@ int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
 }
 EXPORT_SYMBOL(ion_handle_get_flags);
 
+int ion_handle_get_size(struct ion_client *client, struct ion_handle *handle,
+                       unsigned long *size)
+{
+       struct ion_buffer *buffer;
+
+	mutex_lock(&client->lock);
+	if (!ion_handle_validate(client, handle)) {
+		pr_err("%s: invalid handle passed to %s.\n",
+			__func__, __func__);
+		mutex_unlock(&client->lock);
+		return -EINVAL;
+	}
+	buffer = handle->buffer;
+	mutex_lock(&buffer->lock);
+	*size = buffer->size;
+	mutex_unlock(&buffer->lock);
+	mutex_unlock(&client->lock);
+
+	return 0;
+}
+EXPORT_SYMBOL(ion_handle_get_size);
+
 static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct ion_client *client = filp->private_data;
