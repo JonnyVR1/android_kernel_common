@@ -231,6 +231,22 @@ int ion_share_dma_buf(struct ion_client *client, struct ion_handle *handle);
  */
 struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
 
+
+/**
+ * ion_handle_get_flags - get the flags for a given handle
+ *
+ * @client - client who allocated the handle
+ * @handle - handle to get the flags
+ * @flags - pointer to store the flags
+ *
+ * Gets the current flags for a handle. These flags indicate various options
+ * of the buffer (caching, security, etc.)
+ */
+int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
+				unsigned long *flags);
+
+
+
 #endif /* __KERNEL__ */
 
 /**
@@ -281,6 +297,20 @@ struct ion_fd_data {
  */
 struct ion_handle_data {
 	struct ion_handle *handle;
+};
+
+
+/* struct ion_flag_data - information about flags for this buffer
+ *
+ * @handle:    handle to get flags from
+ * @flags:     flags of this handle
+ *
+ * Takes handle as an input and outputs the flags from the handle
+ * in the flag field.
+ */
+struct ion_flag_data {
+	struct ion_handle *handle;
+	unsigned long flags;
 };
 
 /**
@@ -361,5 +391,14 @@ struct ion_custom_data {
  * passes appropriate userdata for that ioctl
  */
 #define ION_IOC_CUSTOM		_IOWR(ION_IOC_MAGIC, 6, struct ion_custom_data)
+
+
+/**
+ * DOC: ION_IOC_GET_FLAGS - get the flags of the handle
+ *
+ * Gets the flags of the current handle which indicate cachability,
+ * secure state etc.
+ */
+#define ION_IOC_GET_FLAGS	_IOWR(ION_IOC_MAGIC, 8, struct ion_flag_data)
 
 #endif /* _LINUX_ION_H */

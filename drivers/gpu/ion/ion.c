@@ -1000,6 +1000,28 @@ static int ion_sync_for_device(struct ion_client *client, int fd)
 	return 0;
 }
 
+int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
+                       unsigned long *flags)
+{
+	struct ion_buffer *buffer;
+
+	mutex_lock(&client->lock);
+	if (!ion_handle_validate(client, handle)) {
+		pr_err("%s: invalid handle passed to %s.\n",
+			__func__, __func__);
+		mutex_unlock(&client->lock);
+		return -EINVAL;
+	}
+	buffer = handle->buffer;
+	mutex_lock(&buffer->lock);
+	*flags = buffer->flags;
+	mutex_unlock(&buffer->lock);
+	mutex_unlock(&client->lock);
+
+	return 0;
+}
+EXPORT_SYMBOL(ion_handle_get_flags);
+
 static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct ion_client *client = filp->private_data;
@@ -1079,6 +1101,22 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				   sizeof(struct ion_fd_data)))
 			return -EFAULT;
 		ion_sync_for_device(client, data.fd);
+		break;
+	}
+	case ION_IOC_GET_FLAGS:
+	{
+		struct ion_flag_data data;
+		int ret;
+		if (copy_from_user(&data, (void __user *)arg,
+				   sizeof(struct ion_flag_data)))
+			return -EFAULT;
+
+		ret = ion_handle_get_flags(client, data.handle, &data.flags);
+		if (ret < 0)
+			return ret;
+		if (copy_to_user((void __user *)arg, &data,
+				  sizeof(struct ion_flag_data)))
+			return -EFAULT;
 		break;
 	}
 	case ION_IOC_CUSTOM:
