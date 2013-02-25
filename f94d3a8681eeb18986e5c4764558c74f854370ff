@@ -1,0 +1,29 @@
+Revision: f94d3a8681eeb18986e5c4764558c74f854370ff
+Patch-set: 1
+File: /COMMIT_MSG
+
+12
+Mon Feb 25 19:30:46 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOLSOTSA
+Bytes: 13
+asynchronous?
+
+File: drivers/gpu/ion/ion.c
+
+179
+Mon Feb 25 19:30:46 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QONRi4YY
+Bytes: 74
+maybe add a new label at the bottom where you have a kfree+return already.
+
+File: drivers/gpu/ion/ion_priv.h
+
+113
+Mon Feb 25 19:30:46 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOJTyKZY
+Bytes: 18
+parens around 1<<0
+
