@@ -10,6 +10,14 @@ Bytes: 42
 shouldn't this be 
 ns + (NSEC_PER_SEC / 2)
 
+12
+Mon Feb 25 21:34:29 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: QOZ1-s3M
+UUID: QOei-Bkw
+Bytes: 94
+never mind I see how this is supposed to be used.  you only want correct rounding to the usec.
+
 18
 Sat Feb 23 01:38:45 2013 +0000
 Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,10 +25,32 @@ UUID: QOV3ZO3c
 Bytes: 16
 ditto from above
 
+18
+Mon Feb 25 21:34:29 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: QOV3ZO3c
+UUID: QOUj98iw
+Bytes: 76
+actually, I suppose that should be NSEC_PER_USEC/2 (which happens to be 500)
+
 79
 Sat Feb 23 01:38:45 2013 +0000
 Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: QOd2z6yY
 Bytes: 88
 the prev fields here seem like they are just repeats of the data from the previous event
+
+82
+Mon Feb 25 21:34:29 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOQjoWnA
+Bytes: 96
+"work" is probably a bad name here as it has specific meaning in the linux kernel.  maybe "job"?
+
+128
+Mon Feb 25 21:34:29 2013 +0000
+Author: Erik Gilling <1001891@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QOaj0rk4
+Bytes: 33
+see above comment about work name
 
