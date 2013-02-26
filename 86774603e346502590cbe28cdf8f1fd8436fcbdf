@@ -1,0 +1,36 @@
+Revision: 86774603e346502590cbe28cdf8f1fd8436fcbdf
+Patch-set: 2
+File: kernel/trace/trace.c
+
+1161
+Tue Feb 26 21:29:42 2013 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QV44mO8Q
+Bytes: 3
+tab
+
+1174
+Tue Feb 26 21:29:42 2013 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QV.4jf7I
+Bytes: 3
+tab
+
+1176
+Tue Feb 26 21:29:42 2013 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QV84gQ6k
+Bytes: 13
+extra newline
+
+File: kernel/trace/trace_output.c
+
+641
+Tue Feb 26 21:29:42 2013 +0000
+Author: Alexander Ray <1012391@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QVy6Lx2g
+Bytes: 118
+Declare variables at the top of the function
+
+(maybe the kernel vets know better than me whether to make an exception)
+
