@@ -1,0 +1,11 @@
+Revision: 8e17ce52cf48dbf3faa26ac24c8a71f016771f32
+Patch-set: 1
+File: drivers/tty/serial/samsung.c
+
+439
+Sat Mar 02 02:17:50 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: QoSFZLrM
+Bytes: 64
+it won't be freed if !ourport->tx_claimed, can that ever happen?
+
