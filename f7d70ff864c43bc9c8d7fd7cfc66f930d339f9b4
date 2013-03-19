@@ -18,6 +18,13 @@ Change-Id: If7d70ff864c43bc9c8d7fd7cfc66f930d339f9b4
 
 File: drivers/cpufreq/cpufreq_interactive.c
 
+113
+Tue Mar 19 22:47:25 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SA1-8q6k
+Bytes: 17
+switching to bool
+
 133
 Tue Mar 12 04:01:37 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +32,24 @@ UUID: RgcHGIu0
 Bytes: 70
 If we keep this function I'll fixup some typos introduced in the copy.
 
+149
+Tue Mar 19 22:47:25 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SA9-nmxI
+Bytes: 61
+will just use a default of false, and configure per-platform.
+
 179
 Tue Mar 12 04:01:37 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: RgSGNzrI
 Bytes: 151
 I don't think the governor is run on any configs without NOHZ, but OK.  In later kernel revs we can probably use the common get_cpu_idle_time() anyway.
+
+939
+Tue Mar 19 22:47:25 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SA3-VL6k
+Bytes: 21
+switching to kstrtoul
 
