@@ -1,0 +1,11 @@
+Revision: 9048595db90dd1fc26cf82b056987bdcad64ee5d
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+649
+Wed Mar 20 22:58:15 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SGXhMLVE
+Bytes: 157
+I would call this err since it is not used in the normal return path. It also does not need to be initialized to 0. You could for instance set it to -EINVAL.
+
