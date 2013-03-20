@@ -9,3 +9,11 @@ UUID: SGXhMLVE
 Bytes: 157
 I would call this err since it is not used in the normal return path. It also does not need to be initialized to 0. You could for instance set it to -EINVAL.
 
+649
+Wed Mar 20 23:11:59 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: SGXhMLVE
+UUID: SGbgLxdo
+Bytes: 4
+Done
+
