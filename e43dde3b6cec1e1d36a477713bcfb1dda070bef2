@@ -16,10 +16,26 @@ UUID: SGX0WX8g
 Bytes: 40
 why is this not using pcpu->target_freq?
 
+340
+Wed Mar 20 22:30:56 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: SGX0WX8g
+UUID: SGT1sZ0I
+Bytes: 103
+I had thought it should work out to be about the same, but you're right, it would be better to do this.
+
 649
 Wed Mar 20 22:11:10 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: SGR0fY8o
 Bytes: 15
 This will crash
+
+649
+Wed Mar 20 22:30:56 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: SGR0fY8o
+UUID: SGb2IV9c
+Bytes: 39
+Right, I will push a patch to fix this.
 
