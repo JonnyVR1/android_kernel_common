@@ -1,0 +1,25 @@
+Revision: e43dde3b6cec1e1d36a477713bcfb1dda070bef2
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+97
+Wed Mar 20 22:11:10 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SGf3X7.Q
+Bytes: 25
+Did this pass checkpatch?
+
+340
+Wed Mar 20 22:11:10 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SGX0WX8g
+Bytes: 40
+why is this not using pcpu->target_freq?
+
+649
+Wed Mar 20 22:11:10 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: SGR0fY8o
+Bytes: 15
+This will crash
+
