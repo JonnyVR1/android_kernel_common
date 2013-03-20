@@ -646,19 +646,20 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 	int i;
 	int ntokens = 1;
 	unsigned int *tokenized_data;
+	int ret = 0;
 
 	cp = buf;
 	while ((cp = strpbrk(cp + 1, " :")))
 		ntokens++;
 
 	if (!(ntokens & 0x1)) {
-		tokenized_data = ERR_PTR(-EINVAL);
+		ret = -EINVAL;
 		goto err;
 	}
 
 	tokenized_data = kmalloc(ntokens * sizeof(unsigned int), GFP_KERNEL);
 	if (!tokenized_data) {
-		tokenized_data = ERR_PTR(-ENOMEM);
+		ret = -ENOMEM;
 		goto err;
 	}
 
@@ -666,7 +667,7 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 	i = 0;
 	while (i < ntokens) {
 		if (sscanf(cp, "%u", &tokenized_data[i++]) != 1) {
-			tokenized_data = ERR_PTR(-EINVAL);
+			ret = -EINVAL;
 			goto err_kfree;
 		}
 
@@ -677,7 +678,7 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 	}
 
 	if (i != ntokens) {
-		tokenized_data = ERR_PTR(-EINVAL);
+		ret = -EINVAL;
 		goto err_kfree;
 	}
 
@@ -687,7 +688,7 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 err_kfree:
 	kfree(tokenized_data);
 err:
-	return tokenized_data;
+	return ERR_PTR(ret);
 }
 
 static ssize_t show_target_loads(
