@@ -24,6 +24,15 @@ UUID: SGT1sZ0I
 Bytes: 103
 I had thought it should work out to be about the same, but you're right, it would be better to do this.
 
+340
+Thu Mar 21 16:15:48 2013 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: SGT1sZ0I
+UUID: SFm-CLX4
+Bytes: 276
+In most case, pcpu->policy->cur is greater than or equal to pcpu->target_freq and it is same in all cores. So I chose pcpu->policy->cur because I had focused on delaying an increase of frequency,
+but I agree with you. pcpu->target_freq would be better to maintain consistency.
+
 649
 Wed Mar 20 22:11:10 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -38,4 +47,12 @@ Parent: SGR0fY8o
 UUID: SGb2IV9c
 Bytes: 39
 Right, I will push a patch to fix this.
+
+649
+Thu Mar 21 16:15:48 2013 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: SGb2IV9c
+UUID: SFk-gkR4
+Bytes: 18
+I'm sorry. My bad.
 
