@@ -1,0 +1,27 @@
+Revision: 34b643b1c49228fbae88a56e46c93c478089620d
+Patch-set: 1
+File: /COMMIT_MSG
+
+9
+Mon Mar 25 22:10:39 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: Sk8.XXTg
+Bytes: 6
+allows
+
+File: arch/arm/Kconfig
+
+1920
+Mon Mar 25 22:10:39 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: Sk0.EjQI
+Bytes: 65
+should be BUILD_ARM_APPENDED_DTB_IMAGE to match ARM_APPENDED_DTB.
+
+1925
+Mon Mar 25 22:10:39 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: Sk4.hVZs
+Bytes: 54
+Might want to mention what the output filename will be
+
