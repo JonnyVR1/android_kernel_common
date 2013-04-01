@@ -33,6 +33,9 @@ static unsigned int low_order_gfp_flags  = (GFP_HIGHUSER | __GFP_ZERO |
 					 __GFP_NOWARN);
 static const unsigned int orders[] = {8, 4, 0};
 static const int num_orders = ARRAY_SIZE(orders);
+static atomic_t system_heap_allocated;
+static atomic_t system_contig_heap_allocated;
+
 static int order_to_index(unsigned int order)
 {
 	int i;
@@ -201,6 +204,7 @@ static int ion_system_heap_allocate(struct ion_heap *heap,
 	}
 
 	buffer->priv_virt = table;
+	atomic_add(size, &system_heap_allocated);
 	return 0;
 err1:
 	kfree(table);
@@ -234,6 +238,7 @@ void ion_system_heap_free(struct ion_buffer *buffer)
 				get_order(sg_dma_len(sg)));
 	sg_free_table(table);
 	kfree(table);
+	atomic_sub(buffer->size, &system_heap_allocated);
 }
 
 struct sg_table *ion_system_heap_map_dma(struct ion_heap *heap,
@@ -275,6 +280,8 @@ static int ion_system_heap_debug_show(struct ion_heap *heap, struct seq_file *s,
 			   pool->low_count, pool->order,
 			   (1 << pool->order) * PAGE_SIZE * pool->low_count);
 	}
+	seq_printf(s, "total bytes currently allocated: %lx\n",
+			(unsigned long) atomic_read(&system_heap_allocated));
 	return 0;
 }
 
@@ -337,12 +344,14 @@ static int ion_system_contig_heap_allocate(struct ion_heap *heap,
 	buffer->priv_virt = kzalloc(len, GFP_KERNEL);
 	if (!buffer->priv_virt)
 		return -ENOMEM;
+	atomic_add(len, &system_contig_heap_allocated);
 	return 0;
 }
 
 void ion_system_contig_heap_free(struct ion_buffer *buffer)
 {
 	kfree(buffer->priv_virt);
+	atomic_sub(buffer->size, &system_contig_heap_allocated);
 }
 
 static int ion_system_contig_heap_phys(struct ion_heap *heap,
@@ -391,6 +400,16 @@ int ion_system_contig_heap_map_user(struct ion_heap *heap,
 
 }
 
+static int ion_system_contig_heap_debug_show(struct ion_heap *heap,
+				      struct seq_file *s,
+				      void *unused)
+{
+
+	seq_printf(s, "total bytes currently allocated: %lx\n",
+		(unsigned long) atomic_read(&system_contig_heap_allocated));
+	return 0;
+}
+
 static struct ion_heap_ops kmalloc_ops = {
 	.allocate = ion_system_contig_heap_allocate,
 	.free = ion_system_contig_heap_free,
@@ -411,6 +430,7 @@ struct ion_heap *ion_system_contig_heap_create(struct ion_platform_heap *unused)
 		return ERR_PTR(-ENOMEM);
 	heap->ops = &kmalloc_ops;
 	heap->type = ION_HEAP_TYPE_SYSTEM_CONTIG;
+	heap->heap.debug_show = ion_system_heap_debug_show;
 	return heap;
 }
 
