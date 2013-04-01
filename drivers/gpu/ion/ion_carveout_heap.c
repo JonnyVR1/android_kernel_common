@@ -31,6 +31,8 @@ struct ion_carveout_heap {
 	struct ion_heap heap;
 	struct gen_pool *pool;
 	ion_phys_addr_t base;
+	unsigned long allocated_bytes;
+	unsigned long total_size;
 };
 
 ion_phys_addr_t ion_carveout_allocate(struct ion_heap *heap,
@@ -41,8 +43,19 @@ ion_phys_addr_t ion_carveout_allocate(struct ion_heap *heap,
 		container_of(heap, struct ion_carveout_heap, heap);
 	unsigned long offset = gen_pool_alloc(carveout_heap->pool, size);
 
-	if (!offset)
+
+	if (!offset) {
+		if ((carveout_heap->total_size -
+		     carveout_heap->allocated_bytes) >= size)
+			pr_debug("%s: heap %s has enough memory (%lx) but"
+				" the allocation of size %lx still failed."
+				" Memory is probably fragmented.",
+				__func__, heap->name,
+				carveout_heap->total_size -
+				carveout_heap->allocated_bytes, size);
 		return ION_CARVEOUT_ALLOCATE_FAIL;
+	}
+	carveout_heap->allocated_bytes += size;
 
 	return offset;
 }
@@ -56,6 +69,7 @@ void ion_carveout_free(struct ion_heap *heap, ion_phys_addr_t addr,
 	if (addr == ION_CARVEOUT_ALLOCATE_FAIL)
 		return;
 	gen_pool_free(carveout_heap->pool, addr, size);
+	carveout_heap->allocated_bytes -= size;
 }
 
 static int ion_carveout_heap_phys(struct ion_heap *heap,
@@ -138,6 +152,18 @@ int ion_carveout_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 			       pgprot_noncached(vma->vm_page_prot));
 }
 
+static int ion_carveout_heap_debug_show(struct ion_heap *heap,
+					struct seq_file *s,
+					void *unused)
+{
+	struct ion_carveout_heap *carveout_heap =
+		container_of(heap, struct ion_carveout_heap, heap);
+
+	seq_printf(s, "total bytes currently allocated: %lx\n",
+		carveout_heap->allocated_bytes);
+	seq_printf(s, "total heap size: %lx\n", carveout_heap->total_size);
+}
+
 static struct ion_heap_ops carveout_heap_ops = {
 	.allocate = ion_carveout_heap_allocate,
 	.free = ion_carveout_heap_free,
@@ -173,6 +199,9 @@ struct ion_heap *ion_carveout_heap_create(struct ion_platform_heap *heap_data)
 	}
 	carveout_heap->heap.ops = &carveout_heap_ops;
 	carveout_heap->heap.type = ION_HEAP_TYPE_CARVEOUT;
+	carveout_heap->allocated_bytes = 0;
+	carveout_heap->total_size = heap_data->size;
+	heap->heap.debug_show = ion_carveout_heap_debug_show;
 
 	return &carveout_heap->heap;
 }
