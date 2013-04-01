@@ -154,6 +154,23 @@ struct ion_heap {
 };
 
 /**
+ * struct mem_map_data - represents information about the memory map for a heap
+ * @node:              rb node used to store in the tree of mem_map_data
+ * @addr:              start address of memory region.
+ * @addr:              end address of memory region.
+ * @size:              size of memory region
+ * @client_name:               name of the client who owns this buffer.
+ *
+ */
+struct mem_map_data {
+	struct rb_node node;
+	unsigned long addr;
+	unsigned long addr_end;
+	unsigned long size;
+	const char *client_name;
+};
+
+/**
  * ion_buffer_cached - this ion buffer is cached
  * @buffer:		buffer
  *
