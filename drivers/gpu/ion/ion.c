@@ -1371,13 +1371,13 @@ void __init ion_reserve(struct ion_platform_data *data)
 			int ret = memblock_reserve(data->heaps[i].base,
 					       data->heaps[i].size);
 			if (ret)
-				pr_err("memblock reserve of %x@%lx failed\n",
+				pr_err("memblock reserve of %x@%pa failed\n",
 				       data->heaps[i].size,
-				       data->heaps[i].base);
+				       &data->heaps[i].base);
 		}
-		pr_info("%s: %s reserved base %lx size %d\n", __func__,
+		pr_info("%s: %s reserved base %pa size %d\n", __func__,
 			data->heaps[i].name,
-			data->heaps[i].base,
+			&data->heaps[i].base,
 			data->heaps[i].size);
 	}
 }
