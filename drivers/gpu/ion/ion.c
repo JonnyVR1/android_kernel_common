@@ -629,7 +629,6 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	struct rb_node **p;
 	struct rb_node *parent = NULL;
 	struct ion_client *entry;
-	char debug_name[64];
 	pid_t pid;
 
 	get_task_struct(current->group_leader);
@@ -655,9 +654,15 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	client->dev = dev;
 	client->handles = RB_ROOT;
 	mutex_init(&client->lock);
-	client->name = name;
 	client->task = task;
 	client->pid = pid;
+
+	client->name = kstrdup(name, GFP_KERNEL);
+	if (!client->name) {
+		put_task_struct(current->group_leader);
+		kfree(client);
+		return ERR_PTR(-ENOMEM);
+	}
 
 	down_write(&dev->lock);
 	p = &dev->clients.rb_node;
@@ -673,8 +678,7 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	rb_link_node(&client->node, parent, p);
 	rb_insert_color(&client->node, &dev->clients);
 
-	snprintf(debug_name, 64, "%u", client->pid);
-	client->debug_root = debugfs_create_file(debug_name, 0664,
+	client->debug_root = debugfs_create_file(name, 0664,
 						 dev->debug_root, client,
 						 &debug_client_fops);
 	up_write(&dev->lock);
@@ -701,6 +705,7 @@ void ion_client_destroy(struct ion_client *client)
 	debugfs_remove_recursive(client->debug_root);
 	up_write(&dev->lock);
 
+	kfree(client->name);
 	kfree(client);
 }
 EXPORT_SYMBOL(ion_client_destroy);
@@ -1167,9 +1172,11 @@ static int ion_open(struct inode *inode, struct file *file)
 	struct miscdevice *miscdev = file->private_data;
 	struct ion_device *dev = container_of(miscdev, struct ion_device, dev);
 	struct ion_client *client;
+	char debug_name[64];
 
 	pr_debug("%s: %d\n", __func__, __LINE__);
-	client = ion_client_create(dev, "user");
+	snprintf(debug_name, 64, "%u", task_pid_nr(current->group_leader));
+	client = ion_client_create(dev, debug_name);
 	if (IS_ERR_OR_NULL(client))
 		return PTR_ERR(client);
 	file->private_data = client;
