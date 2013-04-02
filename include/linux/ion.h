@@ -108,6 +108,7 @@ struct ion_platform_data {
 	struct ion_platform_heap heaps[];
 };
 
+#ifdef CONFIG_ION
 /**
  * ion_reserve() - reserve memory for ion heaps if applicable
  * @data:	platform data specifying starting physical address and
@@ -238,6 +239,75 @@ int ion_share_dma_buf_fd(struct ion_client *client, struct ion_handle *handle);
  * another exporter is passed in this function will return ERR_PTR(-EINVAL)
  */
 struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
+#else
+static inline void ion_reserve(struct ion_platform_data *data) { }
+
+static inline struct ion_client *ion_client_create(struct ion_device *dev,
+				     const char *name)
+{
+	return NULL;
+}
+
+static inline void ion_client_destroy(struct ion_client *client) { }
+
+static inline struct ion_handle *ion_alloc(struct ion_client *client,
+			     size_t len, size_t align,
+			     unsigned int heap_id_mask,
+			     unsigned int flags)
+{
+	return NULL;
+}
+
+static inline void ion_free(struct ion_client *client,
+			    struct ion_handle *handle)
+{
+	return NULL;
+}
+
+static inline int ion_phys(struct ion_client *client, struct ion_handle *handle,
+	     ion_phys_addr_t *addr, size_t *len)
+{
+	return -ENODEV;
+}
+
+struct sg_table *ion_sg_table(struct ion_client *client,
+			      struct ion_handle *handle)
+{
+	return NULL;
+}
+
+static inline void *ion_map_kernel(struct ion_client *client,
+				   struct ion_handle *handle)
+{
+	return NULL;
+}
+
+static inline void ion_unmap_kernel(struct ion_client *client,
+				    struct ion_handle *handle)
+{
+	return NULL;
+}
+
+static inline struct dma_buf *ion_share_dma_buf(struct ion_client *client,
+						struct ion_handle *handle)
+{
+	return NULL;
+}
+
+
+static inline int ion_share_dma_buf_fd(struct ion_client *client,
+				       struct ion_handle *handle)
+{
+	return -ENODEV;
+}
+
+static inline struct ion_handle *ion_import_dma_buf(struct ion_client *client,
+						    int fd)
+{
+	return NULL;
+}
+#endif /* CONFIG_ION */
+
 
 #endif /* __KERNEL__ */
 
