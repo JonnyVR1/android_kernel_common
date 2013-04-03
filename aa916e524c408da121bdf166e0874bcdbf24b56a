@@ -1,0 +1,11 @@
+Revision: aa916e524c408da121bdf166e0874bcdbf24b56a
+Patch-set: 1
+File: drivers/gpu/ion/ion_carveout_heap.c
+
+58
+Wed Apr 03 23:46:31 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: S8nlUG3c
+Bytes: 287
+i'm not convinced we want to have a verbose message like this as on several of our programs it'd be pretty common to make a request out of the carveout heap if it's not full and fall back on something like the system heap.  In those cases we'd be seeing these messages pretty frequently.
+
