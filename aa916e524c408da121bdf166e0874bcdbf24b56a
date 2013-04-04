@@ -9,3 +9,11 @@ UUID: S8nlUG3c
 Bytes: 287
 i'm not convinced we want to have a verbose message like this as on several of our programs it'd be pretty common to make a request out of the carveout heap if it's not full and fall back on something like the system heap.  In those cases we'd be seeing these messages pretty frequently.
 
+58
+Thu Apr 04 00:12:26 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: S8nlUG3c
+UUID: S8vm1a3M
+Bytes: 114
+This is pr_debug. The goal here is that if there are concerns about fragmentation we can turn this on dynamically.
+
