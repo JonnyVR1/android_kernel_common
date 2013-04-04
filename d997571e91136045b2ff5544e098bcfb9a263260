@@ -1,0 +1,11 @@
+Revision: d997571e91136045b2ff5544e098bcfb9a263260
+Patch-set: 1
+File: /COMMIT_MSG
+
+12
+Thu Apr 04 00:09:11 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: S8jkNM4A
+Bytes: 174
+we should never have pages here that don't have a 'struct page' behind them. If I remember correctly, ion requires all memory it manages to have struct page backing. Rebecca?
+
