@@ -9,3 +9,10 @@ UUID: S8tlrRyo
 Bytes: 26
 name_len is never defined?
 
+660
+Thu Apr 04 00:10:10 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: S8nkHu10
+Bytes: 33
+also, why can't you just kstrdup?
+
