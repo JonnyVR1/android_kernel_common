@@ -16,3 +16,11 @@ UUID: S8nkHu10
 Bytes: 33
 also, why can't you just kstrdup?
 
+660
+Thu Apr 04 00:13:40 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: S8nkHu10
+UUID: S8pnNPw8
+Bytes: 88
+This was a bad integration on my part and kstrdup is the better solution. I'll resubmit.
+
