@@ -9,3 +9,11 @@ UUID: S8jkNM4A
 Bytes: 174
 we should never have pages here that don't have a 'struct page' behind them. If I remember correctly, ion requires all memory it manages to have struct page backing. Rebecca?
 
+12
+Thu Apr 04 00:27:07 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: S8jkNM4A
+UUID: S8jmCk4g
+Bytes: 268
+The commit text doesn't completely explain. Please see 4b6e1e37026ec7dae9b23d78ffcebdd5ddb1bfa1 . The problem is trying to use this from a fault handler. WIthout this flag, we BUG_ON when trying to fault in pages from the handelr because the mmap_sem is already locked
+
