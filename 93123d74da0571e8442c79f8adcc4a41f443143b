@@ -1,0 +1,25 @@
+Revision: 93123d74da0571e8442c79f8adcc4a41f443143b
+Patch-set: 2
+File: drivers/gpu/ion/ion.c
+
+588
+Thu Apr 04 23:01:31 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TBQDiSMU
+Bytes: 81
+you have an extra %s at the end of this string that causes garbage to be printed.
+
+601
+Thu Apr 04 23:01:31 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TBeDePPk
+Bytes: 57
+any particular reason to print the address of the buffer?
+
+608
+Thu Apr 04 23:01:31 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TBaDoNKE
+Bytes: 185
+same here -- it makes more sense to me to print the physaddrs at the heap level.  I'm not sure how it would be helpful to see what physical addresses a particular client would be using.
+
