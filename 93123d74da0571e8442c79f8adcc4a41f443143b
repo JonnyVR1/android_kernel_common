@@ -9,6 +9,14 @@ UUID: TBQDiSMU
 Bytes: 81
 you have an extra %s at the end of this string that causes garbage to be printed.
 
+588
+Fri Apr 05 01:06:36 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TBQDiSMU
+UUID: TBQCaSP4
+Bytes: 6
+Whoops
+
 601
 Thu Apr 04 23:01:31 2013 +0000
 Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: TBeDePPk
 Bytes: 57
 any particular reason to print the address of the buffer?
 
+601
+Fri Apr 05 01:06:36 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TBeDePPk
+UUID: TBeCWPNo
+Bytes: 140
+It's useful to be able to see which handles have which buffers. If multiple handles are pointing to the same buffer it's easier to track it.
+
 608
 Thu Apr 04 23:01:31 2013 +0000
 Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: TBaDoNKE
 Bytes: 185
 same here -- it makes more sense to me to print the physaddrs at the heap level.  I'm not sure how it would be helpful to see what physical addresses a particular client would be using.
+
+608
+Fri Apr 05 01:06:36 2013 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TBaDoNKE
+UUID: TBcC8YFY
+Bytes: 231
+As you've seen, we seem to have quite a bit of redundant debugfs code. I think this was added before we added the ability of the heaps to dump the full memory maps. If the heaps can dump their full map, we probably don't need this.
 
