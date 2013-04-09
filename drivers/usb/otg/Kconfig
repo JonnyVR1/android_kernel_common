@@ -14,7 +14,7 @@ config USB_OTG_UTILS
 
 config USB_OTG_WAKELOCK
 	bool "Hold a wakelock when USB connected"
-	depends on WAKELOCK
+	depends on PM_WAKELOCK
 	select USB_OTG_UTILS
 	help
 	  Select this to automatically hold a wakelock when USB is
