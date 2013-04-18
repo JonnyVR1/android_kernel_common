@@ -1,0 +1,15 @@
+Revision: d69337d727a949096124025920ab950e8705b26f
+Patch-set: 1
+File: arch/arm/boot/Makefile
+
+36
+Thu Apr 18 03:02:50 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TeHNHUtM
+Bytes: 191
+add a variable called DTB_OBJS here
+
+DTB_OBJS := $(addprefix $(obj)/,$(DTB_LIST))
+
+Then you can just reference it everywhere, instead of copying/pasting the addsuffix call all over the place.
+
