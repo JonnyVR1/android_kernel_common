@@ -9,3 +9,11 @@ UUID: ToAJ1Ct0
 Bytes: 88
 Is grabbing func->eps and func->ffs->eps_count valid outside of the func->ffs->eps_lock?
 
+1477
+Fri Apr 19 21:35:15 2013 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ToAJ1Ct0
+UUID: TvSUgbqk
+Bytes: 164
+eps and eps_count don't change while the function is running. They are just set once when userspace writes the descriptors. The lock just protects the usb ep state.
+
