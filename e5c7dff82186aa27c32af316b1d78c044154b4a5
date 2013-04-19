@@ -1,0 +1,11 @@
+Revision: e5c7dff82186aa27c32af316b1d78c044154b4a5
+Patch-set: 4
+File: scripts/Makefile.lib
+
+273
+Fri Apr 19 19:34:03 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ToKVsaEI
+Bytes: 56
+put parenthesis around the left || expression (cat ... )
+
