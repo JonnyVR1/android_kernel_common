@@ -1,0 +1,11 @@
+Revision: c8a011880c7e7a1756918743de4a998bdd7718ab
+Patch-set: 1
+File: drivers/usb/gadget/f_fs.c
+
+1477
+Fri Apr 19 03:29:26 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ToAJ1Ct0
+Bytes: 88
+Is grabbing func->eps and func->ffs->eps_count valid outside of the func->ffs->eps_lock?
+
