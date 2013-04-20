@@ -21,3 +21,13 @@ If I did do_div(t, NSEC_PER_SEC) the returned remainder would be in units of nse
 
 Maybe I should put the 'rem' back in to make it clear that it's the remainder that's the interesting part?
 
+21
+Sat Apr 20 01:05:10 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TvaVxvhk
+UUID: TvQVhskY
+Bytes: 139
+that would be a little clearer.
+
+why is this a macro instead of a static inline?  then you would avoid the implicit return value confusion.
+
