@@ -31,3 +31,11 @@ that would be a little clearer.
 
 why is this a macro instead of a static inline?  then you would avoid the implicit return value confusion.
 
+21
+Sat Apr 20 03:08:00 2013 +0000
+Author: Jamie Gennis <1003793@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TvQVhskY
+UUID: TvcVvGg8
+Bytes: 144
+It turns out to be a bit annoying to make these static inline because this file gets included multiple times to make the trace macro magic work.
+
