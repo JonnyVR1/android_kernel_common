@@ -9,3 +9,15 @@ UUID: TvSWFzr0
 Bytes: 32
 why not do_div(t, NSEC_PER_SEC)?
 
+21
+Sat Apr 20 01:03:46 2013 +0000
+Author: Jamie Gennis <1003793@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: TvSWFzr0
+UUID: TvaVxvhk
+Bytes: 525
+The goal is to compute the remainder of the division in units of usecs.  The first division converts 't' to units of usecs, while the second computes the portion of 't' that is a fractional part of a second.
+
+If I did do_div(t, NSEC_PER_SEC) the returned remainder would be in units of nsecs, not usecs.  I could then do another division to convert to usecs, but that's effectively the same thing as what's there now.
+
+Maybe I should put the 'rem' back in to make it clear that it's the remainder that's the interesting part?
+
