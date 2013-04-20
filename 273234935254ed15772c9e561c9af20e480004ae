@@ -1,0 +1,11 @@
+Revision: 273234935254ed15772c9e561c9af20e480004ae
+Patch-set: 1
+File: include/trace/events/gpu.h
+
+21
+Sat Apr 20 00:55:54 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TvSWFzr0
+Bytes: 32
+why not do_div(t, NSEC_PER_SEC)?
+
