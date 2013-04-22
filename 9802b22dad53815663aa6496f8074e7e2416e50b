@@ -1,0 +1,11 @@
+Revision: 9802b22dad53815663aa6496f8074e7e2416e50b
+Patch-set: 1
+File: drivers/mmc/core/host.c
+
+35
+Mon Apr 22 23:00:01 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TvU6Ep5Q
+Bytes: 67
+It would make more sense to call this right after wake_lock_destroy
+
