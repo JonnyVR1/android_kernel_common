@@ -9,3 +9,13 @@ UUID: Tvfmgv4k
 Bytes: 85
 I don't think returning a frequency that you know is too low is the best choice here.
 
+267
+Tue Apr 23 01:11:00 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: Tvfmgv4k
+UUID: TvZm.a58
+Bytes: 303
+I can always go with "no change on error, always return pcpu->policy->cur", which is the only other frequency I know is valid (and may be identical).
+
+It shouldn't matter.  The CPU in question has just been hotplugged out or shutdown for reboot, and the interactive governor's timer is racing with that.
+
