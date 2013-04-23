@@ -1,0 +1,25 @@
+Revision: 589bf61ca1bcd7ed27c48d8e2ca0b92745f98999
+Patch-set: 1
+File: drivers/of/fdt.c
+
+705
+Tue Apr 23 01:08:42 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TvVlvk3Q
+Bytes: 308
+i can't find any way that data could be anything other than an empty string here, unless there were two chosen and chosen@0 nodes, which is going to produce pretty undefined behavior anyways.  the atags are only parsed for a command line if this fails, and that is the only other writer to boot_command_line.
+
+709
+Tue Apr 23 01:08:42 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TvRlpG24
+Bytes: 70
+arve pointed out read_dt_cmdline is always !overwrite_incoming_cmdline
+
+716
+Tue Apr 23 01:08:42 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: TvXlsz34
+Bytes: 87
+arve pointed out assuming cmdline is empty here, this can all be replaced with snprintf
+
