@@ -1,0 +1,11 @@
+Revision: 764f1035d8b60228fc4d0b1679e498c0bac9c34f
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+267
+Tue Apr 23 00:58:12 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: Tvfmgv4k
+Bytes: 85
+I don't think returning a frequency that you know is too low is the best choice here.
+
