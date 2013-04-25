@@ -1,0 +1,27 @@
+Revision: 49409ad043b8570952b46ccd21726dbfdf5e1c61
+Patch-set: 1
+File: /COMMIT_MSG
+
+9
+Thu Apr 25 23:50:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UEBLHTO0
+Bytes: 15
+options->option
+
+10
+Thu Apr 25 23:50:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UEPKKiKI
+Bytes: 194
+nitpick: the code executed in ktime_get() is nearly identical to sched_clock(), so slower might not be accurate.  the only difference is it will spin if update_wall_time is running concurrently.
+
+File: kernel/trace/trace_clock.c
+
+124
+Thu Apr 25 23:50:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UEBKGLKA
+Bytes: 174
+I think this will deadlock if you ftrace update_wall_time, because update_wall_time will take a write lock on the timekeeping lock and ktime_get will try to take a read lock.
+
