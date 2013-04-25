@@ -492,6 +492,7 @@ static struct {
 } trace_clocks[] = {
 	{ trace_clock_local,	"local" },
 	{ trace_clock_global,	"global" },
+	{ trace_clock_ktime,	"ktime" },
 	{ trace_clock_counter,	"counter" },
 };
 

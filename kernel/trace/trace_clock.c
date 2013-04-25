@@ -114,6 +114,16 @@ u64 notrace trace_clock_global(void)
 	return now;
 }
 
+/*
+ * use ktime_get() for tracing timestamps.  This is useful for getting events to
+ * match up with timestamps elswhere in the kernel and userspace.  This clock
+ * is higher overhead than trace_clock_global().
+ */
+u64 notrace trace_clock_ktime(void)
+{
+	return ktime_to_ns(ktime_get());
+}
+
 static atomic64_t trace_counter;
 
 /*
