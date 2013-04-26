@@ -49,6 +49,7 @@ struct cpufreq_interactive_cpuinfo {
 	struct cpufreq_frequency_table *freq_table;
 	unsigned int target_freq;
 	unsigned int floor_freq;
+	unsigned int max_freq;
 	u64 floor_validate_time;
 	u64 hispeed_validate_time;
 	struct rw_semaphore enable_sem;
@@ -1052,6 +1053,7 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			pcpu->hispeed_validate_time =
 				pcpu->floor_validate_time;
 			down_write(&pcpu->enable_sem);
+			pcpu->max_freq = policy->max;
 			expires = jiffies + usecs_to_jiffies(timer_rate);
 			pcpu->cpu_timer.expires = expires;
 			add_timer_on(&pcpu->cpu_timer, j);
@@ -1112,12 +1114,58 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 		break;
 
 	case CPUFREQ_GOV_LIMITS:
+		mutex_lock(&gov_lock);
 		if (policy->max < policy->cur)
 			__cpufreq_driver_target(policy,
 					policy->max, CPUFREQ_RELATION_H);
 		else if (policy->min > policy->cur)
 			__cpufreq_driver_target(policy,
 					policy->min, CPUFREQ_RELATION_L);
+		for_each_cpu(j, policy->cpus) {
+			unsigned long expires;
+
+			pcpu = &per_cpu(cpuinfo, j);
+
+			/* hold write semaphore to avoid race */
+			down_write(&pcpu->enable_sem);
+			if (pcpu->governor_enabled == 0) {
+				up_write(&pcpu->enable_sem);
+				continue;
+			}
+
+			/* update target_freq firstly */
+			if (policy->max < pcpu->target_freq)
+				pcpu->target_freq = policy->max;
+			else if (policy->min > pcpu->target_freq)
+				pcpu->target_freq = policy->min;
+
+			/* Reschedule timer when max freq changed from low to
+			 * high and timer stopped because target_freq is equal
+			 * to max_freq.
+			 * It does not need reschedule timer when max freq
+			 * changed from high to low because target_freq and
+			 * cur freq all updated accordingly.
+			 */
+			if (pcpu->max_freq == pcpu->target_freq) {
+				pcpu->target_freq = policy->cur;
+				expires = jiffies +
+						usecs_to_jiffies(timer_rate);
+				if (!timer_pending(&pcpu->cpu_timer)) {
+					pcpu->cpu_timer.expires = expires;
+					add_timer_on(&pcpu->cpu_timer, j);
+				}
+				if (timer_slack_val >= 0 &&
+				    !timer_pending(&pcpu->cpu_slack_timer)) {
+					expires +=
+					    usecs_to_jiffies(timer_slack_val);
+					pcpu->cpu_slack_timer.expires = expires;
+					add_timer_on(&pcpu->cpu_slack_timer, j);
+                                }
+			}
+			pcpu->max_freq = policy->max;
+			up_write(&pcpu->enable_sem);
+		}
+		mutex_unlock(&gov_lock);
 		break;
 	}
 	return 0;
