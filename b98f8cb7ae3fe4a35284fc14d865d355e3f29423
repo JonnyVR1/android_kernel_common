@@ -1,0 +1,11 @@
+Revision: b98f8cb7ae3fe4a35284fc14d865d355e3f29423
+Patch-set: 1
+File: /COMMIT_MSG
+
+12
+Fri Apr 26 23:12:16 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UEBv6x-o
+Bytes: 400
+Can you describe in more detail the situation in which this is observed?  Both the idle time and wall time values come from get_cpu_idle_time_us() plus (optionally) get_cpu_iowait_time_us().  in order for the bug described above to happen, the idle time plus iowait time deltas between the values returned by 2 calls to these functions must be greater than the wall time deltas returned by the calls?
+
