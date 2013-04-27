@@ -9,3 +9,26 @@ UUID: UEBv6x-o
 Bytes: 400
 Can you describe in more detail the situation in which this is observed?  Both the idle time and wall time values come from get_cpu_idle_time_us() plus (optionally) get_cpu_iowait_time_us().  in order for the bug described above to happen, the idle time plus iowait time deltas between the values returned by 2 calls to these functions must be greater than the wall time deltas returned by the calls?
 
+12
+Sat Apr 27 14:48:33 2013 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UEBv6x-o
+UUID: ULNYsRJ0
+Bytes: 685
+There are two cases.
+
+1. "delta_idle - delta_time" could be "1" because get_cpu_idle_time_us() returns the value that converted by ktime_to_us(). ktime_to_us() rounds down nanoseconds to  the nearest microseconds.
+
+e.g.
+
+Idle time: 100,600 nanoseconds Wall time: 150,200 nanoseconds
+
+After 5,500 nanoseconds
+
+Idle time: 106,100 nanoseconds Wall time: 155,700 nanoseconds
+
+delta_idle: 6 microseconds          delta_time: 5 microseconds
+
+
+2. When io_is_busy is false,  idle time and wall time deltas were same but idle time delta becomes greater than wall time delta after calling get_cpu_iowait_time_us(). I observed this during a CPU is in idle for a long time on quad core SMP system.
+
