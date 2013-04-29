@@ -32,3 +32,11 @@ delta_idle: 6 microseconds          delta_time: 5 microseconds
 
 2. When io_is_busy is false,  idle time and wall time deltas were same but idle time delta becomes greater than wall time delta after calling get_cpu_iowait_time_us(). I observed this during a CPU is in idle for a long time on quad core SMP system.
 
+12
+Mon Apr 29 20:06:55 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ULNYsRJ0
+UUID: UQMUsrJ0
+Bytes: 213
+OK, I'd like to touch up the commit message to describe the rounding errors rather than the "changed by other CPUs" text.  Please do upload updated text if you want to, else I'll touch this up myself soon, thanks.
+
