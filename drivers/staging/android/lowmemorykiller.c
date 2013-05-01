@@ -30,6 +30,8 @@
  *
  */
 
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -60,7 +62,7 @@ static unsigned long lowmem_deathpending_timeout;
 #define lowmem_print(level, x...)			\
 	do {						\
 		if (lowmem_debug_level >= (level))	\
-			printk(x);			\
+			pr_info(x);			\
 	} while (0)
 
 static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
@@ -71,6 +73,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	int tasksize;
 	int i;
 	int min_score_adj = OOM_SCORE_ADJ_MAX + 1;
+	int minfree = 0;
 	int selected_tasksize = 0;
 	int selected_oom_score_adj;
 	int array_size = ARRAY_SIZE(lowmem_adj);
@@ -86,6 +89,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (other_free < lowmem_minfree[i] &&
 		    other_file < lowmem_minfree[i]) {
 			min_score_adj = lowmem_adj[i];
+			minfree = lowmem_minfree[i];
 			break;
 		}
 	}
@@ -145,9 +149,18 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			     p->pid, p->comm, oom_score_adj, tasksize);
 	}
 	if (selected) {
-		lowmem_print(1, "send sigkill to %d (%s), adj %d, size %d\n",
-			     selected->pid, selected->comm,
-			     selected_oom_score_adj, selected_tasksize);
+		lowmem_print(1, "killing '%s' (%d), adj %d,\n" \
+				"   to free %dkB on behalf of '%s' (%d)\n" \
+				"   because cache %dkB is below limit %dkB\n" \
+				"   for oom_score_adj %d and free memory is low (%dkB)\n",
+			     selected->comm, selected->pid,
+			     selected_oom_score_adj,
+			     selected_tasksize * (int)PAGE_SIZE / 1024,
+			     current->comm, current->pid,
+			     other_file * (int)PAGE_SIZE / 1024,
+			     minfree * (int)PAGE_SIZE / 1024,
+			     min_score_adj,
+			     other_free * (int)PAGE_SIZE / 1024);
 		lowmem_deathpending_timeout = jiffies + HZ;
 		send_sig(SIGKILL, selected, 0);
 		set_tsk_thread_flag(selected, TIF_MEMDIE);
