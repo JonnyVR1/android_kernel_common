@@ -1,0 +1,25 @@
+Revision: 1b036ec213dbc7e5447cef875c342b63ee1343c2
+Patch-set: 1
+File: drivers/staging/android/lowmemorykiller.c
+
+92
+Wed May 01 22:36:36 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UQNc43vo
+Bytes: 69
+why not move this up one level and use it in the if statement as well
+
+155
+Wed May 01 22:36:36 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UQPc-4tw
+Bytes: 47
+I would move "and free..." before "is below..."
+
+158
+Wed May 01 22:36:36 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UQJcmVtM
+Bytes: 58
+why are you using int? It can overflow on a 64 bit system.
+
