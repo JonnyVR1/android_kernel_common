@@ -58,3 +58,36 @@ UUID: ULLmPOyA
 Bytes: 95
 You know, the second case is not the rounding error. That's a bigger difference than the first.
 
+12
+Wed May 01 15:22:09 2013 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ULLmPOyA
+UUID: ULLyRadY
+Bytes: 612
+I think I should explain more details for the second case.
+When there is no io wait for the currently idled CPU, If *delta A* was greater than *delta B*, the idle time delta would be greater than the wall time delta.
+
+
+The currently idled CPU
+
+idle time	wall time
+	|	|
+	|	|
+	|	|
+	|	|	update_load()
+a	-	-	get_cpu_idle_time_us()
+	|	|	 *delta A*: the time spent between two functions
+b	|	-	get_cpu_iowait_time_us()
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|
+	|	|	update_load()
+c	-	-	get_cpu_idle_time_us()
+	|	|	 *delta B*: the time spent between two functions
+d	|	-	get_cpu_iowait_time_us()
+	|	|
+delta_idle = c - a
+delta_time = d - b
+
