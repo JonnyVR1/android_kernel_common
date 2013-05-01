@@ -9,6 +9,14 @@ UUID: UQNc43vo
 Bytes: 69
 why not move this up one level and use it in the if statement as well
 
+92
+Wed May 01 23:41:04 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UQNc43vo
+UUID: UQEniciI
+Bytes: 85
+i'm sure the compiler will do that for me, and this is closer to what i actually mean
+
 155
 Wed May 01 22:36:36 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: UQPc-4tw
 Bytes: 47
 I would move "and free..." before "is below..."
 
+155
+Wed May 01 23:41:04 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UQPc-4tw
+UUID: UQInsehU
+Bytes: 140
+I had it that way, and i moved it here to de-emphasize the free memory, since the cache memory is the real reason lowmemorykiller is running
+
 158
 Wed May 01 22:36:36 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UQJcmVtM
 Bytes: 58
 why are you using int? It can overflow on a 64 bit system.
+
+158
+Wed May 01 23:41:04 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UQJcmVtM
+UUID: UQMnN4rM
+Bytes: 132
+the int is to undo the unsigned long in PAGE_SIZE converting the negative free size into an unsigned, but i'll convert to long long.
 
