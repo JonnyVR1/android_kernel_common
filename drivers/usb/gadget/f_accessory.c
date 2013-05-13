@@ -253,7 +253,6 @@ static struct usb_request *req_get(struct acc_dev *dev, struct list_head *head)
 
 static void acc_set_disconnected(struct acc_dev *dev)
 {
-	dev->online = 0;
 	dev->disconnected = 1;
 }
 
@@ -1093,6 +1092,7 @@ static void acc_function_disable(struct usb_function *f)
 
 	DBG(cdev, "acc_function_disable\n");
 	acc_set_disconnected(dev);
+	dev->online = 0;
 	usb_ep_disable(dev->ep_in);
 	usb_ep_disable(dev->ep_out);
 
