@@ -16,3 +16,13 @@ UUID: Uaa2u1XE
 Bytes: 174
 Could just check for a CPUFREQ_GOV_LIMITS issued while no timer is pending, and schedule a timer if so?  (Thereby avoiding the policy notifier and keeping track of max_freq.)
 
+1034
+Mon May 13 06:23:06 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: Uaa2u1XE
+UUID: UouAXwgY
+Bytes: 369
+Yes, it maybe good to check it in GOV_LIMITS. I do it in policy notifier because the notifier is always called no matter the cpufreq driver implement the setpolicy function or not. if cpufreq_driver->setpolicy is implement in cpu driver, then CPUFREQ_GOV_LIMITS will be not called.
+
+I have the patch to implement it in GOV_LIMITS, and will push it soon for your review.
+
