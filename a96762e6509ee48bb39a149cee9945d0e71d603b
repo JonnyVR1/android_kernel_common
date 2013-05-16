@@ -9,6 +9,14 @@ UUID: UuC2QWUA
 Bytes: 239
 i can't find any good info on when to put tracepoints in include/trace/events vs. in the same directory as the .c file, http://lwn.net/Articles/383595/ is the best i've seen but it's not too conclusive.  i guess trace/events/mmc.h is best.
 
+39
+Thu May 16 18:19:12 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuC2QWUA
+UUID: UuHBRSBY
+Bytes: 134
+Ya, I thought about putting it in the mmc dir, but since it wasn't arch specific, nor a module, I figured trace/events/mmc.h was best.
+
 1307
 Thu May 16 06:02:06 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: UuM17vTg
 Bytes: 106
 this code is hard to follow.  can mmc_active ever be null here?  maybe the if (areq) below should be here?
 
+1307
+Thu May 16 18:19:12 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuM17vTg
+UUID: UuJC93PQ
+Bytes: 259
+No, the call to mmc_blk_rw_rq_prep() will set the mmc_active field.  The if (areq) below needs to be where it is.  Yes, this code is hard to follow.  Read the check-in comment after running "git  show ee8a43a51" and it will help explain what is going on here.
+
 1316
 Thu May 16 06:02:06 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuI11xUM
 Bytes: 166
 i'm not familiar with this code, but there are lots of other callers of mmc_start_req that may complete an async request.  should the tracing be inside mmc_start_req?
+
+1316
+Thu May 16 18:19:12 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuI11xUM
+UUID: UuBCEjEo
+Bytes: 450
+There are many mmc requests that can be made to an mmc chips, but I'm only interested in read, write and the various erase/trim methods.  Even erase is tricky, as it involves 3 (or 4 in the case of secure trim) emmc commands to complete.  Putting the tracing at this level, includes a small amount of overhead that I would not get if I traced inside mmc_start_req() and also mmc_request_done(), but I do get traces that show what I want, and no more.
 
 File: include/trace/events/mmc.h
 
@@ -31,4 +55,12 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuG2GUQ8
 Bytes: 156
 there are a lot of different formats used in include/trace/events, but the most canonical ones (sched.h, timer.h, vmscan.h) use "cmd=%d addr=%08x size=%08x"
+
+37
+Thu May 16 18:19:12 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuG2GUQ8
+UUID: UuBA3rOc
+Bytes: 4
+Done
 
