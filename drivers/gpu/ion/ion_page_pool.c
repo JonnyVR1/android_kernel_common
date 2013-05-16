@@ -185,11 +185,18 @@ static int ion_page_pool_total(bool high)
 {
 	struct ion_page_pool *pool;
 	int total = 0;
+	bool heap_id_seen[ION_NUM_HEAP_IDS] = {0};
 
 	plist_for_each_entry(pool, &pools, list) {
 		total += high ? (pool->high_count + pool->low_count) *
 			(1 << pool->order) :
 			pool->low_count * (1 << pool->order);
+		/* Multiple pools will point to the same heap. Pick the 1st. */
+		if (!heap_id_seen[pool->heap->id]) {
+			heap_id_seen[pool->heap->id] = true;
+			total += atomic64_read(&pool->heap->free_list_size) >>
+				PAGE_SHIFT;
+		}
 	}
 	return total;
 }
@@ -198,7 +205,6 @@ static int ion_page_pool_shrink(struct shrinker *shrinker,
 				 struct shrink_control *sc)
 {
 	struct ion_page_pool *pool;
-	int nr_freed = 0;
 	int i;
 	bool high;
 	int nr_to_scan = sc->nr_to_scan;
@@ -206,10 +212,13 @@ static int ion_page_pool_shrink(struct shrinker *shrinker,
 	high = sc->gfp_mask & __GFP_HIGHMEM;
 
 	if (nr_to_scan == 0)
+		/* Also returns the matching heap free_list size */
 		return ion_page_pool_total(high);
 
 	plist_for_each_entry(pool, &pools, list) {
-		for (i = 0; i < nr_to_scan; i++) {
+		/* Consider nr_to_scan -= drain() >> PAGE_SHIFT? */
+		ion_heap_drain_freelist(pool->heap);
+		for (i = 0; i < nr_to_scan; i += (1 << pool->order)) {
 			struct page *page;
 
 			mutex_lock(&pool->mutex);
@@ -223,7 +232,6 @@ static int ion_page_pool_shrink(struct shrinker *shrinker,
 			}
 			mutex_unlock(&pool->mutex);
 			ion_page_pool_free_pages(pool, page);
-			nr_freed += (1 << pool->order);
 		}
 		nr_to_scan -= i;
 	}

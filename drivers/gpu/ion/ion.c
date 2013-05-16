@@ -143,7 +143,6 @@ static void ion_buffer_add(struct ion_device *dev,
 
 static int ion_buffer_alloc_dirty(struct ion_buffer *buffer);
 
-static bool ion_heap_drain_freelist(struct ion_heap *heap);
 /* this function should only be called while dev->lock is held */
 static struct ion_buffer *ion_buffer_create(struct ion_heap *heap,
 				     struct ion_device *dev,
@@ -254,6 +253,7 @@ static void ion_buffer_destroy(struct kref *kref)
 	if (heap->flags & ION_HEAP_FLAG_DEFER_FREE) {
 		rt_mutex_lock(&heap->lock);
 		list_add(&buffer->list, &heap->free_list);
+		atomic64_add(buffer->size, &heap->free_list_size);
 		rt_mutex_unlock(&heap->lock);
 		wake_up(&heap->waitqueue);
 		return;
@@ -1298,7 +1298,7 @@ static const struct file_operations debug_heap_fops = {
 	.release = single_release,
 };
 
-static size_t ion_heap_free_list_is_empty(struct ion_heap *heap)
+static bool ion_heap_free_list_is_empty(struct ion_heap *heap)
 {
 	bool is_empty;
 
@@ -1326,6 +1326,7 @@ static int ion_heap_deferred_free(void *data)
 		}
 		buffer = list_first_entry(&heap->free_list, struct ion_buffer,
 					  list);
+		atomic64_sub(buffer->size, &heap->free_list_size);
 		list_del(&buffer->list);
 		rt_mutex_unlock(&heap->lock);
 		_ion_buffer_destroy(buffer);
@@ -1334,22 +1335,25 @@ static int ion_heap_deferred_free(void *data)
 	return 0;
 }
 
-static bool ion_heap_drain_freelist(struct ion_heap *heap)
+size_t ion_heap_drain_freelist(struct ion_heap *heap)
 {
 	struct ion_buffer *buffer, *tmp;
+	size_t freed_size;
 
 	if (ion_heap_free_list_is_empty(heap))
-		return false;
+		return 0;
 	rt_mutex_lock(&heap->lock);
+	freed_size = atomic64_read(&heap->free_list_size);
 	list_for_each_entry_safe(buffer, tmp, &heap->free_list, list) {
 		list_del(&buffer->list);
+		atomic64_sub(buffer->size, &heap->free_list_size);
 		_ion_buffer_destroy(buffer);
 	}
-	BUG_ON(!list_empty(&heap->free_list));
+	BUG_ON(!list_empty(&heap->free_list)
+	       || atomic64_read(&heap->free_list_size));
 	rt_mutex_unlock(&heap->lock);
 
-
-	return true;
+	return freed_size;
 }
 
 void ion_device_add_heap(struct ion_device *dev, struct ion_heap *heap)
@@ -1363,6 +1367,7 @@ void ion_device_add_heap(struct ion_device *dev, struct ion_heap *heap)
 
 	if (heap->flags & ION_HEAP_FLAG_DEFER_FREE) {
 		INIT_LIST_HEAD(&heap->free_list);
+		atomic64_set(&heap->free_list_size, 0);
 		rt_mutex_init(&heap->lock);
 		init_waitqueue_head(&heap->waitqueue);
 		heap->task = kthread_run(ion_heap_deferred_free, heap,
