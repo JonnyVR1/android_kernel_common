@@ -163,4 +163,10 @@ extern struct list_head *audit_killed_trees(void);
 #define audit_filter_inodes(t,c) AUDIT_DISABLED
 #endif
 
+#ifdef CONFIG_AUDIT_SPLITLOG
+#define AUDIT_SPLITLOG_INIT AUDIT_LOGSPLIT_ON
+#else
+#define AUDIT_SPLITLOG_INIT AUDIT_LOGSPLIT_OFF
+#endif
+
 extern struct mutex audit_cmd_mutex;
