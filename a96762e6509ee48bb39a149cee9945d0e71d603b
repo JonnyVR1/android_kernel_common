@@ -1,0 +1,34 @@
+Revision: a96762e6509ee48bb39a149cee9945d0e71d603b
+Patch-set: 1
+File: drivers/mmc/card/block.c
+
+39
+Thu May 16 06:02:06 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuC2QWUA
+Bytes: 239
+i can't find any good info on when to put tracepoints in include/trace/events vs. in the same directory as the .c file, http://lwn.net/Articles/383595/ is the best i've seen but it's not too conclusive.  i guess trace/events/mmc.h is best.
+
+1307
+Thu May 16 06:02:06 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuM17vTg
+Bytes: 106
+this code is hard to follow.  can mmc_active ever be null here?  maybe the if (areq) below should be here?
+
+1316
+Thu May 16 06:02:06 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuI11xUM
+Bytes: 166
+i'm not familiar with this code, but there are lots of other callers of mmc_start_req that may complete an async request.  should the tracing be inside mmc_start_req?
+
+File: include/trace/events/mmc.h
+
+37
+Thu May 16 06:02:06 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuG2GUQ8
+Bytes: 156
+there are a lot of different formats used in include/trace/events, but the most canonical ones (sched.h, timer.h, vmscan.h) use "cmd=%d addr=%08x size=%08x"
+
