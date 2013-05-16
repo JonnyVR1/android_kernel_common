@@ -1,0 +1,51 @@
+Revision: 53d8a9a117b0fcda3c2c9d6d55e02c8550b0864f
+Patch-set: 2
+File: /COMMIT_MSG
+
+9
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuHDTiAA
+Bytes: 39
+When the policy max_freq is raised, and
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1117
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuBCTLFA
+Bytes: 208
+This mutex protects one-time init operations like notifier registration and sysfs attribute creation.  It doesn't need to be held for target load and speed adjustments (pcpu->enable_sem does need to be held).
+
+1136
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuFBwxE8
+Bytes: 286
+I don't think this is necessary.  It's OK for target_freq to be out of sync briefly so long as we fix things up at the next load->freq evaluation.  I'd like to keep the number of additional places in the code that modify target_freq, apart from the load->freq calculation, to a minimum.
+
+1149
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuHBtyHQ
+Bytes: 376
+How about we just always do this (check for no timer active and start one if not) whenever the limits change?  That is, always do this without trying to keep extra state around to tell if the reason there's no timer active is because it was targeted at the previous max freq?  There might not be a timer active because the CPU is idle, but limits normally change infrequently.
+
+1150
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuBBqTF4
+Bytes: 11
+Not needed.
+
+1151
+Thu May 16 20:44:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuHCs6Hk
+Bytes: 290
+Use cpufreq_interactive_timer_resched().  (The CPUFREQ_GOV_START code this was based on is a little special, it could probably use some cleanup as well, in some other patch.)  I think this should be enough:
+
+if (!timer_pending(&pcpu->cpu_timer))
+    cpufreq_interactive_timer_resched(pcpu);
+
