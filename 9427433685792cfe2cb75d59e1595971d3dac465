@@ -16,12 +16,28 @@ UUID: UuC1VudA
 Bytes: 67
 might want an accessor here instead of directly reading the atomic.
 
+197
+Thu May 16 17:53:33 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuC1VudA
+UUID: UuFAmhMM
+Bytes: 35
+Done. And for other atomic64_bla().
+
 219
 Thu May 16 03:42:24 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuA1Y9Qk
 Bytes: 46
 might as well subtract drained from nr_to_scan
+
+219
+Thu May 16 17:53:33 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuA1Y9Qk
+UUID: UuLAQIF4
+Bytes: 4
+Done
 
 File: drivers/gpu/ion/ion_priv.h
 
@@ -31,4 +47,13 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuM3wnc4
 Bytes: 131
 if you converted this to size in pages you could use an atomic_t and it would line up better with the shrinker that works in pages.
+
+151
+Thu May 16 17:53:33 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuM3wnc4
+UUID: UuI0lxck
+Bytes: 199
+I thought about it but buffers are in bytes. That would require rounding up to a page size and converting each time a buffer is added or removed.
+This way round the conversion only happens on shrink.
 
