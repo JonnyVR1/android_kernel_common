@@ -1,0 +1,34 @@
+Revision: 9427433685792cfe2cb75d59e1595971d3dac465
+Patch-set: 1
+File: drivers/gpu/ion/ion_page_pool.c
+
+195
+Thu May 16 03:42:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuG1bsQk
+Bytes: 79
+this is ugly, but i can't think of a better way right now.  maybe rebecca will.
+
+197
+Thu May 16 03:42:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuC1VudA
+Bytes: 67
+might want an accessor here instead of directly reading the atomic.
+
+219
+Thu May 16 03:42:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuA1Y9Qk
+Bytes: 46
+might as well subtract drained from nr_to_scan
+
+File: drivers/gpu/ion/ion_priv.h
+
+151
+Thu May 16 03:42:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuM3wnc4
+Bytes: 131
+if you converted this to size in pages you could use an atomic_t and it would line up better with the shrinker that works in pages.
+
