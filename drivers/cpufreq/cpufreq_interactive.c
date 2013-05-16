@@ -1054,11 +1054,13 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			down_write(&pcpu->enable_sem);
 			expires = jiffies + usecs_to_jiffies(timer_rate);
 			pcpu->cpu_timer.expires = expires;
-			add_timer_on(&pcpu->cpu_timer, j);
-			if (timer_slack_val >= 0) {
-				expires += usecs_to_jiffies(timer_slack_val);
-				pcpu->cpu_slack_timer.expires = expires;
-				add_timer_on(&pcpu->cpu_slack_timer, j);
+			if (cpu_online(j)) {
+				add_timer_on(&pcpu->cpu_timer, j);
+				if (timer_slack_val >= 0) {
+					expires += usecs_to_jiffies(timer_slack_val);
+					pcpu->cpu_slack_timer.expires = expires;
+					add_timer_on(&pcpu->cpu_slack_timer, j);
+				}
 			}
 			pcpu->governor_enabled = 1;
 			up_write(&pcpu->enable_sem);
