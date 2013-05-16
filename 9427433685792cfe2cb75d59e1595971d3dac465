@@ -57,3 +57,11 @@ Bytes: 199
 I thought about it but buffers are in bytes. That would require rounding up to a page size and converting each time a buffer is added or removed.
 This way round the conversion only happens on shrink.
 
+151
+Thu May 16 18:15:10 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuI0lxck
+UUID: UuFDRpE4
+Bytes: 47
+Needed anyway as all buffers could have size 1.
+
