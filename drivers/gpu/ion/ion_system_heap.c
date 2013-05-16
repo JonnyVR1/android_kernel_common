@@ -298,6 +298,7 @@ struct ion_heap *ion_system_heap_create(struct ion_platform_heap *unused)
 		if (!pool)
 			goto err_create_pool;
 		heap->pools[i] = pool;
+		pool->heap = &heap->heap;
 	}
 	heap->heap.debug_show = ion_system_heap_debug_show;
 	return &heap->heap;

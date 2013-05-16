@@ -127,6 +127,7 @@ struct ion_heap_ops {
  *			MUST be unique
  * @name:		used for debugging
  * @free_list:		free list head if deferred free is used
+ * @free_list_size:	size in bytes contained in the free_list
  * @lock:		protects the free list
  * @waitqueue:		queue to wait on from deferred free thread
  * @task:		task struct of deferred free thread
@@ -147,11 +148,20 @@ struct ion_heap {
 	unsigned int id;
 	const char *name;
 	struct list_head free_list;
+	atomic64_t free_list_size;
 	struct rt_mutex lock;
 	wait_queue_head_t waitqueue;
 	struct task_struct *task;
 	int (*debug_show)(struct ion_heap *heap, struct seq_file *, void *);
 };
+
+/**
+ * ion_heap_drain_freelist - drains the buffers on the free_list of the heap
+ * @heap:		the heap from which to drain the free buffers
+ *
+ * returns how many bytes were freed.
+ */
+size_t ion_heap_drain_freelist(struct ion_heap *heap);
 
 /**
  * ion_buffer_cached - this ion buffer is cached
@@ -261,6 +271,7 @@ void ion_carveout_free(struct ion_heap *heap, ion_phys_addr_t addr,
  * @gfp_mask:		gfp_mask to use from alloc
  * @order:		order of pages in the pool
  * @list:		plist node for list of pools
+ * @heap:		heap that this pool belongs to
  *
  * Allows you to keep a pool of pre allocated pages to use from your heap.
  * Keeping a pool of pages that is ready for dma, ie any cached mapping have
@@ -278,6 +289,7 @@ struct ion_page_pool {
 	gfp_t gfp_mask;
 	unsigned int order;
 	struct plist_node list;
+	struct ion_heap *heap;
 };
 
 struct ion_page_pool *ion_page_pool_create(gfp_t gfp_mask, unsigned int order);
