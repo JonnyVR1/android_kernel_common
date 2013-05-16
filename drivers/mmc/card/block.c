@@ -35,6 +35,9 @@
 #include <linux/capability.h>
 #include <linux/compat.h>
 
+#define CREATE_TRACE_POINTS
+#include <trace/events/mmc.h>
+
 #include <linux/mmc/ioctl.h>
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
@@ -855,7 +858,9 @@ retry:
 		if (err)
 			goto out;
 	}
+	trace_mmc_blk_op_start(arg, from, nr);
 	err = mmc_erase(card, from, nr, arg);
+	trace_mmc_blk_op_end(arg, from, nr);
 out:
 	if (err == -EIO && !mmc_blk_reset(md, card->host, type))
 		goto retry;
@@ -913,7 +918,9 @@ retry:
 			goto out_retry;
 	}
 
+	trace_mmc_blk_op_start(arg, from, nr);
 	err = mmc_erase(card, from, nr, arg);
+	trace_mmc_blk_op_end(arg, from, nr);
 	if (err == -EIO)
 		goto out_retry;
 	if (err)
@@ -929,16 +936,21 @@ retry:
 				goto out_retry;
 		}
 
+		trace_mmc_blk_op_start(MMC_SECURE_TRIM2_ARG, from, nr);
 		err = mmc_erase(card, from, nr, MMC_SECURE_TRIM2_ARG);
+		trace_mmc_blk_op_end(MMC_SECURE_TRIM2_ARG, from, nr);
 		if (err == -EIO)
 			goto out_retry;
 		if (err)
 			goto out;
 	}
 
-	if (mmc_can_sanitize(card))
+	if (mmc_can_sanitize(card)) {
+		trace_mmc_blk_op_start(EXT_CSD_SANITIZE_START, 0, 0);
 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
 				 EXT_CSD_SANITIZE_START, 1, 0);
+		trace_mmc_blk_op_end(EXT_CSD_SANITIZE_START, 0, 0);
+	}
 out_retry:
 	if (err && !mmc_blk_reset(md, card->host, type))
 		goto retry;
@@ -1295,12 +1307,19 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			areq = &mq->mqrq_cur->mmc_active;
 		} else
 			areq = NULL;
+
+		if (areq) {
+			mq_rq = container_of(areq, struct mmc_queue_req, mmc_active);
+			brq = &mq_rq->brq;
+			trace_mmc_blk_op_start(brq->cmd.opcode, brq->cmd.arg, brq->data.blocks);
+		}
 		areq = mmc_start_req(card->host, areq, (int *) &status);
 		if (!areq)
 			return 0;
 
 		mq_rq = container_of(areq, struct mmc_queue_req, mmc_active);
 		brq = &mq_rq->brq;
+		trace_mmc_blk_op_end(brq->cmd.opcode, brq->cmd.arg, brq->data.blocks);
 		req = mq_rq->req;
 		type = rq_data_dir(req) == READ ? MMC_BLK_READ : MMC_BLK_WRITE;
 		mmc_queue_bounce_post(mq_rq);
