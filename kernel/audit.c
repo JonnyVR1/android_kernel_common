@@ -85,6 +85,9 @@ static int	audit_default;
 /* If auditing cannot proceed, audit_failure selects what happens. */
 static int	audit_failure = AUDIT_FAIL_PRINTK;
 
+/* Whether or not logsplit is enabled */
+static int audit_logsplit = AUDIT_LOGSPLIT_INIT;
+
 /*
  * If audit records are to be written to the netlink socket, audit_pid
  * contains the pid of the auditd process and audit_nlk_pid contains
@@ -359,6 +362,16 @@ static int audit_set_failure(int state, uid_t loginuid, u32 sessionid, u32 sid)
 				      loginuid, sessionid, sid);
 }
 
+static int audit_set_logsplit(int state, uid_t loginuid, u32 sessionid, u32 sid)
+{
+	if (state != AUDIT_LOGSPLIT_OFF
+			&& state != AUDIT_LOGSPLIT_ON)
+		return -EINVAL;
+
+	return audit_do_config_change("audit_logsplit", &audit_logsplit, state,
+				      loginuid, sessionid, sid);
+}
+
 /*
  * Queue skbs to be sent to auditd when/if it comes back.  These skbs should
  * already have been sent via prink/syslog and so if these messages are dropped
@@ -377,11 +390,8 @@ static void audit_hold_skb(struct sk_buff *skb)
 		kfree_skb(skb);
 }
 
-/*
- * For one reason or another this nlh isn't getting delivered to the userspace
- * audit daemon, just send it to printk.
- */
-static void audit_printk_skb(struct sk_buff *skb)
+/* Just printks the skb, no audit_hold or free of any kind */
+static void __audit_printk_skb(struct sk_buff *skb)
 {
 	struct nlmsghdr *nlh = nlmsg_hdr(skb);
 	char *data = NLMSG_DATA(nlh);
@@ -392,7 +402,15 @@ static void audit_printk_skb(struct sk_buff *skb)
 		else
 			audit_log_lost("printk limit exceeded\n");
 	}
+}
 
+/*
+ * For one reason or another this nlh isn't getting delivered to the userspace
+ * audit daemon, just send it to printk.
+ */
+static void audit_printk_skb(struct sk_buff *skb)
+{
+	__audit_printk_skb(skb);
 	audit_hold_skb(skb);
 }
 
@@ -599,6 +617,8 @@ static int audit_netlink_ok(struct sk_buff *skb, u16 msg_type)
 	case AUDIT_SIGNAL_INFO:
 	case AUDIT_TTY_GET:
 	case AUDIT_TTY_SET:
+	case AUDIT_LOGSPLIT_GET:
+	case AUDIT_LOGSPLIT_SET:
 	case AUDIT_TRIM:
 	case AUDIT_MAKE_EQUIV:
 		if (!capable(CAP_AUDIT_CONTROL))
@@ -914,7 +934,24 @@ static int audit_receive_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 		rcu_read_unlock();
 		break;
 	}
+	case AUDIT_LOGSPLIT_GET: {
+		struct audit_logsplit_status s;
+		s.enabled = audit_logsplit;
+		audit_send_reply(NETLINK_CB(skb).pid, seq,
+				AUDIT_LOGSPLIT_GET, 0, 0, &s, sizeof(s));
+		break;
+	}
+	case AUDIT_LOGSPLIT_SET: {
+		struct audit_logsplit_status *s;
+		if (nlh->nlmsg_len < sizeof(struct audit_logsplit_status))
+			return -EINVAL;
+		s = data;
+		err = audit_set_logsplit(s->enabled, loginuid, sessionid, sid);
+		break;
+	}
+
 	default:
+		printk(KERN_ERR "Unknown audit command");
 		err = -EINVAL;
 		break;
 	}
@@ -1469,6 +1506,8 @@ void audit_log_end(struct audit_buffer *ab)
 		nlh->nlmsg_len = ab->skb->len - NLMSG_SPACE(0);
 
 		if (audit_pid) {
+			if (audit_logsplit == AUDIT_LOGSPLIT_ON)
+				__audit_printk_skb(ab->skb);
 			skb_queue_tail(&audit_skb_queue, ab->skb);
 			wake_up_interruptible(&kauditd_wait);
 		} else {

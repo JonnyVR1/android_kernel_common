@@ -69,6 +69,8 @@
 #define AUDIT_MAKE_EQUIV	1015	/* Append to watched tree */
 #define AUDIT_TTY_GET		1016	/* Get TTY auditing status */
 #define AUDIT_TTY_SET		1017	/* Set TTY auditing status */
+#define AUDIT_LOGSPLIT_GET	1018	/* Get logsplit status */
+#define AUDIT_LOGSPLIT_SET	1019	/* Set logsplit status */
 
 #define AUDIT_FIRST_USER_MSG	1100	/* Userspace messages mostly uninteresting to kernel */
 #define AUDIT_USER_AVC		1107	/* We filter this differently */
@@ -319,6 +321,10 @@ enum {
 #define AUDIT_FAIL_PRINTK	1
 #define AUDIT_FAIL_PANIC	2
 
+/* Audit splitlog options */
+#define AUDIT_LOGSPLIT_OFF	0
+#define AUDIT_LOGSPLIT_ON	1
+
 /* distinguish syscall tables */
 #define __AUDIT_ARCH_64BIT 0x80000000
 #define __AUDIT_ARCH_LE	   0x40000000
@@ -368,6 +374,10 @@ struct audit_status {
 
 struct audit_tty_status {
 	__u32		enabled; /* 1 = enabled, 0 = disabled */
+};
+
+struct audit_logsplit_status {
+	__u32		enabled; /* AUDIT_LOGSPLIT_ON or AUDIT_LOGSPLIT_OFF */
 };
 
 /* audit_rule_data supports filter rules with both integer and string
