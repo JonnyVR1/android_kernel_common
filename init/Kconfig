@@ -386,6 +386,14 @@ config AUDIT_LOGINUID_IMMUTABLE
 	  one to drop potentially dangerous capabilites from the login tasks,
 	  but may not be backwards compatible with older init systems.
 
+config AUDIT_SPLITLOG
+	bool "Split audit messages to userspace and kernel by default"
+	depends on AUDIT
+	help
+	  Setting this to true will cause the audit messages to be split
+	  by default to both the kernel message log and a userspace audit
+	  daemon if registered.
+
 source "kernel/irq/Kconfig"
 
 menu "RCU Subsystem"
