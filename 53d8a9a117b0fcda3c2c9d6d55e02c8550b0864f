@@ -9,6 +9,14 @@ UUID: UuHDTiAA
 Bytes: 39
 When the policy max_freq is raised, and
 
+9
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuHDTiAA
+UUID: UwWTYxHI
+Bytes: 3
+Ok.
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 1117
@@ -18,12 +26,32 @@ UUID: UuBCTLFA
 Bytes: 208
 This mutex protects one-time init operations like notifier registration and sysfs attribute creation.  It doesn't need to be held for target load and speed adjustments (pcpu->enable_sem does need to be held).
 
+1117
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuBCTLFA
+UUID: UwWSB5Do
+Bytes: 151
+Hold this mutex to make sure the GOV_LIMITS is a sync operation, else there will have race when two or more threads update the max freq simultaneously.
+
 1136
 Thu May 16 20:44:17 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuFBwxE8
 Bytes: 286
 I don't think this is necessary.  It's OK for target_freq to be out of sync briefly so long as we fix things up at the next load->freq evaluation.  I'd like to keep the number of additional places in the code that modify target_freq, apart from the load->freq calculation, to a minimum.
+
+1136
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuFBwxE8
+UUID: UwQTnODE
+Bytes: 816
+The target freq shall be updated too. E.g.
+1. target_freq = max_freq(HI)
+2. max_freq changed from HI to LO, now if we don't update the target freq, then target_freq is equal to max_freq(HI) and cur_freq is equal to max_freq(LO). 
+3. max_freq changed from LO to HI, but the timer is not rearmed in GOV_LIMITS because the cpu has a chance to hit IDLE and the timer is rearmed in idle callback. Now the cur_freq is max_freq(LO), policy->max is max_freq(HI) and target_freq is max_freq(HI).
+4. In timer callback, load is still HIGN(e.g. 99%) and the new_freq is policy->max(max_freq(HI). So the old target_freq is equal to new_freq and goto rearm_if_notmax. Now the target_freq is max so the timer is not rearmed, cur_freq stuck at max_freq(LO) until new_freq is not calculated as policy->max under a low load condition.
 
 1149
 Thu May 16 20:44:17 2013 +0000
@@ -32,12 +60,28 @@ UUID: UuHBtyHQ
 Bytes: 376
 How about we just always do this (check for no timer active and start one if not) whenever the limits change?  That is, always do this without trying to keep extra state around to tell if the reason there's no timer active is because it was targeted at the previous max freq?  There might not be a timer active because the CPU is idle, but limits normally change infrequently.
 
+1149
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuHBtyHQ
+UUID: UwUTRQE8
+Bytes: 49
+Yeah. Agree.  This is a good idea. I will try it.
+
 1150
 Thu May 16 20:44:17 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuBBqTF4
 Bytes: 11
 Not needed.
+
+1150
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuBBqTF4
+UUID: UwSTOvK4
+Bytes: 29
+Yeah, this is redundant code.
 
 1151
 Thu May 16 20:44:17 2013 +0000
@@ -48,4 +92,14 @@ Use cpufreq_interactive_timer_resched().  (The CPUFREQ_GOV_START code this was b
 
 if (!timer_pending(&pcpu->cpu_timer))
     cpufreq_interactive_timer_resched(pcpu);
+
+1151
+Fri May 17 03:59:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuHCs6Hk
+UUID: UwYTbSG8
+Bytes: 510
+The cpufreq_interactive_timer_resched can be called in timer callback and idle callback because it always pinned the timer on the same CPU. But we can not call it here because current thread maybe run at another CPU and pinned the timer at wrong CPU. So we have to call add_timer_on to pinned it on the target cpu.
+
+If we don't care about whether it is pinned on the target cpu or not here, since it will pin the timer on the correct cpu in idle callback, then I'm ok to call cpufreq_interactive_timer_resched.
 
