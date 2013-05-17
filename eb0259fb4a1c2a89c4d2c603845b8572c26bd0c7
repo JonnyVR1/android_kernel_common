@@ -1,0 +1,14 @@
+Revision: eb0259fb4a1c2a89c4d2c603845b8572c26bd0c7
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1149
+Fri May 17 18:02:52 2013 +0000
+Author: Francisco Franco <1019659@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UrmnbjUI
+Bytes: 100
+Isn't it 
+pcpu->cpu_slack_timer.expires = exp 
+instead of 
+pcpu->cpu_slack_timer.expires = expires ?
+
