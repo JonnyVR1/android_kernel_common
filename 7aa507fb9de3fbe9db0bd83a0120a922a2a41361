@@ -1,0 +1,11 @@
+Revision: 7aa507fb9de3fbe9db0bd83a0120a922a2a41361
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+629
+Fri May 17 22:10:52 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuDnN.1c
+Bytes: 138
+Suggest remove this check, and remove the down_read_trylock and governor_enabled check for pcpu above, and just always grab the lock here.
+
