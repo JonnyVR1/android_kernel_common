@@ -34,6 +34,14 @@ UUID: UwWSB5Do
 Bytes: 151
 Hold this mutex to make sure the GOV_LIMITS is a sync operation, else there will have race when two or more threads update the max freq simultaneously.
 
+1117
+Fri May 17 19:50:01 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UwWSB5Do
+UUID: UuD7uQXk
+Bytes: 354
+pcpu->enable_sem protects the per-CPU load and frequency data structures, and is used by the other code that needs a consistent view of these.  It shouldn't be necessary for the entire LIMITS update to be a critical section -- what is the race?  All we need to do is kick a timer if one isn't pending for a CPU, and enable_sem protects that for each CPU.
+
 1136
 Thu May 16 20:44:17 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +60,14 @@ The target freq shall be updated too. E.g.
 2. max_freq changed from HI to LO, now if we don't update the target freq, then target_freq is equal to max_freq(HI) and cur_freq is equal to max_freq(LO). 
 3. max_freq changed from LO to HI, but the timer is not rearmed in GOV_LIMITS because the cpu has a chance to hit IDLE and the timer is rearmed in idle callback. Now the cur_freq is max_freq(LO), policy->max is max_freq(HI) and target_freq is max_freq(HI).
 4. In timer callback, load is still HIGN(e.g. 99%) and the new_freq is policy->max(max_freq(HI). So the old target_freq is equal to new_freq and goto rearm_if_notmax. Now the target_freq is max so the timer is not rearmed, cur_freq stuck at max_freq(LO) until new_freq is not calculated as policy->max under a low load condition.
+
+1136
+Fri May 17 19:50:01 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UwQTnODE
+UUID: UuNk4X98
+Bytes: 3
+OK.
 
 1149
 Thu May 16 20:44:17 2013 +0000
@@ -102,4 +118,12 @@ Bytes: 510
 The cpufreq_interactive_timer_resched can be called in timer callback and idle callback because it always pinned the timer on the same CPU. But we can not call it here because current thread maybe run at another CPU and pinned the timer at wrong CPU. So we have to call add_timer_on to pinned it on the target cpu.
 
 If we don't care about whether it is pinned on the target cpu or not here, since it will pin the timer on the correct cpu in idle callback, then I'm ok to call cpufreq_interactive_timer_resched.
+
+1151
+Fri May 17 19:50:01 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UwYTbSG8
+UUID: UuDkd.3E
+Bytes: 542
+Ah, you're right, and we do need to run the timer on its CPU.  Should add a _timer_start() helper that does approximately the same thing as _timer_resched, but using add_timer_on() instead, and call this from here and the GOV_START case as well.  As it is, the time_in_idle, cputime_speedadj, and cputime_speedadj_timestamp fields aren't being updated, which will lead to a bad load calculation.  I didn't worry about it too much for the first sample after governor startup, but it will be more important here, and should get this cleaned up.
 
