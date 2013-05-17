@@ -1,0 +1,14 @@
+Revision: e560f0837d48226ee70ee86915e3bae60115fe54
+Patch-set: 5
+File: include/trace/events/mmc.h
+
+25
+Fri May 17 23:02:30 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuHk3808
+Bytes: 33
+/*
+ * Comment
+
+style is preferred
+
