@@ -9,6 +9,14 @@ UUID: UuHnYU0Q
 Bytes: 30
 why not trace_mmc_erase_start?
 
+861
+Fri May 17 22:02:14 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuHnYU0Q
+UUID: UuNman1k
+Bytes: 4
+Done
+
 File: include/trace/events/mmc.h
 
 39
@@ -17,4 +25,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: UuJnQpx8
 Bytes: 60
 I would drop the extra spaces here and use TRACE_EVENT_CLASS
+
+39
+Fri May 17 22:02:14 2013 +0000
+Author: Ken Sumrall <1004285@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuJnQpx8
+UUID: UuPmfY0Y
+Bytes: 14
+done and done.
 
