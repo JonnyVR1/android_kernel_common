@@ -1,0 +1,20 @@
+Revision: 024c85c797c54d6f81381447e608b8d1b97d942d
+Patch-set: 2
+File: drivers/mmc/card/block.c
+
+861
+Fri May 17 21:22:51 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuHnYU0Q
+Bytes: 30
+why not trace_mmc_erase_start?
+
+File: include/trace/events/mmc.h
+
+39
+Fri May 17 21:22:51 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UuJnQpx8
+Bytes: 60
+I would drop the extra spaces here and use TRACE_EVENT_CLASS
+
