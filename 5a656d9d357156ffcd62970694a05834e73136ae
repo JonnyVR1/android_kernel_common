@@ -1,0 +1,13 @@
+Revision: 5a656d9d357156ffcd62970694a05834e73136ae
+Patch-set: 4
+File: drivers/gpu/ion/ion_page_pool.c
+
+218
+Sat May 18 01:35:59 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: UyVmvY7Q
+Bytes: 228
+This is actually wrong. Similarly to the contentious heap_id_seen[], the nr_to_scan should only be tweaked if this is a newly seen heap.
+
+I'll wait until the heap_id_seen[] mess has been discussed before uploading something new.
+
