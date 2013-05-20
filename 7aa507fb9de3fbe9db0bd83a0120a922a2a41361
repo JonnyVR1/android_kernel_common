@@ -9,3 +9,13 @@ UUID: UuDnN.1c
 Bytes: 138
 Suggest remove this check, and remove the down_read_trylock and governor_enabled check for pcpu above, and just always grab the lock here.
 
+629
+Mon May 20 07:27:21 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UuDnN.1c
+UUID: U3oRDRsk
+Bytes: 254
+We can not remove the down_read_trylock and governor_enabled check for pcpu above because the policy element in for_each_cpu should be protected too. I do meet a kernel panic after remove the above pcpu lock/checking.
+
+I don't have a better solution yet.
+
