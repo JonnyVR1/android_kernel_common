@@ -11,3 +11,11 @@ This is actually wrong. Similarly to the contentious heap_id_seen[], the nr_to_s
 
 I'll wait until the heap_id_seen[] mess has been discussed before uploading something new.
 
+218
+Mon May 20 23:26:56 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UyVmvY7Q
+UUID: UyX9sxwg
+Bytes: 220
+Only in my debug version which logs without draining: it would log the same amount for each pool. But in this case, it won't matter as it always drains and the 2nd call will have nothing to drain if it was the same heap.
+
