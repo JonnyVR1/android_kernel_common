@@ -12,3 +12,11 @@ pcpu->cpu_slack_timer.expires = exp
 instead of 
 pcpu->cpu_slack_timer.expires = expires ?
 
+1149
+Mon May 20 07:11:12 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: UrmnbjUI
+UUID: Uwcc4st8
+Bytes: 32
+Yes, you are right. A typo here.
+
