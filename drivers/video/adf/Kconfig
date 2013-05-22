@@ -1,0 +1,4 @@
+menuconfig ADF
+	select SYNC
+	select SW_SYNC
+	tristate "Atomic Display Framework"

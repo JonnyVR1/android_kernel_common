@@ -25,6 +25,8 @@ source "drivers/gpu/host1x/Kconfig"
 
 source "drivers/gpu/ion/Kconfig"
 
+source "drivers/video/adf/Kconfig"
+
 config VGASTATE
        tristate
        default n
