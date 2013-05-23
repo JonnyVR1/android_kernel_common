@@ -1,0 +1,11 @@
+Revision: 7ab3dfd8e4ca5330ed4e8a914a9bd92584899079
+Patch-set: 1
+File: drivers/staging/android/lowmemorykiller.c
+
+206
+Thu May 23 23:28:53 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: VAx8QY8w
+Bytes: 24
+delete the debugfs files
+
