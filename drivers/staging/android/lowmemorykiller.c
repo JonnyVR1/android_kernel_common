@@ -33,6 +33,7 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/module.h>
+#include <linux/debugfs.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/oom.h>
@@ -58,6 +59,9 @@ static int lowmem_minfree[6] = {
 static int lowmem_minfree_size = 4;
 
 static unsigned long lowmem_deathpending_timeout;
+
+static uint64_t lowmem_kill_from_kswapd_cnt = 0;
+static uint64_t lowmem_kill_from_direct_reclaim_cnt = 0;
 
 #define lowmem_print(level, x...)			\
 	do {						\
@@ -160,6 +164,10 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			     minfree * (long)(PAGE_SIZE / 1024),
 			     min_score_adj,
 			     other_free * (long)(PAGE_SIZE / 1024));
+		if (current_is_kswapd())
+			lowmem_kill_from_kswapd_cnt++;
+		else
+			lowmem_kill_from_direct_reclaim_cnt++;
 		lowmem_deathpending_timeout = jiffies + HZ;
 		send_sig(SIGKILL, selected, 0);
 		set_tsk_thread_flag(selected, TIF_MEMDIE);
@@ -178,7 +186,18 @@ static struct shrinker lowmem_shrinker = {
 
 static int __init lowmem_init(void)
 {
+	struct dentry *dentry;
+
 	register_shrinker(&lowmem_shrinker);
+
+	dentry = debugfs_create_dir("lowmemorykiller", NULL);
+	if (!dentry)
+		return 0;
+	debugfs_create_u64("kill_from_kswapd_cnt", S_IRUGO, dentry,
+			   &lowmem_kill_from_kswapd_cnt);
+	debugfs_create_u64("kill_from_direct_reclaim_cnt", S_IRUGO, dentry,
+			   &lowmem_kill_from_direct_reclaim_cnt);
+
 	return 0;
 }
 
