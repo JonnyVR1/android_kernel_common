@@ -62,6 +62,7 @@ There are three components to pagemap:
     20. NOPAGE
     21. KSM
     22. THP
+    23. RESERVED
 
 Short descriptions to the page flags:
 
@@ -102,6 +103,10 @@ Short descriptions to the page flags:
 
 22. THP
     contiguous pages which construct transparent hugepages
+
+23. RESERVED
+    pages which have had memblock_reserve called on them and are not available
+    for normal allocations
 
     [IO related page flags]
  1. ERROR     IO error occurred
