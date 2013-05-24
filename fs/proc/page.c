@@ -11,6 +11,7 @@
 #include <linux/kernel-page-flags.h>
 #include <asm/uaccess.h>
 #include "internal.h"
+#include "../../mm/internal.h"
 
 #define KPMSIZE sizeof(u64)
 #define KPMMASK (KPMSIZE - 1)
@@ -19,6 +20,8 @@
  *
  * Each entry is a u64 representing the corresponding
  * physical page count.
+ * If the page is a buddy head, bits 32:33+MAX_ORDER are the number of pages
+ * in the buddy block.
  */
 static ssize_t kpagecount_read(struct file *file, char __user *buf,
 			     size_t count, loff_t *ppos)
@@ -42,6 +45,8 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
 			ppage = NULL;
 		if (!ppage || PageSlab(ppage))
 			pcount = 0;
+		else if (PageBuddy(ppage))
+			pcount = 1ULL << (32 + page_order(ppage));
 		else
 			pcount = page_mapcount(ppage);
 
