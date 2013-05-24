@@ -19,6 +19,8 @@
  *
  * Each entry is a u64 representing the corresponding
  * physical page count.
+ * If the page is a buddy head the top two bits are 0b10 and the bottom bits
+ * are the number of pages in the buddy group.
  */
 static ssize_t kpagecount_read(struct file *file, char __user *buf,
 			     size_t count, loff_t *ppos)
@@ -42,6 +44,8 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
 			ppage = NULL;
 		if (!ppage || PageSlab(ppage))
 			pcount = 0;
+		else if (PageBuddy(ppage))
+			pcount = (1ULL << 63) | (1ULL << page_private(ppage));
 		else
 			pcount = page_mapcount(ppage);
 
