@@ -32,12 +32,13 @@
 #define KPF_KSM			21
 #define KPF_THP			22
 
+#define KPF_RESERVED		23
+
 #ifdef __KERNEL__
 
 /* kernel hacking assistances
  * WARNING: subject to change, never rely on them!
  */
-#define KPF_RESERVED		32
 #define KPF_MLOCKED		33
 #define KPF_MAPPEDTODISK	34
 #define KPF_PRIVATE		35
