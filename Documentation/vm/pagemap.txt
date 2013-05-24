@@ -31,7 +31,8 @@ There are three components to pagemap:
    skip over unmapped regions.
 
  * /proc/kpagecount.  This file contains a 64-bit count of the number of
-   times each page is mapped, indexed by PFN.
+   times each page is mapped, indexed by PFN.  If the page is a buddy head,
+   bits 32:33+MAX_ORDER are the number of pages in the buddy block.
 
  * /proc/kpageflags.  This file contains a 64-bit set of flags for each
    page, indexed by PFN.
@@ -76,7 +77,8 @@ Short descriptions to the page flags:
     a free memory block managed by the buddy system allocator
     The buddy system organizes free memory in blocks of various orders.
     An order N block has 2^N physically contiguous pages, with the BUDDY flag
-    set for and _only_ for the first page.
+    set for and _only_ for the first page.  The number of pages in the block
+    can be read from kpagecount.
 
 15. COMPOUND_HEAD
 16. COMPOUND_TAIL
