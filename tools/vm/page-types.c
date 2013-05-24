@@ -75,7 +75,6 @@
 #define PROC_KPAGEFLAGS		"/proc/kpageflags"
 
 /* [32-] kernel hacking assistances */
-#define KPF_RESERVED		32
 #define KPF_MLOCKED		33
 #define KPF_MAPPEDTODISK	34
 #define KPF_PRIVATE		35
@@ -123,8 +122,8 @@ static const char * const page_flag_names[] = {
 	[KPF_NOPAGE]		= "n:nopage",
 	[KPF_KSM]		= "x:ksm",
 	[KPF_THP]		= "t:thp",
-
 	[KPF_RESERVED]		= "r:reserved",
+
 	[KPF_MLOCKED]		= "m:mlocked",
 	[KPF_MAPPEDTODISK]	= "d:mappedtodisk",
 	[KPF_PRIVATE]		= "P:private",
