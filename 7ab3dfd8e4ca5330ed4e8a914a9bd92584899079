@@ -1,6 +1,22 @@
 Revision: 7ab3dfd8e4ca5330ed4e8a914a9bd92584899079
 Patch-set: 1
+File: /COMMIT_MSG
+
+10
+Fri May 24 23:15:14 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: VA4UZxj0
+Bytes: 71
+What is the use case for this? Would adding tracepoints be more useful?
+
 File: drivers/staging/android/lowmemorykiller.c
+
+64
+Fri May 24 23:15:14 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: VA2UewiU
+Bytes: 33
+= 0 here is not kernel code style
 
 206
 Thu May 23 23:28:53 2013 +0000
