@@ -1,0 +1,18 @@
+Revision: 9e8209f48592f0b6757aa98c5557ac54b06d9f83
+Patch-set: 1
+File: mm/ashmem.c
+
+235
+Wed Jun 05 19:56:28 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d879d2a_f207b927
+Bytes: 169
+Using the struct you just unlocked is not the best option here. It may be safe, but you have to read the entire source file to make sure no-one changes the file pointer.
+
+415
+Wed Jun 05 19:56:28 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d879d2a_32ea312b
+Bytes: 152
+Does user-space always provide a full buffer here, or just a null terminated string. strncpy_from_user is safer if a full buffer is not always provided.
+
