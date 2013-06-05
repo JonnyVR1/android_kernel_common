@@ -104,7 +104,8 @@ struct __fat_dirent {
 /* <linux/videotext.h> has used 0x72 ('r') in collision, so skip a few */
 #define FAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
 #define FAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
-#define VFAT_IOCTL_GET_VOLUME_ID	_IOR('r', 0x12, __u32)
+#define VFAT_IOCTL_GET_VOLUME_ID_BROKEN	_IOR('r', 0x12, __u32)
+#define VFAT_IOCTL_GET_VOLUME_ID	_IOR('r', 0x13, __u32)
 
 struct fat_boot_sector {
 	__u8	ignored[3];	/* Boot strap short or near jump */

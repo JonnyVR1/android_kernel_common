@@ -783,6 +783,24 @@ static int fat_ioctl_volume_id(struct inode *dir)
 	return sbi->vol_id;
 }
 
+static long fat_dir_generic_ioctl(struct file *filp, unsigned int cmd,
+				  unsigned long arg)
+{
+	struct inode *inode = file_inode(filp);
+	u32 id;
+
+	switch (cmd) {
+	case VFAT_IOCTL_GET_VOLUME_ID_BROKEN:
+		return fat_ioctl_volume_id(inode);
+	case VFAT_IOCTL_GET_VOLUME_ID:
+		if (inode->i_ino != MSDOS_ROOT_INO)
+			return -EINVAL;
+		id = fat_ioctl_volume_id(inode);
+		return copy_to_user((u32 *)arg, &id, sizeof(id));
+	}
+	return fat_generic_ioctl(filp, cmd, arg);
+}
+
 static long fat_dir_ioctl(struct file *filp, unsigned int cmd,
 			  unsigned long arg)
 {
@@ -799,10 +817,8 @@ static long fat_dir_ioctl(struct file *filp, unsigned int cmd,
 		short_only = 0;
 		both = 1;
 		break;
-	case VFAT_IOCTL_GET_VOLUME_ID:
-		return fat_ioctl_volume_id(inode);
 	default:
-		return fat_generic_ioctl(filp, cmd, arg);
+		return fat_dir_generic_ioctl(filp, cmd, arg);
 	}
 
 	if (!access_ok(VERIFY_WRITE, d1, sizeof(struct __fat_dirent[2])))
@@ -842,7 +858,7 @@ static long fat_compat_dir_ioctl(struct file *filp, unsigned cmd,
 		both = 1;
 		break;
 	default:
-		return fat_generic_ioctl(filp, cmd, (unsigned long)arg);
+		return fat_dir_generic_ioctl(filp, cmd, (unsigned long)arg);
 	}
 
 	if (!access_ok(VERIFY_WRITE, d1, sizeof(struct compat_dirent[2])))
