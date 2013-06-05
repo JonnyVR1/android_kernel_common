@@ -9,10 +9,26 @@ UUID: 1d879d2a_f207b927
 Bytes: 169
 Using the struct you just unlocked is not the best option here. It may be safe, but you have to read the entire source file to make sure no-one changes the file pointer.
 
+235
+Wed Jun 05 20:33:15 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d879d2a_f207b927
+UUID: 1d879d2a_d251d518
+Bytes: 4
+Done
+
 415
 Wed Jun 05 19:56:28 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1d879d2a_32ea312b
 Bytes: 152
 Does user-space always provide a full buffer here, or just a null terminated string. strncpy_from_user is safer if a full buffer is not always provided.
+
+415
+Wed Jun 05 20:33:15 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d879d2a_32ea312b
+UUID: 1d879d2a_32dcf16b
+Bytes: 4
+Done
 
