@@ -221,23 +221,26 @@ static ssize_t ashmem_read(struct file *file, char __user *buf,
 
 	/* If size is not set, or set to 0, always return EOF. */
 	if (asma->size == 0) {
-		goto out;
+		goto out_unlock;
         }
 
 	if (!asma->file) {
 		ret = -EBADF;
-		goto out;
+		goto out_unlock;
 	}
+
+	get_file(asma->file);
+	mutex_unlock(&ashmem_mutex);
 
 	ret = asma->file->f_op->read(asma->file, buf, len, pos);
-	if (ret < 0) {
-		goto out;
+	if (ret >= 0) {
+		/** Update backing file pos, since f_ops->read() doesn't */
+		asma->file->f_pos = *pos;
 	}
+	fput(asma->file);
+	return ret;
 
-	/** Update backing file pos, since f_ops->read() doesn't */
-	asma->file->f_pos = *pos;
-
-out:
+out_unlock:
 	mutex_unlock(&ashmem_mutex);
 	return ret;
 }
@@ -406,7 +409,11 @@ out:
 
 static int set_name(struct ashmem_area *asma, void __user *name)
 {
+	char lname[ASHMEM_NAME_LEN];
 	int ret = 0;
+
+	if (unlikely(copy_from_user(lname, name, ASHMEM_NAME_LEN)))
+		return -EFAULT;
 
 	mutex_lock(&ashmem_mutex);
 
@@ -416,9 +423,7 @@ static int set_name(struct ashmem_area *asma, void __user *name)
 		goto out;
 	}
 
-	if (unlikely(copy_from_user(asma->name + ASHMEM_NAME_PREFIX_LEN,
-				    name, ASHMEM_NAME_LEN)))
-		ret = -EFAULT;
+	memcpy(asma->name + ASHMEM_NAME_PREFIX_LEN, lname, ASHMEM_NAME_LEN);
 	asma->name[ASHMEM_FULL_NAME_LEN-1] = '\0';
 
 out:
@@ -430,26 +435,24 @@ out:
 static int get_name(struct ashmem_area *asma, void __user *name)
 {
 	int ret = 0;
+	char lname[ASHMEM_NAME_LEN];
+	size_t len;
 
 	mutex_lock(&ashmem_mutex);
 	if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0') {
-		size_t len;
-
 		/*
 		 * Copying only `len', instead of ASHMEM_NAME_LEN, bytes
 		 * prevents us from revealing one user's stack to another.
 		 */
 		len = strlen(asma->name + ASHMEM_NAME_PREFIX_LEN) + 1;
-		if (unlikely(copy_to_user(name,
-				asma->name + ASHMEM_NAME_PREFIX_LEN, len)))
-			ret = -EFAULT;
+		memcpy(lname, asma->name + ASHMEM_NAME_PREFIX_LEN, len);
 	} else {
-		if (unlikely(copy_to_user(name, ASHMEM_NAME_DEF,
-					  sizeof(ASHMEM_NAME_DEF))))
-			ret = -EFAULT;
+		len = strlen(ASHMEM_NAME_DEF) + 1;
+		memcpy(lname, ASHMEM_NAME_DEF, len);
 	}
 	mutex_unlock(&ashmem_mutex);
-
+	if (unlikely(copy_to_user(name, lname, len)))
+		ret = -EFAULT;
 	return ret;
 }
 
