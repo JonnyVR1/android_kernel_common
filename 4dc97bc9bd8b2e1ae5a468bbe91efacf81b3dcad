@@ -1,0 +1,11 @@
+Revision: 4dc97bc9bd8b2e1ae5a468bbe91efacf81b3dcad
+Patch-set: 2
+File: mm/ashmem.c
+
+243
+Thu Jun 06 23:03:29 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d879d2a_81e62534
+Bytes: 131
+Why does this position need to be updated? There does no seem to be any lock protecting this update, so they could get out of sync.
+
