@@ -2,3 +2,8 @@ menuconfig ADF
 	select SYNC
 	select SW_SYNC
 	tristate "Atomic Display Framework"
+
+menuconfig ADF_DISPLAY_CORE
+	depends on ADF
+	depends on DISPLAY_CORE
+	tristate "Helper for implementing ADF interface ops with Display Core devices"
