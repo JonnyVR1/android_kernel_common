@@ -278,6 +278,79 @@ err_get_user:
 	return ret;
 }
 
+static int adf_intf_simple_post_config(struct adf_interface *intf,
+		struct adf_simple_post_config __user *arg)
+{
+	struct adf_device *dev = intf->base.parent;
+	struct sync_fence *complete_fence;
+	int complete_fence_fd;
+	struct adf_buffer buf;
+	int ret = 0;
+
+	complete_fence_fd = get_unused_fd();
+	if (complete_fence_fd < 0)
+		return complete_fence_fd;
+
+	ret = adf_buffer_import(dev, &arg->buf, &buf);
+	if (ret < 0)
+		goto err_import;
+
+	if (put_user(complete_fence_fd, &arg->complete_fence)) {
+		ret = -EFAULT;
+		goto err_put_user;
+	}
+
+	complete_fence = adf_interface_simple_post(intf, &buf);
+	if (IS_ERR(complete_fence)) {
+		ret = PTR_ERR(complete_fence);
+		goto err_put_user;
+	}
+
+	sync_fence_install(complete_fence, complete_fence_fd);
+	return 0;
+
+err_put_user:
+	adf_buffer_cleanup(&buf);
+err_import:
+	put_unused_fd(complete_fence_fd);
+	return ret;
+}
+
+static int adf_intf_simple_buffer_alloc(struct adf_interface *intf,
+		struct adf_simple_buffer_alloc __user *arg)
+{
+	struct adf_simple_buffer_alloc data;
+	struct dma_buf *dma_buf;
+	int ret = 0;
+
+	if (copy_from_user(&data, arg, sizeof(data)))
+		return -EFAULT;
+
+	data.fd = get_unused_fd_flags(O_CLOEXEC);
+	if (data.fd < 0)
+		return data.fd;
+
+	ret = adf_interface_simple_buffer_alloc(intf, data.w, data.h,
+			data.format, &dma_buf, &data.offset, &data.pitch);
+	if (ret < 0)
+		goto err_alloc;
+
+	if (copy_to_user(arg, &data, sizeof(*arg))) {
+		ret = -EFAULT;
+		goto err_copy;
+	}
+
+	fd_install(data.fd, dma_buf->file);
+	return 0;
+
+err_copy:
+	dma_buf_put(dma_buf);
+
+err_alloc:
+	put_unused_fd(data.fd);
+	return ret;
+}
+
 static int adf_device_get_data(struct adf_device *dev,
 		struct adf_device_data __user *arg)
 {
@@ -382,6 +455,8 @@ static long adf_overlay_engine_ioctl(struct adf_overlay_engine *eng,
 	case ADF_POST_CONFIG:
 	case ADF_SET_MODE:
 	case ADF_GET_INTERFACE_DATA:
+	case ADF_SIMPLE_POST_CONFIG:
+	case ADF_SIMPLE_BUFFER_ALLOC:
 		return -EINVAL;
 
 	default:
@@ -409,6 +484,14 @@ static long adf_interface_ioctl(struct adf_interface *intf,
 	case ADF_GET_INTERFACE_DATA:
 		return adf_intf_get_data(intf,
 				(struct adf_interface_data __user *)arg);
+
+	case ADF_SIMPLE_POST_CONFIG:
+		return adf_intf_simple_post_config(intf,
+				(struct adf_simple_post_config __user *)arg);
+
+	case ADF_SIMPLE_BUFFER_ALLOC:
+		return adf_intf_simple_buffer_alloc(intf,
+				(struct adf_simple_buffer_alloc __user *)arg);
 
 	case ADF_POST_CONFIG:
 	case ADF_GET_OVERLAY_ENGINE_DATA:
@@ -441,6 +524,8 @@ static long adf_device_ioctl(struct adf_device *dev, struct adf_file *file,
 	case ADF_SET_MODE:
 	case ADF_GET_INTERFACE_DATA:
 	case ADF_GET_OVERLAY_ENGINE_DATA:
+	case ADF_SIMPLE_POST_CONFIG:
+	case ADF_SIMPLE_BUFFER_ALLOC:
 		return -EINVAL;
 
 	default:
