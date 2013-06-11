@@ -661,6 +661,9 @@ int adf_overlay_engine_init(struct adf_overlay_engine *eng,
 	int ret;
 	va_list args;
 
+	if (ops->n_supported_formats > ADF_MAX_SUPPORTED_FORMATS)
+		return -EINVAL;
+
 	va_start(args, fmt);
 	ret = adf_obj_init(&eng->base, ADF_OBJ_OVERLAY_ENGINE,
 			&dev->overlay_engines, dev, &ops->base, fmt, args);
