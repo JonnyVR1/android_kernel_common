@@ -1,0 +1,11 @@
+Revision: 973bc3604e94c9d6e054993862995748f3915adc
+Patch-set: 2
+File: include/linux/kernel-page-flags.h
+
+35
+Wed Jun 12 02:35:08 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bd1bf126_ead48f13
+Bytes: 75
+This has moved to include/uapi/linux/kernel-page-flags.h in recent kernels.
+
