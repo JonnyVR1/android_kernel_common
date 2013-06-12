@@ -17,3 +17,11 @@ UUID: bd1bf126_aab3b7f7
 Bytes: 36
 To make it clear its not a map count
 
+36
+Wed Jun 12 03:19:18 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bd1bf126_aab3b7f7
+UUID: bd1bf126_aa98d76f
+Bytes: 37
+Why not use the top bit(s) as a flag?
+
