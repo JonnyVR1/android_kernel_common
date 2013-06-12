@@ -9,3 +9,11 @@ UUID: bd1bf126_8a07dbd0
 Bytes: 19
 Why shift it by 32?
 
+36
+Wed Jun 12 02:52:40 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bd1bf126_8a07dbd0
+UUID: bd1bf126_aab3b7f7
+Bytes: 36
+To make it clear its not a map count
+
