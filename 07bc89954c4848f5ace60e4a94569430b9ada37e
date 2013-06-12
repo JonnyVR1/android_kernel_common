@@ -1,0 +1,11 @@
+Revision: 07bc89954c4848f5ace60e4a94569430b9ada37e
+Patch-set: 2
+File: Documentation/vm/pagemap.txt
+
+36
+Wed Jun 12 02:31:06 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bd1bf126_8a07dbd0
+Bytes: 19
+Why shift it by 32?
+
