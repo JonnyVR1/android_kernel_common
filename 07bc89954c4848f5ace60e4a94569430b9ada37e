@@ -25,3 +25,11 @@ UUID: bd1bf126_aa98d76f
 Bytes: 37
 Why not use the top bit(s) as a flag?
 
+36
+Thu Jun 13 18:33:39 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bd1bf126_aa98d76f
+UUID: cafa992f_5eb155eb
+Bytes: 65
+Buddy head pages have mapcount -128, so all the top bits get set.
+
