@@ -377,7 +377,8 @@ struct audit_features {
 	__u32	lock;		/* which features to lock */
 };
 
-#define AUDIT_LAST_FEATURE	-1
+#define AUDIT_FEATURE_ALWAYS_LOG_KMSG          0
+#define AUDIT_LAST_FEATURE                     AUDIT_FEATURE_ALWAYS_LOG_KMSG
 
 #define audit_feature_valid(x)		((x) >= 0 && (x) <= AUDIT_LAST_FEATURE)
 #define AUDIT_FEATURE_TO_MASK(x)	(1 << ((x) & 31)) /* mask for __u32 */

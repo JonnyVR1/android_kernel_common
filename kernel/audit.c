@@ -142,7 +142,8 @@ static struct audit_features af = {.vers = AUDIT_FEATURE_VERSION,
 				   .features = 0,
 				   .lock = 0,};
 
-static char *audit_feature_names[0] = {
+static char *audit_feature_names[1] = {
+		"log_kmsg_alway",
 };
 
 
@@ -386,11 +387,8 @@ static void audit_hold_skb(struct sk_buff *skb)
 		kfree_skb(skb);
 }
 
-/*
- * For one reason or another this nlh isn't getting delivered to the userspace
- * audit daemon, just send it to printk.
- */
-static void audit_printk_skb(struct sk_buff *skb)
+/* Just printks the skb, no audit_hold or free of any kind */
+static void __audit_printk_skb(struct sk_buff *skb)
 {
 	struct nlmsghdr *nlh = nlmsg_hdr(skb);
 	char *data = NLMSG_DATA(nlh);
@@ -401,7 +399,15 @@ static void audit_printk_skb(struct sk_buff *skb)
 		else
 			audit_log_lost("printk limit exceeded\n");
 	}
+}
 
+/*
+ * For one reason or another this nlh isn't getting delivered to the userspace
+ * audit daemon, just send it to printk.
+ */
+static void audit_printk_skb(struct sk_buff *skb)
+{
+	__audit_printk_skb(skb);
 	audit_hold_skb(skb);
 }
 
@@ -668,7 +674,7 @@ static int audit_get_feature(struct sk_buff *skb)
 
 	seq = nlmsg_hdr(skb)->nlmsg_seq;
 
-	audit_send_reply(NETLINK_CB(skb).portid, seq, AUDIT_GET, 0, 0,
+	audit_send_reply(NETLINK_CB(skb).pid, seq, AUDIT_GET, 0, 0,
 			 &af, sizeof(af));
 
 	return 0;
@@ -1578,6 +1584,8 @@ void audit_log_end(struct audit_buffer *ab)
 		nlh->nlmsg_len = ab->skb->len - NLMSG_SPACE(0);
 
 		if (audit_pid) {
+			if(is_audit_feature_set(AUDIT_FEATURE_ALWAYS_LOG_KMSG))
+				__audit_printk_skb(ab->skb);
 			skb_queue_tail(&audit_skb_queue, ab->skb);
 			wake_up_interruptible(&kauditd_wait);
 		} else {
