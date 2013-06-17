@@ -17,3 +17,11 @@ UUID: 0a583140_3c2b4959
 Bytes: 110
 Theoretically you could combine two sequential allocations I guess, but it practice I don't see why you would.
 
+220
+Mon Jun 17 20:26:15 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a583140_3c2b4959
+UUID: 0a583140_fc50118b
+Bytes: 87
+I suggest a BUG_ON(PAGE_SIZE << get_order(sg_dma_len(sg)) != sg_dma_len(sg)) or similar
+
