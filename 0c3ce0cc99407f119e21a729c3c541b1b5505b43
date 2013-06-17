@@ -9,3 +9,11 @@ UUID: 0a583140_abb6d5c6
 Bytes: 121
 is it guaranteed that each entry in an sglist is a single allocation?  two sequential allocations won't ever be combined?
 
+220
+Mon Jun 17 18:09:29 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a583140_abb6d5c6
+UUID: 0a583140_3c2b4959
+Bytes: 110
+Theoretically you could combine two sequential allocations I guess, but it practice I don't see why you would.
+
