@@ -1,0 +1,64 @@
+Revision: f3d9c00770d1a640faa0d42318cce675da40c000
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_2962b5ec
+Bytes: 18
+dm: verity: <blah>
+
+File: drivers/md/Kconfig
+
+393
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_2647428a
+Bytes: 86
+the name no longer makes sense. maybe something like...
+
+config DM_VERITY_ERROR_NOTIFY
+
+394
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_464c46ac
+Bytes: 57
+same.
+"Notify userspace of verity errors through uevents"
+
+File: drivers/md/dm-uevent.c
+
+208
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_a63a72ed
+Bytes: 34
+tab over so that it's at or past (
+
+File: drivers/md/dm-uevent.h
+
+39
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_690afd30
+Bytes: 208
+why do you need to expose it here in dm-uevent.h? Why can't you add your functions to dm-verity.c and just use dm_send_uevents using the kobj. This way all you would be adding in this file is the uevent_type.
+
+60
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_2910f55c
+Bytes: 15
+remove, unused.
+
+File: drivers/md/dm-verity.c
+
+154
+Wed Jun 19 21:33:21 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_e938cdd6
+Bytes: 118
+need an else clause that defines these as static incline to {} so that you don't have to use #ifdef at the call sites.
+
