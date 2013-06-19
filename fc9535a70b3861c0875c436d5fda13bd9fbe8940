@@ -1,0 +1,20 @@
+Revision: fc9535a70b3861c0875c436d5fda13bd9fbe8940
+Patch-set: 2
+File: drivers/md/dm-uevent.c
+
+235
+Wed Jun 19 23:49:22 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_14034456
+Bytes: 13
+> 80 columns.
+
+File: drivers/md/dm-verity.c
+
+156
+Wed Jun 19 23:49:22 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_b40b7870
+Bytes: 41
+are your tabs 8 spaces? this looks wrong.
+
