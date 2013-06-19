@@ -390,4 +390,10 @@ config DM_VERITY
 
 	  If unsure, say N.
 
+config DM_VERITY_ERROR_NOTIFY
+	tristate "Notify userspace of verity errors through uevents"
+	depends on DM_VERITY && DM_UEVENT
+	---help---
+	  This option instructs dm-verity to send uevents on error.
+
 endif # MD

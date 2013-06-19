@@ -20,6 +20,8 @@
 #include <linux/device-mapper.h>
 #include <crypto/hash.h>
 
+#include "dm-uevent.h"
+
 #define DM_MSG_PREFIX			"verity"
 
 #define DM_VERITY_IO_VEC_INLINE		16
@@ -135,6 +137,30 @@ static void dm_bufio_alloc_callback(struct dm_buffer *buf)
 
 	aux->hash_verified = 0;
 }
+
+/*
+ * Trigger userspace data corruption handler.
+ */
+#ifdef CONFIG_DM_VERITY_ERROR_NOTIFY
+static void verity_data_error(struct dm_verity *v, unsigned long long block_nr)
+{
+	dm_send_verity_uevent(DM_UEVENT_VERITY_DATA_ERROR, v->ti, block_nr);
+}
+
+static void verity_hash_error(struct dm_verity *v, unsigned long long block_nr)
+{
+	dm_send_verity_uevent(DM_UEVENT_VERITY_HASH_ERROR, v->ti, block_nr);
+}
+#else
+static inline void verity_data_error(struct dm_verity *v,
+										unsigned long long block_nr)
+{
+}
+static inline void verity_hash_error(struct dm_verity *v,
+										unsigned long long block_nr)
+{
+}
+#endif
 
 /*
  * Translate input sector number to the sector number on the target device.
@@ -255,6 +281,7 @@ static int verity_verify_level(struct dm_verity_io *io, sector_t block,
 				(unsigned long long)hash_block);
 			v->hash_failed = 1;
 			r = -EIO;
+			verity_hash_error(v, (unsigned long long)hash_block);
 			goto release_ret_r;
 		} else
 			aux->hash_verified = 1;
@@ -375,6 +402,7 @@ test_block_hash:
 			DMERR_LIMIT("data block %llu is corrupted",
 				(unsigned long long)(io->block + b));
 			v->hash_failed = 1;
+			verity_data_error(v, (unsigned long long)(io->block + b));
 			return -EIO;
 		}
 	}
