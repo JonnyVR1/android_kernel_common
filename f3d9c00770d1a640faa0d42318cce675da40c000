@@ -9,6 +9,14 @@ UUID: 0ad591ff_2962b5ec
 Bytes: 18
 dm: verity: <blah>
 
+7
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_2962b5ec
+UUID: 0ad591ff_c90a29dc
+Bytes: 4
+Done
+
 File: drivers/md/Kconfig
 
 393
@@ -20,6 +28,14 @@ the name no longer makes sense. maybe something like...
 
 config DM_VERITY_ERROR_NOTIFY
 
+393
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_2647428a
+UUID: 0ad591ff_899ca1b1
+Bytes: 4
+Done
+
 394
 Wed Jun 19 21:33:21 2013 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,6 +43,14 @@ UUID: 0ad591ff_464c46ac
 Bytes: 57
 same.
 "Notify userspace of verity errors through uevents"
+
+394
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_464c46ac
+UUID: 0ad591ff_a9a085e0
+Bytes: 4
+Done
 
 File: drivers/md/dm-uevent.c
 
@@ -37,6 +61,14 @@ UUID: 0ad591ff_a63a72ed
 Bytes: 34
 tab over so that it's at or past (
 
+208
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_a63a72ed
+UUID: 0ad591ff_e9aa8dbe
+Bytes: 4
+Done
+
 File: drivers/md/dm-uevent.h
 
 39
@@ -46,12 +78,28 @@ UUID: 0ad591ff_690afd30
 Bytes: 208
 why do you need to expose it here in dm-uevent.h? Why can't you add your functions to dm-verity.c and just use dm_send_uevents using the kobj. This way all you would be adding in this file is the uevent_type.
 
+39
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_690afd30
+UUID: 0ad591ff_09da5168
+Bytes: 87
+This is done to make use of _dm_uevent_type_names, dm_uevent_alloc, and dm_uevent_free.
+
 60
 Wed Jun 19 21:33:21 2013 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ad591ff_2910f55c
 Bytes: 15
 remove, unused.
+
+60
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_2910f55c
+UUID: 0ad591ff_29c63595
+Bytes: 4
+Done
 
 File: drivers/md/dm-verity.c
 
@@ -61,4 +109,12 @@ Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ad591ff_e938cdd6
 Bytes: 118
 need an else clause that defines these as static incline to {} so that you don't have to use #ifdef at the call sites.
+
+154
+Wed Jun 19 22:43:10 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_e938cdd6
+UUID: 0ad591ff_49cb799c
+Bytes: 4
+Done
 
