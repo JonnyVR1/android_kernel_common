@@ -25,3 +25,11 @@ UUID: 0a583140_fc50118b
 Bytes: 87
 I suggest a BUG_ON(PAGE_SIZE << get_order(sg_dma_len(sg)) != sg_dma_len(sg)) or similar
 
+220
+Wed Jun 19 20:25:45 2013 +0000
+Author: Rebecca Zavin <1001118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a583140_fc50118b
+UUID: 0ad591ff_66706a10
+Bytes: 234
+I keep going back and forth on this, but I think I've convinced myself that the heaps should do the splitting of pages since they are going to have to do the freeing correctly and at the top level we should just test that it's done...
+
