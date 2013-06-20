@@ -9,6 +9,14 @@ UUID: 0ad591ff_4f261991
 Bytes: 73
 May still race with a cpu offlining in parallel?  Need get_online_cpus()?
 
+349
+Thu Jun 20 23:49:57 2013 +0000
+Author: Francisco Franco <1019659@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_4f261991
+UUID: 0aae7193_4ccfff08
+Bytes: 58
+I agree with get/put_online_cpus() here. At least for 3.4.
+
 1066
 Thu Jun 20 02:06:47 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
