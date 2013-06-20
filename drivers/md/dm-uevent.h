@@ -24,6 +24,8 @@
 enum dm_uevent_type {
 	DM_UEVENT_PATH_FAILED,
 	DM_UEVENT_PATH_REINSTATED,
+	DM_UEVENT_VERITY_DATA_ERROR,
+	DM_UEVENT_VERITY_HASH_ERROR,
 };
 
 #ifdef CONFIG_DM_UEVENT
@@ -34,7 +36,9 @@ extern void dm_send_uevents(struct list_head *events, struct kobject *kobj);
 extern void dm_path_uevent(enum dm_uevent_type event_type,
 			   struct dm_target *ti, const char *path,
 			   unsigned nr_valid_paths);
-
+extern void dm_send_verity_uevent(enum dm_uevent_type event_type,
+					struct dm_target *ti,
+					unsigned long long block_nr);
 #else
 
 static inline int dm_uevent_init(void)
@@ -53,7 +57,11 @@ static inline void dm_path_uevent(enum dm_uevent_type event_type,
 				  unsigned nr_valid_paths)
 {
 }
-
+static inline void dm_send_verity_uevent(enum dm_uevent_type event_type,
+					struct dm_target *ti,
+					unsigned long long block_nr)
+{
+}
 #endif	/* CONFIG_DM_UEVENT */
 
 #endif	/* DM_UEVENT_H */

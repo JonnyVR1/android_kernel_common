@@ -36,6 +36,8 @@ static const struct {
 } _dm_uevent_type_names[] = {
 	{DM_UEVENT_PATH_FAILED, KOBJ_CHANGE, "PATH_FAILED"},
 	{DM_UEVENT_PATH_REINSTATED, KOBJ_CHANGE, "PATH_REINSTATED"},
+	{DM_UEVENT_VERITY_DATA_ERROR, KOBJ_CHANGE, "VERITY_DATA_ERROR"},
+	{DM_UEVENT_VERITY_HASH_ERROR, KOBJ_CHANGE, "VERITY_HASH_ERROR"},
 };
 
 static struct kmem_cache *_dm_event_cache;
@@ -201,6 +203,44 @@ void dm_path_uevent(enum dm_uevent_type event_type, struct dm_target *ti,
 	dm_uevent_add(md, &event->elist);
 }
 EXPORT_SYMBOL_GPL(dm_path_uevent);
+
+void dm_send_verity_uevent(enum dm_uevent_type event_type, struct dm_target *ti,
+						unsigned long long block_nr)
+{
+	struct mapped_device *md = dm_table_get_md(ti->table);
+	struct dm_uevent *event = dm_uevent_alloc(md);
+	struct gendisk *disk = dm_disk(md);
+
+	if (!event) {
+		DMERR("%s: dm_uevent_alloc() failed", __func__);
+		return;
+	}
+
+	if (event_type >= ARRAY_SIZE(_dm_uevent_type_names)) {
+		DMERR("%s: Invalid event_type %d", __func__, event_type);
+		goto out;
+	}
+
+	if (add_uevent_var(&event->ku_env, "DM_VERITY_BLOCK_NR=%llu", block_nr)) {
+		DMERR("%s: add_uevent_var() for DM_VERITY_BLOCK failed", __func__);
+		goto out;
+	}
+
+	if (add_uevent_var(&event->ku_env, "DM_ACTION=%s",
+			_dm_uevent_type_names[event_type].name)) {
+		DMERR("%s: add_uevent_var() for DM_ACTION failed", __func__);
+		goto out;
+	}
+
+	if (kobject_uevent_env(&disk_to_dev(disk)->kobj, event_type,
+				event->ku_env.envp)) {
+		DMERR("%s: kobject_uevent_env failed", __func__);
+	}
+
+out:
+	dm_uevent_free(event);
+}
+EXPORT_SYMBOL_GPL(dm_send_verity_uevent);
 
 int dm_uevent_init(void)
 {
