@@ -25,3 +25,22 @@ Re kernel notifications, I'm not sure what you can do from the kernel that you c
 
 What do you guys do in CrOs in the kernel on these events?
 
+207
+Thu Jun 20 17:31:02 2013 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_6f991d30
+UUID: 8a96e156_2ce4932e
+Bytes: 1198
+Yeah - I had to go back and edit my response once I saw what mpath did!
+
+For CrOS -- our kernel handler is blazingly dull.  It gets notified via a blocking notifier chain, uses a stored UUID of the kernel partition to find and write one sector to the front of the partition (DMVERROR) then reboots.  This causes verification to fail and sends the user to the other kernel partition. (If that one is invalid, they go to recovery mode).
+
+Our handler: http://git.chromium.org/gitweb/?p=chromiumos/third_party/kernel.git;a=blob;f=drivers/md/dm-verity-chromeos.c;h=501be96aa9d273023a2b022604b2190751241e8f;hb=refs/heads/chromeos-3.4
+
+A view into the 3.4 code:
+  http://git.chromium.org/gitweb/?p=chromiumos/third_party/kernel.git;a=blob;f=drivers/md/dm-verity.c;h=a4f186d669183e387f2e787fe36353b9366da94c;hb=refs/heads/chromeos-3.4#l116
+
+(We're in the process of a 3.8 roll)
+
+I suspect that as long as -EIO is returned for every request, notifying userspace will be better I suspect.  It does make it easier for a root-level attacker to keep the system from rebooting, but I wouldn't expect the first move to be modifying the root partition while verity is actively running in enforcement mode either :)
+
