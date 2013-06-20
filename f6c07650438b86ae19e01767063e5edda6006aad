@@ -1,0 +1,11 @@
+Revision: f6c07650438b86ae19e01767063e5edda6006aad
+Patch-set: 6
+File: drivers/cpufreq/cpufreq_interactive.c
+
+206
+Thu Jun 20 21:02:31 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_7a78f938
+Bytes: 8
+j => cpu
+
