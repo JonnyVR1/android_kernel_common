@@ -9,6 +9,14 @@ UUID: 0ad591ff_14034456
 Bytes: 13
 > 80 columns.
 
+235
+Thu Jun 20 00:09:48 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_14034456
+UUID: 0ad591ff_14b50463
+Bytes: 4
+Done
+
 File: drivers/md/dm-verity.c
 
 156
@@ -17,4 +25,12 @@ Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ad591ff_b40b7870
 Bytes: 41
 are your tabs 8 spaces? this looks wrong.
+
+156
+Thu Jun 20 00:09:48 2013 +0000
+Author: Geremy Condra <1010138@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_b40b7870
+UUID: 0ad591ff_f4b7c06a
+Bytes: 4
+Done
 
