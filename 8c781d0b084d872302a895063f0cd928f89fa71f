@@ -1,0 +1,11 @@
+Revision: 8c781d0b084d872302a895063f0cd928f89fa71f
+Patch-set: 5
+File: drivers/cpufreq/cpufreq_interactive.c
+
+203
+Thu Jun 20 03:24:17 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad591ff_ef07edd0
+Bytes: 124
+One of the callers (CPUFREQ_GOV_LIMITS callback) also deletes this timer.  Maybe always delete both timers in this function?
+
