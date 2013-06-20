@@ -9,3 +9,11 @@ UUID: 0ad591ff_ef07edd0
 Bytes: 124
 One of the callers (CPUFREQ_GOV_LIMITS callback) also deletes this timer.  Maybe always delete both timers in this function?
 
+203
+Thu Jun 20 08:38:44 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_ef07edd0
+UUID: ca753907_e62e1efa
+Bytes: 137
+Since not all caller need to delete the timer,  I will remove del_timer here and let the caller to make sure both timers are deactivated.
+
