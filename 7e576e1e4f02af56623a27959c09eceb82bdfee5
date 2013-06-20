@@ -13,3 +13,15 @@ As is, this seems sane to try upstream and see what they say.  I wouldn't be sur
 
 From the verity perspective, I'm wondering if there's a good way to have this also do kernel notification rather than relying on udev to hear and respond. I'm guessing the worst case is lots of -EIOs, so maybe it's sane to delegate it userland for the error case.  For CrOS, we used a kernel notifier, but it got stripped out of the rewrite that landed upstream.  If this goes upstream, then we'll migrate over to uevent and drop out out of tree handler.
 
+207
+Thu Jun 20 16:57:02 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a96e156_6c73fbab
+UUID: 0ad591ff_6f991d30
+Bytes: 773
+I had the same initial reaction that we should not pollute dm-uevent.c with a verity-specific sender, put that stuff into dm-verity.c, and make some sort of helper here. But, like you, I let it slide because it's no worse than the mpath stuff already here and this change is pretty small :)
+
+Re kernel notifications, I'm not sure what you can do from the kernel that you couldn't do from userspace. If you really, really  wanted to, you can add a blocking notifier chain (is that what you guys already do?) and have one of the calls do the uevent sending, but that seems like overkill from my perspective. Our preferred handling is to just throw the event to userspace and let it figure out the right thing to do.
+
+What do you guys do in CrOs in the kernel on these events?
+
