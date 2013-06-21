@@ -17,10 +17,38 @@ UUID: 0aae7193_4ccfff08
 Bytes: 58
 I agree with get/put_online_cpus() here. At least for 3.4.
 
+349
+Fri Jun 21 03:59:53 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0aae7193_4ccfff08
+UUID: ca753907_69fa016a
+Bytes: 387
+It is not good to call get/put_onine_cpus()  here because they hold mutex.
+
+It shell not race with cpu down because this is a timer callback and preempt disabled.
+
+It shell not race with cpu up because the timer shall be only re-armed after it is setting online.
+
+I'd like to double check the online status here because the del_timer is called instead of del_timer_sync in idle callback.
+
 1066
 Thu Jun 20 02:06:47 2013 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ad591ff_6f2bdd57
 Bytes: 160
 Believe this isn't necessary, at least in 3.10, where cpufreq ensures all policy cpus are online prior to governor callbacks.  May be needed in 3.4, will check.
+
+1066
+Fri Jun 21 03:59:53 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad591ff_6f2bdd57
+UUID: ca753907_49f54577
+Bytes: 885
+I believe we need check the online status on 3.4 kernel. 
+
+Take a 4 Cores for example. The 4 Cores will shall the same voltage/freq and so they are managed with the same policy. So the result is policy->cpu = 0 and policy_cpus=0/1/2/3
+
+When cpu0 is up, the cpufreq device driver will set all the cpus masks to the policy->cpus. The cpufreq governor driver will check this mask and start timer on all affected cpus. But actually the affected cpu maybe offline. It is offline because 1) maxcpus is set in command line or 2) run-time hotplug. It is not good to start the timer on the offline cpus, and it may cause kernel panic when start timer on a cpu that is never online yet because that cpu's idle is not initialized.
+
+When cpu1/2/3 is up/down, there is no governor start/stop is called because the policy is already set for them. So we have to stop/start the timer in idle callback.
 
