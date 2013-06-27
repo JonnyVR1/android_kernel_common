@@ -335,6 +335,12 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma, int is_pid)
 				pad_len_spaces(m, len);
 				seq_printf(m, "[stack:%d]", tid);
 			}
+			goto done;
+		}
+
+		if (vma->vm_name) {
+			pad_len_spaces(m, len);
+			seq_printf(m, "[anon:%s]", vma_name_str(vma->vm_name));
 		}
 	}
 
@@ -633,6 +639,10 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 				mss.nonlinear >> 10);
 
 	show_smap_vma_flags(m, vma);
+
+	if (vma->vm_name)
+		seq_printf(m, "Name:           %s\n",
+				vma_name_str(vma->vm_name));
 
 	if (m->count < m->size)  /* vma is copied successfully */
 		m->version = (vma != get_gate_vma(task->mm))
