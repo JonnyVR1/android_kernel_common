@@ -51,6 +51,7 @@
 #define MADV_DONTDUMP   16		/* Explicity exclude from the core dump,
 					   overrides the coredump filter bits */
 #define MADV_DODUMP	17		/* Clear the MADV_NODUMP flag */
+#define MADV_NAME	18		/* Set a userspace visible name */
 
 /* compatibility flags */
 #define MAP_FILE	0

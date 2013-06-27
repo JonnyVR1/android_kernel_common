@@ -794,6 +794,8 @@ static void delete_vma(struct mm_struct *mm, struct vm_area_struct *vma)
 		if (vma->vm_flags & VM_EXECUTABLE)
 			removed_exe_file_vma(mm);
 	}
+	if (vma->vm_name)
+		vma_name_put(vma->vm_name);
 	put_nommu_region(vma->vm_region);
 	kmem_cache_free(vm_area_cachep, vma);
 }
@@ -1594,6 +1596,9 @@ int split_vma(struct mm_struct *mm, struct vm_area_struct *vma,
 
 	if (new->vm_ops && new->vm_ops->open)
 		new->vm_ops->open(new);
+
+	if (new->vm_name)
+		vma_name_get(new->vm_name);
 
 	delete_vma_from_mm(vma);
 	down_write(&nommu_region_sem);

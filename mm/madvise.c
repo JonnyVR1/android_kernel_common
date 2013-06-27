@@ -14,6 +14,8 @@
 #include <linux/sched.h>
 #include <linux/ksm.h>
 #include <linux/file.h>
+#include <linux/limits.h>
+#include <linux/err.h>
 
 /*
  * Any behaviour which results in changes to the vma->vm_flags needs to
@@ -39,12 +41,14 @@ static int madvise_need_mmap_write(int behavior)
  */
 static long madvise_behavior(struct vm_area_struct * vma,
 		     struct vm_area_struct **prev,
-		     unsigned long start, unsigned long end, int behavior)
+		     unsigned long start, unsigned long end, int behavior,
+		     void *arg)
 {
 	struct mm_struct * mm = vma->vm_mm;
 	int error = 0;
 	pgoff_t pgoff;
 	unsigned long new_flags = vma->vm_flags;
+	struct vma_name *new_name = vma->vm_name;
 
 	switch (behavior) {
 	case MADV_NORMAL:
@@ -84,16 +88,28 @@ static long madvise_behavior(struct vm_area_struct * vma,
 		if (error)
 			goto out;
 		break;
+	case MADV_NAME:
+		if (arg) {
+			new_name = vma_name_get_from_str(arg);
+			if (IS_ERR(new_name)) {
+				error = PTR_ERR(new_name);
+				goto out;
+			}
+		} else {
+			new_name = NULL;
+		}
+		break;
 	}
 
-	if (new_flags == vma->vm_flags) {
+	if (new_flags == vma->vm_flags && new_name == vma->vm_name) {
 		*prev = vma;
 		goto out;
 	}
 
 	pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
 	*prev = vma_merge(mm, *prev, start, end, new_flags, vma->anon_vma,
-				vma->vm_file, pgoff, vma_policy(vma));
+				vma->vm_file, pgoff, vma_policy(vma),
+				new_name);
 	if (*prev) {
 		vma = *prev;
 		goto success;
@@ -118,8 +134,17 @@ success:
 	 * vm_flags is protected by the mmap_sem held in write mode.
 	 */
 	vma->vm_flags = new_flags;
+	if (vma->vm_name != new_name) {
+		if (vma->vm_name)
+			vma_name_put(vma->vm_name);
+		if (new_name)
+			vma_name_get(new_name);
+		vma->vm_name = new_name;
+	}
 
 out:
+	if (behavior == MADV_NAME && new_name)
+		vma_name_put(new_name);
 	if (error == -ENOMEM)
 		error = -EAGAIN;
 	return error;
@@ -275,7 +300,8 @@ static int madvise_hwpoison(int bhv, unsigned long start, unsigned long end)
 
 static long
 madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
-		unsigned long start, unsigned long end, int behavior)
+		unsigned long start, unsigned long end, int behavior,
+		void *arg)
 {
 	switch (behavior) {
 	case MADV_REMOVE:
@@ -285,7 +311,7 @@ madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
 	case MADV_DONTNEED:
 		return madvise_dontneed(vma, prev, start, end);
 	default:
-		return madvise_behavior(vma, prev, start, end, behavior);
+		return madvise_behavior(vma, prev, start, end, behavior, arg);
 	}
 }
 
@@ -311,6 +337,7 @@ madvise_behavior_valid(int behavior)
 #endif
 	case MADV_DONTDUMP:
 	case MADV_DODUMP:
+	case MADV_NAME:
 		return 1;
 
 	default:
@@ -318,49 +345,46 @@ madvise_behavior_valid(int behavior)
 	}
 }
 
+static void *madvise_get_arg(int behavior, void __user *user_arg, size_t arg_len)
+{
+	void *arg;
+	size_t max = NAME_MAX;
+
+	if (behavior != MADV_NAME)
+		return NULL;
+
+	if (!arg_len)
+		return NULL;
+
+	arg_len = min(arg_len, max);
+	arg = kzalloc(arg_len, GFP_KERNEL);
+	if (!arg)
+		return ERR_PTR(-ENOMEM);
+	if (copy_from_user(arg, user_arg, arg_len)) {
+		kfree(arg);
+		return ERR_PTR(-EFAULT);
+	}
+
+	return arg;
+}
+
+static void madvise_put_arg(int behavior, void *arg)
+{
+	if (behavior == MADV_NAME)
+		kfree(arg);
+}
+
 /*
- * The madvise(2) system call.
+ * The madvise2(2) system call.
  *
- * Applications can use madvise() to advise the kernel how it should
- * handle paging I/O in this VM area.  The idea is to help the kernel
- * use appropriate read-ahead and caching techniques.  The information
- * provided is advisory only, and can be safely disregarded by the
- * kernel without affecting the correct operation of the application.
- *
- * behavior values:
- *  MADV_NORMAL - the default behavior is to read clusters.  This
- *		results in some read-ahead and read-behind.
- *  MADV_RANDOM - the system should read the minimum amount of data
- *		on any access, since it is unlikely that the appli-
- *		cation will need more than what it asks for.
- *  MADV_SEQUENTIAL - pages in the given range will probably be accessed
- *		once, so they can be aggressively read ahead, and
- *		can be freed soon after they are accessed.
- *  MADV_WILLNEED - the application is notifying the system to read
- *		some pages ahead.
- *  MADV_DONTNEED - the application is finished with the given range,
- *		so the kernel can free resources associated with it.
- *  MADV_REMOVE - the application wants to free up the given range of
- *		pages and associated backing store.
- *  MADV_DONTFORK - omit this area from child's address space when forking:
- *		typically, to avoid COWing pages pinned by get_user_pages().
- *  MADV_DOFORK - cancel MADV_DONTFORK: no longer omit this area when forking.
- *  MADV_MERGEABLE - the application recommends that KSM try to merge pages in
- *		this area with pages of identical content from other such areas.
- *  MADV_UNMERGEABLE- cancel MADV_MERGEABLE: no longer merge pages with others.
- *
- * return values:
- *  zero    - success
- *  -EINVAL - start + len < 0, start is not page-aligned,
- *		"behavior" is not a valid value, or application
- *		is attempting to release locked or shared pages.
- *  -ENOMEM - addresses in the specified range are not currently
- *		mapped, or are outside the AS of the process.
- *  -EIO    - an I/O error occurred while paging in data.
- *  -EBADF  - map exists, but area maps something that isn't a file.
- *  -EAGAIN - a kernel resource was temporarily unavailable.
+ * The same as madvise(2), but takes extra parameters.  Applications can use
+ * madvise2() for all the same behaviors as madvise(), ignoring the ptr and
+ * ptr_len arguments, or behavior values:
+ *  MADV_NAME - set name of memory region to NULL terminated string pointer in
+ *  		arg.  arg NULL clears the name.
  */
-SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
+SYSCALL_DEFINE5(madvise2, unsigned long, start, size_t, len_in, int, behavior,
+	void *, user_arg, size_t, arg_len)
 {
 	unsigned long end, tmp;
 	struct vm_area_struct * vma, *prev;
@@ -368,6 +392,7 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
 	int error = -EINVAL;
 	int write;
 	size_t len;
+	void *arg;
 
 #ifdef CONFIG_MEMORY_FAILURE
 	if (behavior == MADV_HWPOISON || behavior == MADV_SOFT_OFFLINE)
@@ -375,6 +400,10 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
 #endif
 	if (!madvise_behavior_valid(behavior))
 		return error;
+
+	arg = madvise_get_arg(behavior, user_arg, arg_len);
+	if (IS_ERR(arg))
+		return PTR_ERR(arg);
 
 	write = madvise_need_mmap_write(behavior);
 	if (write)
@@ -427,7 +456,7 @@ SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
 			tmp = end;
 
 		/* Here vma->vm_start <= start < tmp <= (end|vma->vm_end). */
-		error = madvise_vma(vma, &prev, start, tmp, behavior);
+		error = madvise_vma(vma, &prev, start, tmp, behavior, arg);
 		if (error)
 			goto out;
 		start = tmp;
@@ -447,5 +476,55 @@ out:
 	else
 		up_read(&current->mm->mmap_sem);
 
+	madvise_put_arg(behavior, arg);
+
 	return error;
+}
+
+
+/*
+ * The madvise(2) system call.
+ *
+ * Applications can use madvise() to advise the kernel how it should
+ * handle paging I/O in this VM area.  The idea is to help the kernel
+ * use appropriate read-ahead and caching techniques.  The information
+ * provided is advisory only, and can be safely disregarded by the
+ * kernel without affecting the correct operation of the application.
+ *
+ * behavior values:
+ *  MADV_NORMAL - the default behavior is to read clusters.  This
+ *		results in some read-ahead and read-behind.
+ *  MADV_RANDOM - the system should read the minimum amount of data
+ *		on any access, since it is unlikely that the appli-
+ *		cation will need more than what it asks for.
+ *  MADV_SEQUENTIAL - pages in the given range will probably be accessed
+ *		once, so they can be aggressively read ahead, and
+ *		can be freed soon after they are accessed.
+ *  MADV_WILLNEED - the application is notifying the system to read
+ *		some pages ahead.
+ *  MADV_DONTNEED - the application is finished with the given range,
+ *		so the kernel can free resources associated with it.
+ *  MADV_REMOVE - the application wants to free up the given range of
+ *		pages and associated backing store.
+ *  MADV_DONTFORK - omit this area from child's address space when forking:
+ *		typically, to avoid COWing pages pinned by get_user_pages().
+ *  MADV_DOFORK - cancel MADV_DONTFORK: no longer omit this area when forking.
+ *  MADV_MERGEABLE - the application recommends that KSM try to merge pages in
+ *		this area with pages of identical content from other such areas.
+ *  MADV_UNMERGEABLE- cancel MADV_MERGEABLE: no longer merge pages with others.
+ *
+ * return values:
+ *  zero    - success
+ *  -EINVAL - start + len < 0, start is not page-aligned,
+ *		"behavior" is not a valid value, or application
+ *		is attempting to release locked or shared pages.
+ *  -ENOMEM - addresses in the specified range are not currently
+ *		mapped, or are outside the AS of the process.
+ *  -EIO    - an I/O error occurred while paging in data.
+ *  -EBADF  - map exists, but area maps something that isn't a file.
+ *  -EAGAIN - a kernel resource was temporarily unavailable.
+ */
+SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
+{
+	return sys_madvise2(start, len_in, behavior, 0, 0);
 }
