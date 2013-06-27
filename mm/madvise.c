@@ -19,6 +19,8 @@
 #include <linux/blkdev.h>
 #include <linux/swap.h>
 #include <linux/swapops.h>
+#include <linux/limits.h>
+#include <linux/err.h>
 
 /*
  * Any behaviour which results in changes to the vma->vm_flags needs to
@@ -44,12 +46,14 @@ static int madvise_need_mmap_write(int behavior)
  */
 static long madvise_behavior(struct vm_area_struct * vma,
 		     struct vm_area_struct **prev,
-		     unsigned long start, unsigned long end, int behavior)
+		     unsigned long start, unsigned long end, int behavior,
+		     void *arg, size_t arg_len)
 {
 	struct mm_struct * mm = vma->vm_mm;
 	int error = 0;
 	pgoff_t pgoff;
 	unsigned long new_flags = vma->vm_flags;
+	struct vma_name *new_name = vma->vm_name;
 
 	switch (behavior) {
 	case MADV_NORMAL:
@@ -93,16 +97,23 @@ static long madvise_behavior(struct vm_area_struct * vma,
 		if (error)
 			goto out;
 		break;
+	case MADV_NAME:
+		if (arg)
+			new_name = vma_name_get_from_str(arg, arg_len);
+		else
+			new_name = NULL;
+		break;
 	}
 
-	if (new_flags == vma->vm_flags) {
+	if (new_flags == vma->vm_flags && new_name == vma->vm_name) {
 		*prev = vma;
 		goto out;
 	}
 
 	pgoff = vma->vm_pgoff + ((start - vma->vm_start) >> PAGE_SHIFT);
 	*prev = vma_merge(mm, *prev, start, end, new_flags, vma->anon_vma,
-				vma->vm_file, pgoff, vma_policy(vma));
+				vma->vm_file, pgoff, vma_policy(vma),
+				new_name);
 	if (*prev) {
 		vma = *prev;
 		goto success;
@@ -127,8 +138,17 @@ success:
 	 * vm_flags is protected by the mmap_sem held in write mode.
 	 */
 	vma->vm_flags = new_flags;
+	if (vma->vm_name != new_name) {
+		if (vma->vm_name)
+			vma_name_put(vma->vm_name);
+		if (new_name)
+			vma_name_get(new_name);
+		vma->vm_name = new_name;
+	}
 
 out:
+	if (behavior == MADV_NAME && new_name)
+		vma_name_put(new_name);
 	if (error == -ENOMEM)
 		error = -EAGAIN;
 	return error;
@@ -371,7 +391,8 @@ static int madvise_hwpoison(int bhv, unsigned long start, unsigned long end)
 
 static long
 madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
-		unsigned long start, unsigned long end, int behavior)
+		unsigned long start, unsigned long end, int behavior,
+		void *arg, size_t arg_len)
 {
 	switch (behavior) {
 	case MADV_REMOVE:
@@ -381,7 +402,8 @@ madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
 	case MADV_DONTNEED:
 		return madvise_dontneed(vma, prev, start, end);
 	default:
-		return madvise_behavior(vma, prev, start, end, behavior);
+		return madvise_behavior(vma, prev, start, end, behavior, arg,
+					arg_len);
 	}
 }
 
@@ -407,12 +429,154 @@ madvise_behavior_valid(int behavior)
 #endif
 	case MADV_DONTDUMP:
 	case MADV_DODUMP:
+	case MADV_NAME:
 		return 1;
 
 	default:
 		return 0;
 	}
 }
+
+static void *madvise_get_arg(int behavior, void __user *user_arg, size_t arg_len)
+{
+	void *arg;
+	size_t max = NAME_MAX;
+
+	if (behavior != MADV_NAME)
+		return NULL;
+
+	if (!arg_len)
+		return NULL;
+
+	arg_len = min(arg_len, max);
+	arg = kmalloc(arg_len, GFP_KERNEL);
+	if (!arg)
+		return ERR_PTR(-ENOMEM);
+	if (copy_from_user(arg, user_arg, arg_len)) {
+		kfree(arg);
+		return ERR_PTR(-EFAULT);
+	}
+
+	return arg;
+}
+
+static void madvise_put_arg(int behavior, void *arg)
+{
+	if (behavior == MADV_NAME)
+		kfree(arg);
+}
+
+/*
+ * The madvise2(2) system call.
+ *
+ * The same as madvise(2), but takes extra parameters.  Applications can use
+ * madvise2() for all the same behaviors as madvise(), ignoring the ptr and
+ * ptr_len arguments, or behavior values:
+ *  MADV_NAME - set name of memory region to NULL terminated string pointer in
+ *  		arg.  arg NULL clears the name.
+ */
+SYSCALL_DEFINE5(madvise2, unsigned long, start, size_t, len_in, int, behavior,
+	void *, user_arg, size_t, arg_len)
+{
+	unsigned long end, tmp;
+	struct vm_area_struct * vma, *prev;
+	int unmapped_error = 0;
+	int error = -EINVAL;
+	int write;
+	size_t len;
+	struct blk_plug plug;
+	void *arg;
+
+#ifdef CONFIG_MEMORY_FAILURE
+	if (behavior == MADV_HWPOISON || behavior == MADV_SOFT_OFFLINE)
+		return madvise_hwpoison(behavior, start, start+len_in);
+#endif
+	if (!madvise_behavior_valid(behavior))
+		return error;
+
+	if (start & ~PAGE_MASK)
+		return error;
+	len = (len_in + ~PAGE_MASK) & PAGE_MASK;
+
+	/* Check to see whether len was rounded up from small -ve to zero */
+	if (len_in && !len)
+		return error;
+
+	end = start + len;
+	if (end < start)
+		return error;
+
+	error = 0;
+	if (end == start)
+		return error;
+
+	arg = madvise_get_arg(behavior, user_arg, arg_len);
+	if (IS_ERR(arg))
+		return PTR_ERR(arg);
+
+	write = madvise_need_mmap_write(behavior);
+	if (write)
+		down_write(&current->mm->mmap_sem);
+	else
+		down_read(&current->mm->mmap_sem);
+
+	/*
+	 * If the interval [start,end) covers some unmapped address
+	 * ranges, just ignore them, but return -ENOMEM at the end.
+	 * - different from the way of handling in mlock etc.
+	 */
+	vma = find_vma_prev(current->mm, start, &prev);
+	if (vma && start > vma->vm_start)
+		prev = vma;
+
+	blk_start_plug(&plug);
+	for (;;) {
+		/* Still start < end. */
+		error = -ENOMEM;
+		if (!vma)
+			goto out;
+
+		/* Here start < (end|vma->vm_end). */
+		if (start < vma->vm_start) {
+			unmapped_error = -ENOMEM;
+			start = vma->vm_start;
+			if (start >= end)
+				goto out;
+		}
+
+		/* Here vma->vm_start <= start < (end|vma->vm_end) */
+		tmp = vma->vm_end;
+		if (end < tmp)
+			tmp = end;
+
+		/* Here vma->vm_start <= start < tmp <= (end|vma->vm_end). */
+		error = madvise_vma(vma, &prev, start, tmp, behavior, arg,
+				    arg_len);
+		if (error)
+			goto out;
+		start = tmp;
+		if (prev && start < prev->vm_end)
+			start = prev->vm_end;
+		error = unmapped_error;
+		if (start >= end)
+			goto out;
+		if (prev)
+			vma = prev->vm_next;
+		else	/* madvise_remove dropped mmap_sem */
+			vma = find_vma(current->mm, start);
+	}
+out:
+	blk_finish_plug(&plug);
+	if (write)
+		up_write(&current->mm->mmap_sem);
+	else
+		up_read(&current->mm->mmap_sem);
+
+	madvise_put_arg(behavior, arg);
+
+	return error;
+}
+
 
 /*
  * The madvise(2) system call.
@@ -458,93 +622,5 @@ madvise_behavior_valid(int behavior)
  */
 SYSCALL_DEFINE3(madvise, unsigned long, start, size_t, len_in, int, behavior)
 {
-	unsigned long end, tmp;
-	struct vm_area_struct * vma, *prev;
-	int unmapped_error = 0;
-	int error = -EINVAL;
-	int write;
-	size_t len;
-	struct blk_plug plug;
-
-#ifdef CONFIG_MEMORY_FAILURE
-	if (behavior == MADV_HWPOISON || behavior == MADV_SOFT_OFFLINE)
-		return madvise_hwpoison(behavior, start, start+len_in);
-#endif
-	if (!madvise_behavior_valid(behavior))
-		return error;
-
-	if (start & ~PAGE_MASK)
-		return error;
-	len = (len_in + ~PAGE_MASK) & PAGE_MASK;
-
-	/* Check to see whether len was rounded up from small -ve to zero */
-	if (len_in && !len)
-		return error;
-
-	end = start + len;
-	if (end < start)
-		return error;
-
-	error = 0;
-	if (end == start)
-		return error;
-
-	write = madvise_need_mmap_write(behavior);
-	if (write)
-		down_write(&current->mm->mmap_sem);
-	else
-		down_read(&current->mm->mmap_sem);
-
-	/*
-	 * If the interval [start,end) covers some unmapped address
-	 * ranges, just ignore them, but return -ENOMEM at the end.
-	 * - different from the way of handling in mlock etc.
-	 */
-	vma = find_vma_prev(current->mm, start, &prev);
-	if (vma && start > vma->vm_start)
-		prev = vma;
-
-	blk_start_plug(&plug);
-	for (;;) {
-		/* Still start < end. */
-		error = -ENOMEM;
-		if (!vma)
-			goto out;
-
-		/* Here start < (end|vma->vm_end). */
-		if (start < vma->vm_start) {
-			unmapped_error = -ENOMEM;
-			start = vma->vm_start;
-			if (start >= end)
-				goto out;
-		}
-
-		/* Here vma->vm_start <= start < (end|vma->vm_end) */
-		tmp = vma->vm_end;
-		if (end < tmp)
-			tmp = end;
-
-		/* Here vma->vm_start <= start < tmp <= (end|vma->vm_end). */
-		error = madvise_vma(vma, &prev, start, tmp, behavior);
-		if (error)
-			goto out;
-		start = tmp;
-		if (prev && start < prev->vm_end)
-			start = prev->vm_end;
-		error = unmapped_error;
-		if (start >= end)
-			goto out;
-		if (prev)
-			vma = prev->vm_next;
-		else	/* madvise_remove dropped mmap_sem */
-			vma = find_vma(current->mm, start);
-	}
-out:
-	blk_finish_plug(&plug);
-	if (write)
-		up_write(&current->mm->mmap_sem);
-	else
-		up_read(&current->mm->mmap_sem);
-
-	return error;
+	return sys_madvise2(start, len_in, behavior, 0, 0);
 }
