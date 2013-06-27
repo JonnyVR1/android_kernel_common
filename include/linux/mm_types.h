@@ -219,6 +219,8 @@ struct vm_region {
 						* this region */
 };
 
+struct vma_name;
+
 /*
  * This struct defines a memory VMM memory area. There is one of these
  * per VM-area/task.  A VM area is any part of the process virtual memory
@@ -289,6 +291,7 @@ struct vm_area_struct {
 #ifdef CONFIG_NUMA
 	struct mempolicy *vm_policy;	/* NUMA policy for the VMA */
 #endif
+	struct vma_name *vm_name;
 };
 
 struct core_thread {
