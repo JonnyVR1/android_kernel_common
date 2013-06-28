@@ -38,6 +38,8 @@ struct evdev {
 	struct device dev;
 	struct cdev cdev;
 	bool exist;
+	int hw_ts_sec;
+	int hw_ts_nsec;
 };
 
 struct evdev_client {
@@ -89,26 +91,45 @@ static void __pass_event(struct evdev_client *client,
 
 static void evdev_pass_values(struct evdev_client *client,
 			const struct input_value *vals, unsigned int count,
-			ktime_t mono, ktime_t real)
+			ktime_t mono)
 {
 	struct evdev *evdev = client->evdev;
 	const struct input_value *v;
 	struct input_event event;
 	bool wakeup = false;
-
-	event.time = ktime_to_timeval(client->clkid == CLOCK_MONOTONIC ?
-				      mono : real);
+	ktime_t time;
 
 	/* Interrupts are disabled, just acquire the lock. */
 	spin_lock(&client->buffer_lock);
 
 	for (v = vals; v != vals + count; v++) {
+		if (v->type == EV_SYN && v->code == SYN_TIME_SEC) {
+			evdev->hw_ts_sec = v->value;
+			continue;
+		}
+		if (v->type == EV_SYN && v->code == SYN_TIME_NSEC) {
+			evdev->hw_ts_nsec = v->value;
+			continue;
+		}
+
+		if (evdev->hw_ts_sec != -1 && evdev->hw_ts_nsec != -1)
+			time = ktime_set(evdev->hw_ts_sec, evdev->hw_ts_nsec);
+		else
+			time = mono;
+
+		if (client->clkid == CLOCK_REALTIME)
+			time = ktime_sub(time, ktime_get_monotonic_offset());
+
+		event.time = ktime_to_timeval(time);
 		event.type = v->type;
 		event.code = v->code;
 		event.value = v->value;
 		__pass_event(client, &event);
-		if (v->type == EV_SYN && v->code == SYN_REPORT)
+		if (v->type == EV_SYN && v->code == SYN_REPORT) {
+			evdev->hw_ts_sec = -1;
+			evdev->hw_ts_nsec = -1;
 			wakeup = true;
+		}
 	}
 
 	spin_unlock(&client->buffer_lock);
@@ -125,21 +146,17 @@ static void evdev_events(struct input_handle *handle,
 {
 	struct evdev *evdev = handle->private;
 	struct evdev_client *client;
-	ktime_t time_mono, time_real;
-
-	time_mono = ktime_get();
-	time_real = ktime_sub(time_mono, ktime_get_monotonic_offset());
+	ktime_t time_mono;
 
 	rcu_read_lock();
 
 	client = rcu_dereference(evdev->grab);
 
 	if (client)
-		evdev_pass_values(client, vals, count, time_mono, time_real);
+		evdev_pass_values(client, vals, count, time_mono);
 	else
 		list_for_each_entry_rcu(client, &evdev->client_list, node)
-			evdev_pass_values(client, vals, count,
-					  time_mono, time_real);
+			evdev_pass_values(client, vals, count, time_mono);
 
 	rcu_read_unlock();
 }
@@ -1035,6 +1052,8 @@ static int evdev_connect(struct input_handler *handler, struct input_dev *dev,
 	if (dev_no < EVDEV_MINOR_BASE + EVDEV_MINORS)
 		dev_no -= EVDEV_MINOR_BASE;
 	dev_set_name(&evdev->dev, "event%d", dev_no);
+	evdev->hw_ts_sec = -1;
+	evdev->hw_ts_nsec = -1;
 
 	evdev->handle.dev = input_get_device(dev);
 	evdev->handle.name = dev_name(&evdev->dev);
