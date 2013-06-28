@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2013 Google, Inc.
- * adf_modeinfo_set_name modified from drm_mode_set_name in
+ * adf_modeinfo_{set_name,set_vrefresh} modified from
  * drivers/gpu/drm/drm_modes.c
  *
  * This software is licensed under the terms of the GNU General Public
@@ -951,6 +951,32 @@ void adf_modeinfo_set_name(struct drm_mode_modeinfo *mode)
 	snprintf(mode->name, DRM_DISPLAY_MODE_LEN, "%dx%d%s",
 		 mode->hdisplay, mode->vdisplay,
 		 interlaced ? "i" : "");
+}
+
+void adf_modeinfo_set_vrefresh(struct drm_mode_modeinfo *mode)
+{
+	int refresh = 0;
+	unsigned int calc_val;
+
+	if (mode->vrefresh > 0)
+		return;
+	else if (mode->htotal > 0 && mode->vtotal > 0) {
+		int vtotal;
+		vtotal = mode->vtotal;
+		/* work out vrefresh the value will be x1000 */
+		calc_val = (mode->clock * 1000);
+		calc_val /= mode->htotal;
+		refresh = (calc_val + vtotal / 2) / vtotal;
+
+		if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+			refresh *= 2;
+		if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+			refresh /= 2;
+		if (mode->vscan > 1)
+			refresh /= mode->vscan;
+
+		mode->vrefresh = refresh;
+	}
 }
 
 static void __exit adf_exit(void);

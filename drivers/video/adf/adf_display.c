@@ -118,5 +118,6 @@ void adf_modeinfo_from_videomode(const struct videomode *vm,
 		dmode->flags |= DRM_MODE_FLAG_DBLSCAN;
 
 	adf_modeinfo_set_name(dmode);
+	adf_modeinfo_set_vrefresh(dmode);
 }
 EXPORT_SYMBOL_GPL(adf_modeinfo_from_videomode);
