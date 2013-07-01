@@ -208,18 +208,41 @@ struct adf_simple_post_config {
 };
 
 /**
+ * struct adf_attachment - description of attachment between an overlay engine
+ * and an interface
+ *
+ * @overlay_engine: id of the overlay engine
+ * @interface: id of the interface
+ */
+struct adf_attachment_config {
+	__u32 overlay_engine;
+	__u32 interface;
+};
+
+/**
  * struct adf_device_data - describes a display device
  *
  * @name: display device's name
+ * @n_attachments: the number of current attachments
+ * @attachments: list of current attachments
+ * @n_allowed_attachments: the number of allowed attachments
+ * @allowed_attachments: list of allowed attachments
  * @custom_data_size: size of driver-private data
  * @custom_data: driver-private data
  */
 struct adf_device_data {
 	char name[ADF_NAME_LEN];
 
+	size_t n_attachments;
+	struct adf_attachment_config __user *attachments;
+
+	size_t n_allowed_attachments;
+	struct adf_attachment_config __user *allowed_attachments;
+
 	size_t custom_data_size;
 	void __user *custom_data;
 };
+#define ADF_MAX_ATTACHMENTS (PAGE_SIZE / sizeof(struct adf_attachment))
 
 /**
  * struct adf_device_data - describes a display interface
@@ -289,6 +312,8 @@ struct adf_overlay_engine_data {
 				_IOR('D', 6, struct adf_overlay_engine_data)
 #define ADF_SIMPLE_POST_CONFIG	_IOW('D', 7, struct adf_simple_post_config)
 #define ADF_SIMPLE_BUFFER_ALLOC _IOW('D', 8, struct adf_simple_buffer_alloc)
+#define ADF_ATTACH		_IOW('D', 9, struct adf_attachment_config)
+#define ADF_DETACH		_IOW('D', 10, struct adf_attachment_config)
 
 #ifdef __KERNEL__
 struct adf_obj;
@@ -363,6 +388,21 @@ struct adf_post {
 
 	size_t custom_data_size;
 	void *custom_data;
+};
+
+/**
+ * struct adf_attachment - description of attachment between an overlay engine
+ * and an interface
+ *
+ * @overlay_engine: the overlay engine
+ * @interface: the interface
+ *
+ * &struct adf_attachment is the in-kernel counterpart to the userspace-facing
+ * &struct adf_attachment_config.
+ */
+struct adf_attachment {
+	struct adf_overlay_engine *overlay_engine;
+	struct adf_interface *interface;
 };
 
 struct adf_pending_post {
@@ -442,6 +482,11 @@ struct adf_obj {
  * @owner: device's module
  * @base: common operations (see &struct adf_obj_ops)
  *
+ * @attach: attach overlay engine @eng to interface @intf.  Return 0 on success
+ *	or error code (<0) on failure.
+ * @detach: detach overlay engine @eng from interface @intf.  Return 0 on
+ *	success or error code (<0) on failure.
+ *
  * @validate_custom_format: validate the number and size of planes
  *	in buffers with a custom format (i.e., not one of the @DRM_FORMAT_*
  *	types defined in drm/drm_fourcc.h).  Return 0 if the buffer is valid or
@@ -468,6 +513,13 @@ struct adf_device_ops {
 	struct module *owner;
 	const struct adf_obj_ops base;
 
+	/* optional */
+	int (*attach)(struct adf_device *dev, struct adf_overlay_engine *eng,
+			struct adf_interface *intf);
+	/* optional */
+	int (*detach)(struct adf_device *dev, struct adf_overlay_engine *eng,
+			struct adf_interface *intf);
+
 	/* required if any of the device's overlay engines supports at least one
 	   custom format */
 	int (*validate_custom_format)(struct adf_device *dev,
@@ -489,6 +541,11 @@ struct adf_device_ops {
 	void (*state_free)(struct adf_device *dev, void *driver_state);
 };
 
+struct adf_attachment_list {
+	struct adf_attachment attachment;
+	struct list_head head;
+};
+
 struct adf_device {
 	struct adf_obj base;
 	struct device *dev;
@@ -505,6 +562,11 @@ struct adf_device {
 	struct kthread_worker post_worker;
 	struct task_struct *post_thread;
 	struct kthread_work post_work;
+
+	struct list_head attached;
+	size_t n_attached;
+	struct list_head attach_allowed;
+	size_t n_attach_allowed;
 
 	struct adf_pending_post *onscreen;
 
@@ -632,6 +694,9 @@ int adf_overlay_engine_init(struct adf_overlay_engine *eng,
 		struct adf_device *dev,
 		const struct adf_overlay_engine_ops *ops, const char *fmt, ...);
 void adf_overlay_engine_destroy(struct adf_overlay_engine *eng);
+
+int adf_attachment_allow(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf);
 
 const char *adf_obj_type_str(enum adf_obj_type type);
 const char *adf_interface_type_str(struct adf_interface *intf);

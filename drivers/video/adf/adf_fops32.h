@@ -28,6 +28,12 @@ struct adf_post_config32 {
 struct adf_device_data32 {
 	char name[ADF_NAME_LEN];
 
+	compat_size_t n_attachments;
+	compat_uptr_t attachments;
+
+	compat_size_t n_allowed_attachments;
+	compat_uptr_t allowed_attachments;
+
 	compat_size_t custom_data_size;
 	compat_uptr_t custom_data;
 };

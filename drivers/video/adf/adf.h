@@ -34,6 +34,12 @@ void adf_buffer_mapping_cleanup(struct adf_buffer_mapping *mapping,
 		struct adf_buffer *buf);
 void adf_post_cleanup(struct adf_device *dev, struct adf_pending_post *post);
 
+struct adf_attachment_list *adf_attachment_find(struct list_head *list,
+		struct adf_overlay_engine *eng, struct adf_interface *intf);
+int adf_attachment_validate(struct adf_device *dev,
+		struct adf_overlay_engine *eng, struct adf_interface *intf);
+void adf_attachment_free(struct adf_attachment_list *attachment);
+
 struct adf_event_refcount *adf_obj_find_refcount(struct adf_obj *obj,
 		enum adf_event_type type);
 

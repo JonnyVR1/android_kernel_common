@@ -36,6 +36,19 @@ struct sync_fence *adf_interface_simple_post(struct adf_interface *intf,
 bool adf_overlay_engine_supports_format(struct adf_overlay_engine *eng,
 		u32 format);
 
+size_t adf_device_attachments(struct adf_device *dev,
+		struct adf_attachment *attachments, size_t n_attachments);
+size_t adf_device_attachments_allowed(struct adf_device *dev,
+		struct adf_attachment *attachments, size_t n_attachments);
+bool adf_device_attached(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf);
+bool adf_device_attach_allowed(struct adf_device *dev,
+		struct adf_overlay_engine *eng, struct adf_interface *intf);
+int adf_device_attach(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf);
+int adf_device_detach(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf);
+
 struct sync_fence *adf_device_post(struct adf_device *dev,
 		struct adf_buffer *bufs, size_t n_bufs, void *custom_data,
 		size_t custom_data_size);

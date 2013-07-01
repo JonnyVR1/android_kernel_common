@@ -379,16 +379,73 @@ err_alloc:
 	return ret;
 }
 
+static int adf_copy_attachment_list_to_user(struct adf_attachment_config __user *to,
+		size_t n_to, struct adf_attachment *from, size_t n_from)
+{
+	struct adf_attachment_config *temp;
+	size_t n = min(n_to, n_from);
+	size_t i;
+	int ret = 0;
+
+	if (!n)
+		return 0;
+
+	temp = kzalloc(n * sizeof(temp[0]), GFP_KERNEL);
+	if (!temp)
+		return -ENOMEM;
+
+	for (i = 0; i < n; i++) {
+		temp[i].interface = from[i].interface->base.id;
+		temp[i].overlay_engine = from[i].overlay_engine->base.id;
+	}
+
+	if (copy_to_user(to, temp, n * sizeof(to[0]))) {
+		ret = -EFAULT;
+		goto done;
+	}
+
+done:
+	kfree(temp);
+	return ret;
+}
+
 static int adf_device_get_data(struct adf_device *dev,
 		struct adf_device_data __user *arg)
 {
 	struct adf_device_data data;
+	size_t n_attach;
+	struct adf_attachment *attach = NULL;
+	size_t n_allowed_attach;
+	struct adf_attachment *allowed_attach = NULL;
 	int ret = 0;
 
 	if (copy_from_user(&data, arg, sizeof(data)))
 		return -EFAULT;
 
+	if (data.n_attachments > ADF_MAX_ATTACHMENTS ||
+			data.n_allowed_attachments > ADF_MAX_ATTACHMENTS)
+		return -ENOMEM;
+
 	strlcpy(data.name, dev->base.name, sizeof(data.name));
+
+	if (data.n_attachments) {
+		attach = kzalloc(data.n_attachments * sizeof(attach[0]),
+				GFP_KERNEL);
+		if (!attach)
+			return -ENOMEM;
+	}
+	n_attach = adf_device_attachments(dev, attach, data.n_attachments);
+
+	if (data.n_allowed_attachments) {
+		allowed_attach = kzalloc(data.n_allowed_attachments *
+				sizeof(allowed_attach[0]), GFP_KERNEL);
+		if (!allowed_attach) {
+			ret = -ENOMEM;
+			goto done;
+		}
+	}
+	n_allowed_attach = adf_device_attachments_allowed(dev, allowed_attach,
+			data.n_allowed_attachments);
 
 	mutex_lock(&dev->client_lock);
 	ret = adf_obj_copy_custom_data_to_user(&dev->base, arg->custom_data,
@@ -396,12 +453,59 @@ static int adf_device_get_data(struct adf_device *dev,
 	mutex_unlock(&dev->client_lock);
 
 	if (ret < 0)
-		return ret;
+		goto done;
+
+	ret = adf_copy_attachment_list_to_user(arg->attachments,
+			data.n_attachments, attach, n_attach);
+	if (ret < 0)
+		goto done;
+
+	ret = adf_copy_attachment_list_to_user(arg->allowed_attachments,
+			data.n_allowed_attachments, allowed_attach,
+			n_allowed_attach);
+	if (ret < 0)
+		goto done;
+
+	data.n_attachments = n_attach;
+	data.n_allowed_attachments = n_allowed_attach;
 
 	if (copy_to_user(arg, &data, sizeof(data)))
+		ret = -EFAULT;
+
+done:
+	kfree(allowed_attach);
+	kfree(attach);
+	return ret;
+}
+
+static int adf_device_handle_attachment(struct adf_device *dev,
+		struct adf_attachment_config __user *arg, bool attach)
+{
+	struct adf_attachment_config data;
+	struct adf_overlay_engine *eng;
+	struct adf_interface *intf;
+
+	if (copy_from_user(&data, arg, sizeof(data)))
 		return -EFAULT;
 
-	return 0;
+	eng = idr_find(&dev->overlay_engines, data.overlay_engine);
+	if (!eng) {
+		dev_err(&dev->base.dev, "invalid overlay engine id %u\n",
+				data.overlay_engine);
+		return -EINVAL;
+	}
+
+	intf = idr_find(&dev->interfaces, data.interface);
+	if (!intf) {
+		dev_err(&dev->base.dev, "invalid interface id %u\n",
+				data.interface);
+		return -EINVAL;
+	}
+
+	if (attach)
+		return adf_device_attach(dev, eng, intf);
+	else
+		return adf_device_detach(dev, eng, intf);
 }
 
 static int adf_intf_set_mode(struct adf_interface *intf,
@@ -485,6 +589,8 @@ static long adf_overlay_engine_ioctl(struct adf_overlay_engine *eng,
 	case ADF_GET_INTERFACE_DATA:
 	case ADF_SIMPLE_POST_CONFIG:
 	case ADF_SIMPLE_BUFFER_ALLOC:
+	case ADF_ATTACH:
+	case ADF_DETACH:
 		return -EINVAL;
 
 	default:
@@ -523,6 +629,8 @@ static long adf_interface_ioctl(struct adf_interface *intf,
 
 	case ADF_POST_CONFIG:
 	case ADF_GET_OVERLAY_ENGINE_DATA:
+	case ADF_ATTACH:
+	case ADF_DETACH:
 		return -EINVAL;
 
 	default:
@@ -547,6 +655,16 @@ static long adf_device_ioctl(struct adf_device *dev, struct adf_file *file,
 	case ADF_GET_DEVICE_DATA:
 		return adf_device_get_data(dev,
 				(struct adf_device_data __user *)arg);
+
+	case ADF_ATTACH:
+		return adf_device_handle_attachment(dev,
+				(struct adf_attachment_config __user *)arg,
+				true);
+
+	case ADF_DETACH:
+		return adf_device_handle_attachment(dev,
+				(struct adf_attachment_config __user *)arg,
+				false);
 
 	case ADF_BLANK:
 	case ADF_SET_MODE:

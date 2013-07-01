@@ -528,6 +528,225 @@ err_alloc:
 }
 EXPORT_SYMBOL(adf_device_post_nocopy);
 
+static void adf_attachment_list_to_array(struct adf_device *dev,
+		struct list_head *src, struct adf_attachment *dst, size_t size)
+{
+	struct adf_attachment_list *entry;
+	size_t i = 0;
+
+	if (!dst)
+		return;
+
+	list_for_each_entry(entry, src, head) {
+		if (i == size)
+			return;
+		dst[i] = entry->attachment;
+		i++;
+	}
+}
+
+/**
+ * adf_device_attachments_allowed - get device's list of active attachments
+ *
+ * @dev: the device
+ * @attachments: storage for the attachment list (optional)
+ * @n_attachments: length of @attachments
+ *
+ * If @attachments is not NULL, adf_device_attachments() will copy up to
+ * @n_attachments entries into @attachments.
+ *
+ * Returns the length of the active attachment list.
+ */
+size_t adf_device_attachments(struct adf_device *dev,
+		struct adf_attachment *attachments, size_t n_attachments)
+{
+	size_t retval;
+
+	mutex_lock(&dev->client_lock);
+	adf_attachment_list_to_array(dev, &dev->attached, attachments,
+			n_attachments);
+	retval = dev->n_attached;
+	mutex_unlock(&dev->client_lock);
+
+	return retval;
+}
+EXPORT_SYMBOL(adf_device_attachments);
+
+/**
+ * adf_device_attachments_allowed - get device's list of allowed attachments
+ *
+ * @dev: the device
+ * @attachments: storage for the attachment list (optional)
+ * @n_attachments: length of @attachments
+ *
+ * If @attachments is not NULL, adf_device_attachments_allowed() will copy up to
+ * @n_attachments entries into @attachments.
+ *
+ * Returns the length of the allowed attachment list.
+ */
+size_t adf_device_attachments_allowed(struct adf_device *dev,
+		struct adf_attachment *attachments, size_t n_attachments)
+{
+	size_t retval;
+
+	mutex_lock(&dev->client_lock);
+	adf_attachment_list_to_array(dev, &dev->attach_allowed, attachments,
+			n_attachments);
+	retval = dev->n_attach_allowed;
+	mutex_unlock(&dev->client_lock);
+
+	return retval;
+}
+EXPORT_SYMBOL(adf_device_attachments_allowed);
+
+/**
+ * adf_device_attached - return whether an overlay engine and interface are
+ * attached
+ *
+ * @dev: the parent device
+ * @eng: the overlay engine
+ * @intf: the interface
+ */
+bool adf_device_attached(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf)
+{
+	bool ret;
+
+	mutex_lock(&dev->client_lock);
+	ret = adf_attachment_find(&dev->attached, eng, intf) != NULL;
+	mutex_unlock(&dev->client_lock);
+
+	return ret;
+}
+EXPORT_SYMBOL(adf_device_attached);
+
+/**
+ * adf_device_attach_allowed - return whether the ADF device supports attaching
+ * an overlay engine and interface
+ *
+ * @dev: the parent device
+ * @eng: the overlay engine
+ * @intf: the interface
+ */
+bool adf_device_attach_allowed(struct adf_device *dev,
+		struct adf_overlay_engine *eng, struct adf_interface *intf)
+{
+	bool ret;
+
+	mutex_lock(&dev->client_lock);
+	ret = adf_attachment_find(&dev->attach_allowed, eng, intf) != NULL;
+	mutex_unlock(&dev->client_lock);
+
+	return ret;
+}
+EXPORT_SYMBOL(adf_device_attach_allowed);
+
+/**
+ * adf_device_attach - attach an overlay engine to an interface
+ *
+ * @dev: the parent device
+ * @eng: the overlay engine
+ * @intf: the interface
+ *
+ * Returns 0 on success, -%EINVAL if attaching @intf and @eng is not allowed,
+ * -%EALREADY if @intf and @eng are already attached, or -errno on any other
+ * failure.
+ */
+int adf_device_attach(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf)
+{
+	int ret;
+	struct adf_attachment_list *attachment = NULL;
+
+	ret = adf_attachment_validate(dev, eng, intf);
+	if (ret < 0)
+		return ret;
+
+	mutex_lock(&dev->client_lock);
+
+	if (dev->n_attached == ADF_MAX_ATTACHMENTS) {
+		ret = -ENOMEM;
+		goto done;
+	}
+
+	if (adf_attachment_find(&dev->attach_allowed, eng, intf) == NULL) {
+		ret = -EINVAL;
+		goto done;
+	}
+
+	if (adf_attachment_find(&dev->attached, eng, intf)) {
+		ret = -EALREADY;
+		goto done;
+	}
+
+	if (dev->ops && dev->ops->attach) {
+		ret = dev->ops->attach(dev, eng, intf);
+		if (ret < 0)
+			goto done;
+	}
+
+	attachment = kzalloc(sizeof(*attachment), GFP_KERNEL);
+	if (!attachment) {
+		ret = -ENOMEM;
+		goto done;
+	}
+
+	attachment->attachment.interface = intf;
+	attachment->attachment.overlay_engine = eng;
+	list_add_tail(&attachment->head, &dev->attached);
+	dev->n_attached++;
+
+done:
+	mutex_unlock(&dev->client_lock);
+	if (ret < 0)
+		kfree(attachment);
+
+	return ret;
+}
+EXPORT_SYMBOL(adf_device_attach);
+
+/**
+ * adf_device_detach - detach an overlay engine from an interface
+ *
+ * @dev: the parent device
+ * @eng: the overlay engine
+ * @intf: the interface
+ *
+ * Returns 0 on success, -%EINVAL if @intf and @eng are not attached,
+ * or -errno on any other failure.
+ */
+int adf_device_detach(struct adf_device *dev, struct adf_overlay_engine *eng,
+		struct adf_interface *intf)
+{
+	int ret;
+	struct adf_attachment_list *attachment;
+
+	ret = adf_attachment_validate(dev, eng, intf);
+	if (ret < 0)
+		return ret;
+
+	mutex_lock(&dev->client_lock);
+
+	attachment = adf_attachment_find(&dev->attached, eng, intf);
+	if (!attachment) {
+		ret = -EINVAL;
+		goto done;
+	}
+
+	if (dev->ops && dev->ops->detach) {
+		ret = dev->ops->detach(dev, eng, intf);
+		if (ret < 0)
+			goto done;
+	}
+
+	adf_attachment_free(attachment);
+	dev->n_attached--;
+done:
+	mutex_unlock(&dev->client_lock);
+	return ret;
+}
+EXPORT_SYMBOL(adf_device_detach);
+
 /**
  * adf_interface_simple_buffer_alloc - allocate a simple buffer
  *

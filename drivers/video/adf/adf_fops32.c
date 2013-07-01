@@ -65,7 +65,15 @@ long adf_compat_get_device_data(struct file *file,
 	if (!access_ok(VERIFY_WRITE, data, sizeof(*data)))
 		return -EFAULT;
 
-	if (put_user(data32.custom_data_size, &data->custom_data_size) ||
+	if (put_user(data32.n_attachments, &data->n_attachments) ||
+			put_user(compat_ptr(data32.attachments),
+					&data->attachments) ||
+			put_user(data32.n_allowed_attachments,
+					&data->n_allowed_attachments) ||
+			put_user(compat_ptr(data32.allowed_attachments),
+					&data->allowed_attachments) ||
+			put_user(data32.custom_data_size,
+					&data->custom_data_size) ||
 			put_user(compat_ptr(data32.custom_data),
 					&data->custom_data))
 		return -EFAULT;
@@ -75,6 +83,11 @@ long adf_compat_get_device_data(struct file *file,
 		return ret;
 
 	if (copy_in_user(arg->name, data->name, sizeof(arg->name)) ||
+			copy_in_user(&arg->n_attachments, &data->n_attachments,
+					sizeof(arg->n_attachments)) ||
+			copy_in_user(&arg->n_allowed_attachments,
+					&data->n_allowed_attachments,
+					sizeof(arg->n_allowed_attachments)) ||
 			copy_in_user(&arg->custom_data_size,
 					&data->custom_data_size,
 					sizeof(arg->custom_data_size)))

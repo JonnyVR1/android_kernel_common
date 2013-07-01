@@ -136,6 +136,12 @@ static void adf_post_work_func(struct kthread_work *work)
 	}
 }
 
+void adf_attachment_free(struct adf_attachment_list *attachment)
+{
+	list_del(&attachment->head);
+	kfree(attachment);
+}
+
 struct adf_event_refcount *adf_obj_find_refcount(struct adf_obj *obj,
 		enum adf_event_type type)
 {
@@ -529,6 +535,8 @@ int adf_device_init(struct adf_device *dev, struct device *parent,
 	INIT_LIST_HEAD(&dev->post_list);
 	mutex_init(&dev->post_lock);
 	init_kthread_worker(&dev->post_worker);
+	INIT_LIST_HEAD(&dev->attached);
+	INIT_LIST_HEAD(&dev->attach_allowed);
 
 	dev->post_thread = kthread_run(kthread_worker_fn,
 			&dev->post_worker, dev->base.name);
@@ -558,6 +566,8 @@ EXPORT_SYMBOL(adf_device_init);
  */
 void adf_device_destroy(struct adf_device *dev)
 {
+	struct adf_attachment_list *entry, *next;
+
 	idr_remove_all(&dev->interfaces);
 	idr_remove_all(&dev->overlay_engines);
 	idr_destroy(&dev->interfaces);
@@ -568,6 +578,12 @@ void adf_device_destroy(struct adf_device *dev)
 	if (dev->onscreen)
 		adf_post_cleanup(dev, dev->onscreen);
 	adf_device_sysfs_destroy(dev);
+	list_for_each_entry_safe(entry, next, &dev->attach_allowed, head) {
+		adf_attachment_free(entry);
+	}
+	list_for_each_entry_safe(entry, next, &dev->attached, head) {
+		adf_attachment_free(entry);
+	}
 	adf_obj_destroy(&dev->base);
 }
 EXPORT_SYMBOL(adf_device_destroy);
@@ -630,10 +646,30 @@ EXPORT_SYMBOL(adf_interface_init);
  */
 void adf_interface_destroy(struct adf_interface *intf)
 {
+	struct adf_device *dev = intf->base.parent;
+	struct adf_attachment_list *entry, *next;
+
+	mutex_lock(&dev->client_lock);
+	list_for_each_entry_safe(entry, next, &dev->attach_allowed, head) {
+		if (entry->attachment.interface == intf) {
+			adf_attachment_free(entry);
+			dev->n_attach_allowed--;
+		}
+	}
+	list_for_each_entry_safe(entry, next, &dev->attached, head) {
+		if (entry->attachment.interface == intf) {
+			if (dev->ops && dev->ops->detach)
+				dev->ops->detach(dev,
+					entry->attachment.overlay_engine, intf);
+			adf_attachment_free(entry);
+			dev->n_attached--;
+		}
+	}
 	kfree(intf->modelist);
 	adf_interface_sysfs_destroy(intf);
 	idr_remove(&intf->base.parent->interfaces, intf->base.id);
 	adf_obj_destroy(&intf->base);
+	mutex_unlock(&dev->client_lock);
 }
 EXPORT_SYMBOL(adf_interface_destroy);
 
@@ -691,11 +727,117 @@ EXPORT_SYMBOL(adf_overlay_engine_init);
  */
 void adf_overlay_engine_destroy(struct adf_overlay_engine *eng)
 {
+	struct adf_device *dev = eng->base.parent;
+	struct adf_attachment_list *entry, *next;
+
+	mutex_lock(&dev->client_lock);
+	list_for_each_entry_safe(entry, next, &dev->attach_allowed, head) {
+		if (entry->attachment.overlay_engine == eng) {
+			adf_attachment_free(entry);
+			dev->n_attach_allowed--;
+		}
+	}
+	list_for_each_entry_safe(entry, next, &dev->attached, head) {
+		if (entry->attachment.overlay_engine == eng) {
+			if (dev->ops && dev->ops->detach)
+				dev->ops->detach(dev, eng,
+					entry->attachment.interface);
+			adf_attachment_free(entry);
+			dev->n_attached--;
+		}
+	}
 	adf_overlay_engine_sysfs_destroy(eng);
 	idr_remove(&eng->base.parent->overlay_engines, eng->base.id);
 	adf_obj_destroy(&eng->base);
+	mutex_unlock(&dev->client_lock);
 }
 EXPORT_SYMBOL(adf_overlay_engine_destroy);
+
+struct adf_attachment_list *adf_attachment_find(struct list_head *list,
+		struct adf_overlay_engine *eng, struct adf_interface *intf)
+{
+	struct adf_attachment_list *entry;
+	list_for_each_entry(entry, list, head) {
+		if (entry->attachment.interface == intf &&
+				entry->attachment.overlay_engine == eng)
+			return entry;
+	}
+	return NULL;
+}
+
+int adf_attachment_validate(struct adf_device *dev,
+		struct adf_overlay_engine *eng, struct adf_interface *intf)
+{
+	if (intf->base.parent != dev) {
+		dev_err(&dev->base.dev, "can't attach interface %s belonging to device %s\n",
+				intf->base.name, intf->base.parent->base.name);
+		return -EINVAL;
+	}
+
+	if (eng->base.parent != dev) {
+		dev_err(&dev->base.dev, "can't attach overlay engine %s belonging to device %s\n",
+				eng->base.name, eng->base.parent->base.name);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+/**
+ * adf_attachment_allow - add a new entry to the list of allowed
+ * attachments
+ *
+ * @dev: the parent device
+ * @eng: the overlay engine
+ * @intf: the interface
+ *
+ * adf_attachment_allow() indicates that the underlying display hardware allows
+ * @intf to scan out @eng's output.  It is intended to be called at
+ * driver initialization for each supported overlay engine + interface pair.
+ *
+ * Returns 0 on success, -%EALREADY if the entry already exists, or -errno on
+ * any other failure.
+ */
+int adf_attachment_allow(struct adf_device *dev,
+		struct adf_overlay_engine *eng, struct adf_interface *intf)
+{
+	int ret;
+	struct adf_attachment_list *entry = NULL;
+
+	ret = adf_attachment_validate(dev, eng, intf);
+	if (ret < 0)
+		return ret;
+
+	mutex_lock(&dev->client_lock);
+
+	if (dev->n_attach_allowed == ADF_MAX_ATTACHMENTS) {
+		ret = -ENOMEM;
+		goto done;
+	}
+
+	if (adf_attachment_find(&dev->attach_allowed, eng, intf)) {
+		ret = -EALREADY;
+		goto done;
+	}
+
+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+	if (!entry) {
+		ret = -ENOMEM;
+		goto done;
+	}
+
+	entry->attachment.interface = intf;
+	entry->attachment.overlay_engine = eng;
+	list_add_tail(&entry->head, &dev->attach_allowed);
+	dev->n_attach_allowed++;
+
+done:
+	mutex_unlock(&dev->client_lock);
+	if (ret < 0)
+		kfree(entry);
+
+	return ret;
+}
 
 /**
  * adf_obj_type_str - string representation of an adf_obj_type
