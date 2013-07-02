@@ -9,12 +9,28 @@ UUID: 2771b0c7_79fe8727
 Bytes: 63
 This does not do anything. Did you mean to jump somewhere else?
 
+292
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_79fe8727
+UUID: 2771b0c7_9cefc9e6
+Bytes: 61
+oops, left over from when I had the vm_name stuff just below.
+
 302
 Tue Jul 02 23:40:54 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771b0c7_d99553d4
 Bytes: 74
 this would match the existing code closer if you put it inside if (!name).
+
+302
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_d99553d4
+UUID: 2771b0c7_7cc99579
+Bytes: 256
+thats why the goto done was there, but I moved it here because I wanted a custom format [anon:<name>].  I could set name to <name>, and then use the presence of vma->vm_name or some other flag to modify the format, but it seemed cleaner just to do it here.
 
 File: mm/madvise.c
 
@@ -25,6 +41,14 @@ UUID: 2771b0c7_99911bd7
 Bytes: 44
 Why call this when IS_ERR(new_name) is true?
 
+147
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_99911bd7
+UUID: 2771b0c7_9ce109ed
+Bytes: 8
+will fix
+
 360
 Tue Jul 02 23:40:54 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +56,28 @@ UUID: 2771b0c7_dcfb01f9
 Bytes: 60
 You are zeroing a buffer here that you then fully overwrite.
 
+360
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_dcfb01f9
+UUID: 2771b0c7_5cadb192
+Bytes: 8
+will fix
+
 368
 Tue Jul 02 23:40:54 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771b0c7_5c113161
 Bytes: 30
 arg may not be null terminated
+
+368
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_5c113161
+UUID: 2771b0c7_fcbda5bd
+Bytes: 215
+i switched to passing the length around instead of using null termination because other users of this api might use a struct instead of a string, but I need to pass arg_len all the way down to vma_name_get_from_str.
 
 File: mm/vma_name.c
 
@@ -48,6 +88,16 @@ UUID: 2771b0c7_fc53651c
 Bytes: 11
 why a list?
 
+30
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_fc53651c
+UUID: 2771b0c7_fc6fe56d
+Bytes: 323
+I wanted very fast remove times, since they will get called from various mm operations, and adds will only ever get called from madvise2(MADV_NAME).  an rb tree has O(log n) remove time.
+
+on the other hand, madvise2(MADV_NAME) will walk the list twice while holding the mmap_sem, so improving search time might be worth it.
+
 69
 Tue Jul 02 23:40:54 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,10 +105,26 @@ UUID: 2771b0c7_1ce89900
 Bytes: 55
 What does "list lock held" mean? read, write or either?
 
+69
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_1ce89900
+UUID: 2771b0c7_9c6ca97b
+Bytes: 32
+either, i'll update the comment.
+
 98
 Tue Jul 02 23:40:54 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771b0c7_7c251583
 Bytes: 71
 why does this need a length limit? It is copying another kernel string.
+
+98
+Tue Jul 02 23:51:44 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_7c251583
+UUID: 2771b0c7_bc696d6a
+Bytes: 60
+i'll pass in arg_len from the top level and use that instead
 
