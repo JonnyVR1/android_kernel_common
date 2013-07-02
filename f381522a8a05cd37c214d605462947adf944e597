@@ -1,0 +1,64 @@
+Revision: f381522a8a05cd37c214d605462947adf944e597
+Patch-set: 1
+File: fs/proc/task_mmu.c
+
+292
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_79fe8727
+Bytes: 63
+This does not do anything. Did you mean to jump somewhere else?
+
+302
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_d99553d4
+Bytes: 74
+this would match the existing code closer if you put it inside if (!name).
+
+File: mm/madvise.c
+
+147
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_99911bd7
+Bytes: 44
+Why call this when IS_ERR(new_name) is true?
+
+360
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_dcfb01f9
+Bytes: 60
+You are zeroing a buffer here that you then fully overwrite.
+
+368
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_5c113161
+Bytes: 30
+arg may not be null terminated
+
+File: mm/vma_name.c
+
+30
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_fc53651c
+Bytes: 11
+why a list?
+
+69
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_1ce89900
+Bytes: 55
+What does "list lock held" mean? read, write or either?
+
+98
+Tue Jul 02 23:40:54 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_7c251583
+Bytes: 71
+why does this need a length limit? It is copying another kernel string.
+
