@@ -1,0 +1,18 @@
+Revision: 0981989b1e9c41c14e0e234fba0e467c68823719
+Patch-set: 5
+File: mm/madvise.c
+
+481
+Wed Jul 03 22:52:39 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_8520c575
+Bytes: 29
+This does not match the code.
+
+583
+Wed Jul 03 22:52:39 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_0534b5b1
+Bytes: 76
+Would this produce a readable diff if you put it below the old madvise call?
+
