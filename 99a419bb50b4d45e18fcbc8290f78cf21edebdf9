@@ -34,3 +34,11 @@ UUID: 2771b0c7_df88d365
 Bytes: 54
 you're right, and that makes this code so much simpler
 
+33
+Wed Jul 03 04:34:46 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_df88d365
+UUID: 2771b0c7_bfb15f19
+Bytes: 241
+one problem, i use the fact that the list can store two identical elements to handle the case where object with refcount 0 is still in the list.  I think I can rearrange it so the write lock is held whenever the refcount is decremented to 0.
+
