@@ -9,6 +9,14 @@ UUID: 2771b0c7_5324bc1d
 Bytes: 48
 why not use atomic_dec here and avoid the retry?
 
+81
+Wed Jul 03 20:32:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_5324bc1d
+UUID: 2771b0c7_aea92bcb
+Bytes: 4
+Done
+
 116
 Wed Jul 03 20:16:46 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: 2771b0c7_9379f4d6
 Bytes: 22
 are two hashes useful?
 
+116
+Wed Jul 03 20:32:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_9379f4d6
+UUID: 2771b0c7_4e62cfeb
+Bytes: 222
+I need to compare the length of the strings because name->name may not be null terminated, and it may be a prefix of vma_name->name.  it was easier to add it as a key to make sure they are equal by the time I call strncmp.
+
 149
 Wed Jul 03 20:16:46 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771b0c7_93fed424
 Bytes: 47
 kzalloc already does this. You don't need both.
+
+149
+Wed Jul 03 20:32:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_93fed424
+UUID: 2771b0c7_0e54d704
+Bytes: 59
+I like to make it explicit that it is null terminated here.
 
