@@ -1,0 +1,25 @@
+Revision: 957808d8b3254c826e053ac17cabb73ed830c903
+Patch-set: 3
+File: mm/vma_name.c
+
+81
+Wed Jul 03 20:16:46 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_5324bc1d
+Bytes: 48
+why not use atomic_dec here and avoid the retry?
+
+116
+Wed Jul 03 20:16:46 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_9379f4d6
+Bytes: 22
+are two hashes useful?
+
+149
+Wed Jul 03 20:16:46 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771b0c7_93fed424
+Bytes: 47
+kzalloc already does this. You don't need both.
+
