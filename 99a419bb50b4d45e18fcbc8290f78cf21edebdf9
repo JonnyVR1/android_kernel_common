@@ -9,6 +9,14 @@ UUID: 2771b0c7_7f918798
 Bytes: 58
 NULL here should return an error, not delete the old name.
 
+102
+Wed Jul 03 03:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_7f918798
+UUID: 2771b0c7_ff85974c
+Bytes: 8
+will fix
+
 File: mm/vma_name.c
 
 33
@@ -17,4 +25,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771b0c7_1f964b92
 Bytes: 98
 You don't need a list here, just compare the string if the hash matches when searching the rbtree.
+
+33
+Wed Jul 03 03:07:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_1f964b92
+UUID: 2771b0c7_df88d365
+Bytes: 54
+you're right, and that makes this code so much simpler
 
