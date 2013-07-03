@@ -12,6 +12,7 @@
 #include <linux/irq.h>
 #include <linux/kdebug.h>
 #include <linux/kgdb.h>
+#include <linux/module.h>
 #include <asm/traps.h>
 
 struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] =
@@ -43,6 +44,11 @@ struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] =
 	{ "fps", 4, -1 },
 	{ "cpsr", 4, offsetof(struct pt_regs, ARM_cpsr)},
 };
+
+static bool ignore_user_break;
+
+module_param_named(ignoreuserbreak, ignore_user_break, bool,
+		   S_IRUGO | S_IWUSR | S_IWGRP);
 
 char *dbg_get_reg(int regno, void *mem, struct pt_regs *regs)
 {
@@ -144,6 +150,8 @@ int kgdb_arch_handle_exception(int exception_vector, int signo,
 
 static int kgdb_brk_fn(struct pt_regs *regs, unsigned int instr)
 {
+	if (ignore_user_break && user_mode(regs))
+		return -1;
 	kgdb_handle_exception(1, SIGTRAP, 0, regs);
 
 	return 0;
@@ -151,6 +159,8 @@ static int kgdb_brk_fn(struct pt_regs *regs, unsigned int instr)
 
 static int kgdb_compiled_brk_fn(struct pt_regs *regs, unsigned int instr)
 {
+	if (ignore_user_break && user_mode(regs))
+		return -1;
 	compiled_break = 1;
 	kgdb_handle_exception(1, SIGTRAP, 0, regs);
 
