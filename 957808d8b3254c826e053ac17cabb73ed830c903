@@ -47,3 +47,11 @@ UUID: 2771b0c7_0e54d704
 Bytes: 59
 I like to make it explicit that it is null terminated here.
 
+149
+Wed Jul 03 21:19:11 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771b0c7_0e54d704
+UUID: 2771b0c7_ee87239c
+Bytes: 37
+Why do you memset it to 0 first then?
+
