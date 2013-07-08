@@ -10,3 +10,5 @@ obj-$(CONFIG_ADF) += adf.o \
 obj-$(CONFIG_COMPAT) += adf_fops32.o
 
 obj-$(CONFIG_ADF_DISPLAY_CORE) += adf_display.o
+
+obj-$(CONFIG_ADF_MEMBLOCK) += adf_memblock.o

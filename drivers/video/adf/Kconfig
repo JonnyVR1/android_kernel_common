@@ -7,3 +7,8 @@ menuconfig ADF_DISPLAY_CORE
 	depends on ADF
 	depends on DISPLAY_CORE
 	tristate "Helper for implementing ADF interface ops with Display Core devices"
+
+menuconfig ADF_MEMBLOCK
+	depends on ADF
+	depends on HAVE_MEMBLOCK
+	tristate "Helper for using memblocks as buffers in ADF drivers"
