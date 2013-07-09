@@ -52,3 +52,28 @@ When cpu0 is up, the cpufreq device driver will set all the cpus masks to the po
 
 When cpu1/2/3 is up/down, there is no governor start/stop is called because the policy is already set for them. So we have to stop/start the timer in idle callback.
 
+1066
+Tue Jul 09 07:30:59 2013 +0000
+Author: LianWei Wang <1017041@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca753907_49f54577
+UUID: a716808d_65968693
+Bytes: 846
+A upstream patch from kernel.org can make sure only online cpus will be managed by the policy. We can remove this check after that upstream patch merged.
+
+commit 643ae6e81dd65b333a13259852405fc9f764ac76
+Author: Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Sat Jan 12 05:14:38 2013 +0000
+
+    cpufreq: Manage only online cpus
+    
+    cpufreq core doesn't manage offline cpus and if driver->init() has returned
+    mask including offline cpus, it may result in unwanted behavior by cpufreq core
+    or governors.
+    
+    We need to get only online cpus in this mask. There are two places to fix this
+    mask, cpufreq core and cpufreq driver. It makes sense to do this at common place
+    and hence is done in core.
+    
+    Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+    Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
