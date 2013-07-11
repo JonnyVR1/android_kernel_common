@@ -256,7 +256,7 @@ struct adf_device_data {
  * @name: display interface's name
  * @type: interface type (see enum @adf_interface_type)
  * @id: which interface of type @type;
- *	e.g. interface DSI.1 -> @type=@ADF_INTF_TYPE_DSI, @id=1
+ *	e.g. interface DSI.1 -> @type=%ADF_INTF_TYPE_DSI, @id=1
  * @dpms_state: DPMS state (one of @DRM_MODE_DPMS_* defined in drm_mode.h)
  * @hotplug_detect: whether a display is plugged in
  * @width_mm: screen width in millimeters, or 0 if unknown
@@ -695,6 +695,7 @@ int adf_device_init(struct adf_device *dev, struct device *parent,
 		const struct adf_device_ops *ops, const char *fmt, ...);
 void adf_device_destroy(struct adf_device *dev);
 int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
+		enum adf_interface_type type, u32 idx,
 		const struct adf_interface_ops *ops, const char *fmt, ...);
 void adf_interface_destroy(struct adf_interface *intf);
 int adf_overlay_engine_init(struct adf_overlay_engine *eng,

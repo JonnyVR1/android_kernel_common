@@ -594,6 +594,9 @@ EXPORT_SYMBOL(adf_device_destroy);
  *
  * @intf: the display interface
  * @dev: the interface's "parent" display device
+ * @type: interface type (see enum @adf_interface_type)
+ * @idx: which interface of type @type;
+ *	e.g. interface DSI.1 -> @type=%ADF_INTF_TYPE_DSI, @idx=1
  * @ops: the interface's associated ops
  * @fmt: formatting string for the display interface's name
  *
@@ -606,6 +609,7 @@ EXPORT_SYMBOL(adf_device_destroy);
  * Returns 0 on success or error code (<0) on failure.
  */
 int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
+		enum adf_interface_type type, u32 idx,
 		const struct adf_interface_ops *ops, const char *fmt, ...)
 {
 	int ret;
@@ -614,8 +618,8 @@ int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
 	if (dev->n_interfaces == ADF_MAX_INTERFACES)
 		return -ENOMEM;
 
-	if (intf->type >= ADF_INTF_MEMORY &&
-			intf->type <= ADF_INTF_TYPE_DEVICE_CUSTOM)
+	if (type >= ADF_INTF_MEMORY &&
+			type <= ADF_INTF_TYPE_DEVICE_CUSTOM)
 		return -EINVAL;
 
 	va_start(args, fmt);
@@ -629,6 +633,8 @@ int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
 	if (ret < 0)
 		goto err;
 
+	intf->type = type;
+	intf->idx = idx;
 	intf->ops = ops;
 	init_waitqueue_head(&intf->vsync_wait);
 	rwlock_init(&intf->vsync_lock);
