@@ -1,0 +1,14 @@
+Revision: cd42cd5a1069896d400ef64e585d996332e90f63
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+667
+Thu Jul 18 00:52:24 2013 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 33665713_7bec3b42
+Bytes: 96
+Hi Dmitry
+Probably someone make mistake this code.
+could you change this code like this?
+&& -> &
+
