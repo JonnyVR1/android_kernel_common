@@ -567,6 +567,14 @@ static int fib_check_nh(struct fib_config *cfg, struct fib_info *fi,
 			if (fl4.flowi4_scope < RT_SCOPE_LINK)
 				fl4.flowi4_scope = RT_SCOPE_LINK;
 			err = fib_lookup(net, &fl4, &res);
+			if (err && cfg->fc_table != RT_TABLE_UNSPEC) {
+				struct fib_table *table;
+				table = fib_get_table(net, cfg->fc_table);
+				if (table &&
+				    !fib_table_lookup(table, &fl4, &res,
+						      FIB_LOOKUP_NOREF))
+					err = 0;
+			}
 			if (err) {
 				rcu_read_unlock();
 				return err;
