@@ -18,6 +18,15 @@ UUID: f3c75f62_76e01013
 Bytes: 43
 Preserve the original err value for return?
 
+572
+Tue Jul 23 00:26:40 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f3c75f62_76e01013
+UUID: f3c75f62_36bdb800
+Bytes: 123
+Will do.
+The fib_lookup() in ip_fib.h returned -ENETUNREACH. But preserving the err here makes the change more transparent.
+
 573
 Mon Jul 22 23:55:01 2013 +0000
 Author: Robert Greenwalt <1002609@85c56323-6fa9-3386-8a01-6480fb634889>
