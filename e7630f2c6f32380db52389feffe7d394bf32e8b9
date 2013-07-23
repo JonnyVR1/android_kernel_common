@@ -11,3 +11,12 @@ might this return 0?  Code in devinet.c does:
 table = fib_get_table(net, RT_TABLE_LOCAL);
 if (local && !fib_table_lookup(local, ....) {
 
+573
+Tue Jul 23 00:21:01 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f3c75f62_765bb02e
+UUID: f3c75f62_b6c1c872
+Bytes: 103
+Will do.
+The code I grabbed this from didn't check either but only because the tables were pre-created.
+
