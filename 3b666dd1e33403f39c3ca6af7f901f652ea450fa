@@ -1,0 +1,18 @@
+Revision: 3b666dd1e33403f39c3ca6af7f901f652ea450fa
+Patch-set: 2
+File: /COMMIT_MSG
+
+19
+Tue Jul 23 00:48:44 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3c75f62_760c9004
+Bytes: 51
+does not contain rules for all non-built-in tables?
+
+24
+Tue Jul 23 00:48:44 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3c75f62_560794e0
+Bytes: 12
+fib_lookup()
+
