@@ -1,0 +1,15 @@
+Revision: 4ce80b6b8ec47353ccf62450ecdd57a67be2140c
+Base-for-patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+8979
+Tue Jul 23 18:17:00 2013 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 337c97f0_e82fd396
+Bytes: 71
+Hi Dmitry
+Is there any reason to remove this definition?
+
+Regards,
+Ecco
+
