@@ -1,5 +1,14 @@
 Revision: e7630f2c6f32380db52389feffe7d394bf32e8b9
 Patch-set: 1
+File: /COMMIT_MSG
+
+24
+Tue Jul 23 00:26:37 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3c75f62_56b2342f
+Bytes: 12
+fib_lookup()
+
 File: net/ipv4/fib_semantics.c
 
 572
