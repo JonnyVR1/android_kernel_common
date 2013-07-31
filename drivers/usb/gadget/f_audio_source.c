@@ -620,15 +620,21 @@ static void
 audio_unbind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct audio_dev *audio = func_to_audio(f);
+	struct snd_pcm_substream *substream = audio->substream;
 	struct usb_request *req;
 
 	while ((req = audio_req_get(audio)))
 		audio_request_free(req, audio->in_ep);
 
+	/* stop pcm stream when audio unbind after hw disconnect */
+	if (substream && substream->runtime && snd_pcm_running(substream)) {
+		snd_pcm_stream_lock_irq(substream);
+		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
+		snd_pcm_stream_unlock_irq(substream);
+	}
+
 	snd_card_free_when_closed(audio->card);
 	audio->card = NULL;
-	audio->pcm = NULL;
-	audio->substream = NULL;
 	audio->in_ep = NULL;
 }
 
@@ -670,6 +676,7 @@ static int audio_pcm_close(struct snd_pcm_substream *substream)
 	unsigned long flags;
 
 	spin_lock_irqsave(&audio->lock, flags);
+	audio->pcm = NULL;
 	audio->substream = NULL;
 	spin_unlock_irqrestore(&audio->lock, flags);
 
