@@ -492,6 +492,11 @@ struct ion_handle *ion_alloc(struct ion_client *client, size_t len,
 	if (!len)
 		return ERR_PTR(-EINVAL);
 
+	if (flags & ION_FLAG_FREED_FROM_SHRINKER) {
+		pr_debug("Clients should not use the internal flag ION_FLAG_FREED_FROM_SHRINKER.\n");
+		return ERR_PTR(-EINVAL);
+	}
+
 	down_read(&dev->lock);
 	plist_for_each_entry(heap, &dev->heaps, node) {
 		/* if the caller didn't specify this heap id */
