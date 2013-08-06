@@ -61,6 +61,12 @@ enum ion_heap_type {
 #define ION_FLAG_CACHED_NEEDS_SYNC 2	/* mappings of this buffer will created
 					   at mmap time, if this is set
 					   caches must be managed manually */
+/*
+ * Skip any possible heap-specific caching mechanism (e.g. page
+ * pools). Guarantees that the any buffer storage that came from the
+ * system allocator will be returned to the system allocator.
+ */
+#define ION_FLAG_SKIP_HEAP_CACHE_ON_FREE (1 << 2)
 
 #ifdef __KERNEL__
 struct ion_device;
