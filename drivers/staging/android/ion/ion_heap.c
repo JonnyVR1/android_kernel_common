@@ -178,7 +178,8 @@ size_t ion_heap_freelist_size(struct ion_heap *heap)
 	return size;
 }
 
-size_t ion_heap_freelist_drain(struct ion_heap *heap, size_t size)
+static size_t _ion_heap_freelist_drain(struct ion_heap *heap, size_t size,
+				bool skip_pools)
 {
 	struct ion_buffer *buffer, *tmp;
 	size_t total_drained = 0;
@@ -195,12 +196,24 @@ size_t ion_heap_freelist_drain(struct ion_heap *heap, size_t size)
 			break;
 		list_del(&buffer->list);
 		heap->free_list_size -= buffer->size;
+		if (skip_pools)
+			buffer->flags |= ION_FLAG_FREED_FROM_SHRINKER;
 		total_drained += buffer->size;
 		ion_buffer_destroy(buffer);
 	}
 	rt_mutex_unlock(&heap->lock);
 
 	return total_drained;
+}
+
+size_t ion_heap_freelist_drain(struct ion_heap *heap, size_t size)
+{
+	return _ion_heap_freelist_drain(heap, size, false);
+}
+
+size_t ion_heap_freelist_shrink(struct ion_heap *heap, size_t size)
+{
+	return _ion_heap_freelist_drain(heap, size, true);
 }
 
 static int ion_heap_deferred_free(void *data)
@@ -261,10 +274,10 @@ static int ion_heap_shrink(struct shrinker *shrinker, struct shrink_control *sc)
 
 	/*
 	 * shrink the free list first, no point in zeroing the memory if we're
-	 * just going to reclaim it
+	 * just going to reclaim it. Also, skip any possible page pooling.
 	 */
 	if (heap->flags & ION_HEAP_FLAG_DEFER_FREE)
-		freed = ion_heap_freelist_drain(heap, to_scan * PAGE_SIZE) /
+		freed = ion_heap_freelist_shrink(heap, to_scan * PAGE_SIZE) /
 				PAGE_SIZE;
 
 	to_scan -= freed;

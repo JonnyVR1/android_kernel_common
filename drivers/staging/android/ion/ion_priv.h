@@ -97,7 +97,11 @@ void ion_buffer_destroy(struct ion_buffer *buffer);
  * @map_user		map memory to userspace
  *
  * allocate, phys, and map_user return 0 on success, -errno on error.
- * map_dma and map_kernel return pointer on success, ERR_PTR on error.
+ * map_dma and map_kernel return pointer on success, ERR_PTR on
+ * error. @free will be called with ION_FLAG_FREED_FROM_SHRINKER set
+ * in buffer flags when called from a shrinker. In that case, the
+ * pages being free'd must be truly free'd back to the system, not put
+ * in a page pool or otherwise cached.
  */
 struct ion_heap_ops {
 	int (*allocate) (struct ion_heap *heap,
@@ -255,6 +259,29 @@ void ion_heap_freelist_add(struct ion_heap *heap, struct ion_buffer *buffer);
  * total memory on the freelist.
  */
 size_t ion_heap_freelist_drain(struct ion_heap *heap, size_t size);
+
+/**
+ * ion_heap_freelist_shrink - drain the deferred free
+ *				list, skipping any heap-specific
+ *				pooling or caching mechanisms
+ *
+ * @heap:		the heap
+ * @size:		amount of memory to drain in bytes
+ *
+ * Drains the indicated amount of memory from the deferred freelist immediately.
+ * Returns the total amount freed.  The total freed may be higher depending
+ * on the size of the items in the list, or lower if there is insufficient
+ * total memory on the freelist.
+ *
+ * Unlike with @ion_heap_freelist_drain, don't put any pages back into
+ * page pools or otherwise cache the pages. Everything must be
+ * genuinely free'd back to the system. If you're free'ing from a
+ * shrinker you probably want to use this. Note that this relies on
+ * the heap.ops.free callback honoring the
+ * ION_FLAG_FREED_FROM_SHRINKER flag.
+ */
+size_t ion_heap_freelist_shrink(struct ion_heap *heap,
+					size_t size);
 
 /**
  * ion_heap_freelist_size - returns the size of the freelist in bytes
