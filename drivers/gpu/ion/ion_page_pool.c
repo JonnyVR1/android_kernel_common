@@ -111,13 +111,16 @@ void *ion_page_pool_alloc(struct ion_page_pool *pool)
 	return page;
 }
 
-void ion_page_pool_free(struct ion_page_pool *pool, struct page* page)
+unsigned int ion_page_pool_free(struct ion_page_pool *pool, struct page *page)
 {
 	int ret;
 
 	ret = ion_page_pool_add(pool, page);
-	if (ret)
+	if (ret) {
 		ion_page_pool_free_pages(pool, page);
+		return 1 << pool->order;
+	}
+	return 0;
 }
 
 static int ion_page_pool_total(struct ion_page_pool *pool, bool high)

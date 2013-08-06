@@ -106,7 +106,7 @@ err:
 	return ION_CMA_ALLOCATE_FAILED;
 }
 
-static void ion_cma_free(struct ion_buffer *buffer)
+static unsigned int ion_cma_free(struct ion_buffer *buffer)
 {
 	struct ion_cma_heap *cma_heap = to_cma_heap(buffer->heap);
 	struct device *dev = cma_heap->dev;
@@ -119,6 +119,7 @@ static void ion_cma_free(struct ion_buffer *buffer)
 	sg_free_table(info->table);
 	kfree(info->table);
 	kfree(info);
+	return 0;
 }
 
 /* return physical address in addr */

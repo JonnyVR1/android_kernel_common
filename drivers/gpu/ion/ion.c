@@ -3,6 +3,7 @@
  * drivers/gpu/ion/ion.c
  *
  * Copyright (C) 2011 Google, Inc.
+ * Copyright (c) 2011-2013, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -261,15 +262,17 @@ err2:
 	return ERR_PTR(ret);
 }
 
-void ion_buffer_destroy(struct ion_buffer *buffer)
+unsigned int ion_buffer_destroy(struct ion_buffer *buffer)
 {
+	unsigned int nbytes;
 	if (WARN_ON(buffer->kmap_cnt > 0))
 		buffer->heap->ops->unmap_kernel(buffer->heap, buffer);
 	buffer->heap->ops->unmap_dma(buffer->heap, buffer);
-	buffer->heap->ops->free(buffer);
+	nbytes = buffer->heap->ops->free(buffer);
 	if (buffer->pages)
 		vfree(buffer->pages);
 	kfree(buffer);
+	return nbytes;
 }
 
 static void _ion_buffer_destroy(struct kref *kref)

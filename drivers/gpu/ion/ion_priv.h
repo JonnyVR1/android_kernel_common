@@ -80,12 +80,31 @@ struct ion_buffer {
 	char task_comm[TASK_COMM_LEN];
 	pid_t pid;
 };
-void ion_buffer_destroy(struct ion_buffer *buffer);
+
+/**
+ * ion_buffer_destroy - destroy a buffer and free associated memory
+ *
+ * @buffer:	The buffer to be destroyed
+ *
+ * Should return the number of bytes that were freed from a
+ * heap-specific cache back to the system allocator. If the pages are
+ * simply put back into heap-specific cache (like the page-pooling
+ * mechanism) then they should *not* be counted towards the return
+ * value since that memory has not become available to the system
+ * allocator. Also, don't count the space freed up due to housekeeping
+ * structures, only buffer space that would otherwise be cached by the
+ * heap. For example, when we free some bytes from a shrinker
+ * function, it's necessary for correct accounting to know whether the
+ * buffers we're freeing are just going back onto a heap-specific pool
+ * (or similar) or if they're actually going back to the system.
+ */
+unsigned int ion_buffer_destroy(struct ion_buffer *buffer);
 
 /**
  * struct ion_heap_ops - ops to operate on a given heap
  * @allocate:		allocate memory
- * @free:		free memory
+ * @free:		free memory. Should return the number of bytes freed
+ *			to the system. See the note on ion_buffer_destroy.
  * @phys		get physical address of a buffer (only define on
  *			physically contiguous heaps)
  * @map_dma		map the memory for dma to a scatterlist
@@ -101,7 +120,7 @@ struct ion_heap_ops {
 	int (*allocate) (struct ion_heap *heap,
 			 struct ion_buffer *buffer, unsigned long len,
 			 unsigned long align, unsigned long flags);
-	void (*free) (struct ion_buffer *buffer);
+	unsigned int (*free) (struct ion_buffer *buffer);
 	int (*phys) (struct ion_heap *heap, struct ion_buffer *buffer,
 		     ion_phys_addr_t *addr, size_t *len);
 	struct sg_table *(*map_dma) (struct ion_heap *heap,
@@ -344,7 +363,7 @@ struct ion_page_pool {
 struct ion_page_pool *ion_page_pool_create(gfp_t gfp_mask, unsigned int order);
 void ion_page_pool_destroy(struct ion_page_pool *);
 void *ion_page_pool_alloc(struct ion_page_pool *);
-void ion_page_pool_free(struct ion_page_pool *, struct page *);
+unsigned int ion_page_pool_free(struct ion_page_pool *, struct page *);
 
 /** ion_page_pool_shrink - shrinks the size of the memory cached in the pool
  * @pool:		the pool

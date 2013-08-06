@@ -86,23 +86,26 @@ static struct page *alloc_buffer_page(struct ion_system_heap *heap,
 	return page;
 }
 
-static void free_buffer_page(struct ion_system_heap *heap,
+static unsigned int free_buffer_page(struct ion_system_heap *heap,
 			     struct ion_buffer *buffer, struct page *page,
 			     unsigned int order)
 {
 	bool cached = ion_buffer_cached(buffer);
 	bool split_pages = ion_buffer_fault_user_mappings(buffer);
+	unsigned int npages = 0;
 	int i;
 
 	if (!cached) {
 		struct ion_page_pool *pool = heap->pools[order_to_index(order)];
-		ion_page_pool_free(pool, page);
+		npages += ion_page_pool_free(pool, page);
 	} else if (split_pages) {
-		for (i = 0; i < (1 << order); i++)
+		for (i = 0; i < (1 << order); i++, npages++)
 			__free_page(page + i);
 	} else {
 		__free_pages(page, order);
+		npages += 1 << order;
 	}
+	return npages;
 }
 
 
@@ -190,8 +193,9 @@ err:
 	return -ENOMEM;
 }
 
-void ion_system_heap_free(struct ion_buffer *buffer)
+unsigned int ion_system_heap_free(struct ion_buffer *buffer)
 {
+	unsigned int npages = 0;
 	struct ion_heap *heap = buffer->heap;
 	struct ion_system_heap *sys_heap = container_of(heap,
 							struct ion_system_heap,
@@ -208,10 +212,11 @@ void ion_system_heap_free(struct ion_buffer *buffer)
 		ion_heap_buffer_zero(buffer);
 
 	for_each_sg(table->sgl, sg, table->nents, i)
-		free_buffer_page(sys_heap, buffer, sg_page(sg),
-				get_order(sg_dma_len(sg)));
+		npages += free_buffer_page(sys_heap, buffer, sg_page(sg),
+					get_order(sg_dma_len(sg)));
 	sg_free_table(table);
 	kfree(table);
+	return npages * PAGE_SIZE;
 }
 
 struct sg_table *ion_system_heap_map_dma(struct ion_heap *heap,
@@ -368,9 +373,10 @@ static int ion_system_contig_heap_allocate(struct ion_heap *heap,
 	return 0;
 }
 
-void ion_system_contig_heap_free(struct ion_buffer *buffer)
+static unsigned int ion_system_contig_heap_free(struct ion_buffer *buffer)
 {
 	kfree(buffer->priv_virt);
+	return 0;
 }
 
 static int ion_system_contig_heap_phys(struct ion_heap *heap,

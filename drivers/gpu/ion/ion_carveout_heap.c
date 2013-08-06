@@ -76,12 +76,13 @@ static int ion_carveout_heap_allocate(struct ion_heap *heap,
 	return buffer->priv_phys == ION_CARVEOUT_ALLOCATE_FAIL ? -ENOMEM : 0;
 }
 
-static void ion_carveout_heap_free(struct ion_buffer *buffer)
+static unsigned int ion_carveout_heap_free(struct ion_buffer *buffer)
 {
 	struct ion_heap *heap = buffer->heap;
 
 	ion_carveout_free(heap, buffer->priv_phys, buffer->size);
 	buffer->priv_phys = ION_CARVEOUT_ALLOCATE_FAIL;
+	return 0;
 }
 
 struct sg_table *ion_carveout_heap_map_dma(struct ion_heap *heap,

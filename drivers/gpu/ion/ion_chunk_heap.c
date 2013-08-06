@@ -92,7 +92,7 @@ err:
 	return -ENOMEM;
 }
 
-static void ion_chunk_heap_free(struct ion_buffer *buffer)
+static unsigned int ion_chunk_heap_free(struct ion_buffer *buffer)
 {
 	struct ion_heap *heap = buffer->heap;
 	struct ion_chunk_heap *chunk_heap =
@@ -116,6 +116,7 @@ static void ion_chunk_heap_free(struct ion_buffer *buffer)
 	chunk_heap->allocated -= allocated_size;
 	sg_free_table(table);
 	kfree(table);
+	return 0;
 }
 
 struct sg_table *ion_chunk_heap_map_dma(struct ion_heap *heap,
