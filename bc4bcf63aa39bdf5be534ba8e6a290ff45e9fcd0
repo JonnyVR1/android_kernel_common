@@ -1,0 +1,20 @@
+Revision: bc4bcf63aa39bdf5be534ba8e6a290ff45e9fcd0
+Patch-set: 2
+File: include/linux/mm.h
+
+1638
+Wed Aug 07 23:31:31 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1857b042_972144c8
+Bytes: 6
+remove
+
+File: mm/mempolicy.c
+
+678
+Wed Aug 07 23:31:31 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1857b042_3a981d73
+Bytes: 16
+use the accessor
+
