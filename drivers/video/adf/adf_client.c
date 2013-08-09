@@ -365,31 +365,41 @@ static struct sync_fence *adf_sw_complete_fence(struct adf_device *dev)
  * adf_device_post - flip to a new set of buffers
  *
  * @dev: device targeted by the flip
+ * @intfs: interfaces targeted by the flip
+ * @n_intfs: number of targeted interfaces
  * @bufs: description of buffers displayed
  * @n_bufs: number of buffers displayed
  * @custom_data: driver-private data
  * @custom_data_size: size of driver-private data
  *
- * adf_device_post() will copy @bufs and @custom_data, so they may point to
- * variables on the stack.  adf_device_post() also takes its own reference on
- * each of the dma-bufs in @bufs.  The adf_device_post_nocopy() variant
- * transfers ownership of these resources to ADF instead.
+ * adf_device_post() will copy @intfs, @bufs, and @custom_data, so they may
+ * point to variables on the stack.  adf_device_post() also takes its own
+ * reference on each of the dma-bufs in @bufs.  The adf_device_post_nocopy()
+ * variant transfers ownership of these resources to ADF instead.
  *
  * On success, returns a sync fence which signals when the buffers are removed
  * from the screen.  On failure, returns ERR_PTR(-errno).
  */
 struct sync_fence *adf_device_post(struct adf_device *dev,
+		struct adf_interface **intfs, size_t n_intfs,
 		struct adf_buffer *bufs, size_t n_bufs, void *custom_data,
 		size_t custom_data_size)
 {
+	struct adf_interface **intfs_copy = NULL;
 	struct adf_buffer *bufs_copy = NULL;
 	void *custom_data_copy = NULL;
 	struct sync_fence *ret;
 	size_t i;
 
-	bufs_copy = kzalloc(sizeof(bufs_copy[0]) * n_bufs, GFP_KERNEL);
-	if (!bufs_copy)
+	intfs_copy = kzalloc(sizeof(intfs_copy[0]) * n_intfs, GFP_KERNEL);
+	if (!intfs_copy)
 		return ERR_PTR(-ENOMEM);
+
+	bufs_copy = kzalloc(sizeof(bufs_copy[0]) * n_bufs, GFP_KERNEL);
+	if (!bufs_copy) {
+		ret = ERR_PTR(-ENOMEM);
+		goto err_alloc;
+	}
 
 	custom_data_copy = kzalloc(custom_data_size, GFP_KERNEL);
 	if (!custom_data_copy) {
@@ -403,11 +413,12 @@ struct sync_fence *adf_device_post(struct adf_device *dev,
 			get_dma_buf(bufs[i].dma_bufs[j]);
 	}
 
+	memcpy(intfs_copy, intfs, sizeof(intfs_copy[0]) * n_intfs);
 	memcpy(bufs_copy, bufs, sizeof(bufs_copy[0]) * n_bufs);
 	memcpy(custom_data_copy, custom_data, custom_data_size);
 
-	ret = adf_device_post_nocopy(dev, bufs_copy, n_bufs, custom_data_copy,
-			custom_data_size);
+	ret = adf_device_post_nocopy(dev, intfs_copy, n_intfs, bufs_copy,
+			n_bufs, custom_data_copy, custom_data_size);
 	if (IS_ERR(ret))
 		goto err_post;
 
@@ -422,6 +433,7 @@ err_post:
 err_alloc:
 	kfree(custom_data_copy);
 	kfree(bufs_copy);
+	kfree(intfs_copy);
 	return ret;
 }
 EXPORT_SYMBOL(adf_device_post);
@@ -430,13 +442,13 @@ EXPORT_SYMBOL(adf_device_post);
  * adf_device_post_nocopy - flip to a new set of buffers
  *
  * adf_device_post_nocopy() has the same behavior as adf_device_post(),
- * except ADF does not copy @bufs or @custom_data, and it does
+ * except ADF does not copy @intfs, @bufs, or @custom_data, and it does
  * not take an extra reference on the dma-bufs in @bufs.
  *
- * @bufs and @custom_data must point to buffers allocated by  kmalloc().  On
- * success, ADF takes ownership of these buffers and the dma-bufs in @bufs,
- * and will kfree()/dma_buf_put() them when they are no longer needed.  On
- * failure, adf_device_post_nocopy() does NOT take ownership of these
+ * @intfs, @bufs, and @custom_data must point to buffers allocated by
+ * kmalloc().  On success, ADF takes ownership of these buffers and the dma-bufs
+ * in @bufs, and will kfree()/dma_buf_put() them when they are no longer needed.
+ * On failure, adf_device_post_nocopy() does NOT take ownership of these
  * buffers or the dma-bufs, and the caller must clean them up.
  *
  * adf_device_post_nocopy() is mainly intended for implementing ADF's ioctls.
@@ -444,6 +456,7 @@ EXPORT_SYMBOL(adf_device_post);
  * call adf_device_post() instead.
  */
 struct sync_fence *adf_device_post_nocopy(struct adf_device *dev,
+		struct adf_interface **intfs, size_t n_intfs,
 		struct adf_buffer *bufs, size_t n_bufs,
 		void *custom_data, size_t custom_data_size)
 {
@@ -467,6 +480,18 @@ struct sync_fence *adf_device_post_nocopy(struct adf_device *dev,
 	}
 
 	mutex_lock(&dev->client_lock);
+	for (i = 0; i < n_intfs; i++) {
+		if (intfs[i]->dpms_state != DRM_MODE_DPMS_ON) {
+			dev_dbg(&dev->base.dev, "skipping post because interface %s is off\n",
+					intfs[i]->base.name);
+			/* If the display is off, proceed as if the config was
+			   posted and immediately cleared from the screen */
+			ret = adf_sw_complete_fence(dev);
+			if (!IS_ERR(ret))
+				sw_sync_timeline_inc(dev->timeline, 1);
+			goto err_display_off;
+		}
+	}
 
 	for (i = 0; i < n_bufs; i++) {
 		err = adf_buffer_validate(&bufs[i]);
@@ -510,16 +535,18 @@ struct sync_fence *adf_device_post_nocopy(struct adf_device *dev,
 	queue_kthread_work(&dev->post_worker, &dev->post_work);
 	mutex_unlock(&dev->post_lock);
 	mutex_unlock(&dev->client_lock);
+	kfree(intfs);
 	return ret;
 
 err_fence:
 	mutex_unlock(&dev->post_lock);
 
 err_buf:
-	mutex_unlock(&dev->client_lock);
 	for (i = 0; i < n_bufs; i++)
 		adf_buffer_mapping_cleanup(&mappings[i], &bufs[i]);
 
+err_display_off:
+	mutex_unlock(&dev->client_lock);
 	kfree(mappings);
 
 err_alloc:
@@ -817,7 +844,7 @@ struct sync_fence *adf_interface_simple_post(struct adf_interface *intf,
 		}
 	}
 
-	ret = adf_device_post(intf->base.parent, buf, 1, custom_data,
+	ret = adf_device_post(intf->base.parent, &intf, 1, buf, 1, custom_data,
 			custom_data_size);
 done:
 	kfree(custom_data);

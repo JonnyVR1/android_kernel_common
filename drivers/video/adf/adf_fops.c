@@ -222,7 +222,8 @@ static int adf_device_post_config(struct adf_device *dev,
 	struct sync_fence *complete_fence;
 	int complete_fence_fd;
 	struct adf_buffer *bufs = NULL;
-	size_t n_bufs, i;
+	struct adf_interface **intfs = NULL;
+	size_t n_intfs, n_bufs, i;
 	void *custom_data = NULL;
 	size_t custom_data_size;
 	int ret = 0;
@@ -230,6 +231,16 @@ static int adf_device_post_config(struct adf_device *dev,
 	complete_fence_fd = get_unused_fd();
 	if (complete_fence_fd < 0)
 		return complete_fence_fd;
+
+	if (get_user(n_intfs, &arg->n_interfaces)) {
+		ret = -EFAULT;
+		goto err_get_user;
+	}
+
+	if (n_intfs > ADF_MAX_INTERFACES) {
+		ret = -ENOMEM;
+		goto err_get_user;
+	}
 
 	if (get_user(n_bufs, &arg->n_bufs)) {
 		ret = -EFAULT;
@@ -249,6 +260,28 @@ static int adf_device_post_config(struct adf_device *dev,
 	if (custom_data_size > ADF_MAX_CUSTOM_DATA_SIZE) {
 		ret = -ENOMEM;
 		goto err_get_user;
+	}
+
+	if (n_intfs) {
+		intfs = kzalloc(sizeof(intfs[0]) * n_intfs, GFP_KERNEL);
+		if (!intfs) {
+			ret = -ENOMEM;
+			goto err_get_user;
+		}
+	}
+
+	for (i = 0; i < n_intfs; i++) {
+		u32 intf_id;
+		if (get_user(intf_id, &arg->interfaces[i])) {
+			ret = -EFAULT;
+			goto err_get_user;
+		}
+
+		intfs[i] = idr_find(&dev->interfaces, intf_id);
+		if (!intfs[i]) {
+			ret = -EINVAL;
+			goto err_get_user;
+		}
 	}
 
 	if (n_bufs) {
@@ -286,8 +319,8 @@ static int adf_device_post_config(struct adf_device *dev,
 		goto err_import;
 	}
 
-	complete_fence = adf_device_post_nocopy(dev, bufs, n_bufs, custom_data,
-			custom_data_size);
+	complete_fence = adf_device_post_nocopy(dev, intfs, n_intfs, bufs,
+			n_bufs, custom_data, custom_data_size);
 	if (IS_ERR(complete_fence)) {
 		ret = PTR_ERR(complete_fence);
 		goto err_import;
@@ -299,9 +332,11 @@ static int adf_device_post_config(struct adf_device *dev,
 err_import:
 	for (i = 0; i < n_bufs; i++)
 		adf_buffer_cleanup(&bufs[i]);
+
 err_get_user:
 	kfree(custom_data);
 	kfree(bufs);
+	kfree(intfs);
 	put_unused_fd(complete_fence_fd);
 	return ret;
 }

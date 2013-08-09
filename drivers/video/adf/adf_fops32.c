@@ -32,7 +32,10 @@ long adf_compat_post_config(struct file *file,
 	if (!access_ok(VERIFY_WRITE, cfg, sizeof(*cfg)))
 		return -EFAULT;
 
-	if (put_user(cfg32.n_bufs, &cfg->n_bufs) ||
+	if (put_user(cfg32.n_interfaces, &cfg->n_interfaces) ||
+			put_user(compat_ptr(cfg32.interfaces),
+					&cfg->interfaces) ||
+			put_user(cfg32.n_bufs, &cfg->n_bufs) ||
 			put_user(compat_ptr(cfg32.bufs), &cfg->bufs) ||
 			put_user(cfg32.custom_data_size,
 					&cfg->custom_data_size) ||

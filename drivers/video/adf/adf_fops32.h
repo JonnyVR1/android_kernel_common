@@ -16,6 +16,9 @@
 			_IOR('D', 6, struct adf_overlay_engine_data32)
 
 struct adf_post_config32 {
+	compat_size_t n_interfaces;
+	compat_uptr_t interfaces;
+
 	compat_size_t n_bufs;
 	compat_uptr_t bufs;
 

@@ -611,6 +611,9 @@ int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
 	int ret;
 	va_list args;
 
+	if (dev->n_interfaces == ADF_MAX_INTERFACES)
+		return -ENOMEM;
+
 	if (intf->type >= ADF_INTF_MEMORY &&
 			intf->type <= ADF_INTF_TYPE_DEVICE_CUSTOM)
 		return -EINVAL;
@@ -630,6 +633,7 @@ int adf_interface_init(struct adf_interface *intf, struct adf_device *dev,
 	init_waitqueue_head(&intf->vsync_wait);
 	rwlock_init(&intf->vsync_lock);
 	rwlock_init(&intf->hotplug_modelist_lock);
+	dev->n_interfaces++;
 
 	return 0;
 
@@ -669,6 +673,7 @@ void adf_interface_destroy(struct adf_interface *intf)
 	adf_interface_sysfs_destroy(intf);
 	idr_remove(&intf->base.parent->interfaces, intf->base.id);
 	adf_obj_destroy(&intf->base);
+	dev->n_interfaces--;
 	mutex_unlock(&dev->client_lock);
 }
 EXPORT_SYMBOL(adf_interface_destroy);

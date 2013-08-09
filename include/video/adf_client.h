@@ -50,9 +50,11 @@ int adf_device_detach(struct adf_device *dev, struct adf_overlay_engine *eng,
 		struct adf_interface *intf);
 
 struct sync_fence *adf_device_post(struct adf_device *dev,
+		struct adf_interface **intfs, size_t n_intfs,
 		struct adf_buffer *bufs, size_t n_bufs, void *custom_data,
 		size_t custom_data_size);
 struct sync_fence *adf_device_post_nocopy(struct adf_device *dev,
+		struct adf_interface **intfs, size_t n_intfs,
 		struct adf_buffer *bufs, size_t n_bufs, void *custom_data,
 		size_t custom_data_size);
 

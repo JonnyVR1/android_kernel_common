@@ -146,6 +146,8 @@ struct adf_buffer_config {
 /**
  * struct adf_post_config - request to flip to a new set of buffers
  *
+ * @n_interfaces: number of interfaces targeted by the flip (input)
+ * @interfaces: ids of interfaces targeted by the flip (input)
  * @n_bufs: number of buffers displayed (input)
  * @bufs: description of buffers displayed (input)
  * @custom_data_size: size of driver-private data (input)
@@ -154,6 +156,9 @@ struct adf_buffer_config {
  *	configuration has left the screen (output)
  */
 struct adf_post_config {
+	size_t n_interfaces;
+	__u32 __user *interfaces;
+
 	size_t n_bufs;
 	struct adf_buffer_config __user *bufs;
 
@@ -162,6 +167,7 @@ struct adf_post_config {
 
 	__s64 complete_fence;
 };
+#define ADF_MAX_INTERFACES (PAGE_SIZE / sizeof(__u32))
 
 /**
  * struct adf_simple_buffer_allocate - request to allocate a "simple" buffer
@@ -555,6 +561,7 @@ struct adf_device {
 	struct mutex client_lock;
 
 	struct idr interfaces;
+	size_t n_interfaces;
 	struct idr overlay_engines;
 
 	struct list_head post_list;
