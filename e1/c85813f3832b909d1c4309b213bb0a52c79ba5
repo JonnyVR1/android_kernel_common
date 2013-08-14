@@ -1,0 +1,8 @@
+Code-Review+2: jp abgrall <jpa@google.com>
+Verified+1: jp abgrall <jpa@google.com>
+Code-Review+1: Alexander Levitskiy <sanek@google.com>
+Submitted-by: jp abgrall <jpa@google.com>
+Submitted-at: Wed, 14 Aug 2013 20:04:49 +0000
+Reviewed-on: https://android-review.googlesource.com/63651
+Project: kernel/common
+Branch: refs/heads/android-3.4
