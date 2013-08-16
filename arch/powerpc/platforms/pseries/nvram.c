@@ -489,6 +489,7 @@ static int nvram_pstore_write(enum pstore_type_id type,
 {
 	int rc;
 	struct oops_log_info *oops_hdr = (struct oops_log_info *) oops_buf;
+	unsigned int err_type = ERR_TYPE_KERNEL_PANIC;
 
 	/* part 1 has the recent messages from printk buffer */
 	if (part > 1 || type != PSTORE_TYPE_DMESG ||
@@ -498,8 +499,12 @@ static int nvram_pstore_write(enum pstore_type_id type,
 	oops_hdr->version = OOPS_HDR_VERSION;
 	oops_hdr->report_length = (u16) size;
 	oops_hdr->timestamp = get_seconds();
+
+	if (compressed)
+		err_type = ERR_TYPE_KERNEL_PANIC_GZ;
+
 	rc = nvram_write_os_partition(&oops_log_partition, oops_buf,
-		(int) (sizeof(*oops_hdr) + size), ERR_TYPE_KERNEL_PANIC,
+		(int) (sizeof(*oops_hdr) + size), err_type,
 		count);
 
 	if (rc != 0)
@@ -605,6 +610,11 @@ static ssize_t nvram_pstore_read(u64 *id, enum pstore_type_id *type,
 			return -ENOMEM;
 		memcpy(*buf, buff + hdr_size, length);
 		kfree(buff);
+
+		if (err_type == ERR_TYPE_KERNEL_PANIC_GZ)
+			*compressed = true;
+		else
+			*compressed = false;
 		return length;
 	}
 
