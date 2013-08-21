@@ -2,6 +2,26 @@ Revision: ae8d87b4e21c73301872a177c482bad4ebd1e7ed
 Patch-set: 1
 File: drivers/gpu/ion/ion.c
 
+202
+Wed Aug 21 17:35:58 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d25b0ee_aaadefce
+Bytes: 351
+IS_ERR_OR_NULL is not really a bad design pattern if used properly. It lets you aggregate your error path. In your version you have 2 checks for errors and it's not immediately clear why.
+
+you can still use IS_ERR_OR_NULL() and then in the return do,
+
+ERR_PTR(table ? PTR_ERR(table) : -EINVAL);
+
+or set table = ERR_PTR(-EINVAL) inside the error block.
+
+548
+Wed Aug 21 17:35:58 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d25b0ee_4a3c33a8
+Bytes: 158
+seems that the appropriate fix would be to fix the heaps to not return NULL, as here you still have the err_or_null paradigm, you are just splitting the test.
+
 1041
 Wed Aug 21 12:38:06 2013 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +36,11 @@ Parent: 0d25b0ee_e798c26e
 UUID: 0d25b0ee_8af58b03
 Bytes: 151
 No -- that could only happen if dma_buf_export() created a file with NULL private_data, and there's an explicit check in dma_buf_export() against that.
+
+1407
+Wed Aug 21 17:35:58 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d25b0ee_4a5393e3
+Bytes: 88
+this is wrong. If DEBUGFS is disabled, this will return ERR_PTR(-ENODEV); see debugfs.h.
 
