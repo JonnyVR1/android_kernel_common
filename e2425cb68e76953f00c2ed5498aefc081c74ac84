@@ -1,0 +1,11 @@
+Revision: e2425cb68e76953f00c2ed5498aefc081c74ac84
+Patch-set: 2
+File: drivers/gpu/ion/ion.c
+
+504
+Wed Aug 21 20:23:16 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d25b0ee_2d18f9e9
+Bytes: 37
+hold the lock until after this block.
+
