@@ -15,12 +15,28 @@ ERR_PTR(table ? PTR_ERR(table) : -EINVAL);
 
 or set table = ERR_PTR(-EINVAL) inside the error block.
 
+202
+Wed Aug 21 20:04:54 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d25b0ee_aaadefce
+UUID: 0d25b0ee_8da5a59d
+Bytes: 86
+Changed the NULL case to a WARN_ON and made it clear heaps should be returning ERR_PTR
+
 548
 Wed Aug 21 17:35:58 2013 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d25b0ee_4a3c33a8
 Bytes: 158
 seems that the appropriate fix would be to fix the heaps to not return NULL, as here you still have the err_or_null paradigm, you are just splitting the test.
+
+548
+Wed Aug 21 20:04:54 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d25b0ee_4a3c33a8
+UUID: 0d25b0ee_4abef361
+Bytes: 4
+Done
 
 1041
 Wed Aug 21 12:38:06 2013 +0000
