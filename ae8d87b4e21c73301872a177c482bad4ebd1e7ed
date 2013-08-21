@@ -9,3 +9,11 @@ UUID: 0d25b0ee_e798c26e
 Bytes: 106
 Couldn't the dma_buf associated with fd still be NULL even though there is no error executing dma_buf_get?
 
+1041
+Wed Aug 21 17:10:04 2013 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d25b0ee_e798c26e
+UUID: 0d25b0ee_8af58b03
+Bytes: 151
+No -- that could only happen if dma_buf_export() created a file with NULL private_data, and there's an explicit check in dma_buf_export() against that.
+
