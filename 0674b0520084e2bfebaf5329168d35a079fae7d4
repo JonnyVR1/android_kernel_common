@@ -9,3 +9,11 @@ UUID: 32581541_5c703d0d
 Bytes: 98
 You could prevent that by checking your new flag instead of file before entering this block above.
 
+336
+Wed Aug 28 22:44:58 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32581541_5c703d0d
+UUID: 32581541_5ce15d8a
+Bytes: 69
+But then you'd have to poll asma->file waiting for it to become valid
+
