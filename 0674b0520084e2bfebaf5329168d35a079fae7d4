@@ -1,0 +1,11 @@
+Revision: 0674b0520084e2bfebaf5329168d35a079fae7d4
+Patch-set: 2
+File: drivers/staging/android/ashmem.c
+
+336
+Wed Aug 28 22:43:17 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32581541_5c703d0d
+Bytes: 98
+You could prevent that by checking your new flag instead of file before entering this block above.
+
