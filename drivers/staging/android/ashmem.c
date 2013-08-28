@@ -34,6 +34,8 @@
 #define ASHMEM_NAME_PREFIX_LEN (sizeof(ASHMEM_NAME_PREFIX) - 1)
 #define ASHMEM_FULL_NAME_LEN (ASHMEM_NAME_LEN + ASHMEM_NAME_PREFIX_LEN)
 
+#define ASHMEM_AREA_FLAGS_ALLOCATED		BIT(0)
+
 /*
  * ashmem_area - anonymous shared memory area
  * Lifecycle: From our parent file's open() until its release()
@@ -46,6 +48,7 @@ struct ashmem_area {
 	struct file *file;		 /* the shmem-based backing file */
 	size_t size;			 /* size of the mapping, in bytes */
 	unsigned long prot_mask;	 /* allowed prot bits, as vm_flags */
+	unsigned long flags;		 /* ashmem area status flags */
 };
 
 /*
@@ -131,7 +134,7 @@ static int range_alloc(struct ashmem_area *asma,
 {
 	struct ashmem_range *range;
 
-	range = kmem_cache_zalloc(ashmem_range_cachep, GFP_KERNEL);
+	range = kmem_cache_zalloc(ashmem_range_cachep, GFP_ATOMIC);
 	if (unlikely(!range))
 		return -ENOMEM;
 
@@ -260,7 +263,7 @@ static loff_t ashmem_llseek(struct file *file, loff_t offset, int origin)
 		goto out;
 	}
 
-	if (!asma->file) {
+	if (asma->file) {
 		ret = -EBADF;
 		goto out;
 	}
@@ -312,13 +315,32 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 		if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0')
 			name = asma->name;
 
+		asma->flags |= ASHMEM_AREA_FLAGS_ALLOCATED;
+
+		/*
+		 * Unlock the ashmem mutex in case shmem_file_setup ends up
+		 * in ashmem_shrink.
+		 */
+		mutex_unlock(&ashmem_mutex);
+
 		/* ... and allocate the backing shmem file */
 		vmfile = shmem_file_setup(name, asma->size, vma->vm_flags);
 		if (unlikely(IS_ERR(vmfile))) {
 			ret = PTR_ERR(vmfile);
 			goto out;
 		}
-		asma->file = vmfile;
+
+		/*
+		 * Relock the ashmem mutex.  Another thread may have come
+		 * through here and set asma->file, if so undo our work and
+		 * use theirs.
+		 */
+		mutex_lock(&ashmem_mutex);
+
+		if (!asma->file)
+			asma->file = vmfile;
+		else
+			fput(vmfile);
 	}
 	get_file(asma->file);
 
@@ -422,7 +444,7 @@ static int set_name(struct ashmem_area *asma, void __user *name)
 	mutex_lock(&ashmem_mutex);
 
 	/* cannot change an existing mapping's name */
-	if (unlikely(asma->file))
+	if (unlikely(asma->flags & ASHMEM_AREA_FLAGS_ALLOCATED))
 		ret = -EINVAL;
 	else
 		strcpy(asma->name + ASHMEM_NAME_PREFIX_LEN, lname);
@@ -642,10 +664,12 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		break;
 	case ASHMEM_SET_SIZE:
 		ret = -EINVAL;
-		if (!asma->file) {
+		mutex_lock(&ashmem_mutex);
+		if (!(asma->flags & ASHMEM_AREA_FLAGS_ALLOCATED)) {
 			ret = 0;
 			asma->size = (size_t) arg;
 		}
+		mutex_unlock(&ashmem_mutex);
 		break;
 	case ASHMEM_GET_SIZE:
 		ret = asma->size;
