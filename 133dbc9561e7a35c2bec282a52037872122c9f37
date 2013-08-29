@@ -9,3 +9,11 @@ UUID: 72d1ade1_32a91089
 Bytes: 83
 Could you move the ashmem_lru_list_lock down so you don't hold it while allocating?
 
+141
+Thu Aug 29 20:24:14 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 72d1ade1_32a91089
+UUID: 72d1ade1_b2e0a0b2
+Bytes: 263
+No, ashmem_pin and ashmem_unpin both need to hold ashmem_lru_list_lock around this because they are modifying the range structs.  ashmem_lru_list_lock protects the list as well as the contents of the range structs in the list (other than the unpinned_list field).
+
