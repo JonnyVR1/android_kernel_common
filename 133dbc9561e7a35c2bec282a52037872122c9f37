@@ -1,0 +1,11 @@
+Revision: 133dbc9561e7a35c2bec282a52037872122c9f37
+Patch-set: 1
+File: drivers/staging/android/ashmem.c
+
+141
+Thu Aug 29 20:15:02 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72d1ade1_32a91089
+Bytes: 83
+Could you move the ashmem_lru_list_lock down so you don't hold it while allocating?
+
