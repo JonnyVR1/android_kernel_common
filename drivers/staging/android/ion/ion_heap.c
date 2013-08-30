@@ -91,9 +91,9 @@ int ion_heap_map_user(struct ion_heap *heap, struct ion_buffer *buffer,
 			offset = 0;
 		}
 		len = min(len, remainder);
-		remap_pfn_range(vma, addr, page_to_pfn(page), len,
-				vma->vm_page_prot);
-		addr += len;
+		len = PAGE_ALIGN(len);
+		for ( ; len > 0; page++, len -= PAGE_SIZE, addr += PAGE_SIZE)
+			vm_insert_page(vma, addr, page);
 		if (addr >= vma->vm_end)
 			return 0;
 	}
@@ -140,28 +140,13 @@ end:
 struct page *ion_heap_alloc_pages(struct ion_buffer *buffer, gfp_t gfp_flags,
 				  unsigned int order)
 {
-	struct page *page = alloc_pages(gfp_flags, order);
-
-	if (!page)
-		return page;
-
-	if (ion_buffer_fault_user_mappings(buffer))
-		split_page(page, order);
-
-	return page;
+	return alloc_pages(gfp_flags | __GFP_COMP, order);
 }
 
 void ion_heap_free_pages(struct ion_buffer *buffer, struct page *page,
 			 unsigned int order)
 {
-	int i;
-
-	if (!ion_buffer_fault_user_mappings(buffer)) {
-		__free_pages(page, order);
-		return;
-	}
-	for (i = 0; i < (1 << order); i++)
-		__free_page(page + i);
+	__free_pages(page, order);
 }
 
 void ion_heap_freelist_add(struct ion_heap *heap, struct ion_buffer * buffer)

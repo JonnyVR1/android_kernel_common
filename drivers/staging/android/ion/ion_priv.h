@@ -222,8 +222,7 @@ int ion_heap_buffer_zero(struct ion_buffer *buffer);
  * @order:		the order of the allocatoin
  *
  * This funciton allocations from alloc pages and also does any other
- * necessary operations based on the buffer->flags.  For buffers which
- * will be faulted in the pages are split using split_page
+ * necessary operations based on the buffer->flags.
  */
 struct page *ion_heap_alloc_pages(struct ion_buffer *buffer, gfp_t gfp_flags,
 				  unsigned int order);

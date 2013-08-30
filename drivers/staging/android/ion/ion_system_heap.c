@@ -90,15 +90,11 @@ static void free_buffer_page(struct ion_system_heap *heap,
 			     unsigned int order)
 {
 	bool cached = ion_buffer_cached(buffer);
-	bool split_pages = ion_buffer_fault_user_mappings(buffer);
 	int i;
 
 	if (!cached) {
 		struct ion_page_pool *pool = heap->pools[order_to_index(order)];
 		ion_page_pool_free(pool, page);
-	} else if (split_pages) {
-		for (i = 0; i < (1 << order); i++)
-			__free_page(page + i);
 	} else {
 		__free_pages(page, order);
 	}
