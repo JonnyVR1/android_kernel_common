@@ -91,17 +91,12 @@ static void free_buffer_page(struct ion_system_heap *heap,
 			     unsigned int order)
 {
 	bool cached = ion_buffer_cached(buffer);
-	bool split_pages = ion_buffer_fault_user_mappings(buffer);
-	int i;
 
 	if (!cached) {
 		struct ion_page_pool *pool = heap->pools[order_to_index(order)];
 		ion_page_pool_free(pool, page);
-	} else if (split_pages) {
-		for (i = 0; i < (1 << order); i++)
-			__free_page(page + i);
 	} else {
-		__free_pages(page, order);
+		ion_heap_free_pages(buffer, page, order);
 	}
 }
 
@@ -369,6 +364,8 @@ static int ion_system_contig_heap_allocate(struct ion_heap *heap,
 					   unsigned long flags)
 {
 	int order = get_order(len);
+	struct page *page;
+	unsigned long i;
 
 	if (align > (PAGE_SIZE << order))
 		return -EINVAL;
@@ -376,15 +373,30 @@ static int ion_system_contig_heap_allocate(struct ion_heap *heap,
 	if (ion_buffer_fault_user_mappings(buffer))
 		return -EINVAL;
 
-	buffer->priv_virt = kzalloc(len, GFP_KERNEL);
-	if (!buffer->priv_virt)
+	page = ion_heap_alloc_pages(buffer, GFP_KERNEL, order);
+	if (!page)
 		return -ENOMEM;
+
+	len = PAGE_ALIGN(len);
+	for (i = len >> PAGE_SHIFT; i < (1 << order); i++)
+		__free_page(page + i);
+
+	buffer->priv_virt = phys_to_virt(page_to_phys(page));
+	memset(buffer->priv_virt, 0, len);
+
+	ion_pages_sync_for_device(NULL, page, len, DMA_BIDIRECTIONAL);
+
 	return 0;
 }
 
 void ion_system_contig_heap_free(struct ion_buffer *buffer)
 {
-	kfree(buffer->priv_virt);
+	unsigned long pages = PAGE_ALIGN(buffer->size) >> PAGE_SHIFT;
+	struct page *page = virt_to_page(buffer->priv_virt);
+	unsigned long i;
+
+	for (i = 0; i < pages; i++)
+		__free_page(page + i);
 }
 
 static int ion_system_contig_heap_phys(struct ion_heap *heap,

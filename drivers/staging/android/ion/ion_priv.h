@@ -221,14 +221,24 @@ int ion_heap_buffer_zero(struct ion_buffer *buffer);
  * ion_heap_alloc_pages - allocate pages from alloc_pages
  * @buffer:		the buffer to allocate for, used to extract the flags
  * @gfp_flags:		the gfp_t for the allocation
- * @order:		the order of the allocatoin
+ * @order:		the order of the allocation
  *
- * This funciton allocations from alloc pages and also does any other
- * necessary operations based on the buffer->flags.  For buffers which
- * will be faulted in the pages are split using split_page
+ * This function allocates from alloc pages and also does any other
+ * necessary operations based on the buffer->flags.
  */
 struct page *ion_heap_alloc_pages(struct ion_buffer *buffer, gfp_t gfp_flags,
 				  unsigned int order);
+
+
+/**
+ * ion_heap_free_pages - free pages returned by ion_heap_alloc_pages
+ * @page:		page returned by ion_heap_alloc_pages
+ * @order:		the order of the allocation
+ *
+ * This function frees memory that was allocated by ion_heap_alloc_pages.
+ */
+void ion_heap_free_pages(struct ion_buffer *buffer, struct page *page,
+				unsigned int order);
 
 /**
  * ion_heap_init_deferred_free -- initialize deferred free functionality
