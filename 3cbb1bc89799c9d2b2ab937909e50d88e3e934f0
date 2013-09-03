@@ -1,0 +1,11 @@
+Revision: 3cbb1bc89799c9d2b2ab937909e50d88e3e934f0
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+744
+Tue Sep 03 20:21:35 2013 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7299ad82_95dbc631
+Bytes: 193
+I guess if target_loads syntax is not correctly followed then ntarget_loads will not be zero, since get_tokenized_data would return an error without updating the ntarget_loads/num_tokens param.
+
