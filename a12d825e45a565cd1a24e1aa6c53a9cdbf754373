@@ -1,0 +1,18 @@
+Revision: a12d825e45a565cd1a24e1aa6c53a9cdbf754373
+Patch-set: 4
+File: drivers/staging/android/ashmem.c
+
+59
+Wed Sep 04 19:52:11 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32649599_a8af5b94
+Bytes: 73
+You are locking ashmem_lru_list_lock even when it is not on the lru list.
+
+413
+Wed Sep 04 19:52:11 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32649599_88a377ab
+Bytes: 90
+This code would not be safe if you used the locking described in the ashmem_range comment.
+
