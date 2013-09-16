@@ -16,6 +16,24 @@ UUID: a7aa05ea_be7c7773
 Bytes: 37
 same here, avoid using the word CACHE
 
+206
+Mon Sep 16 21:28:20 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_be7c7773
+UUID: a7aa05ea_9ef6db47
+Bytes: 90
+since the only use is expected to be from the shrinker, maybe ION_FLAG_FREED_FROM_SHRINKER
+
+File: drivers/gpu/ion/ion_system_heap.c
+
+262
+Mon Sep 16 21:28:20 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a7aa05ea_de8983eb
+Bytes: 113
+need a better name for this api than do_
+Since it's only used for shrinking, what about ion_heap_freelist_shrink?
+
 File: include/linux/ion.h
 
 69
