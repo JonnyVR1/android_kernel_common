@@ -1,0 +1,27 @@
+Revision: 9c2dbbb8059366066cf2c53ac940c79aaa88746e
+Patch-set: 1
+File: drivers/gpu/ion/ion_heap.c
+
+188
+Mon Sep 16 21:10:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a7aa05ea_7e820f4c
+Bytes: 162
+find a different name for this than skip_cache.  The word cache is already heavily used within ion to refer to cpu caches, so this gets confusing.  Maybe "pools"?
+
+206
+Mon Sep 16 21:10:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a7aa05ea_be7c7773
+Bytes: 37
+same here, avoid using the word CACHE
+
+File: include/linux/ion.h
+
+69
+Mon Sep 16 21:10:21 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a7aa05ea_3e3b67e1
+Bytes: 39
+match the formatting of the flags above
+
