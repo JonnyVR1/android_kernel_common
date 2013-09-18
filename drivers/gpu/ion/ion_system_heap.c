@@ -70,6 +70,7 @@ static struct page *alloc_buffer_page(struct ion_system_heap *heap,
 	if (!cached) {
 		page = ion_page_pool_alloc(pool);
 	} else {
+		struct scatterlist sg;
 		gfp_t gfp_flags = low_order_gfp_flags;
 
 		if (order > 4)
@@ -77,9 +78,10 @@ static struct page *alloc_buffer_page(struct ion_system_heap *heap,
 		page = ion_heap_alloc_pages(buffer, gfp_flags, order);
 		if (!page)
 			return 0;
-		arm_dma_ops.sync_single_for_device(NULL,
-			pfn_to_dma(NULL, page_to_pfn(page)),
-			PAGE_SIZE << order, DMA_BIDIRECTIONAL);
+		sg_init_table(&sg, 1);
+		sg_set_page(&sg, page, PAGE_SIZE, 0);
+		sg_dma_address(&sg) = page_to_phys(page);
+		dma_sync_sg_for_device(NULL, &sg, 1, DMA_BIDIRECTIONAL);
 	}
 	if (!page)
 		return 0;

@@ -838,8 +838,13 @@ static void ion_buffer_sync_for_device(struct ion_buffer *buffer,
 	for (i = 0; i < pages; i++) {
 		struct page *page = buffer->pages[i];
 
-		if (ion_buffer_page_is_dirty(page))
-			__dma_page_cpu_to_dev(page, 0, PAGE_SIZE, dir);
+		if (ion_buffer_page_is_dirty(page)) {
+			struct scatterlist sg;
+			sg_init_table(&sg, 1);
+			sg_set_page(&sg, page, PAGE_SIZE, 0);
+			sg_dma_address(&sg) = page_to_phys(page);
+			dma_sync_sg_for_device(dev, &sg, 1, dir);
+		}
 		ion_buffer_page_clean(buffer->pages + i);
 	}
 	list_for_each_entry(vma_list, &buffer->vmas, list) {
