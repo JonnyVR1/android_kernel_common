@@ -104,7 +104,7 @@ struct ion_handle {
 	struct ion_buffer *buffer;
 	struct rb_node node;
 	unsigned int kmap_cnt;
-	int id;
+	unsigned long id;
 };
 
 bool ion_buffer_fault_user_mappings(struct ion_buffer *buffer)
@@ -402,7 +402,8 @@ static struct ion_handle *ion_handle_lookup(struct ion_client *client,
 	return ERR_PTR(-EINVAL);
 }
 
-static struct ion_handle *ion_uhandle_get(struct ion_client *client, int id)
+static struct ion_handle *ion_uhandle_get(struct ion_client *client,
+		unsigned long id)
 {
 	return idr_find(&client->idr, id);
 }
@@ -1166,7 +1167,7 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				   sizeof(struct ion_handle_data)))
 			return -EFAULT;
 		mutex_lock(&client->lock);
-		handle = ion_uhandle_get(client, (int)data.handle);
+		handle = ion_uhandle_get(client, (unsigned long)data.handle);
 		mutex_unlock(&client->lock);
 		if (!handle)
 			return -EINVAL;
@@ -1181,7 +1182,7 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		if (copy_from_user(&data, (void __user *)arg, sizeof(data)))
 			return -EFAULT;
-		handle = ion_uhandle_get(client, (int)data.handle);
+		handle = ion_uhandle_get(client, (unsigned long)data.handle);
 		data.fd = ion_share_dma_buf_fd(client, handle);
 		if (copy_to_user((void __user *)arg, &data, sizeof(data)))
 			return -EFAULT;
