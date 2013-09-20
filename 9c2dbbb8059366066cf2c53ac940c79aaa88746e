@@ -9,6 +9,14 @@ UUID: a7aa05ea_7e820f4c
 Bytes: 162
 find a different name for this than skip_cache.  The word cache is already heavily used within ion to refer to cpu caches, so this gets confusing.  Maybe "pools"?
 
+188
+Fri Sep 20 05:51:46 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_7e820f4c
+UUID: 046bcfdd_fd46ffcd
+Bytes: 4
+Done
+
 206
 Mon Sep 16 21:10:21 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +32,22 @@ UUID: a7aa05ea_9ef6db47
 Bytes: 90
 since the only use is expected to be from the shrinker, maybe ION_FLAG_FREED_FROM_SHRINKER
 
+206
+Fri Sep 20 05:51:46 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_be7c7773
+UUID: e47f9b95_1c697db3
+Bytes: 4
+Done
+
+206
+Fri Sep 20 05:51:46 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_9ef6db47
+UUID: c47c57a6_98a59947
+Bytes: 4
+Done
+
 File: drivers/gpu/ion/ion_system_heap.c
 
 262
@@ -34,6 +58,14 @@ Bytes: 113
 need a better name for this api than do_
 Since it's only used for shrinking, what about ion_heap_freelist_shrink?
 
+262
+Fri Sep 20 05:51:46 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_de8983eb
+UUID: e47f9b95_5c6ff5ba
+Bytes: 4
+Done
+
 File: include/linux/ion.h
 
 69
@@ -42,4 +74,12 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a7aa05ea_3e3b67e1
 Bytes: 39
 match the formatting of the flags above
+
+69
+Fri Sep 20 05:51:46 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a7aa05ea_3e3b67e1
+UUID: e47f9b95_7c743190
+Bytes: 4
+Done
 
