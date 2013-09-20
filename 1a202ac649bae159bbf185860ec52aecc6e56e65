@@ -1,0 +1,11 @@
+Revision: 1a202ac649bae159bbf185860ec52aecc6e56e65
+Patch-set: 1
+File: kernel/sched/core.c
+
+7729
+Fri Sep 20 18:45:54 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a76389_c4231eb2
+Bytes: 107
+looks reasonable, but one minor nit. Can you put the && on the previous line to match the rest of the file?
+
