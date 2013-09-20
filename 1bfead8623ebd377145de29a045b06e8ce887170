@@ -9,3 +9,11 @@ UUID: e47f9b95_6a6f7fbb
 Bytes: 26
 didn't you move it to idr?
 
+107
+Fri Sep 20 19:02:18 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47f9b95_6a6f7fbb
+UUID: 44d6a7dc_745ea625
+Bytes: 215
+Yes, it is an idr integer, but when it gets passed to userspace and back it gets stored in a struct ion_handle *.  Userspace treats it as an opaque pointer, but I didn't want to change the type exposed to userspace.
+
