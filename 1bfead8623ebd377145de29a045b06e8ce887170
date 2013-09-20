@@ -17,3 +17,13 @@ UUID: 44d6a7dc_745ea625
 Bytes: 215
 Yes, it is an idr integer, but when it gets passed to userspace and back it gets stored in a struct ion_handle *.  Userspace treats it as an opaque pointer, but I didn't want to change the type exposed to userspace.
 
+107
+Fri Sep 20 19:12:00 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44d6a7dc_745ea625
+UUID: a4a76389_c44c7e78
+Bytes: 386
+well it's technically not valid to store it in an unsigned long either, should use an intptr_t (or uintptr_t if you so desire).
+
+My vote is to change the userspace API to be an int32_t (__s32) and bite the bullet. idr_alloc is unfortunately an int, and not sized explicitly so it's hard to really provide a stable/consistent integer id to userspace anyway. Is this stuff in staging yet?
+
