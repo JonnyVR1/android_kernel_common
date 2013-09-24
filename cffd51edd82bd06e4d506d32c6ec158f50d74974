@@ -1,0 +1,11 @@
+Revision: cffd51edd82bd06e4d506d32c6ec158f50d74974
+Patch-set: 2
+File: drivers/gpu/ion/ion.c
+
+819
+Tue Sep 24 06:32:09 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b3cffa_b7ad48c7
+Bytes: 170
+take a direction? the call site in ion_buffer_sync_for_device below expects to pass a direction, but you drop it on the floor and force bidirectional. that's not correct.
+
