@@ -83,7 +83,7 @@ struct ion_client {
 	struct rb_root handles;
 	struct idr idr;
 	struct mutex lock;
-	const char *name;
+	char *name;
 	struct task_struct *task;
 	pid_t pid;
 	struct dentry *debug_root;
@@ -710,6 +710,37 @@ static const struct file_operations debug_client_fops = {
 	.release = single_release,
 };
 
+static bool startswith(const char *string, const char *prefix)
+{
+	size_t l1 = strlen(string);
+	size_t l2 = strlen(prefix);
+	if (l2 > l1)
+		return false;
+	return strncmp(string, prefix, min(l1, l2)) == 0;
+}
+
+static int ion_get_client_serial(const struct rb_root *root,
+					const unsigned char *name)
+{
+	int serial = -1;
+	struct rb_node *node;
+	for (node = rb_first(root); node; node = rb_next(node)) {
+		int n;
+		char *serial_string;
+		struct ion_client *client = rb_entry(node, struct ion_client,
+						node);
+		if (!startswith(client->name, name))
+			continue;
+		serial_string = strrchr(client->name, '-');
+		if (!serial_string)
+			continue;
+		serial_string++;
+		sscanf(serial_string, "%d", &n);
+		serial = max(serial, n);
+	}
+	return serial + 1;
+}
+
 struct ion_client *ion_client_create(struct ion_device *dev,
 				     const char *name)
 {
@@ -718,8 +749,13 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	struct rb_node **p;
 	struct rb_node *parent = NULL;
 	struct ion_client *entry;
-	char debug_name[64];
 	pid_t pid;
+	int client_serial;
+
+	if (!name) {
+		pr_err("%s: Name cannot be null\n", __func__);
+		return ERR_PTR(-EINVAL);
+	}
 
 	get_task_struct(current->group_leader);
 	task_lock(current->group_leader);
@@ -745,11 +781,19 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	client->handles = RB_ROOT;
 	idr_init(&client->idr);
 	mutex_init(&client->lock);
-	client->name = name;
+
 	client->task = task;
 	client->pid = pid;
 
 	down_write(&dev->lock);
+	client_serial = ion_get_client_serial(&dev->clients, name);
+	client->name = kasprintf(GFP_KERNEL, "%s-%d", name, client_serial);
+	if (!client->name) {
+		up_write(&dev->lock);
+		put_task_struct(current->group_leader);
+		kfree(client);
+		return ERR_PTR(-ENOMEM);
+	}
 	p = &dev->clients.rb_node;
 	while (*p) {
 		parent = *p;
@@ -763,15 +807,15 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	rb_link_node(&client->node, parent, p);
 	rb_insert_color(&client->node, &dev->clients);
 
-	snprintf(debug_name, 64, "%u", client->pid);
-	client->debug_root = debugfs_create_file(debug_name, 0664,
+
+	client->debug_root = debugfs_create_file(client->name, 0664,
 						dev->clients_debug_root,
 						client, &debug_client_fops);
 	if (!client->debug_root) {
 		char buf[256], *path;
 		path = dentry_path(dev->clients_debug_root, buf, 256);
 		pr_err("Failed to create client debugfs at %s/%s\n",
-			path, debug_name);
+			path, client->name);
 	}
 
 	up_write(&dev->lock);
@@ -801,6 +845,7 @@ void ion_client_destroy(struct ion_client *client)
 	debugfs_remove_recursive(client->debug_root);
 	up_write(&dev->lock);
 
+	kfree(client->name);
 	kfree(client);
 }
 EXPORT_SYMBOL(ion_client_destroy);
