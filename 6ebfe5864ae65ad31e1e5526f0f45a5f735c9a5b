@@ -1,0 +1,11 @@
+Revision: 6ebfe5864ae65ad31e1e5526f0f45a5f735c9a5b
+Patch-set: 9
+File: mm/mempolicy.c
+
+731
+Tue Oct 15 03:10:38 2013 +0000
+Author: Xiaolei Yu <1022098@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6cb8f0_9a0eed85
+Bytes: 26
+undeclared variable "name"
+
