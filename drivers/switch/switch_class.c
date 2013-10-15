@@ -54,8 +54,19 @@ static ssize_t name_show(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%s\n", sdev->name);
 }
 
-static DEVICE_ATTR(state, S_IRUGO | S_IWUSR, state_show, NULL);
-static DEVICE_ATTR(name, S_IRUGO | S_IWUSR, name_show, NULL);
+/*
+ * currently we don't need store API, and add a dummy here to pass the WARN
+ * check in device_create_file check since dev_attr has S_IWUSR flag. later
+ * the API can be implement specifically if necessary.
+ */
+static ssize_t dummy_store(struct device *dev, struct device_attribute *attr,
+			    const char *buf, size_t count)
+{
+	return count;
+}
+
+static DEVICE_ATTR(state, S_IRUGO | S_IWUSR, state_show, dummy_store);
+static DEVICE_ATTR(name, S_IRUGO | S_IWUSR, name_show, dummy_store);
 
 void switch_set_state(struct switch_dev *sdev, int state)
 {
