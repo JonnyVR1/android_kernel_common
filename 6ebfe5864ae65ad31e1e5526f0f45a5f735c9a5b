@@ -9,3 +9,11 @@ UUID: 5e6cb8f0_9a0eed85
 Bytes: 26
 undeclared variable "name"
 
+731
+Tue Oct 15 20:04:55 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e6cb8f0_9a0eed85
+UUID: 3e88e4e1_4f8e4c84
+Bytes: 38
+typo, should be vma_get_anon_name(vma)
+
