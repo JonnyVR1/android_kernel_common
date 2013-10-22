@@ -67,6 +67,7 @@
 #include <linux/syscalls.h>
 #include <linux/capability.h>
 #include <linux/fs_struct.h>
+#include <linux/proc_fs.h>
 
 #include "audit.h"
 
@@ -1151,6 +1152,46 @@ error_path:
 	return;
 }
 
+
+static void audit_log_add_cmdline(struct audit_buffer *ab,
+				  struct task_struct *tsk)
+{
+	int len;
+	unsigned long page;
+
+	/* Ensure that the feature is set */
+	if (!is_audit_feature_set(AUDIT_FEATURE_CMDLINE_OUTPUT)) {
+		/*
+		 * We always set a value to keep amount of
+		 * fields consistent.
+		 */
+		audit_log_format(ab, " cmdline=(null)");
+		return;
+	}
+
+	/* Get the process cmdline */
+	page = __get_free_page(GFP_TEMPORARY);
+	if (!page)
+		return;
+
+	len = proc_pid_cmdline(tsk, (char *)page);
+	if (len <= 0) {
+		free_page(page);
+		return;
+	}
+
+	/*
+	* Ensure NULL terminated! Application could
+	* could be using setproctitle(3).
+	*/
+	((char *)page)[len-1] = '\0';
+
+	audit_log_format(ab, " cmdline=");
+	audit_log_untrustedstring(ab, (char *)page);
+
+	free_page(page);
+}
+
 EXPORT_SYMBOL(audit_log_task_context);
 
 static void audit_log_task_info(struct audit_buffer *ab, struct task_struct *tsk)
@@ -1179,6 +1220,8 @@ static void audit_log_task_info(struct audit_buffer *ab, struct task_struct *tsk
 		}
 		up_read(&mm->mmap_sem);
 	}
+
+	audit_log_add_cmdline(ab, tsk);
 	audit_log_task_context(ab);
 }
 
