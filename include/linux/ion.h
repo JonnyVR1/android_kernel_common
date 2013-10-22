@@ -256,7 +256,7 @@ struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
  * struct ion_allocation_data - metadata passed from userspace for allocations
  * @len:		size of the allocation
  * @align:		required alignment of the allocation
- * @heap_id_mask:	mask of heap ids to allocate from
+ * @heap_mask:		mask of heap ids to allocate from
  * @flags:		flags passed to heap
  * @handle:		pointer that will be populated with a cookie to use to 
  *			refer to this allocation
@@ -266,7 +266,7 @@ struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
 struct ion_allocation_data {
 	size_t len;
 	size_t align;
-	unsigned int heap_id_mask;
+	unsigned int heap_mask;
 	unsigned int flags;
 	struct ion_handle *handle;
 };
