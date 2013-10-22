@@ -142,7 +142,10 @@ static struct audit_features af = {.vers = AUDIT_FEATURE_VERSION,
 				   .features = 0,
 				   .lock = 0,};
 
-static char *audit_feature_names[0] = {
+static char *audit_feature_names[3] = {
+	"not_implmented_place_holder",
+	"not_implmented_place_holder",
+	"audit_output_cmdline",
 };
 
 
@@ -668,7 +671,7 @@ static int audit_get_feature(struct sk_buff *skb)
 
 	seq = nlmsg_hdr(skb)->nlmsg_seq;
 
-	audit_send_reply(NETLINK_CB(skb).portid, seq, AUDIT_GET, 0, 0,
+	audit_send_reply(NETLINK_CB(skb).pid, seq, AUDIT_GET, 0, 0,
 			 &af, sizeof(af));
 
 	return 0;
