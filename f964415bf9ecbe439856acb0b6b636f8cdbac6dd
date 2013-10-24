@@ -1,0 +1,31 @@
+Revision: f964415bf9ecbe439856acb0b6b636f8cdbac6dd
+Patch-set: 1
+File: drivers/gpu/ion/Makefile
+
+4
+Thu Oct 24 20:43:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efc70ee_302ef003
+Bytes: 234
+obj-$(CONFIG_COMPAT_ION) += compat_ion.o
+
+or get rid of CONFIG_COMPAT_ION, and use ifdef CONFIG_COMPAT around this line
+
+or get rid of compat_ion.c completely, and put a single #ifdef CONFIG_COMPAT around compat_ion_ioctl inside ion.c
+
+File: drivers/gpu/ion/compat_ion.c
+
+28
+Thu Oct 24 20:43:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efc70ee_0b5589fc
+Bytes: 155
+is this macro necessary?  why can't you just use compat_alloc_user_space directly?  the access_ok seems unnecessary, since get_user will fail later anyways
+
+137
+Thu Oct 24 20:43:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: def26816_93170e59
+Bytes: 125
+maybe move this into another switch statement after the unlocked_ioctl call below, so that all the ioctls take the same path?
+
