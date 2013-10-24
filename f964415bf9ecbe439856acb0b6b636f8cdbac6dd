@@ -23,6 +23,14 @@ Bytes: 120
 
 I'd rather leave the compat code in a separate file though...
 
+4
+Thu Oct 24 22:16:55 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: def26816_33143a05
+UUID: def26816_73c0823a
+Bytes: 4
+Done
+
 File: drivers/gpu/ion/compat_ion.c
 
 28
@@ -32,10 +40,27 @@ UUID: 9efc70ee_0b5589fc
 Bytes: 155
 is this macro necessary?  why can't you just use compat_alloc_user_space directly?  the access_ok seems unnecessary, since get_user will fail later anyways
 
+28
+Thu Oct 24 22:16:55 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9efc70ee_0b5589fc
+UUID: 9efc70ee_abd0d516
+Bytes: 4
+Done
+
 137
 Thu Oct 24 20:43:11 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: def26816_93170e59
 Bytes: 125
 maybe move this into another switch statement after the unlocked_ioctl call below, so that all the ioctls take the same path?
+
+137
+Thu Oct 24 22:16:55 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: def26816_93170e59
+UUID: 1eb7a04d_302608c6
+Bytes: 154
+Not very pretty either since the data and data32 pointers have different types based on the cmd.
+Using a return at the end of each case statement instead.
 
