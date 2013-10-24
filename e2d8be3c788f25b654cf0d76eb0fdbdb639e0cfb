@@ -1,0 +1,11 @@
+Revision: e2d8be3c788f25b654cf0d76eb0fdbdb639e0cfb
+Patch-set: 1
+File: drivers/video/adf/adf.c
+
+1108
+Thu Oct 24 03:19:48 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: def26816_6481debd
+Bytes: 130
+Would this make more sense as a macro or static inline in a header file? unless you might add some more code to it at a later time
+
