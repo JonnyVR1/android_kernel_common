@@ -13,6 +13,16 @@ or get rid of CONFIG_COMPAT_ION, and use ifdef CONFIG_COMPAT around this line
 
 or get rid of compat_ion.c completely, and put a single #ifdef CONFIG_COMPAT around compat_ion_ioctl inside ion.c
 
+4
+Thu Oct 24 21:03:37 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9efc70ee_302ef003
+UUID: def26816_33143a05
+Bytes: 120
++1 for getting rid of CONFIG_COMPAT_ION (seems redundant)
+
+I'd rather leave the compat code in a separate file though...
+
 File: drivers/gpu/ion/compat_ion.c
 
 28
