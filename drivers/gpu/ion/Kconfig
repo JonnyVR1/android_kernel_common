@@ -6,6 +6,11 @@ menuconfig ION
 	help
 	  Chose this option to enable the ION Memory Manager.
 
+config COMPAT_ION
+	bool
+	depends on ION && COMPAT
+	default y
+
 config ION_TEGRA
 	tristate "Ion for Tegra"
 	depends on ARCH_TEGRA && ION
