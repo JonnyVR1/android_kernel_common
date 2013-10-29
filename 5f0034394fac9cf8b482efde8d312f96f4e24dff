@@ -1,0 +1,11 @@
+Revision: 5f0034394fac9cf8b482efde8d312f96f4e24dff
+Patch-set: 4
+File: include/linux/audit.h
+
+381
+Tue Oct 29 00:12:11 2013 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ed08087_4e7047d4
+Bytes: 233
+The two above this are not back ported to this kernel, as they really are not used. I added some messages later indicating that they are not implemented. I wanted to keep the number I'll get in mainline the same as here (2 hopefully)
+
