@@ -2,6 +2,15 @@ Revision: ad22ba0b5b07a9646fda483288b6cf5c46ce8429
 Patch-set: 1
 File: drivers/gpu/ion/ion.c
 
+1039
+Wed Nov 06 17:50:11 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fec1ed19_c12792c6
+Bytes: 458
+i'm not sure why the locking was such before, but if you are trying to prevent handle from going away this is still not correct. If the handle was the last ref on the buffer, buffer would have gone too, so I think you need the buffer_get before dropping the lock.
+
+Maybe we need to ask Rebecca some clarification on the locking here because it's pretty consistent, so if we think it's wrong, it's wrong in a few places. Maybe we are missing something subtle?
+
 1173
 Wed Nov 06 01:37:09 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
