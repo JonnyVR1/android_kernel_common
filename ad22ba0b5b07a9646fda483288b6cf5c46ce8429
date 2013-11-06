@@ -1,0 +1,11 @@
+Revision: ad22ba0b5b07a9646fda483288b6cf5c46ce8429
+Patch-set: 1
+File: drivers/gpu/ion/ion.c
+
+1173
+Wed Nov 06 01:37:09 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fec1ed19_13e97428
+Bytes: 92
+ion_handle_put can't be called without the lock held, I'll have another version to fix that.
+
