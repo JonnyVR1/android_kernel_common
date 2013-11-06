@@ -11,6 +11,16 @@ i'm not sure why the locking was such before, but if you are trying to prevent h
 
 Maybe we need to ask Rebecca some clarification on the locking here because it's pretty consistent, so if we think it's wrong, it's wrong in a few places. Maybe we are missing something subtle?
 
+1039
+Wed Nov 06 19:17:58 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fec1ed19_c12792c6
+UUID: fec1ed19_7c0be53e
+Bytes: 417
+I think this locking was already broken before I broke everything with idr.  There was nothing preventing a free ioctl from destroying the handle, and maybe destroying the buffer, between   the mutex unlock and dereferencing the handle pointer or calling ion_buffer_get.
+
+I think just moving the unlock of client->lock, which prevents the handle from getting deleted, to after the ion_buffer_get should be sufficient.
+
 1173
 Wed Nov 06 01:37:09 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
