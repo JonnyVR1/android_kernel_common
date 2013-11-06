@@ -402,14 +402,24 @@ static struct ion_handle *ion_handle_lookup(struct ion_client *client,
 	return ERR_PTR(-EINVAL);
 }
 
-static struct ion_handle *ion_uhandle_get(struct ion_client *client, int id)
+static struct ion_handle *ion_handle_get_by_id(struct ion_client *client,
+						int id)
 {
-	return idr_find(&client->idr, id);
+	struct ion_handle *handle;
+
+	mutex_lock(&client->lock);
+	handle = idr_find(&client->idr, id);
+	if (handle)
+		ion_handle_get(handle);
+	mutex_unlock(&client->lock);
+
+	return handle ? handle : ERR_PTR(EINVAL);
 }
 
 static bool ion_handle_validate(struct ion_client *client, struct ion_handle *handle)
 {
-	return (ion_uhandle_get(client, handle->id) == handle);
+	WARN_ON(!mutex_is_locked(&client->lock));
+	return (idr_find(&client->idr, handle->id) == handle);
 }
 
 static int ion_handle_add(struct ion_client *client, struct ion_handle *handle)
@@ -1020,13 +1030,14 @@ struct dma_buf *ion_share_dma_buf(struct ion_client *client,
 
 	mutex_lock(&client->lock);
 	valid_handle = ion_handle_validate(client, handle);
-	mutex_unlock(&client->lock);
 	if (!valid_handle) {
 		WARN(1, "%s: invalid handle passed to share.\n", __func__);
+		mutex_unlock(&client->lock);
 		return ERR_PTR(-EINVAL);
 	}
-
 	buffer = handle->buffer;
+	mutex_unlock(&client->lock);
+
 	ion_buffer_get(buffer);
 	dmabuf = dma_buf_export(buffer, &dma_buf_ops, buffer->size, O_RDWR);
 	if (IS_ERR(dmabuf)) {
@@ -1155,12 +1166,11 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (copy_from_user(&data, (void __user *)arg,
 				   sizeof(struct ion_handle_data)))
 			return -EFAULT;
-		mutex_lock(&client->lock);
-		handle = ion_uhandle_get(client, (int)data.handle);
-		mutex_unlock(&client->lock);
-		if (!handle)
-			return -EINVAL;
+		handle = ion_handle_get_by_id(client, (int)data.handle);
+		if (IS_ERR(handle))
+			return PTR_ERR(handle);
 		ion_free(client, handle);
+		ion_handle_put(handle);
 		break;
 	}
 	case ION_IOC_SHARE:
@@ -1171,8 +1181,9 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		if (copy_from_user(&data, (void __user *)arg, sizeof(data)))
 			return -EFAULT;
-		handle = ion_uhandle_get(client, (int)data.handle);
+		handle = ion_handle_get_by_id(client, (int)data.handle);
 		data.fd = ion_share_dma_buf_fd(client, handle);
+		ion_handle_put(handle);
 		if (copy_to_user((void __user *)arg, &data, sizeof(data)))
 			return -EFAULT;
 		if (data.fd < 0)
