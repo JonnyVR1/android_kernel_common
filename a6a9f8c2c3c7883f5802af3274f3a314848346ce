@@ -11,3 +11,11 @@ Are uapi headers for staging drivers supposed to stay out of include/uapi? When 
 
     #include <uapi/linux/ion.h>
 
+2
+Thu Nov 07 22:52:48 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: de65092b_c344a08c
+UUID: 3e570543_f16a482f
+Bytes: 98
+every time one of our drivers goes into staging they move the headers out of include/ into staging
+
