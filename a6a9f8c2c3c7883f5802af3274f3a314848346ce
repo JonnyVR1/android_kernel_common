@@ -1,0 +1,13 @@
+Revision: a6a9f8c2c3c7883f5802af3274f3a314848346ce
+Patch-set: 1
+File: drivers/staging/android/uapi/ion.h
+
+2
+Thu Nov 07 22:42:24 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de65092b_c344a08c
+Bytes: 180
+Are uapi headers for staging drivers supposed to stay out of include/uapi? When we did the uapi split we created include/uapi/linux/ion.h, and then
+
+    #include <uapi/linux/ion.h>
+
