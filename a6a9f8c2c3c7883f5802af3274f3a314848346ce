@@ -19,3 +19,20 @@ UUID: 3e570543_f16a482f
 Bytes: 98
 every time one of our drivers goes into staging they move the headers out of include/ into staging
 
+2
+Thu Nov 07 23:13:28 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e570543_f16a482f
+UUID: de65092b_6e3db3a5
+Bytes: 252
+Colin: Right, for stuff to be merged into staging, it has to be "self contained" so it doesn't affect anything else in the kernel tree outside of staging.
+
+Having the uapi split is still a good practice, just so its easier to migrate properly upstream.
+
+80
+Thu Nov 07 23:13:28 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de65092b_ae4eab50
+Bytes: 14
+whitespace nit
+
