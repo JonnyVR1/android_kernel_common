@@ -1,0 +1,11 @@
+Revision: 3fd2a7952e0376c9726159d7198773884b6ee6ee
+Patch-set: 2
+File: drivers/gpu/ion/ion.c
+
+1110
+Thu Nov 07 23:27:38 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e5dfd5e_ee31c3d5
+Bytes: 20
+you mean mutex_lock?
+
