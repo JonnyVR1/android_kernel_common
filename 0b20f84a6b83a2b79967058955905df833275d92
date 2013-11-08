@@ -11,3 +11,14 @@ pretty sure i commented in an earlier verison. You are not passing through the d
 
 this would cause a problem if someone called the dma_buf ops to map and passed a direction other than BIDIRECTIONAL
 
+File: drivers/staging/android/ion/ion_priv.h
+
+367
+Fri Nov 08 20:51:25 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3e570543_39eae2ce
+Bytes: 98
+Use of struct device needs an #include <linux/device.h>
+
+Otherwise it generates compiler warnings.
+
