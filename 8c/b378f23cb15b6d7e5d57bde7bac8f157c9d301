@@ -1,0 +1,8 @@
+Code-Review+2: Dima Zavin <dima@android.com>
+Verified+1: Colin Cross <ccross@android.com>
+Code-Review+1: John Stultz <john.stultz@linaro.org>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Fri, 08 Nov 2013 00:04:03 +0000
+Reviewed-on: https://android-review.googlesource.com/69628
+Project: kernel/common
+Branch: refs/heads/android-3.10
