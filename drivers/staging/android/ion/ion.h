@@ -201,4 +201,10 @@ int ion_share_dma_buf_fd(struct ion_client *client, struct ion_handle *handle);
  */
 struct ion_handle *ion_import_dma_buf(struct ion_client *client, int fd);
 
+#ifdef CONFIG_COMPAT
+long compat_ion_test_ioctl(struct file *filp, unsigned int cmd,
+						unsigned long arg);
+#else
+#define compat_ion_test_ioctl NULL
+#endif
 #endif /* _LINUX_ION_H */
