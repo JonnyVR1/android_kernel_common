@@ -153,6 +153,7 @@ struct ion_heap {
 	struct ion_device *dev;
 	enum ion_heap_type type;
 	struct ion_heap_ops *ops;
+	size_t size;
 	unsigned long flags;
 	unsigned int id;
 	const char *name;
