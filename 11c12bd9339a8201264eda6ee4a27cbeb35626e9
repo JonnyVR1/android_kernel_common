@@ -1,0 +1,11 @@
+Revision: 11c12bd9339a8201264eda6ee4a27cbeb35626e9
+Patch-set: 1
+File: include/uapi/video/adf.h
+
+236
+Mon Nov 11 22:49:49 2013 +0000
+Author: Jon Mayo <1005253@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e5dfd5e_41a87470
+Bytes: 81
+512 entries seems like enough. (unless someone wants to play with 64K on aarch64)
+
