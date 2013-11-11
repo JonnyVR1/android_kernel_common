@@ -73,8 +73,11 @@ struct acc_dev {
 	struct usb_ep *ep_in;
 	struct usb_ep *ep_out;
 
+	/* online indicates state of function_set_alt & function_unbind */
 	/* set to 1 when we connect */
 	int online:1;
+
+	/* disconnected indicates state of open & release */
 	/* Set to 1 when we disconnect.
 	 * Not cleared until our file is closed.
 	 */
@@ -253,7 +256,7 @@ static struct usb_request *req_get(struct acc_dev *dev, struct list_head *head)
 
 static void acc_set_disconnected(struct acc_dev *dev)
 {
-	dev->online = 0;
+	/*	dev->online = 0; */ /* do not go offline, only disconnect */
 	dev->disconnected = 1;
 }
 
@@ -715,6 +718,8 @@ static int acc_open(struct inode *ip, struct file *fp)
 		return -EBUSY;
 
 	_acc_dev->disconnected = 0;
+	/* Don't touch the online flag. */
+
 	fp->private_data = _acc_dev;
 	return 0;
 }
@@ -724,7 +729,8 @@ static int acc_release(struct inode *ip, struct file *fp)
 	printk(KERN_INFO "acc_release\n");
 
 	WARN_ON(!atomic_xchg(&_acc_dev->open_excl, 0));
-	_acc_dev->disconnected = 0;
+	_acc_dev->disconnected = 1; /* indicate that we are disconnected */
+	/* still could be online so don't touch online flag */
 	return 0;
 }
 
@@ -950,6 +956,10 @@ acc_function_unbind(struct usb_configuration *c, struct usb_function *f)
 	struct usb_request *req;
 	int i;
 
+	dev->online = 0; /* clear online flag */
+	wake_up(&dev->read_wq); /* unblock reads on closure */
+	wake_up(&dev->write_wq); /* likewise for writes */
+
 	while ((req = req_get(dev, &dev->tx_idle)))
 		acc_request_free(req, dev->ep_in);
 	for (i = 0; i < RX_REQ_MAX; i++)
@@ -1060,7 +1070,7 @@ static int acc_function_set_alt(struct usb_function *f,
 	int ret;
 
 	DBG(cdev, "acc_function_set_alt intf: %d alt: %d\n", intf, alt);
-
+	
 	ret = config_ep_by_speed(cdev->gadget, f, dev->ep_in);
 	if (ret)
 		return ret;
@@ -1080,6 +1090,7 @@ static int acc_function_set_alt(struct usb_function *f,
 	}
 
 	dev->online = 1;
+	dev->disconnected = 0; /* if online then not disconnected */
 
 	/* readers may be blocked waiting for us to go online */
 	wake_up(&dev->read_wq);
@@ -1092,7 +1103,8 @@ static void acc_function_disable(struct usb_function *f)
 	struct usb_composite_dev	*cdev = dev->cdev;
 
 	DBG(cdev, "acc_function_disable\n");
-	acc_set_disconnected(dev);
+	acc_set_disconnected(dev); /* this now only sets disconnected */
+	dev->online = 0; /* so now need to clear online flag here too */
 	usb_ep_disable(dev->ep_in);
 	usb_ep_disable(dev->ep_out);
 
