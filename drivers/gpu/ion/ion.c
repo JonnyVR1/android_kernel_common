@@ -1232,8 +1232,7 @@ static long ion_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		if (copy_from_user(&data, (void __user *)arg,
 				   sizeof(struct ion_fd_data)))
 			return -EFAULT;
-		ion_sync_for_device(client, data.fd);
-		break;
+		return ion_sync_for_device(client, data.fd);
 	}
 	case ION_IOC_CUSTOM:
 	{
