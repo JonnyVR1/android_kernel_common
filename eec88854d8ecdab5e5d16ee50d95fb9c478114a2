@@ -9,3 +9,11 @@ UUID: fed56d33_36fd1ee3
 Bytes: 44
 Do these need their own COMPAT_ numbers too?
 
+171
+Fri Nov 15 04:32:28 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fed56d33_36fd1ee3
+UUID: dee2691a_120fccb5
+Bytes: 149
+since the sizes of the parameters for these don't change size the ioctl number will be the same on 32 and 64 bit, so they don't need a compat number.
+
