@@ -17,3 +17,11 @@ UUID: dee2691a_120fccb5
 Bytes: 149
 since the sizes of the parameters for these don't change size the ioctl number will be the same on 32 and 64 bit, so they don't need a compat number.
 
+171
+Fri Nov 15 04:38:12 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dee2691a_120fccb5
+UUID: fed56d33_d60a5a3a
+Bytes: 207
+Right. Technically the ION_IOC_FREE case doesn't need a compat IOCTL, but since there's special case handling still needed, I figured it would be cleaner to be consistent and add a COMPAT_ION_IOC_FREE macro.
+
