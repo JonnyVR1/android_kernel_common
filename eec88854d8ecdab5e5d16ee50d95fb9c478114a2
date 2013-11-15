@@ -1,0 +1,11 @@
+Revision: eec88854d8ecdab5e5d16ee50d95fb9c478114a2
+Patch-set: 1
+File: drivers/staging/android/ion/compat_ion.c
+
+171
+Fri Nov 15 04:27:52 2013 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fed56d33_36fd1ee3
+Bytes: 44
+Do these need their own COMPAT_ numbers too?
+
