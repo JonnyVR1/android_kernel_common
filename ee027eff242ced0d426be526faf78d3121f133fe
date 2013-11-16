@@ -1,0 +1,25 @@
+Revision: ee027eff242ced0d426be526faf78d3121f133fe
+Patch-set: 1
+File: drivers/staging/android/ion/ion_test.c
+
+51
+Sat Nov 16 07:12:00 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e64b999_481a5f8b
+Bytes: 107
+would be neater if you did the assignment just above line 61, so its clear offset is not being thrown away.
+
+66
+Sat Nov 16 07:12:00 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: be7bf535_cb05f52a
+Bytes: 13
+newline after
+
+158
+Sat Nov 16 07:12:00 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: be7bf535_cb2c15b5
+Bytes: 13
+newline after
+
