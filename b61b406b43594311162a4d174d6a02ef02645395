@@ -1,0 +1,18 @@
+Revision: b61b406b43594311162a4d174d6a02ef02645395
+Patch-set: 2
+File: drivers/staging/android/ion/ion.c
+
+720
+Thu Nov 21 23:01:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e8fa1ae_c1660401
+Bytes: 95
+this doesn't do what it sounds like it will do, string="adc" and prefix="abcd" will return true
+
+802
+Thu Nov 21 23:01:24 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bea77522_855696b8
+Bytes: 58
+kasnprintf would be easier than preallocating client->name
+
