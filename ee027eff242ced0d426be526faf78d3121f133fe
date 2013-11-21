@@ -30,3 +30,11 @@ UUID: 5ed03988_ebff6dd5
 Bytes: 90
 Having a compat_ioctl entry might be good here as well, to help validate the compat logic.
 
+223
+Thu Nov 21 00:16:52 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ed03988_ebff6dd5
+UUID: 5ed03988_4b96797a
+Bytes: 169
+I though compat_ioctl wouldn't be necessary here because all the arguments were fixed size, but the void * in ion_test_rw_data obviously needs compat_ioctl, i'll add it.
+
