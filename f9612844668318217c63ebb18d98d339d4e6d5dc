@@ -1,0 +1,11 @@
+Revision: f9612844668318217c63ebb18d98d339d4e6d5dc
+Patch-set: 3
+File: drivers/staging/android/uapi/ion.h
+
+66
+Thu Nov 21 23:10:25 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bea77522_c5e6de99
+Bytes: 123
+Can you make this 1<<15, and reject allocations if the client passes it in?  It should only get set by drain_from_shrinker.
+
