@@ -23,3 +23,10 @@ UUID: be7bf535_cb2c15b5
 Bytes: 13
 newline after
 
+223
+Thu Nov 21 00:03:34 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5ed03988_ebff6dd5
+Bytes: 90
+Having a compat_ioctl entry might be good here as well, to help validate the compat logic.
+
