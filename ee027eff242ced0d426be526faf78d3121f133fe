@@ -31,6 +31,14 @@ if (size<=0)
 
 at the end of the for loop seems to avoid the issue.
 
+76
+Fri Nov 22 03:56:38 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ed03988_7726bae5
+UUID: bea77522_603278db
+Bytes: 57
+you're right, not sure where that size -= to_copy got to.
+
 158
 Sat Nov 16 07:12:00 2013 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
