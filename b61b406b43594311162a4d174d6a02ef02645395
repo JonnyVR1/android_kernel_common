@@ -9,10 +9,26 @@ UUID: 1e8fa1ae_c1660401
 Bytes: 95
 this doesn't do what it sounds like it will do, string="adc" and prefix="abcd" will return true
 
+720
+Fri Nov 22 02:19:57 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1e8fa1ae_c1660401
+UUID: fe8bada0_e0313c23
+Bytes: 96
+good catch. shouldn't matter in this case but I'll fix it for the sake of function name honesty.
+
 802
 Thu Nov 21 23:01:24 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bea77522_855696b8
 Bytes: 58
 kasnprintf would be easier than preallocating client->name
+
+802
+Fri Nov 22 02:19:57 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bea77522_855696b8
+UUID: 3e6385c5_f7d4a0d6
+Bytes: 4
+Done
 
