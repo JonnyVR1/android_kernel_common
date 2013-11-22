@@ -16,6 +16,21 @@ UUID: be7bf535_cb05f52a
 Bytes: 13
 newline after
 
+76
+Fri Nov 22 03:26:10 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5ed03988_7726bae5
+Bytes: 361
+Not totally sure on this, but I've been seeing some issues here w/ my dummy ion driver using the chunk heap. The buffer sglist is 1Meg in size, and if we only mean to read 4k, we end up copying the entire 1M out to userland corrupting its address space.
+
+So a simple:
+
+size-= to_copy;
+if (size<=0)
+   break;
+
+at the end of the for loop seems to avoid the issue.
+
 158
 Sat Nov 16 07:12:00 2013 +0000
 Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
