@@ -9,3 +9,13 @@ UUID: deaa69eb_5e1e3375
 Bytes: 43
 would CMA work here to avoid the 4MB limit?
 
+76
+Sat Nov 23 05:22:37 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: deaa69eb_5e1e3375
+UUID: bea77522_23851540
+Bytes: 363
+Quite possibly, though I'm not sure if CMA is supported on all architectures. I initially figured I'd keep this simple so any interested parties could play around with it on any architecture without adding any platform specific hooks.
+
+I'll look into adding CMA support if it is generic enough (maybe with a kzalloc, or likely more correctly page_alloc, fallback)
+
