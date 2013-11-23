@@ -1,0 +1,12 @@
+Revision: 0d698ae88a231dbd32fbbcb46f12678314029fa5
+Patch-set: 1
+File: drivers/staging/android/ion/ion_dummy_driver.c
+
+65
+Sat Nov 23 05:14:55 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5ed03988_a828d016
+Bytes: 316
+continuation of my thoughts on the following patch:
+I don't think there is any restriction on calling this after boot.  You could get all the stuff that is current platform data from userspace at runtime, and rename this from "dummy" to "user" or something, and then it might be enough to use on future real devices.
+
