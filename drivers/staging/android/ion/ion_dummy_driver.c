@@ -26,6 +26,9 @@
 struct ion_device *idev;
 struct ion_heap **heaps;
 
+void *carveout_ptr;
+void *chunk_ptr;
+
 struct ion_platform_heap dummy_heaps[] = {
 		{
 			.id	= ION_HEAP_TYPE_SYSTEM,
@@ -37,10 +40,24 @@ struct ion_platform_heap dummy_heaps[] = {
 			.type	= ION_HEAP_TYPE_SYSTEM_CONTIG,
 			.name	= "system contig",
 		},
+		{
+			.id	= ION_HEAP_TYPE_CARVEOUT,
+			.type	= ION_HEAP_TYPE_CARVEOUT,
+			.name	= "carveout",
+			.size	= SZ_4M,
+		},
+		{
+			.id	= ION_HEAP_TYPE_CHUNK,
+			.type	= ION_HEAP_TYPE_CHUNK,
+			.name	= "chunk",
+			.size	= SZ_4M,
+			.align	= SZ_1M,
+			.priv	= (void *)(SZ_1M),
+		},
 };
 
 struct ion_platform_data dummy_ion_pdata = {
-	.nr = 2,
+	.nr = 4,
 	.heaps = dummy_heaps,
 };
 
@@ -54,8 +71,32 @@ static int __init ion_dummy_init(void)
 	if (!heaps)
 		return PTR_ERR(heaps);
 
+
+	/* Allocate a dummy carveout heap */
+	carveout_ptr = kzalloc(dummy_heaps[ION_HEAP_TYPE_CARVEOUT].size,
+			       GFP_KERNEL);
+	if (carveout_ptr)
+		dummy_heaps[ION_HEAP_TYPE_CARVEOUT].base =
+						virt_to_phys(carveout_ptr);
+	else
+		pr_err("ion_dummy: Could not allocate carveout\n");
+
+	/* Allocate a dummy chunk heap */
+	chunk_ptr = kzalloc(dummy_heaps[ION_HEAP_TYPE_CHUNK].size, GFP_KERNEL);
+	if (chunk_ptr)
+		dummy_heaps[ION_HEAP_TYPE_CHUNK].base = virt_to_phys(chunk_ptr);
+	else
+		pr_err("ion_dummy: Could not allocate chunk\n");
+
 	for (i = 0; i < dummy_ion_pdata.nr; i++) {
 		struct ion_platform_heap *heap_data = &dummy_ion_pdata.heaps[i];
+
+		if (heap_data->type == ION_HEAP_TYPE_CARVEOUT &&
+							!heap_data->base)
+			continue;
+
+		if (heap_data->type == ION_HEAP_TYPE_CHUNK && !heap_data->base)
+			continue;
 
 		heaps[i] = ion_heap_create(heap_data);
 		if (IS_ERR_OR_NULL(heaps[i])) {
@@ -72,6 +113,11 @@ err:
 	}
 	kfree(heaps);
 
+	kfree(carveout_ptr);
+	carveout_ptr = NULL;
+	kfree(chunk_ptr);
+	chunk_ptr = NULL;
+
 	return err;
 }
 
@@ -84,6 +130,9 @@ static void __exit ion_dummy_exit(void)
 	for (i = 0; i < dummy_ion_pdata.nr; i++)
 		ion_heap_destroy(heaps[i]);
 	kfree(heaps);
+
+	kfree(carveout_ptr);
+	kfree(chunk_ptr);
 
 	return;
 }
