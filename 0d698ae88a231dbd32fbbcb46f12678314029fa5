@@ -28,3 +28,11 @@ I was trying to come up with a good interface, but I didn't come across one bett
 
 I haven't yet seen a case where there were multiple heaps of the same type.  I guess the heaps could create directories like /sys/devices/.../ion/heaps/system/, and then writing the size, id, and name to files in that directory would cause a heap to get instantiated.
 
+65
+Sat Nov 23 05:34:31 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: deaa69eb_3e4ec785
+UUID: deaa69eb_9e3ffbc9
+Bytes: 337
+Personally, I suspect it would be just as good to stick with new creation ioctls to the /dev/ion device. Keeps the clutter in /dev/ down, and I don't really see a compelling reason to create a configfs style interface for heap creation. Other upstream folks may disagree with me, but it seems more compact to just add ioctls to /dev/ion.
+
