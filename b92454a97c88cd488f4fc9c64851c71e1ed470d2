@@ -1,0 +1,11 @@
+Revision: b92454a97c88cd488f4fc9c64851c71e1ed470d2
+Patch-set: 1
+File: drivers/staging/android/ion/ion_dummy_driver.c
+
+76
+Sat Nov 23 05:16:19 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: deaa69eb_5e1e3375
+Bytes: 43
+would CMA work here to avoid the 4MB limit?
+
