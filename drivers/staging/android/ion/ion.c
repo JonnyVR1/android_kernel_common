@@ -896,8 +896,8 @@ int ion_vm_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	ion_buffer_page_dirty(buffer->pages + vmf->pgoff);
 
 	BUG_ON(!buffer->pages || !buffer->pages[vmf->pgoff]);
-	ret = vm_insert_page(vma, (unsigned long)vmf->virtual_address,
-			     ion_buffer_page(buffer->pages[vmf->pgoff]));
+	ret = vm_insert_pfn(vma, (unsigned long)vmf->virtual_address,
+			     page_to_pfn(ion_buffer_page(buffer->pages[vmf->pgoff])));
 	mutex_unlock(&buffer->lock);
 	if (ret)
 		return VM_FAULT_ERROR;
@@ -956,6 +956,7 @@ static int ion_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
 	}
 
 	if (ion_buffer_fault_user_mappings(buffer)) {
+		vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
 		vma->vm_private_data = buffer;
 		vma->vm_ops = &ion_vma_ops;
 		ion_vm_open(vma);
