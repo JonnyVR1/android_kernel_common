@@ -13,3 +13,11 @@ Missing uaccess.h and "../uapi/ion_test.h".
 
 But then there's even more issues I'll have to look at closer tomorrow.
 
+18
+Wed Nov 27 05:44:10 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63dba606_6ac8fb91
+UUID: 03abca57_8514425c
+Bytes: 35
+Fixed, compile tested now on x86_64
+
