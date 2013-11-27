@@ -1,0 +1,15 @@
+Revision: 3b1a22d4ba5e6e6f4c2b6de3419c2741aaf1f1de
+Patch-set: 4
+File: drivers/staging/android/ion/compat_ion_test.c
+
+18
+Wed Nov 27 03:53:07 2013 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63dba606_6ac8fb91
+Bytes: 162
+Lots of build issues on this file on x86_64.
+
+Missing uaccess.h and "../uapi/ion_test.h".
+
+But then there's even more issues I'll have to look at closer tomorrow.
+
