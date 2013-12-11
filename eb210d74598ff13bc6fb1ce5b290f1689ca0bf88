@@ -1,0 +1,11 @@
+Revision: eb210d74598ff13bc6fb1ce5b290f1689ca0bf88
+Patch-set: 4
+File: /COMMIT_MSG
+
+9
+Wed Dec 11 20:25:57 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28fb4b35_610470a7
+Bytes: 202
+This description is confusing because you still need a struct page. What you probably mean is that the struct page can be on of the subpages of a compound page (or however else you'd like to word that).
+
