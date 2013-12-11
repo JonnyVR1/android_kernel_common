@@ -9,6 +9,30 @@ UUID: 883a77c3_11c06c37
 Bytes: 68
 why do you zero after you flush the cache? Shouldn't you zero first?
 
+88:1-88:20
+Wed Dec 11 22:17:48 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 883a77c3_11c06c37
+UUID: 883a77c3_91245cde
+Bytes: 95
+it zeroes with a writecombined mapping, not a cached mapping, so it needs to cache flush first.
+
+145:1-145:26
+Wed Dec 11 22:17:48 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4844ff56_cf8b5dc3
+Bytes: 42
+cache flush needs to be before the zeroing
+
+File: drivers/staging/android/ion/ion_chunk_heap.c
+
+154
+Wed Dec 11 22:17:48 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 683f03b6_53e27648
+Bytes: 38
+cache flush needs to be before zeroing
+
 File: drivers/staging/android/ion/ion_heap.c
 
 159:37-159:56
