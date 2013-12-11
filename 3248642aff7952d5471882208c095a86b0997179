@@ -1,0 +1,20 @@
+Revision: 3248642aff7952d5471882208c095a86b0997179
+Patch-set: 1
+File: drivers/staging/android/ion/ion_carveout_heap.c
+
+88:1-88:20
+Wed Dec 11 21:36:03 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 883a77c3_11c06c37
+Bytes: 68
+why do you zero after you flush the cache? Shouldn't you zero first?
+
+File: drivers/staging/android/ion/ion_heap.c
+
+159:37-159:56
+Wed Dec 11 21:36:03 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4844ff56_afe499fe
+Bytes: 126
+you write with writecombine but then you sync the caches.. writecombined is uncached, so the caches could have stale data, no?
+
