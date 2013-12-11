@@ -1,0 +1,11 @@
+Revision: c5b5d2ea9114795134fe1dda4afb5b83d6d97972
+Patch-set: 4
+File: drivers/staging/android/ion/ion_heap.c
+
+98
+Wed Dec 11 20:14:41 2013 +0000
+Author: Dima Zavin <1000413@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28fb4b35_61d9100d
+Bytes: 65
+don't you have to unmap what you mapped before the error occured?
+
