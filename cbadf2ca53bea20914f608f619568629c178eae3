@@ -9,3 +9,14 @@ UUID: 883a77c3_710e9803
 Bytes: 28
 this shouldn't be necessary.
 
+137:21-137:22
+Thu Dec 12 02:20:25 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 883a77c3_710e9803
+UUID: 88d6f7d9_3124b098
+Bytes: 387
+I remember why its necessary.  gfp_t is marked __bitwise__, so building without !! and with C=2 gives:
+drivers/staging/android/ion/ion_page_pool.c:137:14: warning: incorrect type in assignment (different base types)
+drivers/staging/android/ion/ion_page_pool.c:137:14:    expected bool [unsigned] [usertype] high
+drivers/staging/android/ion/ion_page_pool.c:137:14:    got restricted gfp_t
+
