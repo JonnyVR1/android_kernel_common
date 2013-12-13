@@ -9,3 +9,14 @@ UUID: 28aeeb65_adb4be64
 Bytes: 30
 systrace doesn't rely on this?
 
+98
+Fri Dec 13 01:32:29 2013 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28aeeb65_adb4be64
+UUID: a82f3bb4_bcd7010d
+Bytes: 210
+My understanding was that we preferred CONFIG_CONTEXT_SWITCH_TRACER
+which gets enabled with CONFIG_ENABLE_DEFAULT_TRACERS which is 'y'. Based on
+
+https://b.corp.google.com/issue?id=6538553#ISSUE_HistoryHeader21
+
