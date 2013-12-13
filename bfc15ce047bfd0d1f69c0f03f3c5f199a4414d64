@@ -11,12 +11,28 @@ created->create
 
 This prints lots of warnings without the next patch to avoid name conflicts
 
+776:20-776:27
+Fri Dec 13 22:17:47 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08abe757_3a624526
+UUID: c86c6f4a_c3967678
+Bytes: 124
+yeah I left this in this patch because it fits in with the other error checking being added but I can move it if you prefer.
+
 777:9-777:13
 Fri Dec 13 02:09:11 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28aeeb65_703c5dab
 Bytes: 18
 name -> debug_name
+
+777:9-777:13
+Fri Dec 13 22:17:47 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28aeeb65_703c5dab
+UUID: a8973b5d_c2fd02de
+Bytes: 4
+Done
 
 1470
 Fri Dec 13 02:09:11 2013 +0000
@@ -25,10 +41,26 @@ UUID: e865b32a_d46a9cc1
 Bytes: 15
 created->create
 
+1470
+Fri Dec 13 22:17:47 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e865b32a_d46a9cc1
+UUID: a8973b5d_022f6aaa
+Bytes: 4
+Done
+
 1485
 Fri Dec 13 02:09:11 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28aeeb65_b032d5d6
 Bytes: 15
 created->create
+
+1485
+Fri Dec 13 22:17:47 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28aeeb65_b032d5d6
+UUID: a8973b5d_e2336610
+Bytes: 4
+Done
 
