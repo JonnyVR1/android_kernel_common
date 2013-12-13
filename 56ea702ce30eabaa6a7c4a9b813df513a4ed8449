@@ -1,0 +1,11 @@
+Revision: 56ea702ce30eabaa6a7c4a9b813df513a4ed8449
+Patch-set: 1
+File: drivers/staging/android/ion/ion_priv.h
+
+28
+Fri Dec 13 03:54:32 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 882b57c2_09e24947
+Bytes: 22
+keep them alphabetized
+
