@@ -1,0 +1,11 @@
+Revision: 191b477931f7a9b20caea9269f4f340ca76e5a2e
+Base-for-patch-set: 1
+File: android/configs/android-recommended.cfg
+
+98
+Fri Dec 13 01:20:02 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28aeeb65_adb4be64
+Bytes: 30
+systrace doesn't rely on this?
+
