@@ -9,6 +9,14 @@ UUID: 08abe757_9ae499ff
 Bytes: 62
 put this extra documentation at the end with the return values
 
+90:22-94:40
+Fri Dec 13 22:14:54 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08abe757_9ae499ff
+UUID: 28c8ab74_f916d39e
+Bytes: 4
+Done
+
 File: drivers/staging/android/ion/ion_system_heap.c
 
 258:2-258:6
@@ -29,4 +37,12 @@ Bytes: 377
 Actually, leave it in bytes, everything else in the freelist works with bytes for now.
 
 I realized that by expanding the use of DEFER_FREE I need to add a bunch more shrinkers, so I'm going to refactor the way shrinking is handled to be done in ion_heap.c instead of each heap.  The impact on this patch should be minimal, this hunk will move into ion_heap_shrink in ion_heap.c
+
+258:2-258:6
+Fri Dec 13 22:14:54 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28aeeb65_4d698a80
+UUID: c8be2fc6_3688560b
+Bytes: 4
+Done
 
