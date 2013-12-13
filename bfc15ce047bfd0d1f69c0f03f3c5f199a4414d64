@@ -1,0 +1,34 @@
+Revision: bfc15ce047bfd0d1f69c0f03f3c5f199a4414d64
+Patch-set: 2
+File: drivers/staging/android/ion/ion.c
+
+776:20-776:27
+Fri Dec 13 02:09:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 08abe757_3a624526
+Bytes: 92
+created->create
+
+This prints lots of warnings without the next patch to avoid name conflicts
+
+777:9-777:13
+Fri Dec 13 02:09:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28aeeb65_703c5dab
+Bytes: 18
+name -> debug_name
+
+1470
+Fri Dec 13 02:09:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e865b32a_d46a9cc1
+Bytes: 15
+created->create
+
+1485
+Fri Dec 13 02:09:11 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28aeeb65_b032d5d6
+Bytes: 15
+created->create
+
