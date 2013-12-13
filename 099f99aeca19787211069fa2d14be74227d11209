@@ -20,3 +20,13 @@ All this switching between pages and bytes seems unnecessary.  The only other ca
 
 Also, linewrapping would be easier here if you replace ion_heap_freelist_drain_from_shrinker with ion_heap_freelist_shrink
 
+258:2-258:6
+Fri Dec 13 00:56:56 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28aeeb65_cde1faed
+UUID: 28aeeb65_4d698a80
+Bytes: 377
+Actually, leave it in bytes, everything else in the freelist works with bytes for now.
+
+I realized that by expanding the use of DEFER_FREE I need to add a bunch more shrinkers, so I'm going to refactor the way shrinking is handled to be done in ion_heap.c instead of each heap.  The impact on this patch should be minimal, this hunk will move into ion_heap_shrink in ion_heap.c
+
