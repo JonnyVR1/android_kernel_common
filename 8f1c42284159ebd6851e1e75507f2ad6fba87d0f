@@ -1,0 +1,11 @@
+Revision: 8f1c42284159ebd6851e1e75507f2ad6fba87d0f
+Base-for-patch-set: 3
+File: android/configs/android-recommended.cfg
+
+109
+Sat Dec 14 00:20:38 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_e9f7d1fd
+Bytes: 24
+Why did you remove this?
+
