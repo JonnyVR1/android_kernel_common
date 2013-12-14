@@ -17,3 +17,11 @@ UUID: 28ab4b9f_a191d834
 Bytes: 64
 I used manta_defconfig as a reference, and it was not being set.
 
+109
+Sat Dec 14 01:05:43 2013 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28ab4b9f_a191d834
+UUID: 28ab4b9f_411454c7
+Bytes: 37
+sysrq t does not work well without it
+
