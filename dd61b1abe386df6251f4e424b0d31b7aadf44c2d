@@ -1,0 +1,11 @@
+Revision: dd61b1abe386df6251f4e424b0d31b7aadf44c2d
+Patch-set: 6
+File: drivers/staging/android/ion/ion.c
+
+90
+Thu Dec 19 22:27:17 2013 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8649bc8_2047ae91
+Bytes: 106
+just make this an int and you won't have to deal with all the casts below.  2^31 serial numbers is plenty.
+
