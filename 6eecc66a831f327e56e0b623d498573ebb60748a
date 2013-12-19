@@ -9,6 +9,14 @@ UUID: 08abe757_9f756be2
 Bytes: 50
 min is unnecessary here, you already know l2 <= l1
 
+722
+Thu Dec 19 17:24:59 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08abe757_9f756be2
+UUID: a8649bc8_20ac0e88
+Bytes: 115
+Good catch. I've removed this function altogether in the next patch set since we're not parsing the id out anymore.
+
 737
 Tue Dec 17 01:43:11 2013 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,4 +25,12 @@ Bytes: 271
 This is going to result in some odd numbering if one client's name is a prefix of another's.
 
 How about adding a new field to ion_client, display_name, and storing the name+id there.  Also add display_id while you're at it to avoid having to parse it out of display_name.
+
+737
+Thu Dec 19 17:24:59 2013 +0000
+Author: Mitchel Humpherys <1025091@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08abe757_ba9cf580
+UUID: a8649bc8_40a90277
+Bytes: 4
+Done
 
