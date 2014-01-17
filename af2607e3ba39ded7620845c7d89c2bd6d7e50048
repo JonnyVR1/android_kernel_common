@@ -1,0 +1,11 @@
+Revision: af2607e3ba39ded7620845c7d89c2bd6d7e50048
+Patch-set: 1
+File: net/ipv4/tcp_output.c
+
+236:18-236:48
+Fri Jan 17 17:59:16 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d23f98e_4eb4e764
+Bytes: 62
+Do we need to check if there's enough tcp_rmem for this value?
+
