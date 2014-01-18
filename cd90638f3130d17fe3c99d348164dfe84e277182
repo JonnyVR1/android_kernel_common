@@ -1,0 +1,11 @@
+Revision: cd90638f3130d17fe3c99d348164dfe84e277182
+Patch-set: 4
+File: net/ipv4/tcp_input.c
+
+105:4-105:32
+Sat Jan 18 22:11:14 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5244b256_3504786f
+Bytes: 100
+For consistency with current kernel code, we might want to call this sysctl_tcp_default_init_rcvwnd.
+
