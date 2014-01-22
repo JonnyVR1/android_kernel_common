@@ -9,3 +9,11 @@ UUID: 124f9a7f_284ae375
 Bytes: 135
 Thanks, looks like these 3 lines should be moved above the sysfs_create_group as well (and probably reset to NULL on error for safety).
 
+1209:1-1211:30
+Wed Jan 22 02:55:01 2014 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 124f9a7f_284ae375
+UUID: 9271cac9_dc2f81b6
+Bytes: 4
+Done
+
