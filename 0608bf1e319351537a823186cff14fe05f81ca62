@@ -1,0 +1,11 @@
+Revision: 0608bf1e319351537a823186cff14fe05f81ca62
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1209:1-1211:30
+Wed Jan 22 01:57:56 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 124f9a7f_284ae375
+Bytes: 135
+Thanks, looks like these 3 lines should be moved above the sysfs_create_group as well (and probably reset to NULL on error for safety).
+
