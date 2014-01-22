@@ -1,0 +1,27 @@
+Revision: f26fe43b6ad90e131828eede762c5eff5d3b73a1
+Patch-set: 2
+File: /COMMIT_MSG
+
+10:25-10:47
+Wed Jan 22 03:09:55 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 127dda9f_9847d938
+Bytes: 61
+typo: CPUFREQ_GOV_POLICY_INIT
+
+I can fix that up if you want.
+
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1205:3-1205:25
+Wed Jan 22 03:09:55 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32801ec4_1933cf0f
+Bytes: 132
+This should actually be conditional:
+
+ if (!have_governor_per_policy())
+     common_tunables = NULL;
+
+I can fix that up if you want.
+
