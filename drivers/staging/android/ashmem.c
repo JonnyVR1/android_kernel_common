@@ -31,6 +31,7 @@
 #include <linux/bitops.h>
 #include <linux/mutex.h>
 #include <linux/shmem_fs.h>
+#include <linux/slab.h>
 #include "ashmem.h"
 
 #define ASHMEM_NAME_PREFIX "dev/ashmem/"
@@ -651,6 +652,49 @@ static int ashmem_pin_unpin(struct ashmem_area *asma, unsigned long cmd,
 	return ret;
 }
 
+static int ashmem_get_purged_ranges(struct ashmem_area *asma,
+				    void __user *input)
+{
+	int ret = 0;
+	struct ashmem_get_purged input_copy;
+	size_t capacity = 0;
+	size_t count = 0;
+	struct ashmem_range_desc *buffer = NULL;
+	struct ashmem_range *range = NULL;
+
+	if (unlikely(copy_from_user(&input_copy, input, sizeof(input_copy))))
+		return -EFAULT;
+
+	capacity = min(input_copy.capacity, 256U);
+	buffer = kmalloc(capacity * sizeof(buffer[0]), GFP_KERNEL);
+	if (unlikely(!buffer))
+		return -ENOMEM;
+
+	mutex_lock(&ashmem_mutex);
+
+	list_for_each_entry(range, &asma->unpinned_list, unpinned) {
+		if (range->purged != ASHMEM_WAS_PURGED)
+			continue;
+		if (unlikely(count >= capacity))
+			break;
+
+		buffer[count].pg_offset = range->pgstart;
+		buffer[count].pg_count = range->pgend - range->pgstart + 1;
+		++count;
+	}
+
+	mutex_unlock(&ashmem_mutex);
+
+	ret = count;
+	if (unlikely(copy_to_user(input_copy.ranges, buffer,
+				  count * sizeof(buffer[0])))) {
+		ret = -EFAULT;
+	}
+
+	kfree(buffer);
+	return ret;
+}
+
 static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct ashmem_area *asma = file->private_data;
@@ -683,6 +727,9 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case ASHMEM_UNPIN:
 	case ASHMEM_GET_PIN_STATUS:
 		ret = ashmem_pin_unpin(asma, cmd, (void __user *) arg);
+		break;
+	case ASHMEM_GET_PURGED:
+		ret = ashmem_get_purged_ranges(asma, (void __user *) arg);
 		break;
 	case ASHMEM_PURGE_ALL_CACHES:
 		ret = -EPERM;

@@ -31,6 +31,14 @@ struct ashmem_pin {
 	__u32 len;	/* length forward from offset, in bytes, page-aligned */
 };
 
+struct ashmem_get_purged {
+	struct ashmem_range_desc {
+		__u32 pg_offset;	/* offset into region, in pages */
+		__u32 pg_count;	/* number of pages in the range */
+	} __user *ranges;
+	__u32 capacity;	/* capacity (number of entries) of the range array */
+};
+
 #define __ASHMEMIOC		0x77
 
 #define ASHMEM_SET_NAME		_IOW(__ASHMEMIOC, 1, char[ASHMEM_NAME_LEN])
@@ -43,5 +51,7 @@ struct ashmem_pin {
 #define ASHMEM_UNPIN		_IOW(__ASHMEMIOC, 8, struct ashmem_pin)
 #define ASHMEM_GET_PIN_STATUS	_IO(__ASHMEMIOC, 9)
 #define ASHMEM_PURGE_ALL_CACHES	_IO(__ASHMEMIOC, 10)
+/* 11, 12, 13 are used by FLUSH_RANGE, CLEAN_RANGE, INV_RANGE on kernel 3.4 */
+#define ASHMEM_GET_PURGED	_IOW(__ASHMEMIOC, 14, struct ashmem_get_purged)
 
 #endif	/* _UAPI_LINUX_ASHMEM_H */
