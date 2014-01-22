@@ -11,6 +11,14 @@ typo: CPUFREQ_GOV_POLICY_INIT
 
 I can fix that up if you want.
 
+10
+Wed Jan 22 03:46:10 2014 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 127dda9f_9847d938
+UUID: 9271cac9_7f550716
+Bytes: 22
+I will fix it. thanks.
+
 File: drivers/cpufreq/cpufreq_interactive.c
 
 1205:3-1205:25
@@ -24,4 +32,12 @@ This should actually be conditional:
      common_tunables = NULL;
 
 I can fix that up if you want.
+
+1205
+Wed Jan 22 03:46:10 2014 +0000
+Author: Minsung Kim <1014816@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32801ec4_1933cf0f
+UUID: d248a27a_a9f5b99f
+Bytes: 22
+I will fix it. thanks.
 
