@@ -1,5 +1,14 @@
 Revision: cd90638f3130d17fe3c99d348164dfe84e277182
 Patch-set: 4
+File: net/ipv4/sysctl_net_ipv4.c
+
+127:11-127:39
+Mon Jan 27 22:06:13 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f213e69e_073fd89d
+Bytes: 78
+Since everything is now called ..._rwnd, care to rename this function as well?
+
 File: net/ipv4/tcp_input.c
 
 105:4-105:32
@@ -16,4 +25,12 @@ Parent: 5244b256_3504786f
 UUID: 3229fe85_42ed0270
 Bytes: 71
 I specifically switched from init_rcvwnd to match net-next's init_rwnd.
+
+105:4-105:32
+Mon Jan 27 22:06:13 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3229fe85_42ed0270
+UUID: 321adeb4_89c75d51
+Bytes: 4
+Ack.
 
