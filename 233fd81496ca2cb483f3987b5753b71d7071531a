@@ -1,0 +1,11 @@
+Revision: 233fd81496ca2cb483f3987b5753b71d7071531a
+Patch-set: 2
+File: drivers/staging/android/ion/compat_ion.c
+
+77
+Wed Jan 29 21:00:37 2014 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2b4c6fd_70903883
+Bytes: 37
+This doesn't build. Needs an int err;
+
