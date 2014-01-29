@@ -1,0 +1,11 @@
+Revision: 773255d68069bb3f9fed42e7ec055c301e52615f
+Patch-set: 1
+File: drivers/staging/android/Kconfig
+
+26
+Wed Jan 29 02:27:51 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12731a25_851c8282
+Bytes: 55
+mention that this will break the new Android user-space
+
