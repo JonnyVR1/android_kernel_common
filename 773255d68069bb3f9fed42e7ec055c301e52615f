@@ -33,6 +33,14 @@ UUID: f2b4c6fd_c3bf4541
 Bytes: 334
 We didn't like the idea of the 32-bit version libbinder being compiled differently for a 32-bit kernel vs. a 64-bit kernel.  This should only exist for a relatively short transition period, we figured we should switch the whole binder api to one that is 64-bit safe now and then later get rid of all the compatibility code completely.
 
+23
+Thu Jan 30 11:32:07 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2b4c6fd_c3bf4541
+UUID: 12a87aa1_209a64a3
+Bytes: 86
+Thanks for the update! I was assuming this is the reason but I wanted to double check.
+
 26
 Wed Jan 29 02:27:51 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -121,4 +129,23 @@ Parent: 52811216_1080c5dd
 UUID: 92870a29_f2dfb9f1
 Bytes: 172
 I like this better, it makes it clear that this is a conditional that applies to both userspace and the kernel.  Setting a CONFIG_* option in userspace seems strange to me.
+
+24
+Thu Jan 30 11:32:07 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92870a29_f2dfb9f1
+UUID: 12a87aa1_e06a3cc2
+Bytes: 464
+I was thinking of adding:
+
+@@ -35,6 +35,7 @@ kernel_known_macros = {
+     "__CHECK_ENDIAN__": kCppUndefinedMacro,
+     "CONFIG_X86_32": "__i386__",
+     "__EXPORTED_HEADERS__": "1",
++    "CONFIG_ANDROID_BINDER_IPC_32BIT":"BINDER_IPC_32BIT",
+     }
+
+to bionic's  https://android.googlesource.com/platform/bionic/+/master/libc/kernel/tools/defaults.py .
+
+This fixes the same issue as the above snippet. I agree with Colin setting CONFIG_* in the userspace seems odd.
 
