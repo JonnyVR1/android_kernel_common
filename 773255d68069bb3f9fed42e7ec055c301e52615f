@@ -17,6 +17,14 @@ Is there a particular reason for using binder_uintptr_t as __u64 on pure 32bit s
 
 Please note that with this patch the default for 32bit kernels would be the 64bit interface.
 
+23
+Thu Jan 30 03:47:58 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12a87aa1_fd6547f2
+UUID: f2b4c6fd_e3ec8176
+Bytes: 95
+The plan is to remove support for the 32 bit interface and use the 64 bit interface everywhere.
+
 26
 Wed Jan 29 02:27:51 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,12 +51,28 @@ Why do we need this? unlocked_ioctl won't be defined for 64bit kernels that are 
 BINDER_IPC_32BIT
    depends on !64BIT
 
+3537
+Thu Jan 30 03:47:58 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c6a85_61a516c4
+UUID: 92870a29_52b085c2
+Bytes: 92
+We don't need it. I commented out that line to test the 32 bit interface on a 64 bit kernel.
+
 3540
 Wed Jan 29 11:30:47 2014 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12a87aa1_7d7a5793
 Bytes: 141
 The common idiom is to have .compat_ioctl surrounded by a CONFIG_COMPAT clause. I am not sure we want to expose this for 32bit architectures.
+
+3540
+Thu Jan 30 03:47:58 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12a87aa1_7d7a5793
+UUID: 92870a29_f2c89942
+Bytes: 117
+Even when the compat_ioctl points to the same handler? I see both used in other drivers, and the field always exists.
 
 File: drivers/staging/android/uapi/binder.h
 
@@ -58,4 +82,12 @@ Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12a87aa1_1d7113b1
 Bytes: 234
 Why do we need this extra flag ? Is it because of the scripts that generate the bionic headers? We can add CONFIG_ANDROID_BINDER_IPC_32BIT to the white list and such the scripts won't remove the CONFIG_ANDROID_BINDER_IPC_32BIT blocks.
+
+24
+Thu Jan 30 03:47:58 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12a87aa1_1d7113b1
+UUID: 52811216_1080c5dd
+Bytes: 43
+I did not see a white list. Does one exist?
 
