@@ -25,6 +25,14 @@ UUID: f2b4c6fd_e3ec8176
 Bytes: 95
 The plan is to remove support for the 32 bit interface and use the 64 bit interface everywhere.
 
+23
+Thu Jan 30 03:59:00 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2b4c6fd_e3ec8176
+UUID: f2b4c6fd_c3bf4541
+Bytes: 334
+We didn't like the idea of the 32-bit version libbinder being compiled differently for a 32-bit kernel vs. a 64-bit kernel.  This should only exist for a relatively short transition period, we figured we should switch the whole binder api to one that is 64-bit safe now and then later get rid of all the compatibility code completely.
+
 26
 Wed Jan 29 02:27:51 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -74,7 +82,22 @@ UUID: 92870a29_f2c89942
 Bytes: 117
 Even when the compat_ioctl points to the same handler? I see both used in other drivers, and the field always exists.
 
+3540
+Thu Jan 30 03:59:00 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92870a29_f2c89942
+UUID: f2b4c6fd_63af510e
+Bytes: 148
+compat_ioctl can never get called when CONFIG_COMPAT is not set, and CONFIG_COMPAT doesn't exist for 32-bit kernels. There is no need for an #ifdef.
+
 File: drivers/staging/android/uapi/binder.h
+
+23
+Thu Jan 30 03:59:00 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 92870a29_d2e2b5b4
+Bytes: 94
+you could move this block to ../binder.h so the uapi file doesn't reference any CONFIG options
 
 24
 Wed Jan 29 11:30:47 2014 +0000
@@ -90,4 +113,12 @@ Parent: 12a87aa1_1d7113b1
 UUID: 52811216_1080c5dd
 Bytes: 43
 I did not see a white list. Does one exist?
+
+24
+Thu Jan 30 03:59:00 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52811216_1080c5dd
+UUID: 92870a29_f2dfb9f1
+Bytes: 172
+I like this better, it makes it clear that this is a conditional that applies to both userspace and the kernel.  Setting a CONFIG_* option in userspace seems strange to me.
 
