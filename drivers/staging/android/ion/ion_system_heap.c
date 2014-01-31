@@ -14,7 +14,6 @@
  *
  */
 
-#include <asm/page.h>
 #include <linux/dma-mapping.h>
 #include <linux/err.h>
 #include <linux/highmem.h>
@@ -23,6 +22,7 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
+#include <asm/page.h>
 #include "ion.h"
 #include "ion_priv.h"
 
