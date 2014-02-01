@@ -1,0 +1,11 @@
+Revision: 06a483501866bb40b73b28444b3335f3a1216518
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/include/typedefs.h
+
+68:24-68:26
+Sat Feb 01 00:59:27 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2dfc254_d45372aa
+Bytes: 111
+You should probably test for #if defined(__LP64__) instead of those 2... This will avoid issues with MIPS64 too
+
