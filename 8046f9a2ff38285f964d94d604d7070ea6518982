@@ -11,3 +11,24 @@ this doesn't seem right, custom_compat_ioctl should only get called out of compa
 
 If this works for you, couldn't you just handle this inside your custom_ioctl?  The arguments are exactly the same.
 
+1316
+Tue Feb 04 03:26:15 2014 +0000
+Author: Laura Abbott <1010468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f25046a6_7f758b0d
+UUID: 721616de_9bad0fb3
+Bytes: 234
+yes, thinking about this again I think we can handle this completely in the custom ioctl.
+
+#ifdef CONFIG_COMAPT
+
+#define custom_ioct    compat_ioctl
+
+#else
+
+#define custom_ioctl  regular_ioctl
+
+#endif
+
+
+ion_device_create(custom_ioctl)
+
