@@ -1,0 +1,13 @@
+Revision: 8046f9a2ff38285f964d94d604d7070ea6518982
+Patch-set: 1
+File: drivers/staging/android/ion/ion.c
+
+1316
+Tue Feb 04 01:56:22 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f25046a6_7f758b0d
+Bytes: 204
+this doesn't seem right, custom_compat_ioctl should only get called out of compat_ion.c
+
+If this works for you, couldn't you just handle this inside your custom_ioctl?  The arguments are exactly the same.
+
