@@ -50,6 +50,24 @@ typedef struct dhd_ioctl {
 	uint driver;	/* to identify target driver */
 } dhd_ioctl_t;
 
+struct dhdnl_ioctl {
+	uint cmd;	/* common ioctl definition */
+	uint len;	/* attached buffer length */
+	uint offset;	/* user buffer offset */
+	uint set;	/* get or set request optional */
+	uint magic;	/* magic number for verification */
+};
+
+enum dhdnl_attrs {
+	DHD_NLATTR_UNSPEC,
+
+	DHD_NLATTR_LEN,
+	DHD_NLATTR_DATA,
+
+	__DHD_NLATTR_AFTER_LAST,
+	DHD_NLATTR_MAX = __DHD_NLATTR_AFTER_LAST - 1
+};
+
 /* Underlying BUS definition */
 enum {
 	BUS_TYPE_USB = 0, /* for USB dongles */
