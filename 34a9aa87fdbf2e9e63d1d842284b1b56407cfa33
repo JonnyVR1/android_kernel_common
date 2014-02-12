@@ -1,0 +1,11 @@
+Revision: 34a9aa87fdbf2e9e63d1d842284b1b56407cfa33
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_android.c
+
+152
+Wed Feb 12 01:33:56 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cf62b923_b34e1855
+Bytes: 38
+why not just #ifdef CONFIG_64BIT here?
+
