@@ -1,0 +1,11 @@
+Revision: f88ea8965963addd3001f04365b22d241e9a3927
+Base-for-patch-set: 2
+File: net/ipv4/tcp_input.c
+
+355:9-355:18
+Sat Feb 15 03:00:35 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f21a133_ff075734
+Bytes: 130
+Is it necessary to change this function around completely? Can we simply replace these two "4"s with sysctl_tcp_default_init_rwnd?
+
