@@ -9,3 +9,13 @@ UUID: 8f21a133_ff075734
 Bytes: 130
 Is it necessary to change this function around completely? Can we simply replace these two "4"s with sysctl_tcp_default_init_rwnd?
 
+355:9-355:18
+Wed Feb 19 23:22:00 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f21a133_ff075734
+UUID: cff9d9ff_8aca3387
+Bytes: 95
+Sure. I'll upload a new patch.
+
+I was just trying to make it look more like the other branches.
+
