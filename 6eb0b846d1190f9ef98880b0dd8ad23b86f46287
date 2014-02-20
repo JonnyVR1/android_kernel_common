@@ -1,0 +1,28 @@
+Revision: 6eb0b846d1190f9ef98880b0dd8ad23b86f46287
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:45-7:49
+Thu Feb 20 02:31:15 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_3ee7edc8
+Bytes: 369
+This needs to be a single-line quick description.
+
+I should also say upstream will want this single-line description to be followed by a blank line and then a short sentence or paragraph describing the patch in more detail.
+
+I'd suggest something like:
+
+power: add an API to log wakeup reasons
+
+Add API log_wakeup_reason() and expose it to userspace via sysfs path xxx.
+
+File: kernel/power/wakeup_reason.c
+
+4:1-7:25
+Thu Feb 20 02:31:15 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f1c351e_bf501b2a
+Bytes: 46
+These lines are duplicated, keep only one set?
+
