@@ -1,0 +1,67 @@
+Revision: 1cf6cb8c063069f32b7507068857731bb95a68b2
+Patch-set: 2
+File: kernel/power/wakeup_reason.c
+
+4:0-7:25
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f1c351e_dc5c05bb
+Bytes: 16
+duplicated lines
+
+42:0-42:4
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_de019921
+Bytes: 41
+use tabs, not spaces, for all identation.
+
+44:4-44:9
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_be02dd25
+Bytes: 98
+sorry, didn't catch kernel coding style issue previously: add space after "for", prior to "(...)".
+
+65:2-65:3
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_fee3b543
+Bytes: 19
+trailing whitespace
+
+86:4-86:11
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_9aae0d64
+Bytes: 24
+add space after "switch"
+
+110:4-110:7
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_7a5b31e7
+Bytes: 40
+add space between "if" and "(condition)"
+
+114:23-114:24
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_1eeb111b
+Bytes: 82
+also suggest removing braces around single statement here, upstream folks may care
+
+114:4-114:8
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_7ef845ee
+Bytes: 21
+add space after "if".
+
+119:4-119:7
+Thu Feb 20 01:46:09 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_5ef589f4
+Bytes: 16
+space after "if"
+
