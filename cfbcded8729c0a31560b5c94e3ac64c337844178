@@ -1,0 +1,101 @@
+Revision: cfbcded8729c0a31560b5c94e3ac64c337844178
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:74
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_fb574795
+Bytes: 138
+Suggest: "power: add API to log wakeup reasons and expose to userspace via sysfs"
+
+adding the "power:" prefix and avoiding the past tense.
+
+File: include/linux/wakeup_reason.h
+
+5:3-5:7
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_bb830ff3
+Bytes: 50
+Could add copyright and GPL license, not required.
+
+12:0-21:26
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_1bd16320
+Bytes: 169
+These includes can move to the file for the log_wakeup_reason code, other callers including this header don't necessarily need these includes to call log_wakeup_reason()
+
+25:10-25:25
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_17cad6e1
+Bytes: 45
+update comment to match the CPP defines above
+
+File: kernel/power/Makefile
+
+18:0-18:5
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_f78f5aa2
+Bytes: 82
+Let's use obj-$(CONFIG_SUSPEND) to only include if the kernel has SUSPEND support.
+
+File: kernel/power/wakeup_reason.c
+
+6:1-6:2
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_5baabb64
+Bytes: 30
+Add copyright and GPL license.
+
+11:8-11:15
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_f768fa09
+Bytes: 111
+This symbol may be too generic and could collide with other defines, suggest MAX_WAKEUP_REASON_IRQS or similar.
+
+19:4-19:7
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_9741c67c
+Bytes: 154
+File has (mostly) spaces instead of tabs, use tab indentation.
+
+We'll set you up to run checkpatch from your git checkout to help look for style problems.
+
+43:0-43:3
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f1c351e_3c4ff953
+Bytes: 76
+/*
+ * logs all...
+
+style of comments are generally preferred (opening "/*").
+
+49:4-49:35
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f193130_bbd2efef
+Bytes: 105
+Could move the spin_lock to just around the irq_list[] array store, don't need to hold across printk etc.
+
+54:59-54:67
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef15bdf4_fa310108
+Bytes: 130
+Suggest removing the function name here, it's not needed to identify the source of the message, which will appear at every resume.
+
+87:15-87:16
+Thu Feb 20 01:16:08 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f1c351e_7cde912f
+Bytes: 159
+Kernel style generally discourages use of curly braces around single-statement blocks if both the "then" and "else" (if present) clauses are single statements.
+
