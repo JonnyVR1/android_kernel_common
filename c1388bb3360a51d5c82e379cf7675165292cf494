@@ -1,0 +1,11 @@
+Revision: c1388bb3360a51d5c82e379cf7675165292cf494
+Patch-set: 5
+File: drivers/staging/android/ashmem.c
+
+191:9-191:15
+Fri Feb 21 22:52:15 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef469d41_92835cf3
+Bytes: 6
+reduce
+
