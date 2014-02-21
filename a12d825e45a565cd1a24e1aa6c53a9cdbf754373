@@ -19,6 +19,14 @@ Where?
 
 I think what I was trying to say here is that none of the fields can be modified if the area is on the lru list unless the lock is held.  There are places where I take the lock without yet knowing whether the node is on the lru list or not.
 
+59
+Fri Feb 21 22:52:29 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f75b176_c9070135
+UUID: ef469d41_f2f0204c
+Bytes: 208
+Your actual locking seem to be that lru and purged is protected by ashmem_lru_list_lock, unpinned is protected by ashmem_area.lock, and everything else is protected by both locks while it is on _either_ list.
+
 413
 Wed Sep 04 19:52:11 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
