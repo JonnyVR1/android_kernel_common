@@ -1,0 +1,11 @@
+Revision: 3d2b8411dd151b33ceb13c93bb8ecd61699f5cb9
+Patch-set: 3
+File: /COMMIT_MSG
+
+7
+Fri Feb 21 04:09:59 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f75b176_8ff509f8
+Bytes: 61
+need a blank line between 1-line summary and full description
+
