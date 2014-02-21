@@ -9,6 +9,16 @@ UUID: 32649599_a8af5b94
 Bytes: 73
 You are locking ashmem_lru_list_lock even when it is not on the lru list.
 
+59
+Fri Feb 21 00:47:34 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32649599_a8af5b94
+UUID: 0f75b176_c9070135
+Bytes: 248
+Where?
+
+I think what I was trying to say here is that none of the fields can be modified if the area is on the lru list unless the lock is held.  There are places where I take the lock without yet knowing whether the node is on the lru list or not.
+
 413
 Wed Sep 04 19:52:11 2013 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
