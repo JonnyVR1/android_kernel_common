@@ -1,0 +1,15 @@
+Revision: fabb695f748da9d7bccb64bdd53682a34e683349
+Patch-set: 2
+File: /COMMIT_MSG
+
+7:0-8:18
+Fri Feb 21 03:55:31 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f78b56e_e58f80a2
+Bytes: 182
+Need a single-line summary first, suggest:
+
+power: fix compile warnings in log_wakeup_reason
+
+Change I81addaf420f1338255c5d0638b0d244a99d777d1 introduced compile warnings, fix these.
+
