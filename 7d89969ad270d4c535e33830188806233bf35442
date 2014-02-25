@@ -1,0 +1,11 @@
+Revision: 7d89969ad270d4c535e33830188806233bf35442
+Patch-set: 1
+File: net/netfilter/xt_qtaguid.c
+
+1491:4-1491:7
+Tue Feb 25 18:29:36 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cfb9535_db5b2ce4
+Bytes: 77
+fmt is an int. Doesn't this complain that the ptr can't fit in the final int?
+
