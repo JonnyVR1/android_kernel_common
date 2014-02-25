@@ -9,3 +9,11 @@ UUID: 3cfb9535_db5b2ce4
 Bytes: 77
 fmt is an int. Doesn't this complain that the ptr can't fit in the final int?
 
+1491:4-1491:7
+Tue Feb 25 19:11:07 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cfb9535_db5b2ce4
+UUID: 9c3ac1c3_37380000
+Bytes: 194
+No.  After explicitly casting from pointer to 64-bit unsigned, the compiler silently converts from 64-bit unsigned to 32-bit signed.  Which is fine here, since we know PDE_DATA(inode) < INT_MAX.
+
