@@ -1,0 +1,76 @@
+Revision: 9bc381f6169c05ca5eb450c1486499a17ada7e43
+Patch-set: 2
+File: /COMMIT_MSG
+
+7
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_410a48f2
+Bytes: 125
+The patch seems to do more than add timestamps, is also checking for stale messages, rescheduling work, add more description?
+
+8
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_eec38723
+Bytes: 80
+Also add a short paragraph describing a little more about what is added and why.
+
+File: net/netfilter/xt_IDLETIMER.c
+
+125:11-125:55
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_ae950fb3
+Bytes: 69
+maybe send nsecs in the event, and avoid the 64-bit divide in kernel?
+
+129:2-129:9
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_a1d36424
+Bytes: 74
+minor: maybe drop the timestamp_msg but still send the event in this case?
+
+132:1-132:16
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_2372a9b4
+Bytes: 88
+Only available if CONFIG_RTC_LIB=y, since only used for debug message suggest drop this.
+
+201:1-201:29
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_ee1267ae
+Bytes: 19
+why schedule twice?
+
+317:1-317:50
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_63cf91a2
+Bytes: 29
+should this be addressed now?
+
+323:3-323:30
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_23f749fe
+Bytes: 189
+does the check for work_pending() need to happen as part of the critical section, with timestamp_lock held?  What happens if work goes pending/non-pending just after work_pending() returns?
+
+342:2-342:8
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_4305352e
+Bytes: 86
+add curly brace here since "then" clause needs it, for kernel coding style guidelines.
+
+387:7-387:35
+Fri Mar 07 21:10:48 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_6ec2d7d6
+Bytes: 50
+similar to above, does lock need to be held prior?
+
