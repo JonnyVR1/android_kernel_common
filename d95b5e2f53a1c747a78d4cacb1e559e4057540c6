@@ -1,0 +1,27 @@
+Revision: d95b5e2f53a1c747a78d4cacb1e559e4057540c6
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:31-7:39
+Fri Mar 07 21:29:32 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_01de90f5
+Bytes: 17
+suggest "maximum"
+
+8
+Fri Mar 07 21:29:32 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_c1ee589d
+Bytes: 101
+Add a one-sentence description here, like "Ensure the array of wakeup reason IRQs does not overflow."
+
+File: kernel/power/wakeup_reason.c
+
+83:53-83:57
+Fri Mar 07 21:29:32 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_03a7ad9e
+Bytes: 14
+suggest "IRQs"
+
