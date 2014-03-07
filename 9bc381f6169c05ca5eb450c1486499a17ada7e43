@@ -9,6 +9,14 @@ UUID: 7c526d52_410a48f2
 Bytes: 125
 The patch seems to do more than add timestamps, is also checking for stale messages, rescheduling work, add more description?
 
+7:6-7:61
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_6e3ad7e1
+Bytes: 84
+Insufficient info.
+Talk about dealing with suspend/resume, and what this fixes/adds.
+
 8
 Fri Mar 07 21:10:48 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,6 +25,27 @@ Bytes: 80
 Also add a short paragraph describing a little more about what is added and why.
 
 File: net/netfilter/xt_IDLETIMER.c
+
+102:1-102:10
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_d1fd8e88
+Bytes: 29
+spin_lock() vs spin_lock_bh()
+
+105:2-105:62
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_c348254e
+Bytes: 51
+try to keep the snprintf() out of the locked region
+
+102:0-118:30
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_71963a31
+Bytes: 111
+Have a function for this. Something like check_if_a_previous_timer_failed_to_trigger_because_i_was_suspended().
 
 125:11-125:55
 Fri Mar 07 21:10:48 2014 +0000
@@ -39,6 +68,13 @@ UUID: fc4c9db4_2372a9b4
 Bytes: 88
 Only available if CONFIG_RTC_LIB=y, since only used for debug message suggest drop this.
 
+134:3-134:8
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_633831b3
+Bytes: 36
+Cut the UTC and it will fit 80col :)
+
 201:1-201:29
 Fri Mar 07 21:10:48 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +82,49 @@ UUID: bc586570_ee1267ae
 Bytes: 19
 why schedule twice?
 
+201:1-201:14
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_1ee6ed97
+Bytes: 10
+why twice?
+
+213:6-213:24
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_b1c5624d
+Bytes: 79
+Prepare the info you need for wakeup to quickly check if the timer has expired.
+
+223:3-223:49
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_71ae3a38
+Bytes: 110
+what is the relation between this test and the timer_after(timer->timer.expires,now)?
+Isn't it pre-determined?
+
 317:1-317:50
 Fri Mar 07 21:10:48 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fc4c9db4_63cf91a2
 Bytes: 29
 should this be addressed now?
+
+317:10-317:48
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_c1d65816
+Bytes: 122
+every packet needs to mod_timer().
+But the info need for detecting expired timers on resume should be prepared at suspend.
+
+321:2-321:47
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_036fadcf
+Bytes: 26
+Isn't this done on resume?
 
 323:3-323:30
 Fri Mar 07 21:10:48 2014 +0000
@@ -67,10 +140,24 @@ UUID: fc4c9db4_4305352e
 Bytes: 86
 add curly brace here since "then" clause needs it, for kernel coding style guidelines.
 
+335:1-344:31
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_43d41531
+Bytes: 24
+Prepare on suspend only.
+
 387:7-387:35
 Fri Mar 07 21:10:48 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bc586570_6ec2d7d6
 Bytes: 50
 similar to above, does lock need to be held prior?
+
+386:3-397:4
+Fri Mar 07 21:14:05 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c526d52_01e170e9
+Bytes: 42
+Shouldn't this be done during resume only?
 
