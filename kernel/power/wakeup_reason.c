@@ -78,6 +78,12 @@ void log_wakeup_reason(int irq)
 	else
 		printk(KERN_INFO "Resume caused by IRQ %d\n", irq);
 
+	if (irq_count == MAX_WAKEUP_REASON_IRQS) {
+		printk(KERN_WARNING "Resume caused by more than %d IRQs\n",
+				MAX_WAKEUP_REASON_IRQS);
+		return;
+	}
+
 	spin_lock(&resume_reason_lock);
 	irq_list[irq_count++] = irq;
 	spin_unlock(&resume_reason_lock);
