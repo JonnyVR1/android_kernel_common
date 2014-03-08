@@ -1,0 +1,11 @@
+Revision: 6db97ea3b98be62ed435c858fdfe4463a4b4bb25
+Patch-set: 2
+File: kernel/power/wakeup_reason.c
+
+83:2-83:8
+Sat Mar 08 01:06:57 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc586570_41e6c198
+Bytes: 99
+Should move the printk after the spin_unlock, although this is expected to never be hit or be rare.
+
