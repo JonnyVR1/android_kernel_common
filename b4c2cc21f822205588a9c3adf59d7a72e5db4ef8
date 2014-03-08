@@ -1,0 +1,18 @@
+Revision: b4c2cc21f822205588a9c3adf59d7a72e5db4ef8
+Patch-set: 9
+File: net/netfilter/xt_IDLETIMER.c
+
+152:0-152:1
+Sat Mar 08 02:12:14 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_a9ecdd35
+Bytes: 63
+unrelated whitespace change after merge with concurrent changes
+
+321:0-322:33
+Sat Mar 08 02:12:14 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_4b8c4572
+Bytes: 147
+still want to verify: if work goes pending/not-pending after the return from work_pending() but before the spinlock is grabbed, is there a problem?
+
