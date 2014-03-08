@@ -2,10 +2,24 @@ Revision: 7fea00d77118e10152377e002896bf302b9d634c
 Patch-set: 10
 File: net/netfilter/xt_IDLETIMER.c
 
+79
+Sat Mar 08 03:36:04 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_895e39d5
+Bytes: 39
+static DEFINE_SPINLOCK(timestamp_lock);
+
 321:6-321:22
 Sat Mar 08 03:12:02 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c2ba1c2_09a1a98e
 Bytes: 39
 As discussed, move this under the lock.
+
+462
+Sat Mar 08 03:36:04 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_c95831ea
+Bytes: 40
+with DEFINE_SPINLOCK this is unnecessary
 
