@@ -1,0 +1,11 @@
+Revision: 31dedb18218028d595e730f7a98af39f5b16ca96
+Patch-set: 3
+File: kernel/power/wakeup_reason.c
+
+81:1-81:42
+Sat Mar 08 02:14:28 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_c90af139
+Bytes: 181
+Need to check this with the spinlock held.  Grab spinlock, check, drop spinlock if no room and then print message (or you can drop the message, there's not much we can do about it).
+
