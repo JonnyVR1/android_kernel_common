@@ -831,6 +831,8 @@ static void unbind_config(struct usb_composite_dev *cdev,
 		config->unbind(config);
 			/* may free memory for "c" */
 	}
+	/* reset driver data to prevent ep allocation failure */
+	usb_ep_autoconfig_reset(cdev->gadget);
 }
 
 /**
