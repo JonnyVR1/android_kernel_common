@@ -4097,7 +4097,11 @@ wl_cfg80211_set_power_mgmt(struct wiphy *wiphy, struct net_device *dev,
 	/* Delete pm_enable_work */
 	wl_add_remove_pm_enable_work(cfg, FALSE, WL_HANDLER_PEND);
 
+#ifdef SUPPORT_PM0_ONLY
+	pm = PM_OFF;
+#else
 	pm = enabled ? PM_FAST : PM_OFF;
+#endif
 	if (_net_info->pm_block) {
 		WL_ERR(("%s:Do not enable the power save for pm_block %d\n",
 			dev->name, _net_info->pm_block));
@@ -9067,6 +9071,9 @@ static s32 wl_notifier_change_state(struct bcm_cfg80211 *cfg, struct net_info *_
 	WL_DBG(("Enter state %d set %d _net_info->pm_restore %d iface %s\n",
 		state, set, _net_info->pm_restore, _net_info->ndev->name));
 
+#ifdef SUPPORT_PM0_ONLY
+	pm = PM_OFF;
+#endif
 	if (state != WL_STATUS_CONNECTED)
 		return 0;
 	mode = wl_get_mode_by_netdev(cfg, _net_info->ndev);
@@ -9086,7 +9093,11 @@ static s32 wl_notifier_change_state(struct bcm_cfg80211 *cfg, struct net_info *_
 			 * if _net_info->pm_block is false
 			 */
 			if (!_net_info->pm_block && (mode == WL_MODE_BSS)) {
+#ifdef SUPPORT_PM0_ONLY
+				_net_info->pm = PM_OFF;
+#else
 				_net_info->pm = PM_FAST;
+#endif
 				_net_info->pm_restore = true;
 			}
 			pm = PM_OFF;
@@ -11444,6 +11455,9 @@ static void wl_cfg80211_work_handler(struct work_struct * work)
 	s32 err = BCME_OK;
 	s32 pm = PM_FAST;
 
+#ifdef SUPPORT_PM0_ONLY
+	pm = PM_OFF;
+#endif
 	cfg = container_of(work, struct bcm_cfg80211, pm_enable_work.work);
 	WL_DBG(("Enter \n"));
 	if (cfg->pm_enable_work_on) {

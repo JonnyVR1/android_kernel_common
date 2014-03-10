@@ -2178,6 +2178,9 @@ wl_cfgp2p_set_p2p_ps(struct bcm_cfg80211 *cfg, struct net_device *ndev, char* bu
 			}
 		}
 
+#ifdef SUPPORT_PM0_ONLY
+		legacy_ps = PM_OFF;
+#endif
 		if ((legacy_ps != -1) && ((legacy_ps == PM_MAX) || (legacy_ps == PM_OFF))) {
 			ret = wldev_ioctl(dev,
 				WLC_SET_PM, &legacy_ps, sizeof(legacy_ps), true);
