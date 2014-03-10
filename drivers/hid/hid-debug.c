@@ -852,6 +852,7 @@ static const char *keys[KEY_MAX + 1] = {
 	[KEY_KBDILLUMDOWN] = "KbdIlluminationDown",
 	[KEY_KBDILLUMUP] = "KbdIlluminationUp",
 	[KEY_SWITCHVIDEOMODE] = "SwitchVideoMode",
+	[KEY_APP_SWITCH] = "ApplicationSwitch",
 };
 
 static const char *relatives[REL_MAX + 1] = {
