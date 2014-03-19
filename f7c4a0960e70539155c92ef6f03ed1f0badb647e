@@ -1,0 +1,11 @@
+Revision: f7c4a0960e70539155c92ef6f03ed1f0badb647e
+Patch-set: 2
+File: include/linux/audit.h
+
+109:23-109:28
+Wed Mar 19 17:58:07 2014 +0000
+Author: Mike Palmiotto <1022189@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_31a0770c
+Bytes: 10
+whitespace
+
