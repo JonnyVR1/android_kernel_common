@@ -1,0 +1,11 @@
+Revision: 7a4106f2a3a21b5eb902cf29ec0fccd9b53651cf
+Patch-set: 1
+File: drivers/video/adf/adf_fbdev.c
+
+654:5-654:12
+Tue Mar 25 00:27:02 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cd5a977_07c0f669
+Bytes: 50
+use BUG_ON if someone is still holding a reference
+
