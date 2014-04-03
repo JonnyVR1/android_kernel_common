@@ -12,3 +12,11 @@ Are the netfilter changes required?
 In the past, some netfilters conntrack helpers were broken and would lead to dropped packets. E.g. SIP can't handle ipv6 fragments and tells conntrack to NF_DROP.
 Have these setting been tested on a device?
 
+89
+Thu Apr 03 22:55:11 2014 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59b3fbf9_5705ccdd
+UUID: 79d51fff_a3798453
+Bytes: 265
+Not absolutely required (but already enabled in e.g. hammerhead_defconfig).  I would have put them in -recommended except that all of the other NETFILTER options were already in -base.  Should only come into play if you configure iptables SECMARK/CONNSECMARK rules.
+
