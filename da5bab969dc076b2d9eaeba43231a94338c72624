@@ -9,3 +9,13 @@ UUID: 59b3fbf9_40ffc449
 Bytes: 189
 JP, do we not need these parameters any more? If we still need them, then a better fix would be to store UIDs and GIDs as unsigned int (or uid_t) and convert to kuid_t only when using them.
 
+58
+Fri Apr 04 03:36:21 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59b3fbf9_40ffc449
+UUID: 19c5035d_dec5792c
+Bytes: 302
+We don't use them, so I suggested something like this https://lists.openwrt.org/pipermail/openwrt-devel/2013-January/018351.html only because http://sourceforge.net/p/xtables-addons/xtables-addons/ci/master/tree/extensions/xt_quota2.c has not fix for that yet.
+
+But I'm fine if it is all clobbered out.
+
