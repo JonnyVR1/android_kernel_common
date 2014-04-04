@@ -1,0 +1,11 @@
+Revision: da5bab969dc076b2d9eaeba43231a94338c72624
+Base-for-patch-set: 2
+File: net/netfilter/xt_quota2.c
+
+58
+Fri Apr 04 02:54:57 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59b3fbf9_40ffc449
+Bytes: 189
+JP, do we not need these parameters any more? If we still need them, then a better fix would be to store UIDs and GIDs as unsigned int (or uid_t) and convert to kuid_t only when using them.
+
