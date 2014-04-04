@@ -12,6 +12,20 @@ Add
 
 so that any other kernels that we don't control will see a warning when the merge the android-base.cfg.
 
+3
+Fri Apr 04 19:07:31 2014 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19c5035d_fecb108c
+UUID: 198a632f_ad5cfdb5
+Bytes: 332
+Seems to produce a warning even with the fixed defconfig because the final .config defines it to the default value in security/Kconfig, based on architecture.
+
+Value requested for CONFIG_LSM_MMAP_MIN_ADDR not in final .config
+
+Requested value:  # CONFIG_LSM_MMAP_MIN_ADDR is not set
+
+Actual value:     CONFIG_LSM_MMAP_MIN_ADDR=32768
+
 89:0-89:38
 Thu Apr 03 22:24:54 2014 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
