@@ -20,3 +20,12 @@ UUID: 79d51fff_a3798453
 Bytes: 265
 Not absolutely required (but already enabled in e.g. hammerhead_defconfig).  I would have put them in -recommended except that all of the other NETFILTER options were already in -base.  Should only come into play if you configure iptables SECMARK/CONNSECMARK rules.
 
+89
+Fri Apr 04 12:20:18 2014 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d51fff_a3798453
+UUID: f9966f57_cc0eaf4e
+Bytes: 513
+In addition to hammerhead, the options are also already enabled in manta_defconfig, flo_defconfig, mako_defconfig and tegra3_android_defconfig, so these have been enabled in actual devices for a while (even back in -jb-mr2 branches in addition to the kitkat branches).  Not enabled in goldfish_armv7_defconfig presently, should likely make that one consistent.
+If you'd prefer them moved to -recommended, I can do that; it just seemed out of place to have all the NETFILTER options except for those here in -base.
+
