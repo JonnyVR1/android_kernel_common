@@ -26,6 +26,70 @@ Requested value:  # CONFIG_LSM_MMAP_MIN_ADDR is not set
 
 Actual value:     CONFIG_LSM_MMAP_MIN_ADDR=32768
 
+3
+Fri Apr 04 20:01:01 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 198a632f_ad5cfdb5
+UUID: 999e536b_14e0ba7b
+Bytes: 2526
+I see your point about the warning showing up when everything should be ok.
+merge_config.sh should handle something like:
+ SED_CONFIG_THAT_SHOULD_BE_DEFAULT_IN_BASE_FILE_EXP="s/^\(# \)\{0,1\}\(CONFIG_[a-zA-Z0-9_]*\)!.*should be non-existant in base.*/\2/p"
+
+
+* With the "# ... is not set"
+
+ priv_manta $ scripts/kconfig/merge_config.sh arch/arm/configs/manta_defconfig android/configs/android-base.cfg android/configs/android-recommended.cfg
+   Using arch/arm/configs/manta_defconfig as base
+   Merging android/configs/android-base.cfg
+   Value of CONFIG_LSM_MMAP_MIN_ADDR is redefined by fragment android/configs/android-base.cfg:
+   Previous value: CONFIG_LSM_MMAP_MIN_ADDR=4096
+   New value: # CONFIG_LSM_MMAP_MIN_ADDR is not set
+
+   Merging android/configs/android-recommended.cfg
+   scripts/kconfig/conf --alldefconfig Kconfig
+   #
+   # configuration written to .config
+   #
+   Value requested for CONFIG_LSM_MMAP_MIN_ADDR not in final .config
+   Requested value:  # CONFIG_LSM_MMAP_MIN_ADDR is not set
+   Actual value:     CONFIG_LSM_MMAP_MIN_ADDR=32768
+
+ $ make savedefconfig
+   scripts/kconfig/conf --savedefconfig=defconfig Kconfig
+ $ grep CONFIG_LSM_MMAP_MIN_ADDR .config defconfig
+   .config:CONFIG_LSM_MMAP_MIN_ADDR=32768  <<< happiness.
+
+ 
+* And without the "# ... is not set"
+
+ $ scripts/kconfig/merge_config.sh arch/arm/configs/manta_defconfig android/configs/android-base.cfg android/configs/android-recommended.cfg
+   Using arch/arm/configs/manta_defconfig as base
+   Merging android/configs/android-base.cfg
+   Merging android/configs/android-recommended.cfg
+   scripts/kconfig/conf --alldefconfig Kconfig
+   #
+   # configuration written to .config
+   #
+
+ $ make savedefconfig
+   scripts/kconfig/conf --savedefconfig=defconfig Kconfig
+ $ grep CONFIG_LSM_MMAP_MIN_ADDR .config defconfig
+   .config:CONFIG_LSM_MMAP_MIN_ADDR=4096  <<< meh-ness.
+   defconfig:CONFIG_LSM_MMAP_MIN_ADDR=4096  <<< meh-ness.
+
+ 
+* better merge_config?
+  diff --git a/scripts/kconfig/merge_config.sh b/scripts/kconfig/merge_config.sh
+index 974d5cb..70a000d 100755
+--- a/scripts/kconfig/merge_config.sh
++++ b/scripts/kconfig/merge_config.sh
+@@ -72,0 +73 @@ SED_CONFIG_EXP="s/^\(# \)\{0,1\}\(CONFIG_[a-zA-Z0-9_]*\)[= ].*/\2/p"
++SED_CONFIG_WANTED_DEFAULT_IN_BASE_EXP="s/^# \(CONFIG_[a-zA-Z0-9_]*\) .*should be default.*//p"
+@@ -118 +119 @@ make KCONFIG_ALLCONFIG=$TMP_FILE $ALLTARGET
+-for CFG in $(sed -n "$SED_CONFIG_EXP" $TMP_FILE); do
++for CFG in $(sed "$SED_CONFIG_WANTED_DEFAULT_IN_BASE_EXP" $TMP_FILE | sed -n "$SED_CONFIG_EXP"); do
+
 89:0-89:38
 Thu Apr 03 22:24:54 2014 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
