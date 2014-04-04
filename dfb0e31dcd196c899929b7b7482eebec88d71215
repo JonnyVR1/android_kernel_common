@@ -2,6 +2,16 @@ Revision: dfb0e31dcd196c899929b7b7482eebec88d71215
 Patch-set: 1
 File: android/configs/android-base.cfg
 
+3
+Fri Apr 04 18:56:22 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19c5035d_fecb108c
+Bytes: 149
+Add
+   # CONFIG_LSM_MMAP_MIN_ADDR is not set
+
+so that any other kernels that we don't control will see a warning when the merge the android-base.cfg.
+
 89:0-89:38
 Thu Apr 03 22:24:54 2014 +0000
 Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
