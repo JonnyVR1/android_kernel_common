@@ -1,0 +1,11 @@
+Revision: f9438a85afa59bb73bb0e1bb4f75ac2da04eee3d
+Patch-set: 1
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+228:48-228:52
+Sat Apr 05 00:00:43 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19c5035d_f2e8a120
+Bytes: 55
+Do we want debug_printf in the kernel global namespace?
+
