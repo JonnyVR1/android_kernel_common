@@ -9,3 +9,11 @@ UUID: 39764713_756492f6
 Bytes: 3
 yet
 
+9:27-9:28
+Sat Apr 05 05:26:45 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39764713_756492f6
+UUID: f96f4f39_e73d3ccc
+Bytes: 175
+when it does have something like FIQ_GLUE I expect it to be completely different, CONFIG_TRUSTZONE_NMI or something.  I'm going to move CONFIG_FIQ_GLUE into fiq_debugger_arm.c
+
