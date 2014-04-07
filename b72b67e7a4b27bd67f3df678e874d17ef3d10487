@@ -1,0 +1,18 @@
+Revision: b72b67e7a4b27bd67f3df678e874d17ef3d10487
+Patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1168:18-1168:25
+Mon Apr 07 21:43:44 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19734325_f12c13c4
+Bytes: 52
+Need trylock?  Can just wait for writer to complete?
+
+1176:3-1176:35
+Mon Apr 07 21:43:44 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59a69bd4_4eb0fb6c
+Bytes: 206
+Let's delete this comment, esp. if there's nothing else to be done.  If there's more to be done here, don't need this comment anyway, unless there's some specific ordering concern that should be documented.
+

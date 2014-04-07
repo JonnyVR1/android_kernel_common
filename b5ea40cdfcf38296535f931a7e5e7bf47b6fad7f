@@ -1,0 +1,13 @@
+Revision: b5ea40cdfcf38296535f931a7e5e7bf47b6fad7f
+Base-for-patch-set: 3
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1179:3-1179:34
+Mon Apr 07 21:43:44 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59a69bd4_4edfdbf0
+Bytes: 181
+May undo the effect of commit 0edc2b4c9c30a695d9500d3204acdf5f3ddfa027 "cpufreq: interactive: resched timer if max freq raised"
+
+May need to restart timer if policy max freq raised?
+
