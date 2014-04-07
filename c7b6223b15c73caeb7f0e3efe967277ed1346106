@@ -1,0 +1,12 @@
+Revision: c7b6223b15c73caeb7f0e3efe967277ed1346106
+Patch-set: 4
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1192:3-1192:6
+Mon Apr 07 23:41:01 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19734325_3d2afa94
+Bytes: 29
+if (
+space after "if" keyword
+
