@@ -9,6 +9,14 @@ UUID: 19734325_f12c13c4
 Bytes: 52
 Need trylock?  Can just wait for writer to complete?
 
+1168:18-1168:25
+Mon Apr 07 23:35:22 2014 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19734325_f12c13c4
+UUID: 398d6745_740900c0
+Bytes: 27
+Sure. Changed to down_read.
+
 1176:3-1176:35
 Mon Apr 07 21:43:44 2014 +0000
 Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>

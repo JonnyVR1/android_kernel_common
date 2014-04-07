@@ -11,3 +11,11 @@ May undo the effect of commit 0edc2b4c9c30a695d9500d3204acdf5f3ddfa027 "cpufreq:
 
 May need to restart timer if policy max freq raised?
 
+1179:3-1179:34
+Mon Apr 07 23:35:22 2014 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59a69bd4_4edfdbf0
+UUID: b9995785_019f94d0
+Bytes: 183
+Right. Seems like the patch is trying to reset the load accounting by setting cputime_speedadj to 0, hence it cancels and recheds the timer. Performing this only if max_freq is raised
+
