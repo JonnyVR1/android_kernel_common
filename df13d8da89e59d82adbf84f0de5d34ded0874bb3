@@ -1,0 +1,11 @@
+Revision: df13d8da89e59d82adbf84f0de5d34ded0874bb3
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1326:5-1326:39
+Tue Apr 08 01:37:57 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59a69bd4_4b78e8d2
+Bytes: 31
+doesn't compile in android-3.10
+
