@@ -1030,6 +1030,20 @@ typedef struct wl_ioctl {
 	uint needed;	/* bytes needed (optional) */
 } wl_ioctl_t;
 
+#ifdef CONFIG_COMPAT
+typedef struct compat_wl_ioctl {
+	uint cmd;	/* common ioctl definition */
+	uint32 buf;	/* pointer to user buffer */
+	uint len;	/* length of user buffer */
+#if defined(BCMINTERNAL) && defined(DONGLEOVERLAYS)
+	uint8 action;	/* get, set, overlay reserve request (optional) */
+#else
+	uint8 set;		/* 1=set IOCTL; 0=query IOCTL */
+#endif /* defined(BCMINTERNAL) && defined(DONGLEOVERLAYS) */
+	uint used;	/* bytes read or written (optional) */
+	uint needed;	/* bytes needed (optional) */
+} compat_wl_ioctl_t;
+#endif /* CONFIG_COMPAT */
 
 /*
  * Structure for passing hardware and software
