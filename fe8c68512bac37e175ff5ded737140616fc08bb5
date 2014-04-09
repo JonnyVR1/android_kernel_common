@@ -1,0 +1,27 @@
+Revision: fe8c68512bac37e175ff5ded737140616fc08bb5
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/include/wlioctl.h
+
+1038:12-1038:23
+Wed Apr 09 01:15:43 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19ffc3b9_2be01de6
+Bytes: 56
+Can you please remove it to make it similar to wl_ioctl?
+
+File: drivers/net/wireless/bcmdhd/wl_android.c
+
+1303:27-1303:34
+Wed Apr 09 01:15:43 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39d4872d_c06def89
+Bytes: 52
+If you are fixing near this line, please fix grammer
+
+1314:29-1314:37
+Wed Apr 09 01:15:43 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9fbcfcb_641d2ac1
+Bytes: 26
+priv_cmd.buf doesn't exist
+
