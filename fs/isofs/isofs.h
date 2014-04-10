@@ -55,6 +55,7 @@ struct isofs_sb_info {
 	kgid_t s_gid;
 	kuid_t s_uid;
 	struct nls_table *s_nls_iocharset; /* Native language support table */
+	unsigned long vol_id;        /* volume ID */
 };
 
 #define ISOFS_INVALID_MODE ((umode_t) -1)
