@@ -40,6 +40,8 @@ static int isofs_dentry_cmp(const struct dentry *parent,
 		const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
 		unsigned int len, const char *str, const struct qstr *name);
+static void isofs_set_volume_id(struct isofs_sb_info *sbi,
+		struct iso_primary_descriptor *pri);
 
 #ifdef CONFIG_JOLIET
 static int isofs_hashi_ms(const struct dentry *parent, const struct inode *inode,
@@ -873,6 +875,8 @@ root_found:
 	sbi->s_utf8 = opt.utf8;
 	sbi->s_nocompress = opt.nocompress;
 	sbi->s_overriderockperm = opt.overriderockperm;
+	isofs_set_volume_id(sbi, pri);
+
 	/*
 	 * It would be incredibly stupid to allow people to mark every file
 	 * on the disk as suid, so we merely allow them to set the default
@@ -1541,6 +1545,23 @@ struct inode *isofs_iget(struct super_block *sb,
 	}
 
 	return inode;
+}
+
+static void isofs_set_volume_id(struct isofs_sb_info *sbi,
+		struct iso_primary_descriptor *pri) {
+	uint8_t *data = (uint8_t *)pri;
+	ssize_t count = sizeof(struct iso_primary_descriptor);
+	union {
+		uint8_t bytes[4];
+		unsigned long id;
+	} Checksum;
+
+	Checksum.id = 0;
+	while (count--) {
+		Checksum.bytes[count & 0x03] += (*data++);
+	}
+
+	sbi->vol_id = Checksum.id;
 }
 
 static struct dentry *isofs_mount(struct file_system_type *fs_type,

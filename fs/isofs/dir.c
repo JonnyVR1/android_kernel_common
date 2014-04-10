@@ -267,11 +267,42 @@ static int isofs_readdir(struct file *filp,
 	return result;
 }
 
+static int isofs_ioctl_volume_id(struct inode *dir)
+{
+	struct super_block *sb = dir->i_sb;
+	struct isofs_sb_info *sbi = ISOFS_SB(sb);
+	return sbi->vol_id;
+}
+
+#define VFAT_IOCTL_GET_VOLUME_ID    _IOR('r', 0x12, __u32)
+static long isofs_dir_ioctl(struct file *filp, unsigned int cmd,
+		unsigned long arg)
+{
+	struct inode *inode = filp->f_path.dentry->d_inode;
+	switch (cmd) {
+		case VFAT_IOCTL_GET_VOLUME_ID:
+			return isofs_ioctl_volume_id(inode);
+	}
+	return -ENOTTY;
+}
+
+#ifdef CONFIG_COMPAT
+static long isofs_compat_dir_ioctl(struct file *filp, unsigned cmd,
+		unsigned long arg)
+{
+	return isofs_dir_ioctl(filp, cmd, (unsigned long)arg);
+}
+#endif
+
 const struct file_operations isofs_dir_operations =
 {
 	.llseek = generic_file_llseek,
 	.read = generic_read_dir,
 	.readdir = isofs_readdir,
+	.unlocked_ioctl = isofs_dir_ioctl,
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = isofs_compat_dir_ioctl,
+#endif
 };
 
 /*
