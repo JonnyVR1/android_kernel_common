@@ -1,0 +1,11 @@
+Revision: e7c2658e65955c275b91e55cb246243e47bcb736
+Patch-set: 2
+File: drivers/staging/android/fiq_debugger/fiq_debugger_priv.h
+
+34
+Tue Apr 15 02:43:27 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 198c23b9_91dc4cfc
+Bytes: 143
+A more generic command dispatcher may be a better solution. We could add any architecture specific commands instead of four hardcoded commands.
+
