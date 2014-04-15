@@ -1,0 +1,11 @@
+Revision: 47afe534be82cfc2ef9c51ac989a9d6175faed09
+Patch-set: 1
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+464
+Tue Apr 15 02:37:06 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9980137b_2ac3fe4b
+Bytes: 25
+Why did you remove const?
+
