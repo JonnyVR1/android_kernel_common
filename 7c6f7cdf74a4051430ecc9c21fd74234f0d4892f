@@ -1,0 +1,25 @@
+Revision: 7c6f7cdf74a4051430ecc9c21fd74234f0d4892f
+Patch-set: 2
+File: drivers/staging/android/fiq_debugger/fiq_debugger_arm64.c
+
+29:34-29:36
+Tue Apr 15 02:50:28 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b964f7c8_1a477d6e
+Bytes: 26
+EL2 may also be available.
+
+113
+Tue Apr 15 02:50:28 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 198c23b9_91f52c66
+Bytes: 39
+What about ELR, SPSR, SP,(EL0) SP(EL1).
+
+167:8-167:9
+Tue Apr 15 02:50:28 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9980137b_ca6e1288
+Bytes: 1
+?
+
