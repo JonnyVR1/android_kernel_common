@@ -17,3 +17,11 @@ UUID: 99e49352_005b9bc0
 Bytes: 91
 consistency, and it seemed unnecessary.  why would you care if the pointer itself is const?
 
+464
+Tue Apr 15 20:30:01 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99e49352_005b9bc0
+UUID: b964f7c8_294a399d
+Bytes: 136
+I don't care of the pointer is const, but I would like the registers to be const everywhere as I don't currently support modifying them.
+
