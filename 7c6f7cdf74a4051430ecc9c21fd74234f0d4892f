@@ -9,6 +9,14 @@ UUID: b964f7c8_1a477d6e
 Bytes: 26
 EL2 may also be available.
 
+29:34-29:36
+Tue Apr 15 22:40:22 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b964f7c8_1a477d6e
+UUID: 99e49352_3efb60e6
+Bytes: 4
+Done
+
 113
 Tue Apr 15 02:50:28 2014 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: 198c23b9_91f52c66
 Bytes: 39
 What about ELR, SPSR, SP,(EL0) SP(EL1).
 
+113
+Tue Apr 15 22:40:22 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 198c23b9_91f52c66
+UUID: b97b175f_7c1159dc
+Bytes: 4
+Done
+
 167:8-167:9
 Tue Apr 15 02:50:28 2014 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9980137b_ca6e1288
 Bytes: 1
 ?
+
+167:8-167:9
+Tue Apr 15 22:40:22 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9980137b_ca6e1288
+UUID: b97b175f_7c6a3948
+Bytes: 4
+Done
 
