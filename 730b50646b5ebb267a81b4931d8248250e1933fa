@@ -1,0 +1,18 @@
+Revision: 730b50646b5ebb267a81b4931d8248250e1933fa
+Patch-set: 1
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+679:20-679:34
+Tue Apr 15 02:34:11 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 198c23b9_3163789f
+Bytes: 83
+This is not related to the name change, and wold be better moved to another change.
+
+930:64-930:71
+Tue Apr 15 02:34:11 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 198c23b9_51600490
+Bytes: 3
+...
+
