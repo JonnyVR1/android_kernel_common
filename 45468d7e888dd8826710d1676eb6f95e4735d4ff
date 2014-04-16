@@ -1,0 +1,18 @@
+Revision: 45468d7e888dd8826710d1676eb6f95e4735d4ff
+Patch-set: 2
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+243
+Wed Apr 16 18:56:28 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91c4b54_ec383fe9
+Bytes: 37
+Did you remove the static on purpose?
+
+693
+Wed Apr 16 18:56:28 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91c4b54_8c526b2e
+Bytes: 23
+Is the cast not needed?
+
