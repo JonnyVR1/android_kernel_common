@@ -1,0 +1,11 @@
+Revision: b7da50a7d6c1930fb4ba9575ecaea7b8e158dac1
+Patch-set: 2
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+298
+Wed Apr 16 19:03:25 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85e7c793_28fe4f1b
+Bytes: 22
+What happened to spsr?
+
