@@ -9,3 +9,11 @@ UUID: 85e7c793_28fe4f1b
 Bytes: 22
 What happened to spsr?
 
+298
+Wed Apr 16 19:15:04 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85e7c793_28fe4f1b
+UUID: 993733c3_3dae077c
+Bytes: 180
+See the commit message. It's not in the irq registers, so I took it out.  I updated allregs below to use cpsr to highlight the active mode, so its easy to pick out spsr from there.
+
