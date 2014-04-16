@@ -1,0 +1,51 @@
+Revision: fe1f768752910ff74704284caad74c613d18673d
+Patch-set: 3
+File: net/netfilter/xt_qtaguid.c
+
+2003:7-2003:17
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19750377_b8fe954b
+Bytes: 103
+make_kuid(&init_user_ns, uid_int)?
+
+and then instead of from_kuid(&init_user_ns, uid) just use uid_int.
+
+2038:6-2038:54
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 994e5355_71cfd869
+Bytes: 89
+Because the &init_user_ns does not change, whenever this func said uid, just use uid_int.
+
+2210:14-2210:21
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19750377_585d81d6
+Bytes: 78
+Was 0 so that CT_DEBUG() didn't spew out random stuff in case of scan failure.
+
+2222:7-2222:17
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19750377_98347960
+Bytes: 86
+make_kuid(&init_user_ns, uid_int) and then use uid_int instead of from_kuid(..., uid)?
+
+2267:44-2267:72
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19750377_385d25b1
+Bytes: 65
+Could use uid_int here if uid = make_kuid(&init_user_ns, uid_int)
+
+File: net/netfilter/xt_socket.c
+
+192:1-195:46
+Wed Apr 16 02:09:07 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 994e5355_51df34f0
+Bytes: 176
+pr_debug() should stay at the end of the socket_match().
+It was previously shown after socket_match() had processed the info flags which could have affected what was displayed.
+
