@@ -1,0 +1,18 @@
+Revision: c2ed1c548332bbd03aa82f5cbd7f4296beb183d1
+Patch-set: 4
+File: drivers/staging/android/fiq_debugger/fiq_debugger_arm64.c
+
+152
+Wed Apr 16 19:31:56 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 993733c3_9d4b73f4
+Bytes: 73
+Why is this at the end? You print the sp registers in the opposite order.
+
+206
+Wed Apr 16 19:31:56 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85e7c793_ab081944
+Bytes: 47
+Do we want to also dump user-mode stack traces?
+
