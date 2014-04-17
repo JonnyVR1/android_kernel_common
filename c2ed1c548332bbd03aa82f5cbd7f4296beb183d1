@@ -9,10 +9,26 @@ UUID: 993733c3_9d4b73f4
 Bytes: 73
 Why is this at the end? You print the sp registers in the opposite order.
 
+152
+Thu Apr 17 00:14:55 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 993733c3_9d4b73f4
+UUID: f9466f41_80c94697
+Bytes: 4
+Done
+
 206
 Wed Apr 16 19:31:56 2014 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85e7c793_ab081944
 Bytes: 47
 Do we want to also dump user-mode stack traces?
+
+206
+Thu Apr 17 00:14:55 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85e7c793_ab081944
+UUID: d9436b32_7ff5d762
+Bytes: 182
+I left out the usermode trace for now, it wasn't very useful with ASLR.  I want to revist dumping it from irq or process mode, where I can parse the vma list and give better offsets.
 
