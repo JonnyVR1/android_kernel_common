@@ -1,0 +1,11 @@
+Revision: b80e42da4ce6d57e3335e4ecc8acd2eb2509cfa6
+Patch-set: 7
+File: drivers/staging/android/fiq_debugger/fiq_debugger_arm64.c
+
+204
+Thu Apr 17 00:39:07 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 853507d4_32c5b040
+Bytes: 156
+All the useful information here gets repeated in walk_stackframe, and lr, is not always part of the stack trace  so it is probably not useful to print here.
+
