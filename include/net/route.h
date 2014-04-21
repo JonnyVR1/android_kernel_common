@@ -60,6 +60,7 @@ struct rtable {
 	int			rt_iif;
 	int			rt_oif;
 	__u32			rt_mark;
+	uid_t			rt_uid;
 
 	/* Info on neighbour */
 	__be32			rt_gateway;
