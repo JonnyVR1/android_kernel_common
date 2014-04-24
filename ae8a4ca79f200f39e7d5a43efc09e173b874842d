@@ -1,0 +1,11 @@
+Revision: ae8a4ca79f200f39e7d5a43efc09e173b874842d
+Patch-set: 1
+File: kernel/power/wakeup_reason.c
+
+56
+Thu Apr 24 21:46:05 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5c1bf53_944cc4ac
+Bytes: 103
+You could also use __ATTR_RO, although it would require renaming reason_show to last_resume_reason_show
+
