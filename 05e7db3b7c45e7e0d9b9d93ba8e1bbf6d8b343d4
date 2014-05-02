@@ -17,3 +17,12 @@ UUID: 4a66bc13_bf80786d
 Bytes: 147
 The kernel convention seems to be #ifdef for declarations and #if IS_ENABLED for loop conditions, where the latter actually needs to expand to 0/1.
 
+42:1-42:6
+Fri May 02 22:59:01 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a66bc13_bf80786d
+UUID: 4a66bc13_a2529f22
+Bytes: 151
+more and more code is getting converted to using #if IS_ENABLED, although a lot of cose is still using #ifdef CONFIG_
+since the macros are (fairly) new
+
