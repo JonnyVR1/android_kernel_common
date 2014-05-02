@@ -26,3 +26,11 @@ Bytes: 151
 more and more code is getting converted to using #if IS_ENABLED, although a lot of cose is still using #ifdef CONFIG_
 since the macros are (fairly) new
 
+42:1-42:6
+Fri May 02 23:04:28 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a66bc13_a2529f22
+UUID: ea7cd0a5_3846c535
+Bytes: 90
+OK, I just found some discussion on LKML about how it's preferred for new code.  Will fix.
+
