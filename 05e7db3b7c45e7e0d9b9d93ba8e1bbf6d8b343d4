@@ -1,0 +1,11 @@
+Revision: 05e7db3b7c45e7e0d9b9d93ba8e1bbf6d8b343d4
+Patch-set: 1
+File: include/video/adf_fbdev.h
+
+42:1-42:6
+Fri May 02 22:39:57 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a8044c3_1ff96fe9
+Bytes: 18
+use IS_ENABLED() ?
+
