@@ -1,0 +1,11 @@
+Revision: 2f7e6f733fef5f2eac368d33fdfdba3ba151ff72
+Patch-set: 1
+File: drivers/staging/android/fiq_debugger/Kconfig
+
+47
+Sat May 03 04:41:06 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aacbb83b_b1d418f3
+Bytes: 34
+select the pstore ram backend too?
+
