@@ -1,0 +1,12 @@
+Revision: 5fe5c512af518d0abbbc0d2fafa8e355f518c2a9
+Patch-set: 1
+File: net/ipv6/route.c
+
+1975:1-1975:15
+Sat May 10 01:09:15 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aadf3855_6b0981f9
+Bytes: 104
+The original code looks more like it was doing a fib6_clean_tree() than a clean_all().
+Is this intended?
+
