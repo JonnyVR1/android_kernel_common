@@ -42,6 +42,7 @@ struct input_value {
  * @phys: physical path to the device in the system hierarchy
  * @uniq: unique identification code for the device (if device has it)
  * @id: id of the device (struct input_id)
+ * @uniq_node_name: node name of input device
  * @propbit: bitmap of device properties and quirks
  * @evbit: bitmap of types of events supported by the device (EV_KEY,
  *	EV_REL, etc.)
@@ -123,6 +124,7 @@ struct input_dev {
 	const char *phys;
 	const char *uniq;
 	struct input_id id;
+	char *uniq_node_name;
 
 	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
 
