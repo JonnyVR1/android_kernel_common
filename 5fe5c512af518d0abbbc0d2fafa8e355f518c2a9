@@ -10,3 +10,15 @@ Bytes: 104
 The original code looks more like it was doing a fib6_clean_tree() than a clean_all().
 Is this intended?
 
+1975
+Sat May 10 02:03:59 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aadf3855_6b0981f9
+UUID: aadf3855_8bca6dde
+Bytes: 388
+Yes, that's the intent.
+
+Previously, the code was only adding autoconf routes to RT6_TABLE_DFLT, and so the cleaning code only needed to clean RT6_TABLE_DFLT.
+
+Now that autoconf routes can be added to all tables, the code needs to clean all autoconf routes in all tables. So now the code calls fib6_clean_all, which loops over all routing tables and calls fib6_clean_tree on each of them.
+
