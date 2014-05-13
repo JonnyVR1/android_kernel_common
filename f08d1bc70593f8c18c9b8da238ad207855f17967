@@ -1,0 +1,32 @@
+Revision: f08d1bc70593f8c18c9b8da238ad207855f17967
+Patch-set: 1
+File: /COMMIT_MSG
+
+14:13-14:33
+Tue May 13 01:18:03 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_0a0d3b53
+Bytes: 166
+/dev/ is under control of userspace, if this is really necessary (and I don't think it is) it should be implemented in ueventd, which is what creates the /dev/ nodes.
+
+18:33-18:53
+Tue May 13 01:18:03 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a64fc99_ab967534
+Bytes: 94
+that is often not true, we support many of these devices over USB as well as the built in one.
+
+32:14-32:23
+Tue May 13 01:18:03 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_6732f22e
+Bytes: 93
+Who do you mean by developer?  Application developers should not be opening devices directly.
+
+38:51-38:74
+Tue May 13 01:18:03 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_33643a5b
+Bytes: 121
+The scan is more flexible and not very difficult, I don't think this is a justification for adding shortcut device nodes.
+
