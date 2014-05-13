@@ -1,0 +1,11 @@
+Revision: 491e319ddc9388350826ef2333f5cbe27ace7f1c
+Patch-set: 1
+File: drivers/input/keycombo.c
+
+61
+Tue May 13 23:19:05 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae46051_95ea54bf
+Bytes: 196
+This is not safe. This is the same wakeup-source you use when scheduling this work, and if this thread gets delayed, you cancel the wakeup-source that the thread that re-queued the work activated.
+
