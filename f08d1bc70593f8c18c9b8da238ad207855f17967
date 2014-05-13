@@ -9,6 +9,24 @@ UUID: 2a698874_0a0d3b53
 Bytes: 166
 /dev/ is under control of userspace, if this is really necessary (and I don't think it is) it should be implemented in ueventd, which is what creates the /dev/ nodes.
 
+14:13-14:33
+Tue May 13 04:58:06 2014 +0000
+Author: Aniroop Mathur <1043015@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_0a0d3b53
+UUID: 8a6a7464_9940a71a
+Bytes: 1006
+Thank you for you reply !!
+
+1. I wanted to refer to /dev/input/event_proximity and not /dev/event_proximity. Sorry for mistyping.
+
+2. As I checked code /core/init/devices.c, there are about seven parameters to create /dev/input/<event> nodes namely, "Action", "Devpath", "Subsystem", "Firmware", "Major", "Minor", "Partn", "Partname", "Devname".
+All these parameters are set by kernel input susbsytem during input_register_call and userspace (devices.c) just use these paramaters to create /dev/input/<event,so userspace is really not able to control it.
+For example:
+Major = 13 - fixed by kernel input subsytem for all input devices
+Minor = X - this number x is also set by kernel as per boot up sequence, and so userspace does not really know whether this minor is for proximity or accelerometer device ?
+Devname = /input/event<x> - again, as you know, this x is dependent on minor.
+So, if we wanted to set name using userspace, we cannot do it because we are not able to identify the device in interest.
+
 18:33-18:53
 Tue May 13 01:18:03 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
