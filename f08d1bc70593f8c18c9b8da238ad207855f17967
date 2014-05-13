@@ -34,6 +34,17 @@ UUID: 4a64fc99_ab967534
 Bytes: 94
 that is often not true, we support many of these devices over USB as well as the built in one.
 
+18:33-18:53
+Tue May 13 05:00:56 2014 +0000
+Author: Aniroop Mathur <1043015@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a64fc99_ab967534
+UUID: 8a6a7464_d9b93fdd
+Bytes: 383
+Actually, i am referring to input devices and not usb type of devices.
+So, I think there is only input device of one type.
+Also, as i have already mentioned in the commit:
+Even in future, if there are two accelerometer as an example, then developer can still use the old method of using random input number or instead can set accel_bosch and accel_mpu or at last accel_1 and accel_2.
+
 32:14-32:23
 Tue May 13 01:18:03 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,10 +52,27 @@ UUID: 2a698874_6732f22e
 Bytes: 93
 Who do you mean by developer?  Application developers should not be opening devices directly.
 
+32:14-32:23
+Tue May 13 05:00:56 2014 +0000
+Author: Aniroop Mathur <1043015@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_6732f22e
+UUID: 4a64fc99_710e2ac3
+Bytes: 187
+Yes, application developers and specifically HAL developers because HAL interacts with kernel.
+Sorry, Can you please explain or elaborate why application should not open device directly ?
+
 38:51-38:74
 Tue May 13 01:18:03 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a6a7464_33643a5b
 Bytes: 121
 The scan is more flexible and not very difficult, I don't think this is a justification for adding shortcut device nodes.
+
+38:51-38:74
+Tue May 13 05:00:56 2014 +0000
+Author: Aniroop Mathur <1043015@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_33643a5b
+UUID: 2a698874_edf24150
+Bytes: 186
+Yes, scan is flexible but as you know, scan takes some computation time, which will be removed after using names which are logical, fast and easy for debugging as mentioned in my commit.
 
