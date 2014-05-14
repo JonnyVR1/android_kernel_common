@@ -27,6 +27,14 @@ Minor = X - this number x is also set by kernel as per boot up sequence, and so 
 Devname = /input/event<x> - again, as you know, this x is dependent on minor.
 So, if we wanted to set name using userspace, we cannot do it because we are not able to identify the device in interest.
 
+14:13-14:33
+Wed May 14 03:04:18 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_9940a71a
+UUID: 2aeee834_e8f30284
+Bytes: 210
+devpath is probably enough to associate the device with a specific driver, but I still don't see the point.  HALs that don't want to search can probably also find the correct event node through /sys/bus/i2c/...
+
 18:33-18:53
 Tue May 13 01:18:03 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -45,6 +53,14 @@ So, I think there is only input device of one type.
 Also, as i have already mentioned in the commit:
 Even in future, if there are two accelerometer as an example, then developer can still use the old method of using random input number or instead can set accel_bosch and accel_mpu or at last accel_1 and accel_2.
 
+18:33-18:53
+Wed May 14 03:04:18 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_d9b93fdd
+UUID: caaaaceb_cc960f36
+Bytes: 153
+Input devices can be connected over USB, either inside the device (that's how its done on most x86 laptops), or added later by the user with an OTG port.
+
 32:14-32:23
 Tue May 13 01:18:03 2014 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,6 +76,14 @@ UUID: 4a64fc99_710e2ac3
 Bytes: 187
 Yes, application developers and specifically HAL developers because HAL interacts with kernel.
 Sorry, Can you please explain or elaborate why application should not open device directly ?
+
+32:14-32:23
+Wed May 14 03:04:18 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a64fc99_710e2ac3
+UUID: 2aeee834_0803c6a5
+Bytes: 269
+Application developers must not open devices directly, they must use framework APIs, otherwise they are not portable.  HALs generally open the files once on startup, so the burden of searching doesn't matter.  Also, as above, they can find the exact name through sysfs.
 
 38:51-38:74
 Tue May 13 01:18:03 2014 +0000
