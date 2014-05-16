@@ -21,3 +21,11 @@ https://kernel.googlesource.com/pub/scm/linux/kernel/git/davem/net-next/+/84f39b
 
 There should be no effect on the generated binary, because inet_rsk is static inline and contains only the statement "return (struct inet_request_sock *)sk;". So it's almost certainly optimized out by the compiler.
 
+457
+Fri May 16 20:57:31 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f01d8f5_db17b35c
+UUID: dff7d045_51af0470
+Bytes: 58
+The matching 3.4 patch used ireq. But not worth the tweak.
+
