@@ -9,3 +9,15 @@ UUID: 3ff1cc50_a90025cd
 Bytes: 5
 ireq?
 
+457
+Fri May 16 20:49:42 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ff1cc50_a90025cd
+UUID: 9f01d8f5_db17b35c
+Bytes: 486
+That would be better, yes. Not sure it's worth fixing, though. This is a cherry-pick from net-next, and that has the same:
+
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/davem/net-next/+/84f39b08d7868ce10eeaf640627cb89777f0ae93/net/ipv4/inet_connection_sock.c
+
+There should be no effect on the generated binary, because inet_rsk is static inline and contains only the statement "return (struct inet_request_sock *)sk;". So it's almost certainly optimized out by the compiler.
+
