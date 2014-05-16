@@ -1,0 +1,11 @@
+Revision: 3e192a09e4def4c832a04b44a7e7c185dfe22a34
+Patch-set: 1
+File: net/ipv4/inet_connection_sock.c
+
+457:46-457:59
+Fri May 16 20:39:39 2014 +0000
+Author: Mohamad Ayyash <1037321@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ff1cc50_a90025cd
+Bytes: 5
+ireq?
+
