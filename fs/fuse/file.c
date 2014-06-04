@@ -1008,8 +1008,6 @@ static ssize_t fuse_fill_write_pages(struct fuse_req *req,
 		pagefault_enable();
 		flush_dcache_page(page);
 
-		mark_page_accessed(page);
-
 		if (!tmp) {
 			unlock_page(page);
 			page_cache_release(page);
