@@ -641,10 +641,11 @@ static int dhd_sar_callback(struct notifier_block *nfb, unsigned long action, vo
 	s32 sar_enable;
 	int ret = 0;
 
-	/* '0' means activate sarlimit and '-1' means back to normal state (deactivate
-	 * sarlimit)
+	/* '0' means activate sarlimit and '-1' means back to normal state
+	 * (deactivate sarlimit)
+	 * SAR_ACT = 0, SAR_NON_ACT = 1
 	 */
-	sar_enable = action ? 0 : -1;
+	sar_enable = action ? -1 : 0;
 
 	bcm_mkiovar("sar_enable", (char *)&sar_enable, 4, iovbuf, sizeof(iovbuf));
 	if ((ret = dhd_wl_ioctl_cmd(&dhd->pub, WLC_SET_VAR, iovbuf, sizeof(iovbuf), TRUE, 0)) < 0)
