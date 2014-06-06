@@ -1,0 +1,11 @@
+Revision: e2331da15e9c47c25ecd11d4c35877c7e2e2771a
+Patch-set: 1
+File: drivers/usb/gadget/android.c
+
+154
+Fri Jun 06 19:32:34 2014 +0000
+Author: Benoit Goby <1003977@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f26384e_ffc2ea6b
+Bytes: 16
+Should be static
+
