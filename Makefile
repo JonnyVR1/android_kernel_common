@@ -1063,7 +1063,8 @@ distclean: mrproper
 		\( -name '*.orig' -o -name '*.rej' -o -name '*~' \
 		-o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
 		-o -name '.*.rej' \
-		-o -name '*%' -o -name '.*.cmd' -o -name 'core' \) \
+		-o -name '*%' -o -name '.*.cmd' -o -name 'core' \
+		-o -name '*.dtb' \) \
 		-type f -print | xargs rm -f
 
 
