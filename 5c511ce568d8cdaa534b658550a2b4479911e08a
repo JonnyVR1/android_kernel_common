@@ -1,0 +1,22 @@
+Revision: 5c511ce568d8cdaa534b658550a2b4479911e08a
+Patch-set: 1
+File: fs/ext4/ext4.h
+
+608
+Thu Jun 12 23:22:49 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fc0f8c0_778fd867
+Bytes: 159
+This is really dangerous, it is likely to get stomped on by an upstream change.  In fact, it already has:
+
++#define EXT4_IOC_PRECACHE_EXTENTS      _IO('f', 18)
+
+File: fs/ext4/mballoc.c
+
+2709
+Thu Jun 12 23:22:49 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfc3fcc9_f30f5a01
+Bytes: 5
+bool?
+
