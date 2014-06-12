@@ -10,3 +10,11 @@ Bytes: 111
 For activating sar limitation, sar_enable should be 1.
 For deactivating sar limitation, sar_enable should be 0.
 
+648
+Thu Jun 12 15:50:45 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f8a489d_becbd030
+UUID: 1f6328c5_4c521b97
+Bytes: 170
+So, this reduces to (action == 0), or should there be a pair of manifests used like SAR_LIMITATION_ACTIVATED and SAR_LIMITATION_DEACTIVATED to make this abundantly clear?
+
