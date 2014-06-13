@@ -1,0 +1,11 @@
+Revision: 2a5750fb56b6d708f0aecd29d89f867881289e79
+Patch-set: 2
+File: drivers/usb/gadget/f_mass_storage.c
+
+2944
+Fri Jun 13 05:01:03 2014 +0000
+Author: Rakesh Babu <1022308@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df8b50a1_6cf5235f
+Bytes: 96
+Won't be this specific to android gadget driver and would effect if we use other gadget driver ?
+
