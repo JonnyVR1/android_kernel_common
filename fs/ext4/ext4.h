@@ -605,6 +605,7 @@ enum {
 #define EXT4_IOC_MOVE_EXT		_IOWR('f', 15, struct move_extent)
 #define EXT4_IOC_RESIZE_FS		_IOW('f', 16, __u64)
 #define EXT4_IOC_SWAP_BOOT		_IO('f', 17)
+#define EXT4_IOC_SFITRIM		_IOWR('f', 18, struct fstrim_range)
 
 #if defined(__KERNEL__) && defined(CONFIG_COMPAT)
 /*
@@ -2050,7 +2051,8 @@ extern int ext4_mb_add_groupinfo(struct super_block *sb,
 		ext4_group_t i, struct ext4_group_desc *desc);
 extern int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
 				ext4_fsblk_t block, unsigned long count);
-extern int ext4_trim_fs(struct super_block *, struct fstrim_range *);
+extern int ext4_trim_fs(struct super_block *, struct fstrim_range *,
+				bool secure);
 
 /* inode.c */
 struct buffer_head *ext4_getblk(handle_t *, struct inode *,
