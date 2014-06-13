@@ -594,11 +594,13 @@ resizefs_out:
 		return err;
 	}
 
+	case SFITRIM:
 	case FITRIM:
 	{
 		struct request_queue *q = bdev_get_queue(sb->s_bdev);
 		struct fstrim_range range;
 		int ret = 0;
+		bool secure_trim = cmd == SFITRIM;
 
 		if (!capable(CAP_SYS_ADMIN))
 			return -EPERM;
@@ -606,13 +608,23 @@ resizefs_out:
 		if (!blk_queue_discard(q))
 			return -EOPNOTSUPP;
 
+		if (secure_trim && !blk_queue_secdiscard(q))
+			return -EOPNOTSUPP;
+
+		if (EXT4_HAS_RO_COMPAT_FEATURE(sb,
+			       EXT4_FEATURE_RO_COMPAT_BIGALLOC)) {
+			ext4_msg(sb, KERN_ERR,
+				 "FITRIM not supported with bigalloc");
+			return -EOPNOTSUPP;
+		}
+
 		if (copy_from_user(&range, (struct fstrim_range __user *)arg,
 		    sizeof(range)))
 			return -EFAULT;
 
 		range.minlen = max((unsigned int)range.minlen,
 				   q->limits.discard_granularity);
-		ret = ext4_trim_fs(sb, &range);
+		ret = ext4_trim_fs(sb, &range, secure_trim);
 		if (ret < 0)
 			return ret;
 
