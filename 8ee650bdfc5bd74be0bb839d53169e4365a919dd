@@ -1,0 +1,11 @@
+Revision: 8ee650bdfc5bd74be0bb839d53169e4365a919dd
+Patch-set: 2
+File: include/linux/power_supply.h
+
+170:1-170:8
+Tue Jun 17 02:35:41 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4046504_c58fd0d5
+Bytes: 4
+s64?
+
