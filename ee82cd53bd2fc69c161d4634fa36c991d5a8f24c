@@ -10,3 +10,11 @@ Bytes: 61
 Why remove const? all callees take const.
 And elsewhere also.
 
+552
+Mon Jun 23 16:00:50 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04df5d24_a1e97891
+UUID: 8458ad70_234598d4
+Bytes: 128
+I removed const because sock_i_uid locks the sk->sk_callback_lock, so it modifies sk. Not removing it causes a compiler warning.
+
