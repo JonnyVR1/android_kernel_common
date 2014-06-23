@@ -670,6 +670,16 @@ static ssize_t acc_write(struct file *fp, const char __user *buf,
 			r = -EFAULT;
 			break;
 		}
+		
+		/* Check if we need to send a zero length packet. */
+		if(count > BULK_BUFFER_SIZE)
+			 /* They will be more TX requests so not yet. */
+			 req->zero = 0;
+		else
+			/* If the data length is a multple of the
+			 * maxpacket size then send a zero length packet.
+			*/
+			req->zero = ((xfer % dev->ep_in->maxpacket) == 0);
 
 		req->length = xfer;
 		ret = usb_ep_queue(dev->ep_in, req, GFP_KERNEL);
