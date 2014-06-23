@@ -662,15 +662,21 @@ static ssize_t acc_write(struct file *fp, const char __user *buf,
 			break;
 		}
 
-		if (count > BULK_BUFFER_SIZE)
+		req->zero = 0;
+		if (count > BULK_BUFFER_SIZE) 
 			xfer = BULK_BUFFER_SIZE;
-		else
+		else {
 			xfer = count;
+			/* If the data length is a multple of the
+			 * maxpacket size then send a zero length packet(ZLP).
+			*/
+			req->zero = ((xfer % dev->ep_in->maxpacket) == 0);
+		}
 		if (copy_from_user(req->buf, buf, xfer)) {
 			r = -EFAULT;
 			break;
 		}
-
+		
 		req->length = xfer;
 		ret = usb_ep_queue(dev->ep_in, req, GFP_KERNEL);
 		if (ret < 0) {
