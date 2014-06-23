@@ -18,3 +18,11 @@ UUID: 8458ad70_234598d4
 Bytes: 128
 I removed const because sock_i_uid locks the sk->sk_callback_lock, so it modifies sk. Not removing it causes a compiler warning.
 
+552
+Mon Jun 23 19:31:33 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8458ad70_234598d4
+UUID: c4c1c553_fa5a41aa
+Bytes: 44
+silly me. I was xref-ing without your patch.
+
