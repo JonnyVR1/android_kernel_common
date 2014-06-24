@@ -9,3 +9,35 @@ UUID: e4db2937_a06c14d9
 Bytes: 91
 I'll just trust you that the ID of the interface is more important than the current userid.
 
+2377
+Tue Jun 24 06:56:28 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4db2937_a06c14d9
+UUID: a493f168_ab0789e7
+Bytes: 1036
+What we're doing here is telling userspace what would happen if the given route were looked up (i.e., "ip -4 route get").
+
+If you look at the code below, it does:
+
+    if (iif) {
+        ... ip_route_input() ...
+    } else {
+        ... ip_route_output_key() ...
+    }
+
+So basically, here "if (iif)" means "is this an input packet?". If it's an input packet, it gets routed using ip_route_input, otherwise it gets routed using ip_route_output_key.
+
+For ip_route_input there's no socket and no struct flowi4 to use in the lookup, so the UID doesn't make sense.
+
+In this case, we set fl4.flowi4_uid to INVALID_UID, so that when we then call rt_fill_info to decide what we tell userspace about the route, the result does not contain a UID.
+
+In other words, we don't set UID here because when I do "ip -4 route get iif eth0 8.8.8.8" I want to see something like:
+
+    8.8.8.8 from 192.168.9.4 via 172.23.69.254 dev eth0 
+
+and not:
+
+    8.8.8.8 from 192.168.9.4 via 172.23.69.254 dev eth0 uid 12345
+
+Where 12345 happens to be my current UID.
+
