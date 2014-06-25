@@ -1,0 +1,27 @@
+Revision: 6034dca0fac484d4609d770fb642d14bb4e0b640
+Patch-set: 2
+File: net/ipv4/route.c
+
+3116:15-3116:25
+Wed Jun 25 16:33:42 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44ba35ef_db2de71f
+Bytes: 38
+I half expected a define to cover this
+
+3116:9-3116:25
+Wed Jun 25 16:33:42 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44ba35ef_bb9b531c
+Bytes: 101
+uid is not used below if iif is defined. Would we not have the same result without this ? : decision?
+
+File: net/ipv6/route.c
+
+2591:26-2591:36
+Wed Jun 25 16:33:42 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64c57978_4267a8f3
+Bytes: 51
+half expected a manifest used here for invalid UID.
+
