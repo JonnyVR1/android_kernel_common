@@ -470,7 +470,6 @@ static void cpufreq_allstats_create(unsigned int cpu)
 	all_stat->freq_table = (unsigned int *)
 		(all_stat->time_in_state + count);
 
-	spin_lock(&cpufreq_stats_lock);
 	for (i = 0; table[i].frequency != CPUFREQ_TABLE_END; i++) {
 		unsigned int freq = table[i].frequency;
 		if (freq == CPUFREQ_ENTRY_INVALID)
@@ -485,6 +484,7 @@ static void cpufreq_allstats_create(unsigned int cpu)
 		sort(all_freq_table->freq_table, all_freq_table->table_size,
 				sizeof(unsigned int), &compare_for_sort, NULL);
 	all_stat->state_num = j;
+	spin_lock(&cpufreq_stats_lock);
 	per_cpu(all_cpufreq_stats, cpu) = all_stat;
 	spin_unlock(&cpufreq_stats_lock);
 }
