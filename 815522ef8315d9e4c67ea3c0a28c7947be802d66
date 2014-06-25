@@ -1,0 +1,11 @@
+Revision: 815522ef8315d9e4c67ea3c0a28c7947be802d66
+Patch-set: 3
+File: drivers/usb/gadget/f_accessory.c
+
+675:2-682:53
+Wed Jun 25 02:33:42 2014 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4b1310f_fb166f1e
+Bytes: 79
+Is there a reason why we cant merge this to the previous if... else... block  ?
+
