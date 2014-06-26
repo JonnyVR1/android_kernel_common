@@ -1,0 +1,11 @@
+Revision: 661a414532a7e38dfbe4f2c0579aad24a15ab7f6
+Patch-set: 1
+File: include/net/cfg80211.h
+
+3699
+Thu Jun 26 17:26:28 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46cd148_1d4f037e
+Bytes: 18
+NL80211_CMD_VENDOR
+
