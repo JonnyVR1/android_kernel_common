@@ -666,7 +666,7 @@ static ssize_t acc_write(struct file *fp, const char __user *buf,
 			xfer = BULK_BUFFER_SIZE;
 			/* ZLP, They will be more TX requests so not yet. */
 			 req->zero = 0;
-		} else
+		} else {
 			xfer = count;
 			/* If the data length is a multple of the
 			 * maxpacket size then send a zero length packet(ZLP).
