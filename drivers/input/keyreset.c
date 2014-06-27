@@ -44,8 +44,8 @@ static void do_reset_fn(void *priv)
 		state->restart_requested = state->reset_fn();
 	} else {
 		pr_info("keyboard reset\n");
-		do_restart();
 		state->restart_requested = 1;
+		do_restart();
 	}
 }
 
