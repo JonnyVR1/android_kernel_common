@@ -1,0 +1,69 @@
+Revision: 9595f26f7230b01668bb937046231d36aad73cd2
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:3
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4efa930_7dafb782
+Bytes: 57
+Why not to call:
+net: wireless: bcmdhd: Add gscan support
+
+File: drivers/net/wireless/bcmdhd/dhd_pno.c
+
+1410:1-1410:5
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_fead8176
+Bytes: 83
+If you are protecting buffer processing, why not to put this line under mutex lock?
+
+2975:2-2975:8
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24ee2135_3fe1a7b1
+Bytes: 75
+err is Ok in this case. And you are not jumping to exit; Is it intentional?
+
+3274:43-3274:44
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4efa930_bda3ff8c
+Bytes: 86
+I remember you added site protection for similar code. why not to use it here as well?
+
+3683:0-3683:2
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4efa930_7dc21719
+Bytes: 51
+And what happens if pno_params_arr will be changed?
+
+File: drivers/net/wireless/bcmdhd/include/wlioctl.h
+
+231:0-231:1
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_3e67e9a6
+Bytes: 44
+IF you have #ifdef GSCAN - use it everywhere
+
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
+
+6:7-6:8
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24ee2135_9fa8b368
+Bytes: 18
+We need GPL header
+
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.h
+
+6:7-6:8
+Tue Jul 01 16:38:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_be72d965
+Bytes: 18
+We need GPL header
+
