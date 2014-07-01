@@ -63,6 +63,14 @@ For wlioctl.h, we don't use any define.
 Thanks,
 Ecco
 
+231
+Tue Jul 01 18:24:29 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4fc65ef_5c859df4
+UUID: e4efa930_036d7285
+Bytes: 29
+No, it was just a suggestion.
+
 File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
 
 6:7-6:8
