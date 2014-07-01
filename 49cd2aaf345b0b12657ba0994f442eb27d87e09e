@@ -1,0 +1,69 @@
+Revision: 49cd2aaf345b0b12657ba0994f442eb27d87e09e
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/dhd_rtt.h
+
+115:0-115:7
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_b8c2e9ca
+Bytes: 14
+Add blank line
+
+151:8-151:16
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_38d899ac
+Bytes: 103
+RTT report and RTT result has different distance field - uint32 and int. I would suggest to unify them.
+
+176
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_f8cc71fe
+Bytes: 8
+Add tabs
+
+184
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_58b2c584
+Bytes: 8
+add tabs
+
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
+
+719:0-719:1
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_6b0b8143
+Bytes: 27
+Please add blank line above
+
+793:1-793:7
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_eb481174
+Bytes: 20
+Add blank line above
+
+861:1-861:7
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_7807c17e
+Bytes: 47
+Kind of obsolete - add "leave" to previous line
+
+865:2-865:6
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4efa930_526d82d2
+Bytes: 7
+No need
+
+878:1-878:18
+Tue Jul 01 23:27:19 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_9823ad0f
+Bytes: 27
+Please add blank line above
+
