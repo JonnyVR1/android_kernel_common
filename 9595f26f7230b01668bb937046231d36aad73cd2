@@ -49,6 +49,20 @@ UUID: 04f3dd1b_3e67e9a6
 Bytes: 44
 IF you have #ifdef GSCAN - use it everywhere
 
+231
+Tue Jul 01 18:22:24 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_3e67e9a6
+UUID: c4fc65ef_5c859df4
+Bytes: 120
+Hi Dmitry
+is there any reason to use GSCAN_SUPPORT in everywhere?
+
+For wlioctl.h, we don't use any define.
+
+Thanks,
+Ecco
+
 File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
 
 6:7-6:8
