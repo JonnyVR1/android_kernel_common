@@ -1,0 +1,11 @@
+Revision: 11def6eb52b912291af4ea35d576c471a6ea612f
+Patch-set: 2
+File: drivers/input/keyreset.c
+
+25
+Tue Jul 01 21:46:41 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64b2d95d_b1f5e068
+Bytes: 24
+what is this needed for?
+
