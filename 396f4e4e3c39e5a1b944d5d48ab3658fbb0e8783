@@ -1,0 +1,11 @@
+Revision: 396f4e4e3c39e5a1b944d5d48ab3658fbb0e8783
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_pno.c
+
+1420
+Tue Jul 01 20:07:05 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4efa930_a6c2ccca
+Bytes: 52
+Modified the code, mutex lock will be done by caller
+
