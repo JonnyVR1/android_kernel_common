@@ -19,12 +19,28 @@ UUID: 04f3dd1b_fead8176
 Bytes: 83
 If you are protecting buffer processing, why not to put this line under mutex lock?
 
+1410:1-1410:5
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_fead8176
+UUID: c4fc65ef_fc93c943
+Bytes: 65
+i can't think of why i did it now, i guess i will move this down.
+
 2975:2-2975:8
 Tue Jul 01 16:38:10 2014 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24ee2135_3fe1a7b1
 Bytes: 75
 err is Ok in this case. And you are not jumping to exit; Is it intentional?
+
+2975:2-2975:8
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24ee2135_3fe1a7b1
+UUID: e4efa930_8324e2cf
+Bytes: 103
+yes i do not want to do reinitialize prof, when gscan is running this function shouldnt touch anything.
 
 3274:43-3274:44
 Tue Jul 01 16:38:10 2014 +0000
@@ -33,12 +49,28 @@ UUID: e4efa930_bda3ff8c
 Bytes: 86
 I remember you added site protection for similar code. why not to use it here as well?
 
+3274:43-3274:44
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4efa930_bda3ff8c
+UUID: c4fc65ef_1cb2f5ea
+Bytes: 238
+This is old KitKat code , the old code has a bug the pointer isn't incremented and also free doesnt happen. this is not gscan related and i just took in the fix for legacy support (gscan doesnt use this, i am hesitant to add code to this)
+
 3683:0-3683:2
 Tue Jul 01 16:38:10 2014 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4efa930_7dc21719
 Bytes: 51
 And what happens if pno_params_arr will be changed?
+
+3683:0-3683:2
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4efa930_7dc21719
+UUID: 440235bc_9849f549
+Bytes: 109
+Its an array inside of a struct, the contents may change and hence the mutex below, but the pointer will not.
 
 File: drivers/net/wireless/bcmdhd/include/wlioctl.h
 
@@ -80,6 +112,14 @@ UUID: 24ee2135_9fa8b368
 Bytes: 18
 We need GPL header
 
+6:7-6:8
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24ee2135_9fa8b368
+UUID: 440235bc_785341f2
+Bytes: 4
+Done
+
 File: drivers/net/wireless/bcmdhd/wl_cfgvendor.h
 
 6:7-6:8
@@ -88,4 +128,12 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04f3dd1b_be72d965
 Bytes: 18
 We need GPL header
+
+6:7-6:8
+Tue Jul 01 18:26:36 2014 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_be72d965
+UUID: 640d79e9_b9167f1d
+Bytes: 4
+Done
 
