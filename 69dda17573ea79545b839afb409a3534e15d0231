@@ -9,3 +9,10 @@ UUID: e4c6c9d8_f9745f12
 Bytes: 59
 If it used only in one function, you can move it inside it.
 
+1048:43-1048:45
+Wed Jul 02 22:51:09 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cafddd_9a20bd91
+Bytes: 60
+32 is used in several places - please replace it with define
+
