@@ -1,0 +1,11 @@
+Revision: 69dda17573ea79545b839afb409a3534e15d0231
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
+
+82:0-82:6
+Wed Jul 02 22:49:12 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c6c9d8_f9745f12
+Bytes: 59
+If it used only in one function, you can move it inside it.
+
