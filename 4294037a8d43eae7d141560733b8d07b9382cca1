@@ -9,3 +9,11 @@ UUID: e4c6c9d8_ff527f10
 Bytes: 38
 Why do you need to move it after RTT ?
 
+1106
+Thu Jul 03 00:06:16 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c6c9d8_ff527f10
+UUID: c471c58d_5458ec63
+Bytes: 146
+if you look at the __cfg80211_alloc_event_skb function, we locate the event element using vendor_event_idx argument in wiphy->vendor_events array.
+
