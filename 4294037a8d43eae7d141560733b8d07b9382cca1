@@ -1,0 +1,11 @@
+Revision: 4294037a8d43eae7d141560733b8d07b9382cca1
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
+
+1106:0-1106:1
+Thu Jul 03 00:03:58 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c6c9d8_ff527f10
+Bytes: 38
+Why do you need to move it after RTT ?
+
