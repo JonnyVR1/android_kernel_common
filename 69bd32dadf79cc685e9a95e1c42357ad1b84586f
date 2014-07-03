@@ -1,0 +1,39 @@
+Revision: 69bd32dadf79cc685e9a95e1c42357ad1b84586f
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/wl_cfgvendor.c
+
+968:0-968:1
+Thu Jul 03 00:02:08 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c6c9d8_9f538b26
+Bytes: 26
+Please move it under ifdef
+
+1019:32-1019:33
+Thu Jul 03 00:02:08 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cafddd_d59fa64d
+Bytes: 13
+Should be %zu
+
+1032:9-1032:10
+Thu Jul 03 00:02:08 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84498d4f_183dcd49
+Bytes: 70
+Please add casting and why ptr++? I don't see you are using ptr later.
+
+1037:31-1037:32
+Thu Jul 03 00:02:08 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84498d4f_58375569
+Bytes: 13
+Should be %zu
+
+1046:31-1046:32
+Thu Jul 03 00:02:08 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84498d4f_383a9152
+Bytes: 13
+Should be %zu
+
