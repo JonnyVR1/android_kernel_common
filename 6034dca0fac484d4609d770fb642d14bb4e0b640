@@ -48,3 +48,11 @@ UUID: c4462542_55bc7e53
 Bytes: 111
 Not sure what "manifest" means (a "#define"?). I'll let Lorenzo deal with this when he gets back from vacation.
 
+2591:26-2591:36
+Mon Jul 07 19:32:49 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4462542_55bc7e53
+UUID: c4462542_9b28d711
+Bytes: 7
+#define
+
