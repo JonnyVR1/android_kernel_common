@@ -23,6 +23,14 @@ UUID: e4fec9bb_ba48d572
 Bytes: 108
 This whole fragment, plus the uid_t uid definition, can move into the '} else {' block below (optimization).
 
+3113:1-3116:43
+Mon Jul 07 18:43:01 2014 +0000
+Author: Sreeram Ramachandran <1031429@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4fec9bb_ba48d572
+UUID: 84326dd1_caf7e3ab
+Bytes: 4
+Done
+
 File: net/ipv6/route.c
 
 2591:26-2591:36
@@ -31,4 +39,12 @@ Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64c57978_4267a8f3
 Bytes: 51
 half expected a manifest used here for invalid UID.
+
+2591:26-2591:36
+Mon Jul 07 18:43:01 2014 +0000
+Author: Sreeram Ramachandran <1031429@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64c57978_4267a8f3
+UUID: c4462542_55bc7e53
+Bytes: 111
+Not sure what "manifest" means (a "#define"?). I'll let Lorenzo deal with this when he gets back from vacation.
 
