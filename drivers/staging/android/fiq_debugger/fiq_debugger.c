@@ -470,6 +470,13 @@ static void fiq_debugger_switch_cpu(struct fiq_debugger_state *state, int cpu)
 	state->current_cpu = cpu;
 }
 
+static void fiq_debugger_dump_ftrace(struct fiq_debugger_state *state)
+{
+	fiq_debugger_begin_syslog_dump(state);
+	ftrace_dump(DUMP_ALL);
+	fiq_debugger_end_syslog_dump(state);
+}
+
 static bool fiq_debugger_fiq_exec(struct fiq_debugger_state *state,
 			const char *cmd, const struct pt_regs *regs,
 			void *svc_sp)
@@ -522,6 +529,8 @@ static bool fiq_debugger_fiq_exec(struct fiq_debugger_state *state,
 		else
 			fiq_debugger_printf(&state->output, "invalid cpu\n");
 		fiq_debugger_printf(&state->output, "cpu %d\n", state->current_cpu);
+	} else if (!strcmp(cmd, "ftrace")) {
+		fiq_debugger_dump_ftrace(state);
 	} else {
 		if (state->debug_busy) {
 			fiq_debugger_printf(&state->output,
