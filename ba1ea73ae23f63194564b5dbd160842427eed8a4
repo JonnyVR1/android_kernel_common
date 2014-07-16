@@ -18,3 +18,15 @@ UUID: d9c1b053_a380a4ea
 Bytes: 53
 FYI: it may not work for kernel that is using bcm4356
 
+132
+Wed Jul 16 02:44:14 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9c1b053_a380a4ea
+UUID: 7987e429_a9e31d38
+Bytes: 64
+Hi Dmitry
+This define is under CONFIG_BCMDHD_SDIO.
+
+Thanks,
+Ecco
+
