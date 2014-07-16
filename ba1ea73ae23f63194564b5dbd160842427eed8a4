@@ -1,0 +1,20 @@
+Revision: ba1ea73ae23f63194564b5dbd160842427eed8a4
+Patch-set: 6
+File: /COMMIT_MSG
+
+7:41-7:42
+Wed Jul 16 02:08:15 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c4b462_e4f0e4ff
+Bytes: 28
+What version it is based on?
+
+File: drivers/net/wireless/bcmdhd/Makefile
+
+132:2-132:11
+Wed Jul 16 02:08:15 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9c1b053_a380a4ea
+Bytes: 53
+FYI: it may not work for kernel that is using bcm4356
+
