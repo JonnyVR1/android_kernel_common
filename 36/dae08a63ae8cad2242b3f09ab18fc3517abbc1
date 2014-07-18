@@ -1,0 +1,8 @@
+Code-Review+2: Dmitry Shmidt <dimitrysh%android.com@gtempaccount.com>
+Code-Review+1: Ecco Park <eccopark@broadcom.com>
+Verified+1: Colin Cross <ccross@android.com>
+Submitted-by: Colin Cross <ccross@android.com>
+Submitted-at: Fri, 18 Jul 2014 19:58:18 +0000
+Reviewed-on: https://android-review.googlesource.com/101895
+Project: kernel/common
+Branch: refs/heads/bcmdhd-3.10
