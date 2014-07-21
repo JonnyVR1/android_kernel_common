@@ -1,0 +1,11 @@
+Revision: a6ddda63735db23d45716785fd9ab85563830ea3
+Patch-set: 1
+File: drivers/usb/gadget/f_audio_source.c
+
+27:33-27:34
+Mon Jul 21 23:07:05 2014 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9123c0c_28016fd5
+Bytes: 41
+Can you remove the trailing white space ?
+
