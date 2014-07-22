@@ -1,0 +1,29 @@
+Revision: 1478f041a262459d03e5734ce056e2d467d1d4ae
+Patch-set: 2
+File: /COMMIT_MSG
+
+7:3-7:4
+Tue Jul 22 20:35:25 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59b7804c_c4f9beea
+Bytes: 45
+Please add blanks like net: wireless: bcmdhd:
+
+File: drivers/net/wireless/bcmdhd/Makefile
+
+1:0-1:1
+Tue Jul 22 20:35:25 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39bc8c31_c32d361c
+Bytes: 32
+Please set file type back to 644
+
+File: drivers/net/wireless/bcmdhd/dhd_common.c
+
+59:0-59:1
+Tue Jul 22 20:35:25 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79b2845d_25b7e6d8
+Bytes: 45
+You forgot to include this file to the change
+
