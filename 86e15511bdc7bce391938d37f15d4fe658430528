@@ -1,0 +1,18 @@
+Revision: 86e15511bdc7bce391938d37f15d4fe658430528
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_pno.h
+
+444:0-444:2
+Tue Jul 22 20:33:29 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79b2845d_a5c3d640
+Bytes: 22
+They all defined above
+
+447:0-447:6
+Tue Jul 22 20:33:29 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59b7804c_3938b308
+Bytes: 21
+Already defined above
+
