@@ -9,3 +9,11 @@ UUID: 59b7804c_7aeea621
 Bytes: 385
 this is calling keepalive which calls spin_lock in atomic context, it needs to be spin_lock_irqsave(), as well as anything else called from both interrupt and process context.  Anything called only from process context needs to be spin_lock_irq() (or spin_lock_irqsave() everywhere).  Otherwise it would be causing lockdep warnings if lockdep were enabled and possibly cause deadlocks.
 
+260
+Wed Jul 23 14:26:33 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59b7804c_7aeea621
+UUID: 79b2845d_ae93ae05
+Bytes: 111
+I noted this in the internal review, was trying not to do a complete rewrite. I have to stop being so timid ...
+
