@@ -1,0 +1,11 @@
+Revision: 21c800492f545bb4f7f7601a1dfea3c6328539c2
+Patch-set: 1
+File: drivers/watchdog/s3c2410_wdt.c
+
+260
+Wed Jul 23 00:44:27 2014 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59b7804c_7aeea621
+Bytes: 385
+this is calling keepalive which calls spin_lock in atomic context, it needs to be spin_lock_irqsave(), as well as anything else called from both interrupt and process context.  Anything called only from process context needs to be spin_lock_irq() (or spin_lock_irqsave() everywhere).  Otherwise it would be causing lockdep warnings if lockdep were enabled and possibly cause deadlocks.
+
