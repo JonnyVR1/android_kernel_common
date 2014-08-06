@@ -1,0 +1,11 @@
+Revision: 687f999e1fbd3b553bccbd7f52996ae56c5e327e
+Patch-set: 7
+File: include/uapi/linux/fs.h
+
+157:21-157:31
+Wed Aug 06 03:31:49 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f974b47c_d2b87c67
+Bytes: 73
+This change from ('X', 122) to ('f', 128) was suggested on linux-fsdevel.
+
