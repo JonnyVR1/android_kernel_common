@@ -1,0 +1,11 @@
+Revision: a2425ffd6902717115f079c618b0f07126724e7c
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_stats.c
+
+285:34-285:35
+Sun Aug 10 18:57:52 2014 +0000
+Author: emilio@elopez.com.ar <1037069@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9699c785_d85025ed
+Bytes: 65
+ERROR: "total_cpus" [drivers/cpufreq/cpufreq_stats.ko] undefined!
+
