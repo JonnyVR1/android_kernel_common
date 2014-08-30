@@ -1,0 +1,18 @@
+Revision: a03f539b1636dd97e7f4f78da08b5e2e02e6cb6d
+Patch-set: 2
+File: net/ipv6/route.c
+
+93:22-93:37
+Sat Aug 30 01:36:37 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13a1690c_172ade68
+Bytes: 322
+The change to rt6_get_route_info() signature causes this patch from the 3.10 stable series to miscompile:
+
+    ipv6: use rt6_get_dflt_router to get default router in rt6_route_rcv
+    
+    [ Upstream commit f104a567e673f382b09542a8dc3500aa689957b4 ]
+
+
+Can the stable patch be ported to the android changes in android-3.10?
+
