@@ -204,7 +204,10 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
 static u32 seccomp_run_filters(int syscall)
 {
 	struct seccomp_filter *f = ACCESS_ONCE(current->seccomp.filter);
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	struct seccomp_data sd;
+=======
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 	u32 ret = SECCOMP_RET_ALLOW;
 
 	/* Ensure unexpected behavior doesn't result in failing open. */
@@ -213,16 +216,24 @@ static u32 seccomp_run_filters(int syscall)
 
 	/* Make sure cross-thread synced filter points somewhere sane. */
 	smp_read_barrier_depends();
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 
 	populate_seccomp_data(&sd);
+=======
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 
 	/*
 	 * All filters in the list are evaluated and the lowest BPF return
 	 * value always takes priority (ignoring the DATA).
 	 */
 	for (; f; f = f->prev) {
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 		u32 cur_ret = SK_RUN_FILTER(f->prog, (void *)&sd);
 
+=======
+		u32 cur_ret = sk_run_filter(NULL, f->insns);
+		
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 		if ((cur_ret & SECCOMP_RET_ACTION) < (ret & SECCOMP_RET_ACTION))
 			ret = cur_ret;
 	}
@@ -250,7 +261,11 @@ static inline void seccomp_assign_mode(struct task_struct *task,
 	 * Make sure TIF_SECCOMP cannot be set before the mode (and
 	 * filter) is set.
 	 */
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	smp_mb__before_atomic();
+=======
+	smp_mb();
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 	set_tsk_thread_flag(task, TIF_SECCOMP);
 }
 
@@ -380,7 +395,15 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
 		return ERR_PTR(-EINVAL);
 	BUG_ON(INT_MAX / fprog->len < sizeof(struct sock_filter));
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	fp_size = fprog->len * sizeof(struct sock_filter);
+=======
+
+	for (filter = current->seccomp.filter; filter; filter = filter->prev)
+		total_insns += filter->len + 4;  /* include a 4 instr penalty */
+	if (total_insns > MAX_INSNS_PER_PATH)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 
 	/*
 	 * Installing a seccomp filter requires that the task have
@@ -388,14 +411,24 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	 * This avoids scenarios where unprivileged tasks can affect the
 	 * behavior of privileged children.
 	 */
-	if (!current->no_new_privs &&
+	if (!task_no_new_privs(current) &&
 	    security_capable_noaudit(current_cred(), current_user_ns(),
 				     CAP_SYS_ADMIN) != 0)
 		return ERR_PTR(-EACCES);
 
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	fp = kzalloc(fp_size, GFP_KERNEL|__GFP_NOWARN);
 	if (!fp)
 		return ERR_PTR(-ENOMEM);
+=======
+	/* Allocate a new seccomp_filter */
+	filter = kzalloc(sizeof(struct seccomp_filter) + fp_size,
+			 GFP_KERNEL|__GFP_NOWARN);
+	if (!filter)
+		return ERR_PTR(-ENOMEM);;
+	atomic_set(&filter->usage, 1);
+	filter->len = fprog->len;
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 
 	/* Copy the instructions from fprog. */
 	ret = -EFAULT;
@@ -412,6 +445,7 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 	if (ret)
 		goto free_prog;
 
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	/* Allocate a new seccomp_filter */
 	ret = -ENOMEM;
 	filter = kzalloc(sizeof(struct seccomp_filter) +
@@ -433,9 +467,17 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
 free_filter_prog:
 	kfree(filter->prog);
 free_filter:
+=======
+	return filter;
+
+fail:
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 	kfree(filter);
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 free_prog:
 	kfree(fp);
+=======
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 	return ERR_PTR(ret);
 }
 
@@ -485,9 +527,15 @@ static long seccomp_attach_filter(unsigned int flags,
 	BUG_ON(!spin_is_locked(&current->sighand->siglock));
 
 	/* Validate resulting filter length. */
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 	total_insns = filter->prog->len;
 	for (walker = current->seccomp.filter; walker; walker = walker->prev)
 		total_insns += walker->prog->len + 4;  /* 4 instr penalty */
+=======
+	total_insns = filter->len;
+	for (walker = current->seccomp.filter; walker; walker = walker->prev)
+		total_insns += walker->len + 4;  /* 4 instr penalty */
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 	if (total_insns > MAX_INSNS_PER_PATH)
 		return -ENOMEM;
 
@@ -527,7 +575,10 @@ void get_seccomp_filter(struct task_struct *tsk)
 static inline void seccomp_filter_free(struct seccomp_filter *filter)
 {
 	if (filter) {
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 		sk_filter_free(filter->prog);
+=======
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 		kfree(filter);
 	}
 }

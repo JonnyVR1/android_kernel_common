@@ -389,9 +389,12 @@
 		CALL(sys_process_vm_writev)
 		CALL(sys_kcmp)
 		CALL(sys_finit_module)
+<<<<<<< HEAD   (597ff3 arm64: Add brackets around user_stack_pointer())
 /* 380 */	CALL(sys_ni_syscall) /* CALL(sys_sched_setattr) */
 		CALL(sys_ni_syscall) /* CALL(sys_sched_getattr) */
 		CALL(sys_ni_syscall) /* CALL(sys_renameat2) */
+=======
+>>>>>>> BRANCH (b2cc0c arm: increase __NR_syscalls)
 		CALL(sys_seccomp)
 #ifndef syscalls_counted
 .equ syscalls_padding, ((NR_syscalls + 3) & ~3) - NR_syscalls
