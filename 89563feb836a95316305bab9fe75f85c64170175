@@ -1,0 +1,11 @@
+Revision: 89563feb836a95316305bab9fe75f85c64170175
+Patch-set: 2
+File: arch/arm64/kernel/process.c
+
+160
+Wed Sep 10 02:09:14 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d013479f_e41efac3
+Bytes: 249
+This printf is confusing (from the original patch). When looking at a crash log, it is easy to assume the value printed here is the register value, but it off by nbytes. Also passing in the register address and instead printing that would be better.
+
