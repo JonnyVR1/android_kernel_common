@@ -9,3 +9,11 @@ UUID: d013479f_e41efac3
 Bytes: 249
 This printf is confusing (from the original patch). When looking at a crash log, it is easy to assume the value printed here is the register value, but it off by nbytes. Also passing in the register address and instead printing that would be better.
 
+160
+Wed Sep 10 16:20:06 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d013479f_e41efac3
+UUID: d013479f_8dd92907
+Bytes: 71
+Agreed, I'll do a follow-up patch on both arm and arm64 to change this.
+
