@@ -16,3 +16,11 @@ UUID: 303103d2_d67dca88
 Bytes: 35
 Why we need to do assignment twice?
 
+4149
+Mon Sep 29 18:45:10 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 303103d2_d67dca88
+UUID: 90f63048_ffb6dfcf
+Bytes: 57
+we can change this code scbval.val = htod32(reason_code);
+
