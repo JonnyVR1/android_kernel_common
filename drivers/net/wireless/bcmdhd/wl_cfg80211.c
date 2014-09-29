@@ -4142,6 +4142,17 @@ wl_cfg80211_disconnect(struct wiphy *wiphy, struct net_device *dev,
 			WL_ERR(("error (%d)\n", err));
 			return err;
 		}
+	} else if (wl_get_drv_status(cfg, CONNECTING, dev)) {
+		wl_clr_drv_status(cfg, CONNECTING, dev);
+		scbval.val = reason_code;
+		memcpy(&scbval.ea, curbssid, ETHER_ADDR_LEN);
+		scbval.val = htod32(scbval.val);
+		err = wldev_ioctl(dev, WLC_DISASSOC, &scbval,
+			sizeof(scb_val_t), true);
+		if (unlikely(err)) {
+			WL_ERR(("disconnect set error (%d)\n", err));
+			return err;
+		}
 	}
 #ifdef CUSTOM_SET_CPUCORE
 	/* set default cpucore */
