@@ -1,0 +1,18 @@
+Revision: d0ed3980c6ef32d77fed28a3fb309ae9ff48f91e
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+4145:1-4145:2
+Mon Sep 29 18:11:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 303103d2_7636def9
+Bytes: 31
+Can be combined with code above
+
+4149:2-4149:8
+Mon Sep 29 18:11:10 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 303103d2_d67dca88
+Bytes: 35
+Why we need to do assignment twice?
+
