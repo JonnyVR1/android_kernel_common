@@ -25,3 +25,11 @@ UUID: 50f83838_83a0a2ae
 Bytes: 98
 Just to make sure - this is original code now, because originally we came here only if act is TRUE
 
+4130
+Mon Sep 29 21:45:27 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50f83838_83a0a2ae
+UUID: 50f83838_c38d8a3e
+Bytes: 45
+if so, we can remove "act" in this condition.
+
