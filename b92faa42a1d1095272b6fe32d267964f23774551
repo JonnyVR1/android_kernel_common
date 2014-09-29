@@ -9,3 +9,11 @@ UUID: 90f63048_0594964a
 Bytes: 78
 @Ecco, do you think we need this of we can cancel scan regardless 'act' value?
 
+4130
+Mon Sep 29 21:41:15 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90f63048_0594964a
+UUID: 50f83838_e362c6f8
+Bytes: 29
+Let's keep the original code.
+
