@@ -1,0 +1,11 @@
+Revision: b92faa42a1d1095272b6fe32d267964f23774551
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+4130:6-4130:9
+Mon Sep 29 21:00:15 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90f63048_0594964a
+Bytes: 78
+@Ecco, do you think we need this of we can cancel scan regardless 'act' value?
+
