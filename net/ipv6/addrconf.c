@@ -1173,6 +1173,9 @@ enum {
 	IPV6_SADDR_RULE_PRIVACY,
 #endif
 	IPV6_SADDR_RULE_ORCHID,
+#ifdef CONFIG_IPV6_OPTIMISTIC_DAD
+	IPV6_SADDR_RULE_NOT_OPTIMISTIC,
+#endif
 	IPV6_SADDR_RULE_PREFIX,
 	IPV6_SADDR_RULE_MAX
 };
@@ -1261,10 +1264,20 @@ static int ipv6_get_saddr_eval(struct net *net,
 		score->scopedist = ret;
 		break;
 	case IPV6_SADDR_RULE_PREFERRED:
+	    {
 		/* Rule 3: Avoid deprecated and optimistic addresses */
+		u8 avoid = IFA_F_DEPRECATED|IFA_F_OPTIMISTIC;
+#ifdef CONFIG_IPV6_OPTIMISTIC_DAD
+		/* XXX: Optionally, if an interface is configured to permit
+		   using optimistic addresses, restore their good name.
+		 */
+		if (score->ifa->idev->cnf.optimistic_srcaddr_ok)
+			avoid &= ~IFA_F_OPTIMISTIC;
+#endif
 		ret = ipv6_saddr_preferred(score->addr_type) ||
-		      !(score->ifa->flags & (IFA_F_DEPRECATED|IFA_F_OPTIMISTIC));
+		      !(score->ifa->flags & avoid);
 		break;
+	    }
 #ifdef CONFIG_IPV6_MIP6
 	case IPV6_SADDR_RULE_HOA:
 	    {
@@ -1305,6 +1318,12 @@ static int ipv6_get_saddr_eval(struct net *net,
 		ret = !(ipv6_addr_orchid(&score->ifa->addr) ^
 			ipv6_addr_orchid(dst->addr));
 		break;
+#ifdef CONFIG_IPV6_OPTIMISTIC_DAD
+	case IPV6_SADDR_RULE_NOT_OPTIMISTIC:
+		/* XXX Add comments */
+		ret = !(score->ifa->flags & IFA_F_OPTIMISTIC);
+		break;
+#endif
 	case IPV6_SADDR_RULE_PREFIX:
 		/* Rule 8: Use longest matching prefix */
 		ret = ipv6_addr_diff(&score->ifa->addr, dst->addr);
@@ -4192,6 +4211,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
 	array[DEVCONF_ACCEPT_SOURCE_ROUTE] = cnf->accept_source_route;
 #ifdef CONFIG_IPV6_OPTIMISTIC_DAD
 	array[DEVCONF_OPTIMISTIC_DAD] = cnf->optimistic_dad;
+	array[DEVCONF_OPTIMISTIC_SRCADDR_OK] = cnf->optimistic_srcaddr_ok;
 #endif
 #ifdef CONFIG_IPV6_MROUTE
 	array[DEVCONF_MC_FORWARDING] = cnf->mc_forwarding;
@@ -4921,6 +4941,14 @@ static struct addrconf_sysctl_table
 		{
 			.procname       = "optimistic_dad",
 			.data           = &ipv6_devconf.optimistic_dad,
+			.maxlen         = sizeof(int),
+			.mode           = 0644,
+			.proc_handler   = proc_dointvec,
+
+		},
+		{
+			.procname       = "optimistic_srcaddr_ok",
+			.data           = &ipv6_devconf.optimistic_srcaddr_ok,
 			.maxlen         = sizeof(int),
 			.mode           = 0644,
 			.proc_handler   = proc_dointvec,
