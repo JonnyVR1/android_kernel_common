@@ -1,0 +1,44 @@
+Revision: 650be90e5aca283882e01f323d3a78f19b55b8c9
+Patch-set: 4
+File: /COMMIT_MSG
+
+7
+Wed Oct 08 13:46:00 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30c2e457_77c80a80
+Bytes: 191
+Add "net: ipv6: " to the beginning of the commit summary, and also try to convery the fact that this is optional.
+
+Example:
+
+net: ipv6: Add a sysctl to treat optimistic addresses as preferred
+
+9
+Wed Oct 08 13:46:00 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30c2e457_b7a9c29f
+Bytes: 43
+"Add a sysctl that causes..."
+"and" -> "an"
+
+11
+Wed Oct 08 13:46:00 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 903e30e9_ed10ac71
+Bytes: 70
+Also mention that they are not treated as well as preferred addresses?
+
+13
+Wed Oct 08 13:46:00 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 903e30e9_cd0de857
+Bytes: 247
+The reference to BCP38 may not be immediately understood by everyone upstream. Instead, perhaps say that it's useful where different interfaces are connected to different networks from different ISPs (e.g., a cell network and a home wifi network)?
+
+15
+Wed Oct 08 13:46:00 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30c2e457_17a0b6ac
+Bytes: 237
+I would perhaps note that the current behaviour complies with RFC 3484/6724, and its behaviour makes sense if the host has only one interface, or has multiple interfaces on the same network, but not in the multiple distinct network case.
+
