@@ -1,0 +1,34 @@
+Revision: 126188f4064360edb8227eb80d436cf5190f101c
+Patch-set: 1
+File: include/linux/ipv6.h
+
+44
+Wed Oct 08 06:53:38 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 903e30e9_d7dc579e
+Bytes: 75
+I would call this something like optimistic_preferred or prefer_optimistic.
+
+File: net/ipv6/addrconf.c
+
+1266
+Wed Oct 08 06:53:38 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0342809_db412b33
+Bytes: 330
+I would rename this to simply "u8 avoid". Also, I think it would be more readable if the test were not inverted:
+
+                u8 avoid = IFA_F_DEPRECATED;
+#ifdef CONFIG_IPV6_OPTIMISTIC_DAD
+                if (!score->ifa->idev->cnf.prefer_optimistic) {
+                        avoid |= IFA_OPTIMISTIC;
+                }
+#endif
+
+1271
+Wed Oct 08 06:53:38 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0342809_7b2d7f83
+Bytes: 83
+Trailing whitespace. Remember to run scripts/checkpatch.pl before sending upstream.
+
