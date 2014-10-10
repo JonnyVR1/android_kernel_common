@@ -13,6 +13,14 @@ Example:
 
 net: ipv6: Add a sysctl to treat optimistic addresses as preferred
 
+7
+Fri Oct 10 04:39:25 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30c2e457_77c80a80
+UUID: d0342809_ca24b24f
+Bytes: 4
+Done
+
 9
 Wed Oct 08 13:46:00 2014 +0000
 Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -21,12 +29,28 @@ Bytes: 43
 "Add a sysctl that causes..."
 "and" -> "an"
 
+9
+Fri Oct 10 04:39:25 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30c2e457_b7a9c29f
+UUID: 30c2e457_1a61bd31
+Bytes: 4
+Done
+
 11
 Wed Oct 08 13:46:00 2014 +0000
 Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 903e30e9_ed10ac71
 Bytes: 70
 Also mention that they are not treated as well as preferred addresses?
+
+11
+Fri Oct 10 04:39:25 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 903e30e9_ed10ac71
+UUID: 30c2e457_7a70f1fc
+Bytes: 4
+Done
 
 13
 Wed Oct 08 13:46:00 2014 +0000
@@ -35,10 +59,26 @@ UUID: 903e30e9_cd0de857
 Bytes: 247
 The reference to BCP38 may not be immediately understood by everyone upstream. Instead, perhaps say that it's useful where different interfaces are connected to different networks from different ISPs (e.g., a cell network and a home wifi network)?
 
+13
+Fri Oct 10 04:39:25 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 903e30e9_cd0de857
+UUID: 903e30e9_57796235
+Bytes: 4
+Done
+
 15
 Wed Oct 08 13:46:00 2014 +0000
 Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30c2e457_17a0b6ac
 Bytes: 237
 I would perhaps note that the current behaviour complies with RFC 3484/6724, and its behaviour makes sense if the host has only one interface, or has multiple interfaces on the same network, but not in the multiple distinct network case.
+
+15
+Fri Oct 10 04:39:25 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30c2e457_17a0b6ac
+UUID: 903e30e9_d73c525d
+Bytes: 4
+Done
 
