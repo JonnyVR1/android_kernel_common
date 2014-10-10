@@ -1,0 +1,41 @@
+Revision: 6ac6df86a3cdb483708bf60aa8a633ed982913d7
+Patch-set: 6
+File: /COMMIT_MSG
+
+12
+Fri Oct 10 09:40:36 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30e3c420_0c2fb7a9
+Bytes: 15
+"can" -> "will"
+
+22
+Fri Oct 10 09:40:36 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50d67840_2db70dfc
+Bytes: 257
+For example, if a mobile device has an IPv6 address on an LTE network and then connects to wifi, while the wifi IPv6 address is undergoing DAD, IPv6 connections will use the wifi default route and he LTE IPv6 address, and will get stuck until they time out.
+
+File: Documentation/networking/ip-sysctl.txt
+
+1338
+Fri Oct 10 09:40:36 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30e3c420_4c35bff9
+Bytes: 65
+Lose this blank line? Looks like the other entries don't have it.
+
+1343
+Fri Oct 10 09:40:36 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30e3c420_2c327313
+Bytes: 260
+Not sure "valid" is the right word here. Optimistic addresses are already valid, they're just treated the same as deprecated. Perhaps you can invert the matching and say that if this is set to 1 then optimistic addresses are not treated the same as deprecated?
+
+1344
+Fri Oct 10 09:40:36 2014 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50d67840_edb8e5f2
+Bytes: 47
+"can still be chosen" -> "will still be chosen"
+
