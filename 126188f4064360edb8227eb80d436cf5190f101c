@@ -9,6 +9,14 @@ UUID: 903e30e9_d7dc579e
 Bytes: 75
 I would call this something like optimistic_preferred or prefer_optimistic.
 
+44
+Fri Oct 10 01:48:37 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 903e30e9_d7dc579e
+UUID: d0342809_fb422f02
+Bytes: 14
+use_optimistic
+
 File: net/ipv6/addrconf.c
 
 1266
@@ -25,10 +33,26 @@ I would rename this to simply "u8 avoid". Also, I think it would be more readabl
                 }
 #endif
 
+1266
+Fri Oct 10 01:48:37 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0342809_db412b33
+UUID: 903e30e9_12d08d03
+Bytes: 4
+Done
+
 1271
 Wed Oct 08 06:53:38 2014 +0000
 Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0342809_7b2d7f83
 Bytes: 83
 Trailing whitespace. Remember to run scripts/checkpatch.pl before sending upstream.
+
+1271
+Fri Oct 10 01:48:37 2014 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0342809_7b2d7f83
+UUID: d0342809_bb48a726
+Bytes: 3
+Ack
 
