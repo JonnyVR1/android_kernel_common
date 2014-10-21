@@ -1,0 +1,22 @@
+Revision: b7ff4f746045db7dc485cdafc73f2e0822be5569
+Patch-set: 1
+File: /COMMIT_MSG
+
+10:31-10:56
+Tue Oct 21 22:06:28 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5103e40_6e9697da
+Bytes: 157
+The change is to compile on kernels where cpufreq stats are compiled as a module (CONFIG_CPU_FREQ_STAT=m), because total_cpus is not exported for module use.
+
+11
+Tue Oct 21 22:06:28 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 151b126c_766aeedf
+Bytes: 83
+Suggest add:
+
+Reported-By: Emilio López <elopez93@gmail.com>
+
+and add as reviewer.
+
