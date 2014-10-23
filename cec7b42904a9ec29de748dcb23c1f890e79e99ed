@@ -1,0 +1,20 @@
+Revision: cec7b42904a9ec29de748dcb23c1f890e79e99ed
+Patch-set: 2
+File: /COMMIT_MSG
+
+7
+Thu Oct 23 20:33:39 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f583dec2_53191be4
+Bytes: 25
+Staging: android: binder:
+
+File: drivers/staging/android/binder.c
+
+47
+Thu Oct 23 20:33:39 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b58de6f4_2fc8b52e
+Bytes: 96
+The last two are only used during init and teardown so they probably don't need to be converted.
+
