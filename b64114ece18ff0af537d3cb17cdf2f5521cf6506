@@ -1,0 +1,11 @@
+Revision: b64114ece18ff0af537d3cb17cdf2f5521cf6506
+Patch-set: 4
+File: /COMMIT_MSG
+
+7
+Thu Oct 23 22:32:26 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b58de6f4_756a0ae0
+Bytes: 62
+Adding a long description, that explains why, would be useful.
+
