@@ -905,6 +905,12 @@ extern uint dhd_force_tx_queueing;
 #ifndef CUSTOM_PNO_EVENT_LOCK_xTIME
 #define CUSTOM_PNO_EVENT_LOCK_xTIME	 DEFAULT_PNO_EVENT_LOCK_xTIME
 #endif
+
+#define DEFAULT_DHCP_LOCK_xTIME		2 	/* multiplay of DHD_PACKET_TIMEOUT_MS */
+#ifndef CUSTOM_DHCP_LOCK_xTIME
+#define CUSTOM_DHCP_LOCK_xTIME		DEFAULT_DHCP_LOCK_xTIME
+#endif
+
 /* hooks for custom dhd_dpc_prio setting option via Makefile */
 #define DEFAULT_DHP_DPC_PRIO  1
 #ifndef CUSTOM_DPC_PRIO_SETTING
