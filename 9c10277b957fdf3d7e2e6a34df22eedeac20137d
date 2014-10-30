@@ -1,0 +1,11 @@
+Revision: 9c10277b957fdf3d7e2e6a34df22eedeac20137d
+Patch-set: 3
+File: drivers/net/wireless/bcmdhd/dhd.h
+
+909:39-909:48
+Thu Oct 30 18:32:04 2014 +0000
+Author: Pierre Vandwalle <1045688@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5267ef7_5efcf580
+Bytes: 43
+multiplier for DHD_PACKET_TIMEOUT_MS (?) :)
+
