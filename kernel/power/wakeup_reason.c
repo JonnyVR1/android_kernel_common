@@ -95,6 +95,21 @@ void log_wakeup_reason(int irq)
 	spin_unlock(&resume_reason_lock);
 }
 
+bool wakeup_reason_test(int irq)
+{
+	int irq_no;
+	bool ret = false;
+
+	spin_lock(&resume_reason_lock);
+	for (irq_no = 0; irq_no < irqcount; irq_no++)
+		if (irq_list[irq_no] == irq) {
+			ret = true;
+			break;
+	}
+	spin_unlock(&resume_reason_lock);
+	return ret;
+}
+
 void log_suspend_abort_reason(const char *fmt, ...)
 {
 	va_list args;
