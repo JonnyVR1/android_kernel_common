@@ -1,0 +1,13 @@
+Revision: 30f8eff5dca9fdfa5616a4de14b7e0aafea219d9
+Patch-set: 1
+File: kernel/power/wakeup_reason.c
+
+98:5-98:23
+Fri Oct 31 23:37:16 2014 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15b23212_01f76ef2
+Bytes: 85
+Suggest: check_wakeup_reason()
+
+we would need to add this to the header file as well?
+
