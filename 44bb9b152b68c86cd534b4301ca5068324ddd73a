@@ -9,3 +9,11 @@ UUID: 15b23212_2e6a4adf
 Bytes: 114
 prior to line 104: if (suspend_abort) then drop wakelock and return false.  (current suspend sequence was aborted)
 
+104:1-104:4
+Tue Nov 04 02:05:45 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15b23212_2e6a4adf
+UUID: 55d10a3e_c1e295e4
+Bytes: 23
+OK, I guess not needed.
+
