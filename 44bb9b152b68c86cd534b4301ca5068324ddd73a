@@ -1,0 +1,11 @@
+Revision: 44bb9b152b68c86cd534b4301ca5068324ddd73a
+Patch-set: 2
+File: kernel/power/wakeup_reason.c
+
+104:1-104:4
+Tue Nov 04 01:49:56 2014 +0000
+Author: Todd Poynor <1004277@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15b23212_2e6a4adf
+Bytes: 114
+prior to line 104: if (suspend_abort) then drop wakelock and return false.  (current suspend sequence was aborted)
+
