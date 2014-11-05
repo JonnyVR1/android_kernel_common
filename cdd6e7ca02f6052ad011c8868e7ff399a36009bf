@@ -1,0 +1,14 @@
+Revision: cdd6e7ca02f6052ad011c8868e7ff399a36009bf
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/bcmsdh_linux.c
+
+250
+Wed Nov 05 01:37:47 2014 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75028e8e_6900619f
+Bytes: 43
+what is check_wakeup_reason?
+
+Regards,
+Ecco
+
