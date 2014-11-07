@@ -1,0 +1,18 @@
+Revision: 25811db8f2c3d8d86b7aa37456326eaf3ae4acb4
+Patch-set: 1
+File: include/linux/cgroup.h
+
+836
+Fri Nov 07 21:30:44 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b52c067c_28516b5c
+Bytes: 99
+, either because CAP_SYS_NICE is set or because [short explanation of what the loop is looking for]
+
+837:11-837:68
+Fri Nov 07 21:30:44 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1544f239_ff7e2750
+Bytes: 43
+0 if this is allowed, or -EACCES otherwise.
+
