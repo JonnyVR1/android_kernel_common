@@ -1,0 +1,11 @@
+Revision: ff202d8551920ad51d71e94ce6886fd94d00fa03
+Patch-set: 2
+File: mm/memcontrol.c
+
+6970:17-6970:40
+Fri Nov 07 21:31:45 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1544f239_5f473b15
+Bytes: 27
+subsys_cgroup_allow_attach?
+
