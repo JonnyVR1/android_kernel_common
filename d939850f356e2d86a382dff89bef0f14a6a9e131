@@ -1,0 +1,15 @@
+Revision: d939850f356e2d86a382dff89bef0f14a6a9e131
+Patch-set: 1
+File: mm/memcontrol.c
+
+6767:0-6767:18
+Fri Nov 07 18:24:14 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1544f239_2e36c708
+Bytes: 509
+I understand that this translates to 'allow' since non-zero response indicates true. I understand that this is a copy and paste from kernel/sched/core.c
+
+This is counter-intuitive, annoying, duplicating and "correct" behavior.
+
+To make this less painful, could we instead do something like cpu_cgroup_allow_attach() is wrapper for a non-static _cgroup_allow_attach() and call it here rather than pasting it in? I would even accept a direct call to a non-static cpu_cgroup_allow_attach for KISS and low-impact.
+
