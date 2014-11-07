@@ -2,6 +2,19 @@ Revision: d939850f356e2d86a382dff89bef0f14a6a9e131
 Patch-set: 1
 File: mm/memcontrol.c
 
+6765:27-6765:49
+Fri Nov 07 19:06:38 2014 +0000
+Author: Andres Morales <1038928@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35473640_755eda32
+Bytes: 191
+why check this on every iteration of this loop? if the current thread has CAP_SYS_NICE, it will always get permission. Can't we do 
+
+if (capable(CAP_SYS_NICE)) {
+  return 0
+}
+
+above the loop?
+
 6767:0-6767:18
 Fri Nov 07 18:24:14 2014 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
