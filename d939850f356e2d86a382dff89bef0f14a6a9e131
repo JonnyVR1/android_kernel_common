@@ -13,3 +13,11 @@ This is counter-intuitive, annoying, duplicating and "correct" behavior.
 
 To make this less painful, could we instead do something like cpu_cgroup_allow_attach() is wrapper for a non-static _cgroup_allow_attach() and call it here rather than pasting it in? I would even accept a direct call to a non-static cpu_cgroup_allow_attach for KISS and low-impact.
 
+6767:0-6767:18
+Fri Nov 07 18:40:44 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1544f239_2e36c708
+UUID: 35473640_32f8e85a
+Bytes: 239
+IMO copy-and-pasting a small amount of code is slightly preferable to modifying core kernel code.  kernel/sched is high-traffic code and modifying it is likely to create conflicts down the line.  (Unless the plan is to send this upstream?)
+
