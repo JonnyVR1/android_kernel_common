@@ -15,6 +15,16 @@ if (capable(CAP_SYS_NICE)) {
 
 above the loop?
 
+6765:27-6765:49
+Fri Nov 07 19:11:16 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35473640_755eda32
+UUID: 753d2e9e_5da6674e
+Bytes: 266
+Is was about to say "because this is copy-and-pasted from upstream code that does it this way", but then I did a git blame and Colin wrote it.
+
+So now I agree with Mark.  Move this into a helper, and while doing so pull out the capable() check like Andres suggested.
+
 6767:0-6767:18
 Fri Nov 07 18:24:14 2014 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
