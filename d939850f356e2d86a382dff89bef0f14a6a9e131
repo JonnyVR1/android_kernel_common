@@ -25,6 +25,14 @@ Is was about to say "because this is copy-and-pasted from upstream code that doe
 
 So now I agree with Mark.  Move this into a helper, and while doing so pull out the capable() check like Andres suggested.
 
+6765:27-6765:49
+Fri Nov 07 20:57:21 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 753d2e9e_5da6674e
+UUID: 1544f239_d4423289
+Bytes: 4
+Done
+
 6767:0-6767:18
 Fri Nov 07 18:24:14 2014 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
