@@ -17,3 +17,11 @@ UUID: b52c067c_cbf0c9f9
 Bytes: 43
 Would not handle the case where !CONFIG_MMU
 
+6970:17-6970:40
+Fri Nov 07 21:37:20 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b52c067c_cbf0c9f9
+UUID: 9531c2d3_a75d8aec
+Bytes: 93
+OK, I missed that the stub in linux/cgroup.h was for a different config flag (CONFIG_CGROUPS)
+
