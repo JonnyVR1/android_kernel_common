@@ -9,3 +9,11 @@ UUID: 1544f239_5f473b15
 Bytes: 27
 subsys_cgroup_allow_attach?
 
+6970:17-6970:40
+Fri Nov 07 21:34:50 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1544f239_5f473b15
+UUID: b52c067c_cbf0c9f9
+Bytes: 43
+Would not handle the case where !CONFIG_MMU
+
