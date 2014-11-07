@@ -21,3 +21,11 @@ UUID: 35473640_32f8e85a
 Bytes: 239
 IMO copy-and-pasting a small amount of code is slightly preferable to modifying core kernel code.  kernel/sched is high-traffic code and modifying it is likely to create conflicts down the line.  (Unless the plan is to send this upstream?)
 
+6767:0-6767:18
+Fri Nov 07 18:43:38 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35473640_32f8e85a
+UUID: 35473640_7220b038
+Bytes: 67
+I don't think upstream is ready to accept these kinds of patches...
+
