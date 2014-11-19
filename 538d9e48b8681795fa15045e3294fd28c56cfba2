@@ -1,0 +1,11 @@
+Revision: 538d9e48b8681795fa15045e3294fd28c56cfba2
+Patch-set: 4
+File: drivers/usb/gadget/f_mtp.c
+
+1260:1-1260:3
+Wed Nov 19 22:17:40 2014 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba0233b9_1e05cd36
+Bytes: 112
+You may want to set fi_mtp->dev in case of allocation failure as well to make sure it is right value (i.e. NULL)
+
