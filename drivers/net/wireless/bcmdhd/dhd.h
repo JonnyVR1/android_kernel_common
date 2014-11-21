@@ -315,6 +315,9 @@ typedef struct dhd_pub {
 #ifdef PROP_TXSTATUS
 	bool	wlfc_enabled;
 	int	wlfc_mode;
+#ifdef WLFC_STATE_PREALLOC
+	void*	wlfc_state_prealloc;
+#endif
 	void*	wlfc_state;
 	/*
 	Mode in which the dhd flow control shall operate. Must be set before

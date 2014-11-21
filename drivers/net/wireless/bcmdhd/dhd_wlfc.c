@@ -2514,6 +2514,11 @@ int dhd_wlfc_enable(dhd_pub_t *dhd)
 	}
 
 	/* allocate space to track txstatus propagated from firmware */
+#ifdef WLFC_STATE_PREALLOC
+	if (dhd->wlfc_state_prealloc)
+		dhd->wlfc_state = dhd->wlfc_state_prealloc;
+	else
+#endif
 	dhd->wlfc_state = MALLOC(dhd->osh, sizeof(athost_wl_status_info_t));
 	if (dhd->wlfc_state == NULL) {
 		rc = BCME_NOMEM;
@@ -2531,6 +2536,9 @@ int dhd_wlfc_enable(dhd_pub_t *dhd)
 	if (!WLFC_GET_AFQ(dhd->wlfc_mode)) {
 		wlfc->hanger = _dhd_wlfc_hanger_create(dhd->osh, WLFC_HANGER_MAXITEMS);
 		if (wlfc->hanger == NULL) {
+#ifdef WLFC_STATE_PREALLOC
+			if (dhd->wlfc_state_prealloc == NULL)
+#endif
 			MFREE(dhd->osh, dhd->wlfc_state, sizeof(athost_wl_status_info_t));
 			dhd->wlfc_state = NULL;
 			rc = BCME_NOMEM;
@@ -3360,6 +3368,9 @@ dhd_wlfc_deinit(dhd_pub_t *dhd)
 
 
 	/* free top structure */
+#ifdef WLFC_STATE_PREALLOC
+	if (dhd->wlfc_state_prealloc == NULL)
+#endif
 	MFREE(dhd->osh, dhd->wlfc_state, sizeof(athost_wl_status_info_t));
 	dhd->wlfc_state = NULL;
 	dhd->proptxstatus_mode = hostreorder ?
