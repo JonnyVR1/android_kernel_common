@@ -5,6 +5,7 @@ config SND_TIMER
 config SND_PCM
 	tristate
 	select SND_TIMER
+	default y
 
 config SND_DMAENGINE_PCM
 	tristate
