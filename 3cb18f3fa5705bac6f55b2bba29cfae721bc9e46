@@ -1,0 +1,11 @@
+Revision: 3cb18f3fa5705bac6f55b2bba29cfae721bc9e46
+Patch-set: 7
+File: /COMMIT_MSG
+
+9
+Wed Nov 26 00:01:29 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff581d71_dd0e3fa1
+Bytes: 21
+remove trailing space
+
