@@ -1,0 +1,15 @@
+Revision: ff0947bab284b51f90e7dd6da06d0f1e9cc4953d
+Patch-set: 6
+File: drivers/usb/gadget/f_ptp.c
+
+29:0-29:16
+Mon Dec 01 21:49:15 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f971556_af6235b2
+Bytes: 163
+eg: scripts/checkpatch.pl
+
+ERROR: code indent should use tabs where possible
+#338: FILE: drivers/usb/gadget/f_ptp.c:29:
++                return alloc_inst(false);$
+
