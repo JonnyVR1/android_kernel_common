@@ -1,0 +1,11 @@
+Revision: d274ff314b19ae070ad4dad29e6b000f9c1a65ea
+Patch-set: 1
+File: drivers/usb/gadget/f_audio_source.c
+
+960:31-960:34
+Mon Dec 01 23:37:38 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fa641d2_421c5487
+Bytes: 24
+used before set, err = 0
+
