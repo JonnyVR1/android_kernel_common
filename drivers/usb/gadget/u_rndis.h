@@ -34,6 +34,8 @@ struct f_rndis_opts {
 	 */
 	struct mutex			lock;
 	int				refcnt;
+	/* "Wireless" RNDIS */
+	u8 wceis;
 };
 
 int rndis_init(void);

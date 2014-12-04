@@ -701,6 +701,7 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 				 ARRAY_SIZE(rndis_string_defs));
 	if (IS_ERR(us))
 		return PTR_ERR(us);
+
 	rndis_control_intf.iInterface = us[0].id;
 	rndis_data_intf.iInterface = us[1].id;
 	rndis_iad_descriptor.iFunction = us[2].id;
@@ -724,6 +725,18 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis_union_desc.bSlaveInterface0 = status;
 
 	status = -ENODEV;
+
+	if (rndis_opts->wceis) {
+		printk("rndis wceis\n");
+		rndis_iad_descriptor.bFunctionClass =
+						USB_CLASS_WIRELESS_CONTROLLER;
+		rndis_iad_descriptor.bFunctionSubClass = 0x01;
+		rndis_iad_descriptor.bFunctionProtocol = 0x03;
+		rndis_control_intf.bInterfaceClass =
+						USB_CLASS_WIRELESS_CONTROLLER;
+		rndis_control_intf.bInterfaceSubClass =  0x01;
+		rndis_control_intf.bInterfaceProtocol =  0x03;
+	}
 
 	/* allocate instance-specific endpoints */
 	ep = usb_ep_autoconfig(cdev->gadget, &fs_in_desc);
@@ -857,11 +870,15 @@ USB_ETHERNET_CONFIGFS_ITEM_ATTR_QMULT(rndis);
 /* f_rndis_opts_ifname */
 USB_ETHERNET_CONFIGFS_ITEM_ATTR_IFNAME(rndis);
 
+/* f_rndis_opts_wceis */
+USB_ETHERNET_CONFIGFS_ITEM_ATTR_WCEIS(rndis);
+
 static struct configfs_attribute *rndis_attrs[] = {
 	&f_rndis_opts_dev_addr.attr,
 	&f_rndis_opts_host_addr.attr,
 	&f_rndis_opts_qmult.attr,
 	&f_rndis_opts_ifname.attr,
+	&f_rndis_opts_wceis.attr,
 	NULL,
 };
 
@@ -903,6 +920,7 @@ static struct usb_function_instance *rndis_alloc_inst(void)
 
 	config_group_init_type_name(&opts->func_inst.group, "",
 				    &rndis_func_type);
+	opts->wceis = false;
 
 	return &opts->func_inst;
 }

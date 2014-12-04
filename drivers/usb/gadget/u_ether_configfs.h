@@ -145,6 +145,41 @@ out:									\
 				_f_##_opts_qmult_show,		\
 				_f_##_opts_qmult_store)
 
+#define USB_ETHERNET_CONFIGFS_ITEM_ATTR_WCEIS(_f_)			\
+	static ssize_t _f_##_opts_wceis_show(struct f_##_f_##_opts *opts,\
+						char *page)		\
+	{								\
+		return sprintf(page, "%d", opts->wceis);			\
+	}								\
+									\
+	static ssize_t _f_##_opts_wceis_store(struct f_##_f_##_opts *opts, \
+					const char *page, size_t len)	\
+	{								\
+		u8 val;						\
+		int ret;						\
+									\
+		mutex_lock(&opts->lock);				\
+		if (opts->refcnt) {					\
+			ret = -EBUSY;					\
+			goto out;					\
+		}							\
+									\
+		ret = kstrtou8(page, 0, &val);				\
+		if (ret)						\
+			goto out;					\
+									\
+		opts->wceis = val;					\
+		ret = len;						\
+out:									\
+		mutex_unlock(&opts->lock);				\
+		return ret;						\
+	}								\
+									\
+	static struct f_##_f_##_opts_attribute f_##_f_##_opts_wceis =	\
+			__CONFIGFS_ATTR(wceis, S_IRUGO | S_IWUSR,	\
+				_f_##_opts_wceis_show,			\
+				_f_##_opts_wceis_store)
+
 #define USB_ETHERNET_CONFIGFS_ITEM_ATTR_IFNAME(_f_)			\
 	static ssize_t _f_##_opts_ifname_show(struct f_##_f_##_opts *opts, \
 					      char *page)		\
