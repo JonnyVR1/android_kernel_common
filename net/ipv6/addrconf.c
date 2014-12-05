@@ -1525,7 +1525,13 @@ int ipv6_chk_addr(struct net *net, const struct in6_addr *addr,
 		if (!net_eq(dev_net(ifp->idev->dev), net))
 			continue;
 		if (ipv6_addr_equal(&ifp->addr, addr) &&
+#ifndef CONFIG_IPV6_OPTIMISTIC_DAD
 		    !(ifp->flags&IFA_F_TENTATIVE) &&
+#else
+		    (!(ifp->flags&IFA_F_TENTATIVE) ||
+		     ((ifp->flags&IFA_F_OPTIMISTIC) &&
+		      ifp->idev->cnf.use_optimistic)) &&
+#endif
 		    (dev == NULL || ifp->idev->dev == dev ||
 		     !(ifp->scope&(IFA_LINK|IFA_HOST) || strict))) {
 			rcu_read_unlock_bh();
