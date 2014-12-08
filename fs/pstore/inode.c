@@ -318,6 +318,10 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id, int count,
 	case PSTORE_TYPE_CONSOLE:
 		sprintf(name, "console-%s", psname);
 		break;
+	case PSTORE_TYPE_PMSG:
+		sprintf(name, "pmsg-%s-%lld", psname, id);
+		inode->i_mode = S_IFREG | 0440;
+		break;
 	case PSTORE_TYPE_FTRACE:
 		sprintf(name, "ftrace-%s", psname);
 		break;
