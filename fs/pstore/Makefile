@@ -4,6 +4,8 @@
 
 obj-y += pstore.o
 
+obj-$(CONFIG_PSTORE_PMSG)	+= pmsg.o
+
 pstore-objs += inode.o platform.o
 obj-$(CONFIG_PSTORE_FTRACE)	+= ftrace.o
 
