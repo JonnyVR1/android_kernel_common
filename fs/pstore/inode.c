@@ -324,6 +324,16 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id, int count,
 	case PSTORE_TYPE_MCE:
 		snprintf(name, sizeof(name), "mce-%s-%lld", psname, id);
 		break;
+	case PSTORE_TYPE_PMSG:
+		snprintf(name, sizeof(name), "pmsg-%s-%lld", psname, id);
+		/*
+		 * This inode most likely to contain user space generated
+		 * Personal Identifiable Information. Lets set the default
+		 * to reflect this unique state of affairs limiting access
+		 * to the privileged user.
+		 */
+		inode->i_mode = S_IFREG | 0440;
+		break;
 	case PSTORE_TYPE_UNKNOWN:
 		snprintf(name, sizeof(name), "unknown-%s-%lld", psname, id);
 		break;
