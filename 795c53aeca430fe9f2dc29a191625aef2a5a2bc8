@@ -18,6 +18,14 @@ UUID: 646ca215_5c6eb56d
 Bytes: 35
 why populate a read pointer at all?
 
+25:0-29:1
+Wed Dec 10 22:10:47 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 646ca215_5c6eb56d
+UUID: a4205adf_717f6a4c
+Bytes: 132
+Thought I had to populate read (def EIO) and lseek (def ESPIPE) to get open for append to work. Mistaken regarding need for read ...
+
 34
 Wed Dec 10 17:34:25 2014 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -38,6 +46,14 @@ for (i = 0; i < count; ) {
     use buf + i
 }
 
+35:0-37:22
+Wed Dec 10 22:10:47 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44695e05_98a7b915
+UUID: 44179e8b_e8636bf6
+Bytes: 98
+Agreed, fresh start. Was done to matching coding style for familiarity in other areas of pstore...
+
 110:0-120:29
 Wed Dec 10 17:34:25 2014 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,4 +69,12 @@ Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 646ca215_bc238941
 Bytes: 46
 move to previous line. Did you run checkpatch?
+
+146:2-146:4
+Wed Dec 10 22:10:47 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 646ca215_bc238941
+UUID: 842516f1_f020768d
+Bytes: 36
+checkpatch was run (I always run it)
 
