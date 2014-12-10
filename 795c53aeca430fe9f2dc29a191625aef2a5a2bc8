@@ -1,0 +1,56 @@
+Revision: 795c53aeca430fe9f2dc29a191625aef2a5a2bc8
+Patch-set: 1
+File: fs/pstore/internal.h
+
+51
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44695e05_389785b2
+Bytes: 88
+add a return statement or make it return void since you're not checking the return value
+
+File: fs/pstore/pmsg.c
+
+25:0-29:1
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 646ca215_5c6eb56d
+Bytes: 35
+why populate a read pointer at all?
+
+34
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 646ca215_fc7ce124
+Bytes: 6
+unused
+
+35:0-37:22
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44695e05_98a7b915
+Bytes: 115
+You could replace your whole logic with a simple for loop.
+
+size_t i;
+
+for (i = 0; i < count; ) {
+    use buf + i
+}
+
+110:0-120:29
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44695e05_d8b13152
+Bytes: 36
+use kernel-style error/exit handling
+
+File: fs/pstore/ram.c
+
+146:2-146:4
+Wed Dec 10 17:34:25 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 646ca215_bc238941
+Bytes: 46
+move to previous line. Did you run checkpatch?
+
