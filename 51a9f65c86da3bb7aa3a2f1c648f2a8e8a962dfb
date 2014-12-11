@@ -1,0 +1,62 @@
+Revision: 51a9f65c86da3bb7aa3a2f1c648f2a8e8a962dfb
+Patch-set: 4
+File: fs/pstore/Kconfig
+
+27
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4138eda_4c212f38
+Bytes: 177
+The ID won't necessarily be 0, it just happens to be 0 with the ram backend.  pstore backends can (and, in the case of EFI, will) provide basically any unique ID they feel like.
+
+28:22-28:23
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4138eda_2c071bba
+Bytes: 1
+0
+
+29:59-29:60
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4085aac_6ec50b49
+Bytes: 4
+[ID]
+
+29:8-29:12
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4138eda_6cfd1340
+Bytes: 3
+can
+
+30:3-30:62
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4138eda_2c7ddb1e
+Bytes: 6
+delete
+
+File: fs/pstore/pmsg.c
+
+42:7-42:23
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4085aac_2e2ef3a9
+Bytes: 75
+Why would userspace be writing to this device while an oops is in progress?
+
+81:1-92:2
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e40ed2b4_50cc2445
+Bytes: 94
+register_chrdev() does all this for you (likewise you can use unregister_chrdev() on teardown)
+
+119:0-127:6
+Thu Dec 11 23:09:49 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e40ed2b4_70a16831
+Bytes: 6
+delete
+
