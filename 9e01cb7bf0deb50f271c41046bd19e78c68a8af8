@@ -9,6 +9,14 @@ UUID: 04b20612_bb3907f9
 Bytes: 84
 Is this true? Shouldn't it be /dev/pmsgX and /sys/fs/pstore/pmsg-ramoops-X  instead?
 
+28:13-29:60
+Thu Dec 11 16:19:31 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b20612_bb3907f9
+UUID: 44d6be40_0d145163
+Bytes: 289
+'tiz true, I only made one instance. I did not want to be bothered with phase 2 of allowing multiple instances. Given that this could happen on other projects, I decided to start today with numerical instances for that possible future, but restrict the number of instances to one for KISS.
+
 File: fs/pstore/pmsg.c
 
 73:13-73:14
@@ -18,12 +26,32 @@ UUID: e4c0926a_5a955549
 Bytes: 28
 why make it world-writeable?
 
+73:13-73:14
+Thu Dec 11 16:19:31 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c0926a_5a955549
+UUID: 64d9026f_2e17076c
+Bytes: 462
+0220 will lead to the least amount of upstream resistance since 0440 is the mode for the sysfs node.
+
+I have waffled here, I just changed it to 0222. If I put this into liblog so that callers add entries, _everyone_ has to be able to write to this thing. But I agree, it may not be a good start for a generic driver.
+
+I can revert back without fear though here, since it is ueventd.rc that will record the 0222 setting it for our more open platform requirements.
+
 99
 Thu Dec 11 00:45:44 2014 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44a87ea2_5d0afb43
 Bytes: 24
 You need to check IS_ERR
+
+99
+Thu Dec 11 16:19:31 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44a87ea2_5d0afb43
+UUID: 44d6be40_cd73e9d6
+Bytes: 25
+Yup ... missed a spot ...
 
 File: fs/pstore/ram.c
 
