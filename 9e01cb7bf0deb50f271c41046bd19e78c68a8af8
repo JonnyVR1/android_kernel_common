@@ -1,0 +1,36 @@
+Revision: 9e01cb7bf0deb50f271c41046bd19e78c68a8af8
+Patch-set: 3
+File: fs/pstore/Kconfig
+
+28:13-29:60
+Thu Dec 11 00:45:44 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b20612_bb3907f9
+Bytes: 84
+Is this true? Shouldn't it be /dev/pmsgX and /sys/fs/pstore/pmsg-ramoops-X  instead?
+
+File: fs/pstore/pmsg.c
+
+73:13-73:14
+Thu Dec 11 00:45:44 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c0926a_5a955549
+Bytes: 28
+why make it world-writeable?
+
+99
+Thu Dec 11 00:45:44 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44a87ea2_5d0afb43
+Bytes: 24
+You need to check IS_ERR
+
+File: fs/pstore/ram.c
+
+146:4-146:6
+Thu Dec 11 00:45:44 2014 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c0926a_ba0c7131
+Bytes: 30
+put the + on the previous line
+
