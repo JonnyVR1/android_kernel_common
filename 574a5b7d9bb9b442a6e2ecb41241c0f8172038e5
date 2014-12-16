@@ -43,6 +43,14 @@ UUID: 01ccb852_11f3acb0
 Bytes: 56
 I don't think this is safe to call with a spinlock held.
 
+44
+Tue Dec 16 23:05:56 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_11f3acb0
+UUID: 816b48dc_fd035f34
+Bytes: 100
+You should also use the __copy_from_user() variant, since you've already done the access_ok() check.
+
 File: fs/pstore/ram.c
 
 477
@@ -51,4 +59,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 41c2301f_56e36aaf
 Bytes: 30
 It this new feature mandatory?
+
+477
+Tue Dec 16 23:05:56 2014 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41c2301f_56e36aaf
+UUID: 41c2301f_f6d936af
+Bytes: 111
+This is checking that *not all* of these are NULL, i.e., someone must be using the pstore that we just created.
 
