@@ -16,6 +16,14 @@ UUID: 01ccb852_31cb4881
 Bytes: 15
 is this needed?
 
+24
+Tue Dec 16 23:41:11 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_31cb4881
+UUID: e1ba449b_9e1fad52
+Bytes: 226
+IMHO this is new functionality, if I am pushing this to kernel.org I'd prefer to side with 'no surprises' (However it would simplify deployment in Android requiring no adjustment to defconfig if I chose to not have this line).
+
 File: fs/pstore/Makefile
 
 7
@@ -51,6 +59,14 @@ UUID: 816b48dc_fd035f34
 Bytes: 100
 You should also use the __copy_from_user() variant, since you've already done the access_ok() check.
 
+44
+Tue Dec 16 23:41:11 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_11f3acb0
+UUID: e1ba449b_fe64a9bb
+Bytes: 43
+It is most certainly not safe, GREAT CATCH!
+
 File: fs/pstore/ram.c
 
 477
@@ -67,4 +83,12 @@ Parent: 41c2301f_56e36aaf
 UUID: 41c2301f_f6d936af
 Bytes: 111
 This is checking that *not all* of these are NULL, i.e., someone must be using the pstore that we just created.
+
+477
+Tue Dec 16 23:41:11 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41c2301f_56e36aaf
+UUID: 41c2301f_6141fe69
+Bytes: 228
+This check does not appear to be about mandatory or not, this check is useless and should be removed. In all cases where we fail to request a memory zone, we get an error and they are handled above. This is a can not happen(tm).
 
