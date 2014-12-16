@@ -1,0 +1,54 @@
+Revision: 574a5b7d9bb9b442a6e2ecb41241c0f8172038e5
+Patch-set: 5
+File: fs/pstore/Kconfig
+
+23
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1ba449b_f3f86250
+Bytes: 28
+This s not very descriptive.
+
+24
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_31cb4881
+Bytes: 15
+is this needed?
+
+File: fs/pstore/Makefile
+
+7
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1ba449b_73b1d286
+Bytes: 48
+Put this in a spot that keeps alphabetical order
+
+File: fs/pstore/inode.c
+
+322
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1ba449b_d388beb3
+Bytes: 53
+It this guarantied to fit? If not use a safe version.
+
+File: fs/pstore/pmsg.c
+
+44
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_11f3acb0
+Bytes: 56
+I don't think this is safe to call with a spinlock held.
+
+File: fs/pstore/ram.c
+
+477
+Tue Dec 16 22:40:10 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 41c2301f_56e36aaf
+Bytes: 30
+It this new feature mandatory?
+
