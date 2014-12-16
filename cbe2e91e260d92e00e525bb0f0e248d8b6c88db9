@@ -1,0 +1,14 @@
+Revision: cbe2e91e260d92e00e525bb0f0e248d8b6c88db9
+Patch-set: 7
+File: net/netfilter/xt_qtaguid.c
+
+2100:7-2100:23
+Tue Dec 16 02:28:46 2014 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2420ea81_53000e28
+Bytes: 85
+entry_uid is closer to a uid_int than a kuid_t
+
+
+and this line won't compile: s/))/)/
+
