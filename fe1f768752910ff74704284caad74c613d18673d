@@ -49,3 +49,11 @@ Bytes: 176
 pr_debug() should stay at the end of the socket_match().
 It was previously shown after socket_match() had processed the info flags which could have affected what was displayed.
 
+192:1-195:46
+Tue Dec 16 04:39:11 2014 +0000
+Author: Daniel Rosenberg <1045980@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 994e5355_51df34f0
+UUID: c1154030_42c6087b
+Bytes: 199
+Moving this down would require a lot of duplicate code. Are there other things that can change other than sk getting set to NULL? If not, we could just have a separate print to indicate that changed.
+
