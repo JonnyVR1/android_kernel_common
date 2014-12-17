@@ -1,0 +1,20 @@
+Revision: fbb1c6b189da75f1718add5d561baeda664c4fcf
+Patch-set: 8
+File: fs/pstore/inode.c
+
+316
+Wed Dec 17 23:40:48 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 812508f1_365de6f0
+Bytes: 83
+Don't change the existing code in the same patch. Fix it in a separate patch first.
+
+File: fs/pstore/pmsg.c
+
+42
+Wed Dec 17 23:40:48 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 812508f1_d6028aa7
+Bytes: 50
+copy from user returns number of bytes not copied.
+
