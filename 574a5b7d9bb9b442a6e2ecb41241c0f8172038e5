@@ -24,6 +24,14 @@ UUID: e1ba449b_9e1fad52
 Bytes: 226
 IMHO this is new functionality, if I am pushing this to kernel.org I'd prefer to side with 'no surprises' (However it would simplify deployment in Android requiring no adjustment to defconfig if I chose to not have this line).
 
+24
+Wed Dec 17 00:56:42 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1ba449b_9e1fad52
+UUID: 01ccb852_1f6e531d
+Bytes: 29
+Is the default not n already?
+
 File: fs/pstore/Makefile
 
 7
@@ -91,4 +99,12 @@ Parent: 41c2301f_56e36aaf
 UUID: 41c2301f_6141fe69
 Bytes: 228
 This check does not appear to be about mandatory or not, this check is useless and should be removed. In all cases where we fail to request a memory zone, we get an error and they are handled above. This is a can not happen(tm).
+
+477
+Wed Dec 17 00:56:42 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41c2301f_f6d936af
+UUID: 01ccb852_ff54a751
+Bytes: 2
+ok
 
