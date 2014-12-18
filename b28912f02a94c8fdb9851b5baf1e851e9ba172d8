@@ -1,0 +1,27 @@
+Revision: b28912f02a94c8fdb9851b5baf1e851e9ba172d8
+Patch-set: 10
+File: fs/pstore/inode.c
+
+329
+Thu Dec 18 22:37:27 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1eaa0ee_14b7baf7
+Bytes: 26
+Why is this entry special?
+
+File: fs/pstore/ram.c
+
+56
+Thu Dec 18 22:37:27 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 61d9f46e_f107a2bd
+Bytes: 46
+You should probably use a different name here.
+
+475
+Thu Dec 18 22:37:27 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 61d9f46e_11034eae
+Bytes: 27
+don't delete unrelated code
+
