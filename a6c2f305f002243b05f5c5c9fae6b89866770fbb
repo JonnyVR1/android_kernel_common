@@ -1,0 +1,11 @@
+Revision: a6c2f305f002243b05f5c5c9fae6b89866770fbb
+Patch-set: 9
+File: fs/pstore/pmsg.c
+
+47
+Thu Dec 18 04:48:29 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 21c29c57_1441946a
+Bytes: 61
+Other drivers return -EFAULT if copy_from_user returns non-0.
+
