@@ -9,6 +9,14 @@ UUID: c1eaa0ee_14b7baf7
 Bytes: 26
 Why is this entry special?
 
+329
+Thu Dec 18 23:20:24 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1eaa0ee_14b7baf7
+UUID: 41d1503e_951984eb
+Bytes: 198
+This is one of the few pstore entities that can contain PII because it can be fed by user space where such content resides and could leak out. This is true in the general case, not just for Android.
+
 File: fs/pstore/ram.c
 
 56
@@ -18,10 +26,26 @@ UUID: 61d9f46e_f107a2bd
 Bytes: 46
 You should probably use a different name here.
 
+56
+Thu Dec 18 23:20:24 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 61d9f46e_f107a2bd
+UUID: e10ec4b4_4a96b359
+Bytes: 13
+message_size?
+
 475
 Thu Dec 18 22:37:27 2014 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 61d9f46e_11034eae
 Bytes: 27
 don't delete unrelated code
+
+475
+Thu Dec 18 23:20:24 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 61d9f46e_11034eae
+UUID: 41d1503e_352990f0
+Bytes: 27
+Will split out individually
 
