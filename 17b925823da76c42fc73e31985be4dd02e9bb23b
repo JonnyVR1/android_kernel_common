@@ -9,3 +9,11 @@ UUID: e133247d_22292ef0
 Bytes: 27
 why did this code reappear?
 
+47
+Fri Dec 19 17:10:34 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e133247d_22292ef0
+UUID: 01f918d6_a921b9c6
+Bytes: 374
+When trying to pry out the CL to remove the superfluous checking, git got confused (it dropped the last CL on the set on a rebase run, I must stop using git rebase -i '-p' as it has done this to me in the past) requiring me to download from Gerrit and redo this CL. I _must_ have selected an earlier download. I have audited and it looks like this was the only one affected.
+
