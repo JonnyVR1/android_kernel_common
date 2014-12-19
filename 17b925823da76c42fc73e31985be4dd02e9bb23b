@@ -1,0 +1,11 @@
+Revision: 17b925823da76c42fc73e31985be4dd02e9bb23b
+Patch-set: 11
+File: fs/pstore/pmsg.c
+
+47
+Fri Dec 19 02:21:34 2014 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e133247d_22292ef0
+Bytes: 27
+why did this code reappear?
+
