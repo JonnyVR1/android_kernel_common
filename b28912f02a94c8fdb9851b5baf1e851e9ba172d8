@@ -25,6 +25,16 @@ UUID: 6102d48e_e917b16f
 Bytes: 101
 User-space has to configure why has access to thins anyway, so I still don't see why this is special.
 
+329
+Fri Dec 19 15:40:38 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_e917b16f
+UUID: 6102d48e_2c8cb75a
+Bytes: 805
+Frankly _all_ of pstore on Android should start up with 440, but in the general case I can only make a strong case for pmsg. I will move this out and reintroduction into the followon requirement to introduce xattr DAC for all of the pstore nodes; perhaps this is where we need to place this MAC adjustment for _all_. In the context of that adjustment changing security defaults can carry its own debate ;->
+
+In the general sense, trying to bridge worlds, user space does _not_ change any permissions except where there are flaws. I _know_ we do this with our hand-built Android init, policy modules on servers are a different world. The act of changing the security settings on files at run time can be viewed as a security exploit and Drivers are urged to set reasoned default permissions where possible.
+
 File: fs/pstore/ram.c
 
 56
