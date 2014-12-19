@@ -1,0 +1,28 @@
+Revision: d323cf5119700fd29ed40cdba6f9aee2a06cb5d4
+Patch-set: 12
+File: fs/pstore/ram.c
+
+144:0-144:51
+Fri Dec 19 19:14:32 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_b626d0da
+Bytes: 768
+NB: this solves a memory leak by incorporating a deeper check, and allows us to revert a broken attempt at solving the leak that was committed privately into the tegra branch:
+
+commit 159c6ab3aae1212a32c2bd9cd5b9d6309bd0a68d
+Author: Ishwarya Balaji Gururajan <igururajan@nvidia.com>
+Date:   Tue May 27 16:00:36 2014 -0700
+
+    pstore: fix memleak in ramoops_pstore_read
+    
+    check for size + ecc_notice_size before kmalloc
+    in ramoops_pstore_read to avoid a memleak
+    
+    Bug 200007988
+    
+    Change-Id: I0e50dcaa229fed29cbd9e8da6d4fb60ce771a7f8
+    Signed-off-by: Ishwarya Balaji Gururajan <igururajan@nvidia.com>
+    Reviewed-on: http://git-master/r/415450
+    Reviewed-by: Thomas Cherry <tcherry@nvidia.com>
+    Reviewed-by: Allen Yu <alleny@nvidia.com>
+
