@@ -60,6 +60,14 @@ UUID: 01f918d6_4386a6a7
 Bytes: 151
 no, msg_size and message_size are the same. What does it refer to? If this only affects the new interface, it should not have a generic name like this.
 
+56
+Fri Dec 19 15:56:45 2014 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_4386a6a7
+UUID: 01f918d6_66b41055
+Bytes: 135
+Ok, I think I understand. I had problems with pmsg with the overused 'p' in pstore and dropped it to match mem_size and mem_address ;-}
+
 475
 Thu Dec 18 22:37:27 2014 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
