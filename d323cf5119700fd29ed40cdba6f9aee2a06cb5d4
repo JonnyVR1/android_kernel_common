@@ -1,5 +1,14 @@
 Revision: d323cf5119700fd29ed40cdba6f9aee2a06cb5d4
 Patch-set: 12
+File: fs/pstore/pmsg.c
+
+76:2-76:17
+Tue Jan 06 16:39:55 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce3acdc4_cb934963
+Bytes: 61
+pr_err should _not_ have KERN_ERR in the string, superfluous!
+
 File: fs/pstore/ram.c
 
 144:0-144:51
