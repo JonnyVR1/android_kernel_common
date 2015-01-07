@@ -35,6 +35,7 @@
 #include <linux/pstore.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
+#include <linux/xattr.h>
 #include <linux/uaccess.h>
 
 #include "internal.h"
@@ -49,6 +50,7 @@ struct pstore_private {
 	struct pstore_info *psi;
 	enum pstore_type_id type;
 	u64	id;
+	struct simple_xattrs xattrs;
 	int	count;
 	ssize_t	size;
 	char	data[];
@@ -189,6 +191,7 @@ static void pstore_evict_inode(struct inode *inode)
 
 	clear_inode(inode);
 	if (p) {
+		simple_xattrs_free(&p->xattrs);
 		spin_lock_irqsave(&allpstore_lock, flags);
 		list_del(&p->list);
 		spin_unlock_irqrestore(&allpstore_lock, flags);
@@ -196,9 +199,68 @@ static void pstore_evict_inode(struct inode *inode)
 	}
 }
 
+static bool is_valid_xattr(const char *name)
+{
+	return !strncmp(name, XATTR_SECURITY_PREFIX, XATTR_SECURITY_PREFIX_LEN);
+}
+
+static struct simple_xattrs *__d_dir_xattrs(struct dentry *dentry)
+{
+	return dentry->d_inode->i_private;
+}
+
+static struct simple_xattrs *__d_file_xattrs(struct dentry *dentry)
+{
+	struct pstore_private *p = dentry->d_inode->i_private;
+	return &p->xattrs;
+}
+
+static struct simple_xattrs *__d_xattrs(struct dentry *dentry)
+{
+	if (S_ISDIR(dentry->d_inode->i_mode))
+		return __d_dir_xattrs(dentry);
+	return __d_file_xattrs(dentry);
+}
+
+static int pstore_setxattr(struct dentry *dentry, const char *name,
+			   const void *value, size_t size, int flags)
+{
+	if (!is_valid_xattr(name))
+		return -EINVAL;
+
+	return simple_xattr_set(__d_xattrs(dentry), name, value, size, flags);
+}
+
+static ssize_t pstore_getxattr(struct dentry *dentry, const char *name,
+			       void *buffer, size_t size)
+{
+	if (!is_valid_xattr(name))
+		return -EINVAL;
+
+	return simple_xattr_get(__d_xattrs(dentry), name, buffer, size);
+}
+
+static ssize_t pstore_listxattr(struct dentry *dentry, char *buffer,
+				size_t size)
+{
+	return simple_xattr_list(__d_xattrs(dentry), buffer, size);
+}
+
+static int pstore_removexattr(struct dentry *dentry, const char *name)
+{
+	if (!is_valid_xattr(name))
+		return -EINVAL;
+
+	return simple_xattr_remove(__d_xattrs(dentry), name);
+}
+
 static const struct inode_operations pstore_dir_inode_operations = {
 	.lookup		= simple_lookup,
 	.unlink		= pstore_unlink,
+	.setxattr	= pstore_setxattr,
+	.getxattr	= pstore_getxattr,
+	.listxattr	= pstore_listxattr,
+	.removexattr	= pstore_removexattr,
 };
 
 static struct inode *pstore_get_inode(struct super_block *sb)
@@ -267,6 +329,13 @@ int pstore_is_mounted(void)
 	return pstore_sb != NULL;
 }
 
+static const struct inode_operations pstore_file_inode_operations = {
+	.setxattr	= pstore_setxattr,
+	.getxattr	= pstore_getxattr,
+	.listxattr	= pstore_listxattr,
+	.removexattr	= pstore_removexattr,
+};
+
 /*
  * Make a regular file in the root directory of our file system.
  * Load it up with "size" bytes of data from "buf".
@@ -302,12 +371,14 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id, int count,
 	if (!inode)
 		goto fail;
 	inode->i_mode = S_IFREG | 0444;
+	inode->i_op = &pstore_file_inode_operations;
 	inode->i_fop = &pstore_file_operations;
 	private = kmalloc(sizeof *private + size, GFP_KERNEL);
 	if (!private)
 		goto fail_alloc;
 	private->type = type;
 	private->id = id;
+	simple_xattrs_init(&private->xattrs);
 	private->count = count;
 	private->psi = psi;
 
@@ -335,6 +406,7 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id, int count,
 			  type, psname, id);
 		break;
 	}
+	inode->i_mode = S_IFREG | 0440;
 
 	mutex_lock(&root->d_inode->i_mutex);
 
@@ -377,8 +449,6 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
 
 	save_mount_options(sb, data);
 
-	pstore_sb = sb;
-
 	sb->s_maxbytes		= MAX_LFS_FILESIZE;
 	sb->s_blocksize		= PAGE_CACHE_SIZE;
 	sb->s_blocksize_bits	= PAGE_CACHE_SHIFT;
@@ -399,6 +469,15 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
 	if (!sb->s_root)
 		return -ENOMEM;
 
+	inode->i_private = kmalloc(sizeof(struct simple_xattrs), GFP_KERNEL);
+	if (!inode->i_private) {
+		kill_litter_super(sb);
+		return -ENOMEM;
+	}
+	simple_xattrs_init(inode->i_private);
+
+	pstore_sb = sb;
+
 	pstore_get_records(0);
 
 	return 0;
@@ -412,6 +491,11 @@ static struct dentry *pstore_mount(struct file_system_type *fs_type,
 
 static void pstore_kill_sb(struct super_block *sb)
 {
+	struct inode *inode = sb->s_root->d_inode;
+	if (inode && inode->i_private) {
+		simple_xattrs_free(inode->i_private);
+		kfree(inode->i_private);
+	}
 	kill_litter_super(sb);
 	pstore_sb = NULL;
 }
