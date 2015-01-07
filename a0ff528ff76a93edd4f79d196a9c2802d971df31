@@ -1,5 +1,14 @@
 Revision: a0ff528ff76a93edd4f79d196a9c2802d971df31
 Patch-set: 1
+File: /COMMIT_MSG
+
+9:0-9:1
+Wed Jan 07 23:01:49 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e630529_6def7913
+Bytes: 22
+Missing Signed-off-by:
+
 File: fs/pstore/inode.c
 
 212
@@ -8,4 +17,14 @@ Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e630529_0d19a59c
 Bytes: 153
 On line 215, you return dentry->d_inode->i_private->xattrs, but here you just return i_private. At first glance, that feels wrong... Is this intentional?
+
+212
+Wed Jan 07 23:01:49 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e630529_0d19a59c
+UUID: 6e1ac1b5_269656db
+Bytes: 424
+Yes. If the dentry references a directory, we stuff an allocation of 'struct simple_xattrs' into i_private. If the dentry references a file, we stuff an allocation of 'struct pstore_private' into i_private.
+
+I should add documentation to this effect, however something similar (but better with abstraction IMHO) was done in kernel/cgroup.c. I will think about this, maybe incorporate similar abstraction as kernel/cgroup ...
 
