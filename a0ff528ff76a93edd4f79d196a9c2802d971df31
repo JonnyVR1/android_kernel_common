@@ -1,0 +1,11 @@
+Revision: a0ff528ff76a93edd4f79d196a9c2802d971df31
+Patch-set: 1
+File: fs/pstore/inode.c
+
+212
+Wed Jan 07 22:56:55 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e630529_0d19a59c
+Bytes: 153
+On line 215, you return dentry->d_inode->i_private->xattrs, but here you just return i_private. At first glance, that feels wrong... Is this intentional?
+
