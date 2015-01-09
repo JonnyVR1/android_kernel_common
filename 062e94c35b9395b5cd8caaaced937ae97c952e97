@@ -18,3 +18,11 @@ UUID: ce9c8d86_3533c8e1
 Bytes: 162
 Do we really need strncmp? I have confirmed that the type names are as above and nul-terminated in practice on Android. Are there exceptions I should be aware of?
 
+422:5-425:60
+Fri Jan 09 13:29:47 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce9c8d86_3533c8e1
+UUID: 4ed17d3e_5502cc7c
+Bytes: 117
+Yes, this looks like it was a mistake in the sysfs check and then repeated in the rootfs one.  strcmp should be fine.
+
