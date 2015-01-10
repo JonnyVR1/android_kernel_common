@@ -1,0 +1,11 @@
+Revision: 821d813f030a0f62dd4fbd9bc3caee63a9664d7e
+Patch-set: 4
+File: security/selinux/hooks.c
+
+425
+Sat Jan 10 17:04:43 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cee48d53_21398ec2
+Bytes: 197
+See Documentation/CodingStyle, SubmittingPatches, and run it through scripts/checkpatch.pl before submitting.  SELinux patches go to selinux@tycho.nsa.gov, subscribe via selinux-join@tycho.nsa.gov.
+
