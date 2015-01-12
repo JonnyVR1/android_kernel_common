@@ -1,0 +1,11 @@
+Revision: f96df9d22a2ce4ea3315a576e9b7663303c824c0
+Patch-set: 1
+File: /COMMIT_MSG
+
+10:8-10:13
+Mon Jan 12 23:35:51 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_cc4d77c2
+Bytes: 75
+checkpatch.pl failure. Since this is a cherry pick, we have to ignore this.
+
