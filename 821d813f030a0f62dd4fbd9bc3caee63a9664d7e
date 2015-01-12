@@ -9,10 +9,26 @@ UUID: 8eee1533_229d1042
 Bytes: 50
 || goes at the end of the line, not the beginning.
 
+422
+Mon Jan 12 23:32:14 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8eee1533_229d1042
+UUID: 2eab69f1_869a1e48
+Bytes: 45
+Will do to match coding style in this module.
+
 425
 Sat Jan 10 17:04:43 2015 +0000
 Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cee48d53_21398ec2
 Bytes: 197
 See Documentation/CodingStyle, SubmittingPatches, and run it through scripts/checkpatch.pl before submitting.  SELinux patches go to selinux@tycho.nsa.gov, subscribe via selinux-join@tycho.nsa.gov.
+
+425
+Mon Jan 12 23:32:14 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cee48d53_21398ec2
+UUID: 4ef09d0f_eca3130c
+Bytes: 104
+checkpatch.pl is _always_ run (I can not submit without it). We also checked with the ToT checkpatch.pl.
 
