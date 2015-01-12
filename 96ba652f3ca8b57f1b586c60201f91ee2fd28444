@@ -1,0 +1,41 @@
+Revision: 96ba652f3ca8b57f1b586c60201f91ee2fd28444
+Patch-set: 2
+File: drivers/usb/gadget/Kconfig
+
+557:0-557:6
+Mon Jan 12 23:42:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_e6de82e7
+Bytes: 27
+Please add empty line above
+
+File: drivers/usb/gadget/f_mtp.c
+
+291:0-291:6
+Mon Jan 12 23:42:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_2c3fbbf7
+Bytes: 62
+Maybe makes sense to move it above static _mtp_dev declaration
+
+761:0-761:1
+Mon Jan 12 23:42:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0efa25f3_e4ae8b28
+Bytes: 30
+Please remove empty line above
+
+1260:2-1260:8
+Mon Jan 12 23:42:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_57dd7471
+Bytes: 134
+If you afraid (at least in code below) that fi_mtp can be NULL you need to check it here as well or to move lines below before the if.
+
+1324:0-1324:6
+Mon Jan 12 23:42:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0efa25f3_e417abb4
+Bytes: 79
+Please add empty line above. Also you probably don't need this function at all.
+
