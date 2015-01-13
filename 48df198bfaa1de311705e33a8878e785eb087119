@@ -9,3 +9,11 @@ UUID: 4e8c1dba_c0fe0076
 Bytes: 112
 Is this needed?  If .llseek is left unspecified, the kernel will automatically call a stub that returns -ESPIPE.
 
+55:1-55:23
+Tue Jan 13 18:13:11 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e8c1dba_c0fe0076
+UUID: 4e75fd75_3b335f13
+Bytes: 58
+Confirmed that noop_llseek allows open("/dev/pmsg0", "a").
+
