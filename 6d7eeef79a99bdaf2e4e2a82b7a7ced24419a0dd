@@ -1,0 +1,11 @@
+Revision: 6d7eeef79a99bdaf2e4e2a82b7a7ced24419a0dd
+Patch-set: 20
+File: fs/pstore/pmsg.c
+
+41:1-41:10
+Tue Jan 13 23:53:30 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ecac1df_b5e94a43
+Bytes: 69
+Why a spinlock?  This routine can't be called from an atomic context.
+
