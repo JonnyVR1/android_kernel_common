@@ -1,0 +1,11 @@
+Revision: 48df198bfaa1de311705e33a8878e785eb087119
+Patch-set: 15
+File: fs/pstore/pmsg.c
+
+55:1-55:23
+Tue Jan 13 01:41:54 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e8c1dba_c0fe0076
+Bytes: 112
+Is this needed?  If .llseek is left unspecified, the kernel will automatically call a stub that returns -ESPIPE.
+
