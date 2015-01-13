@@ -1,0 +1,11 @@
+Revision: b5e9a0b183c7121fb1e29d1fb959fbb737b8215f
+Patch-set: 5
+File: drivers/usb/gadget/f_mtp.c
+
+1375:7-1375:13
+Tue Jan 13 00:54:12 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e99a9f9_3c335113
+Bytes: 19
+Can fi_mtp be NULL?
+
