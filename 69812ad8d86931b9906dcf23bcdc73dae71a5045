@@ -1,0 +1,18 @@
+Revision: 69812ad8d86931b9906dcf23bcdc73dae71a5045
+Patch-set: 3
+File: drivers/usb/gadget/f_mtp.c
+
+1257:5-1257:11
+Tue Jan 13 00:22:45 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ed5357b_c7a41ebf
+Bytes: 63
+In this case static int mtp_setup(void) doesn't make any sense.
+
+1334:31-1334:46
+Tue Jan 13 00:22:45 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_3702687c
+Bytes: 87
+This is simple function and is used only once. Why not to just use container_of() here?
+
