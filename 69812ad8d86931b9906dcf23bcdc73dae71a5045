@@ -9,10 +9,26 @@ UUID: 8ed5357b_c7a41ebf
 Bytes: 63
 In this case static int mtp_setup(void) doesn't make any sense.
 
+1257:5-1257:11
+Tue Jan 13 00:41:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ed5357b_c7a41ebf
+UUID: 4ef09d0f_f2292eaf
+Bytes: 81
+My bad.. just lost the idea of what I was intending. Probably still jet lagged :)
+
 1334:31-1334:46
 Tue Jan 13 00:22:45 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4ef09d0f_3702687c
 Bytes: 87
 This is simple function and is used only once. Why not to just use container_of() here?
+
+1334:31-1334:46
+Tue Jan 13 00:41:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ef09d0f_3702687c
+UUID: 0efa25f3_c76b910f
+Bytes: 130
+Thought might prevent code replication in future. Also, seems more readable to me.. Shall remove it, if you think it is redundant.
 
