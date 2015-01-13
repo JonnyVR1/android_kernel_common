@@ -9,3 +9,11 @@ UUID: 2e99a9f9_3c335113
 Bytes: 19
 Can fi_mtp be NULL?
 
+1375:7-1375:13
+Tue Jan 13 01:06:04 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e99a9f9_3c335113
+UUID: 2e99a9f9_9c2705a4
+Bytes: 193
+I dont think that can happen. func_inst is not a pointer, its a part of mtp_instance structure. Also the pointer to this function itself resides inside fi variable. Is that convincing enough ??
+
