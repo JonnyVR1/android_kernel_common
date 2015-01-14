@@ -1,6 +1,57 @@
 Revision: b5e9a0b183c7121fb1e29d1fb959fbb737b8215f
 Patch-set: 5
+File: drivers/usb/gadget/Makefile
+
+67:0-70:39
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebe78392_4b4f4d87
+Bytes: 104
+alphabetically sorted with other objects is the desire (this Makefile is not sorted, so a weak request).
+
 File: drivers/usb/gadget/f_mtp.c
+
+75:37-75:40
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebe78392_c8792331
+Bytes: 117
+Weak argument for a third one.
+
+eg:
+
+#define DRIVER_NAME "mtp"
+static const char mpt_shortname[] = DRIVER_NAME "_usb"
+
+470:1-470:17
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebe78392_684a17f9
+Bytes: 6
+pr_err
+
+1235:22-1235:27
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e20c981_4d6231f8
+Bytes: 92
+Two entities in here have "mtp".
+
+define this (MODULE_NAME, DRIVER_NAME, MTP_NAME, not tied)
+
+1301:1-1301:2
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e20c981_ed7bddaa
+Bytes: 58
+indent? Has this been run through ./scripts/checkpatch.pl?
+
+1306:1-1306:2
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e20c981_0d811928
+Bytes: 7
+indent?
 
 1375:7-1375:13
 Tue Jan 13 00:54:12 2015 +0000
@@ -17,6 +68,27 @@ UUID: 2e99a9f9_9c2705a4
 Bytes: 193
 I dont think that can happen. func_inst is not a pointer, its a part of mtp_instance structure. Also the pointer to this function itself resides inside fi variable. Is that convincing enough ??
 
+1393:11-1393:12
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e20c981_4d1f9151
+Bytes: 15
+leak of fi_mtp?
+
+1420:0-1420:1
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_09682dd8
+Bytes: 6
+indent
+
+1429:22-1429:27
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_4994e54b
+Bytes: 15
+The 'other' one
+
 File: drivers/usb/gadget/f_ptp.c
 
 24
@@ -25,4 +97,12 @@ Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1dc54d_233fcaf7
 Bytes: 242
 This would be pretty confusing for someone looking at this file on its own. Could we have a comment that these are in f_mtp.c, and maybe rename these functions to include "mtp" somewhere in the name so it is more clear what is happening here?
+
+24
+Wed Jan 14 21:53:17 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e1dc54d_233fcaf7
+UUID: 0e1dc54d_498b0548
+Bytes: 94
+Add the prototype to a f_mtp.h and include it to ensure that the interface remains consistent.
 
