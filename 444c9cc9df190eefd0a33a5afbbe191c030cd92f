@@ -9,12 +9,28 @@ UUID: ce372dc2_cfd29164
 Bytes: 25
 You have same lines above
 
+593:1-593:3
+Wed Jan 14 04:11:58 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce372dc2_cfd29164
+UUID: ce372dc2_8f4339e4
+Bytes: 54
+Seems to be there in 3.14 by default. Will remove them
+
 984:1-984:3
 Wed Jan 14 01:11:06 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4e3a5daa_07a48a13
 Bytes: 126
 Do you still want to call composite_setup() nobody in line 973 return positive value and CONFIG_USB_CONFIGFS_F_ACC is defined?
+
+984:1-984:3
+Wed Jan 14 04:11:58 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e3a5daa_07a48a13
+UUID: 2e47e93f_1b5867ca
+Bytes: 94
+Yes... composite_setup would be the final fallback function to service generic setup requests.
 
 990:2-990:15
 Wed Jan 14 01:11:06 2015 +0000
@@ -23,6 +39,18 @@ UUID: 4e3a5daa_a77bb6e6
 Bytes: 44
 Do you want to check if gi->connected != 1 ?
 
+990:2-990:15
+Wed Jan 14 04:11:58 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e3a5daa_a77bb6e6
+UUID: ce372dc2_52fe4ac2
+Bytes: 271
+I have restructured the android_work a bit to make sure that both CONNECTED and CONFIGURED uevents are sent.
+
+1. When USB is disconnected, USB_STATE=DISCONNECTED uevent is sent.
+
+2. USB_STATE=CONNECTED and USB_STATE=CONFIGURED gets sent when USB is eventually configured.
+
 1132:2-1132:8
 Wed Jan 14 01:11:06 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,4 +58,12 @@ UUID: 2e47e93f_800ce6ae
 Bytes: 68
 Do you need to call
 configfs_unregister_subsystem(&gadget_subsys); ?
+
+1132:2-1132:8
+Wed Jan 14 04:11:58 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e47e93f_800ce6ae
+UUID: 2e47e93f_410cc05f
+Bytes: 287
+This is only to create an sysfs class to send uevents to userspace... Userspace listens to these uevents and displays USB notifications accordingly. Not sure whether it would be an overkill if we unregister the configfs subsystem which might result in USB device mode failing altogether.
 
