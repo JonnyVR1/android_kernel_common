@@ -1,0 +1,33 @@
+Revision: 444c9cc9df190eefd0a33a5afbbe191c030cd92f
+Patch-set: 2
+File: drivers/usb/gadget/configfs.c
+
+593:1-593:3
+Wed Jan 14 01:11:06 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce372dc2_cfd29164
+Bytes: 25
+You have same lines above
+
+984:1-984:3
+Wed Jan 14 01:11:06 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e3a5daa_07a48a13
+Bytes: 126
+Do you still want to call composite_setup() nobody in line 973 return positive value and CONFIG_USB_CONFIGFS_F_ACC is defined?
+
+990:2-990:15
+Wed Jan 14 01:11:06 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e3a5daa_a77bb6e6
+Bytes: 44
+Do you want to check if gi->connected != 1 ?
+
+1132:2-1132:8
+Wed Jan 14 01:11:06 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e47e93f_800ce6ae
+Bytes: 68
+Do you need to call
+configfs_unregister_subsystem(&gadget_subsys); ?
+
