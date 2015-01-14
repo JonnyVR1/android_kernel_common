@@ -17,3 +17,12 @@ UUID: 2e99a9f9_9c2705a4
 Bytes: 193
 I dont think that can happen. func_inst is not a pointer, its a part of mtp_instance structure. Also the pointer to this function itself resides inside fi variable. Is that convincing enough ??
 
+File: drivers/usb/gadget/f_ptp.c
+
+24
+Wed Jan 14 19:55:07 2015 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_233fcaf7
+Bytes: 242
+This would be pretty confusing for someone looking at this file on its own. Could we have a comment that these are in f_mtp.c, and maybe rename these functions to include "mtp" somewhere in the name so it is more clear what is happening here?
+
