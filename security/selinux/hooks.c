@@ -89,6 +89,7 @@
 #include "netif.h"
 #include "netnode.h"
 #include "netport.h"
+#include "ioctlcmd.h"
 #include "xfrm.h"
 #include "netlabel.h"
 #include "audit.h"
@@ -3086,6 +3087,9 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 {
 	const struct cred *cred = current_cred();
 	int error = 0;
+	const struct task_security_struct *tsec;
+	struct common_audit_data ad;
+	u32 ssid, tsid;
 
 	switch (cmd) {
 	case FIONREAD:
@@ -3123,7 +3127,21 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 	 * to the file's ioctl() function.
 	 */
 	default:
+		/* check ioctl file permission */
 		error = file_has_perm(cred, file, FILE__IOCTL);
+		if (error)
+			break;
+
+		/* check ioctl command permission */
+		tsec = cred->security;
+		ssid = tsec->sid;
+		error = sel_ioctlcmd_sid(cmd, &tsid);
+		if (error)
+			break;
+		ad.type = LSM_AUDIT_DATA_IOCTLCMD;
+		ad.u.ioctlcmd = cmd;
+		error = avc_has_perm(ssid, tsid, SECCLASS_FILE,
+				FILE__IOCTL, &ad);
 	}
 	return error;
 }
