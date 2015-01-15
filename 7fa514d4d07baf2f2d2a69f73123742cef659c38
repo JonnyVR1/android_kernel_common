@@ -18,3 +18,19 @@ UUID: eb106340_fac5c94d
 Bytes: 17
 one too many tab.
 
+File: security/selinux/ioctlcmd.c
+
+122
+Thu Jan 15 19:49:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b928710_3fc78728
+Bytes: 110
+As this code is only called from user context, this can just be spin_lock() and spin_unlock() everywhere IIUC.
+
+129
+Thu Jan 15 19:49:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b928710_7fe66fc2
+Bytes: 149
+Could avoid need for GFP_ATOMIC by taking the allocation outside the spinlock and then freeing if we happen to find that it is found on the 2nd find.
+
