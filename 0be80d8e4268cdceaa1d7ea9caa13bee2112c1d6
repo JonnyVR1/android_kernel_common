@@ -1,6 +1,36 @@
 Revision: 0be80d8e4268cdceaa1d7ea9caa13bee2112c1d6
 Patch-set: 1
+File: include/linux/lsm_audit.h
+
+72
+Thu Jan 15 15:16:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_99e25f2d
+Bytes: 211
+Could make this a struct containing both the struct path (or dentry or whatever) and the unsigned int ioctlcmd and then display them both together on denials.  Also, this file diff belongs with the other change.
+
 File: security/selinux/hooks.c
+
+92
+Thu Jan 15 15:16:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_dd6c3f75
+Bytes: 181
+I'd put this file diff with the change that creates this header file. More generally, you only need at most two changes - one for the general LSM infrastructure and one for SELinux.
+
+3137
+Thu Jan 15 15:16:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_39eb4b08
+Bytes: 22
+Use cred_sid() helper.
+
+3142
+Thu Jan 15 15:16:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_9d76c73f
+Bytes: 90
+Use a struct so you can pass both the path and the cmd for inclusion in the audit message.
 
 3143:35-3143:48
 Thu Jan 15 02:10:54 2015 +0000
@@ -27,4 +57,11 @@ isec = inode->i_security;
 isec->sclass
 
 I will update tomorrow
+
+3144
+Thu Jan 15 15:16:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_19f08fee
+Bytes: 336
+This is problematic; you are reusing an existing class/permission combination for a completely different purpose and different target context.  You really need a new permission for this check.  And it has to be added to COMMON_FILE_SOCK_PERMS in security/selinux/include/classmap.h so that it is defined for all file and socket classes.
 
