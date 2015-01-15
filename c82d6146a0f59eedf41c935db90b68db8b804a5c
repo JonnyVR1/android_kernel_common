@@ -1,0 +1,13 @@
+Revision: c82d6146a0f59eedf41c935db90b68db8b804a5c
+Patch-set: 1
+File: security/selinux/avc.c
+
+451
+Thu Jan 15 02:02:50 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_fab709c6
+Bytes: 224
+This doesn't seem right.  How does the file code add the "path=" call to the audit message? I thought there was some kind of callback that you could register to add these kinds of messages.
+
+Hopefully Stephen knows better...
+
