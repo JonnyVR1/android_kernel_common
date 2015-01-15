@@ -9,3 +9,21 @@ UUID: 6b2473a4_160f3c27
 Bytes: 50
 This would need to be stripped before upstreaming.
 
+File: security/selinux/include/security.h
+
+37
+Thu Jan 15 15:25:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0aeb11_7b6c1bf8
+Bytes: 325
+Just to note:  To use this facility, will need to change POLICYVERS to 30 in external/sepolicy/Android.mk (after updating libsepol and checkpolicy) or override it on the make command-line.  This will then prevent loading of policy on any kernel that does not have this support, so all kernels will need to include this patch.
+
+File: security/selinux/ss/services.c
+
+2179
+Thu Jan 15 15:25:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_5d9caff8
+Bytes: 68
+Might be easier if we can just default to SECINITSID_UNLABELED here.
+
