@@ -73,3 +73,11 @@ UUID: 6b2473a4_19f08fee
 Bytes: 336
 This is problematic; you are reusing an existing class/permission combination for a completely different purpose and different target context.  You really need a new permission for this check.  And it has to be added to COMMON_FILE_SOCK_PERMS in security/selinux/include/classmap.h so that it is defined for all file and socket classes.
 
+3144
+Thu Jan 15 23:25:03 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b2473a4_19f08fee
+UUID: 2ba19b5e_1ce5f562
+Bytes: 1688
+Actually, I think this check still won't be right even with its own permission.  IIUC, you want to be able to express in policy goals like "untrusted apps can only invoke ioctls A, B-D, and Q on the gpu device".  Which requires that your check take into account the task/cred SID, the device node SID (i.e. the inode SID), and the ioctl command.  Normally we would think of the ioctl command as corresponding to a permission, but of course we can't support such a mapping due to the limited permission space and vast ioctl space.  By trying to map the ioctl command to a target SID, you are losing the device node SID from the equation.  Two independent checks, one on the device node SID and one on the ioctl command SID, doesn't seem sufficient, e.g. if you want to allow ioctl command N on device node D1 and ioctl command M on device node D2, you'll have to allow ioctl to D1 and D2 and ioctl (or new permission) to SID(N) and SID(M).  Which will also allow ioctl M on D1 and N on D2.  All that to say that I would not try to model this as a regular permission check.  Instead, just introduce a new structure within the policydb and a new function exported by the security server that allows checking based on source SID (the task/cred SID), target SID (the inode SID for the device file), maybe the target class (if we think we'll use the same target SID on both block and character devices and need to distinguish?), and the ioctl command.  Internally we'd have something like the avtab to look up by source type, target type, and target class, and then check against your whitelist of ioctl commands.  More work, and more of a change to libsepol/checkpolicy, but seems more suited.
+
