@@ -1,0 +1,15 @@
+Revision: 0be80d8e4268cdceaa1d7ea9caa13bee2112c1d6
+Patch-set: 1
+File: security/selinux/hooks.c
+
+3143:35-3143:48
+Thu Jan 15 02:10:54 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_faa0297a
+Bytes: 411
+a file descriptor could represent a plain file, character file, unix domain socket, etc... All of these can have ioctls performed on them.
+
+It feels wrong to use SECLASS_FILE here, since it could also be a SECCLASS_CHR_FILE or SECCLASS_TCP_SOCKET depending on how it's called.
+
+Stephen: are there any functions available which take a file descriptor, and return the SECCLASS appropriate to that file descriptor?
+
