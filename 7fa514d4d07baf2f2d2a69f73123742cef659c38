@@ -1,5 +1,14 @@
 Revision: 7fa514d4d07baf2f2d2a69f73123742cef659c38
 Patch-set: 1
+File: security/selinux/include/initial_sid_to_string.h
+
+32
+Thu Jan 15 15:20:10 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_d901f730
+Bytes: 310
+Not sure if there may be compatibility issues here; we haven't added a new initial SID since circa Linux 2.6.6.   Initial SID support hasn't yet been converted over to dynamic mapping as we did with classes and permissions. Do you need a new one or could you just use SECINITSID_UNLABELED as the default value?
+
 File: security/selinux/include/objsec.h
 
 102
