@@ -97,6 +97,11 @@ struct netport_security_struct {
 	u8 protocol;			/* transport protocol */
 };
 
+struct ioctlcmd_security_struct {
+	u32 sid;			/* SID for this node */
+	unsigned int cmd;			/* ioctl command */
+};
+
 struct sk_security_struct {
 #ifdef CONFIG_NETLABEL
 	enum {				/* NetLabel state */

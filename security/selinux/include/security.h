@@ -149,6 +149,8 @@ int security_netif_sid(char *name, u32 *if_sid);
 int security_node_sid(u16 domain, void *addr, u32 addrlen,
 	u32 *out_sid);
 
+int security_ioctlcmd_sid(u32 cmd, u32 *out_sid);
+
 int security_validate_transition(u32 oldsid, u32 newsid, u32 tasksid,
 				 u16 tclass);
 
