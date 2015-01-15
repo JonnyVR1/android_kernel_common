@@ -11,3 +11,29 @@ This doesn't seem right.  How does the file code add the "path=" call to the aud
 
 Hopefully Stephen knows better...
 
+451
+Thu Jan 15 03:54:41 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb106340_fab709c6
+UUID: 0b0217f8_cae8fbb7
+Bytes: 1317
+Regarding the placement of this code, I agree there very well may be a more appropriate location for it. Perhaps Stephen can suggest one otherwise I will look into it further tomorrow.
+
+I'm not sure that we want a filepath in the audit message here. The way I have this setup, the file check is done with the existing file_has_perm, so doing it again would be redundant. This code is only for checking the ioctl command which has been mapped to a tsid. So two checks, file check, then command check. Perhaps we can consolidate them, but that's not how it's currently set up. 
+
+The way policy is written is much like for ports, you map a range of commands to a type
+
+ioctlcon 0 - 4294967295 u:object_r:all_ioctls:s0
+type all_ioctls
+
+then you can give processes access to this type
+
+allow init all_ioctls:{file socket} ioctl;
+
+What I am trying to fix with this additional audit printing is the extremely unhelpful denial messages that it will output:
+
+type=AVC msg=audit(1363289005.532:184): avc:  denied  { ioclt } for  pid=29199 comm="system" scontext=staff_u:staff_r:wpa_supplicant_t
+tcontext=u:object_r:all_ioclts tclass=file
+
+This masks the exact ioctl command that is being denied, instead printing all_ioctls which could be any of 4 billion options that I have assigned to it. I want the offending ioctl command.
+
