@@ -18,6 +18,14 @@ UUID: eb106340_dd6c3f75
 Bytes: 181
 I'd put this file diff with the change that creates this header file. More generally, you only need at most two changes - one for the general LSM infrastructure and one for SELinux.
 
+92
+Thu Jan 15 21:44:59 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb106340_dd6c3f75
+UUID: 0b49377c_8323fe11
+Bytes: 103
+Rgr. So two patches, a small (~20 lines) lsm_audit patch, and a much larger (~350 lines) selinux patch.
+
 3137
 Thu Jan 15 15:16:12 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
