@@ -37,3 +37,11 @@ tcontext=u:object_r:all_ioclts tclass=file
 
 This masks the exact ioctl command that is being denied, instead printing all_ioctls which could be any of 4 billion options that I have assigned to it. I want the offending ioctl command.
 
+451
+Thu Jan 15 15:00:07 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b0217f8_cae8fbb7
+UUID: 6b2473a4_d9d8d782
+Bytes: 307
+This would go in security/lsm_audit.c dump_common_audit_data().  While the ioctl command support is only presently implemented for SELinux, it doesn't depend on any SELinux-private data structures so it should be taken to the common audit code that was factored out of SELinux for reuse by Smack and others.
+
