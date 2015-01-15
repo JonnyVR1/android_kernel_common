@@ -1,0 +1,18 @@
+Revision: 7e7090f9d6580f2ff3b3e5be0545cc987bac74d0
+Patch-set: 6
+File: drivers/usb/gadget/f_mtp.c
+
+76:36-76:48
+Thu Jan 15 16:51:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb8303c3_825afa43
+Bytes: 96
+C11 (I know, not compiling with that standard ... yet) requires a space between the two strings.
+
+1236:22-1236:27
+Thu Jan 15 16:51:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b4c3b8a_4464eeb7
+Bytes: 84
+Functions may be mutually exclusive, but can the inherit from the DRIVER_NAME macro?
+
