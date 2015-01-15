@@ -1,0 +1,11 @@
+Revision: 26252c678661b99d9f7fe4bf7bdb06fd08cb9faa
+Patch-set: 1
+File: /COMMIT_MSG
+
+16
+Thu Jan 15 01:49:16 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_160f3c27
+Bytes: 50
+This would need to be stripped before upstreaming.
+
