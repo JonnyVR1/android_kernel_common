@@ -9,6 +9,14 @@ UUID: ebe78392_4b4f4d87
 Bytes: 104
 alphabetically sorted with other objects is the desire (this Makefile is not sorted, so a weak request).
 
+67:0-70:39
+Thu Jan 15 05:10:38 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebe78392_4b4f4d87
+UUID: 0b0217f8_2a6bdf5e
+Bytes: 38
+Leaving it for now. Will revisit later
+
 File: drivers/usb/gadget/f_mtp.c
 
 75:37-75:40
@@ -38,6 +46,14 @@ Bytes: 92
 Two entities in here have "mtp".
 
 define this (MODULE_NAME, DRIVER_NAME, MTP_NAME, not tied)
+
+1235:22-1235:27
+Thu Jan 15 05:10:38 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e20c981_4d6231f8
+UUID: eb35c3d2_b2abe011
+Bytes: 246
+These functions are mutually exclusive. This one is used by the android composite driver (will eventually disappear). The other one used by configfs composite driver. So they are not the same. Only one of the functions is intended to be executed.
 
 1301:1-1301:2
 Wed Jan 14 21:53:17 2015 +0000
