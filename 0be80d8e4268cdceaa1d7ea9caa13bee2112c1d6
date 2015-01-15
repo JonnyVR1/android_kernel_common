@@ -13,3 +13,18 @@ It feels wrong to use SECLASS_FILE here, since it could also be a SECCLASS_CHR_F
 
 Stephen: are there any functions available which take a file descriptor, and return the SECCLASS appropriate to that file descriptor?
 
+3143:35-3143:48
+Thu Jan 15 03:10:52 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb106340_faa0297a
+UUID: 2b051bfe_65f0fc21
+Bytes: 188
+Good catch! I believe that could be accessed by:
+
+struct inode_security_struct *isec;
+struct inode *inode = file_inode(file);
+isec = inode->i_security;
+isec->sclass
+
+I will update tomorrow
+
