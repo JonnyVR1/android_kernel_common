@@ -448,6 +448,8 @@ static void avc_audit_post_callback(struct audit_buffer *ab, void *a)
 		audit_log_format(ab, " permissive=%u",
 				 ad->selinux_audit_data->result ? 0 : 1);
 	}
+	if (ad->type == LSM_AUDIT_DATA_IOCTLCMD)
+		audit_log_format(ab, " ioctl_command=%u", ad->u.ioctlcmd);
 }
 
 /* This is the slow part of avc audit with big stack footprint */
