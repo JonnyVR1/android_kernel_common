@@ -2146,6 +2146,44 @@ out:
 	return rc;
 }
 
+/**
+ * security_ioctlcmd_sid - Obtain the SID for an ioctl command.
+ * @cmd: command number
+ * @out_sid: security identifier
+ */
+int security_ioctlcmd_sid(u32 cmd, u32 *out_sid)
+{
+	struct ocontext *c;
+	int rc = 0;
+
+	read_lock(&policy_rwlock);
+
+	c = policydb.ocontexts[OCON_IOCTL];
+	while (c) {
+		if (c->u.ioctl.low_cmd <= cmd &&
+		    c->u.ioctl.high_cmd >= cmd)
+			break;
+		c = c->next;
+	}
+
+	if (c) {
+		if (!c->sid[0]) {
+			rc = sidtab_context_to_sid(&sidtab,
+						   &c->context[0],
+						   &c->sid[0]);
+			if (rc)
+				goto out;
+		}
+		*out_sid = c->sid[0];
+	} else {
+		*out_sid = SECINITSID_IOCTLCMD;
+	}
+
+out:
+	read_unlock(&policy_rwlock);
+	return rc;
+}
+
 #define SIDS_NEL 25
 
 /**

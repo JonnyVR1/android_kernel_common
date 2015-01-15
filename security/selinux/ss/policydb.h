@@ -187,6 +187,10 @@ struct ocontext {
 			u32 addr[4];
 			u32 mask[4];
 		} node6;        /* IPv6 node information */
+		struct {
+			unsigned int low_cmd;
+			unsigned int high_cmd;
+		} ioctl;		/* range of ioctl commands */
 	} u;
 	union {
 		u32 sclass;  /* security class for genfs */
@@ -222,7 +226,8 @@ struct genfs {
 #define OCON_NODE  4	/* nodes */
 #define OCON_FSUSE 5	/* fs_use */
 #define OCON_NODE6 6	/* IPv6 nodes */
-#define OCON_NUM   7
+#define OCON_IOCTL 7    /* ioctl commands */
+#define OCON_NUM   8
 
 /* The policy database */
 struct policydb {
