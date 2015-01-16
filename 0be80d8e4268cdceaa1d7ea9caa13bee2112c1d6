@@ -130,3 +130,11 @@ I need to think about this more, but I will be considering two options:
 
 2) how to use a single check. Adding a new statement to the policydb seems trivial, it's the avc lookup that is the difficulty. Currently it only uses the SSID, TSID and class for lookups. How would we expand this?
 
+3144
+Fri Jan 16 14:59:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bc55323_f4f13072
+UUID: 6b971303_e458aecb
+Bytes: 901
+The difference with netport/netnode is that ports and nodes are objects and thus it makes sense to label them and apply permission checks to them.  ioctl commands aren't objects per se but rather operations and thus map more logically to permissions.  I would think we could extend the AVC in much the same way as the avtab (or provide a separate cache), as they will continue to be keyed on SSID, TSID, and class but the struct av_decision returned by the security server could be extended to support returning an array of ioctl commands/operations and the AVC could simply check for a match.  If we can rely on the standard encoding of ioctl numbers (Documentation/ioctl/ioctl-decoding.txt and ioctl-number.txt), we could perhaps only consider the low half of the ioctl command value (driver + function) or even just the low byte (function) and thus represent the ioctl command array more compactly.
+
