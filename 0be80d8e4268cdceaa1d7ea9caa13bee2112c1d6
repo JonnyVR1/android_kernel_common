@@ -102,3 +102,15 @@ Like this?
   allow untrusted_app gpu_device:chr_file ioctlA;
   allow untrusted_app gpu_device:chr_file ioctlBD;
 
+3144
+Fri Jan 16 00:39:40 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bcfdb48_cca10f36
+UUID: 6b971303_418cf418
+Bytes: 466
+I'd think you could specify a list of ioctl commands and/or ranges, ala allow untrusted_app gpu_device:chr_file { A B-D Q };
+
+Doing it as two checks might be ok if the ioctl command value space is largely non-overlapping among different drivers, or has the same semantic meaning across them for the values that are common, but I'm not sure we can rely on that behavior.
+
+Might be helpful to work up an actual pseudo policy for a set of drivers in Android and assess.
+
