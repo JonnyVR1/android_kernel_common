@@ -114,3 +114,19 @@ Doing it as two checks might be ok if the ioctl command value space is largely n
 
 Might be helpful to work up an actual pseudo policy for a set of drivers in Android and assess.
 
+3144
+Fri Jan 16 01:29:18 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b971303_418cf418
+UUID: 6bc55323_f4f13072
+Bytes: 593
+I'm glad you brought this up.
+
+It's important to note that this is the same issue with netport and netnode. They deal with socket TSID and port/addr TSID separately.
+
+I need to think about this more, but I will be considering two options:
+
+1) how to implement your example statement using the current two-check code and have the policy compiler solve the command space problem.
+
+2) how to use a single check. Adding a new statement to the policydb seems trivial, it's the avc lookup that is the difficulty. Currently it only uses the SSID, TSID and class for lookups. How would we expand this?
+
