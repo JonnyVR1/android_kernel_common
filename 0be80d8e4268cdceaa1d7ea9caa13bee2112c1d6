@@ -138,3 +138,37 @@ UUID: 6b971303_e458aecb
 Bytes: 901
 The difference with netport/netnode is that ports and nodes are objects and thus it makes sense to label them and apply permission checks to them.  ioctl commands aren't objects per se but rather operations and thus map more logically to permissions.  I would think we could extend the AVC in much the same way as the avtab (or provide a separate cache), as they will continue to be keyed on SSID, TSID, and class but the struct av_decision returned by the security server could be extended to support returning an array of ioctl commands/operations and the AVC could simply check for a match.  If we can rely on the standard encoding of ioctl numbers (Documentation/ioctl/ioctl-decoding.txt and ioctl-number.txt), we could perhaps only consider the low half of the ioctl command value (driver + function) or even just the low byte (function) and thus represent the ioctl command array more compactly.
 
+3144
+Fri Jan 16 22:10:56 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b971303_e458aecb
+UUID: 0ba5b782_2696b8d9
+Bytes: 1538
+"the struct av_decision returned by the security server could be extended to support returning an array of ioctl commands/operations and the AVC could simply check for a match."
+
+That seems reasonable.
+
+I don't think we can assume that drivers conform to the ioctl-decoding document, I'm not sure it's even possible with only 256 values that are "supposedly unique to each driver". But despite that I would expect the array (assuming it represents ranges) would be quite short for each SSID/TSID/class set and therefore reasonable to search through.  
+
+Or, alternatively consider:
+
+Use the 2-check system show here and the existing AVC structure. Use policy compiler to resolve ioctl range overlap. 
+
+For example
+allow app1 gpu_device:chr_file ioctl { 12 }; 
+allow app2 gpu_device:chr_file ioctl { 10-15 };
+allow app2 gpu_device:chr_file ioctl { 5-25 };
+The compiler would expand to
+allow {app1 app2 app3 } gpu_device:chr_file ioctl { 12 } 
+
+allow { app2 app3 } gpu_device:chr_file ioctl { 10-11 };
+allow { app2 app3 } gpu_device:chr_file ioctl { 13-15 };
+
+allow app3 gpu_device:chr_file ioctl { 5-9 };
+allow app3 gpu_device:chr_file ioctl { 16-25 };
+
+Benefits:
+Uses existing AVC as-is
+We can load the command -> tsid policy mapping presorted which would allow a faster binary search on the initial lookup and the command cache for faster subsequent lookups.
+In general, there shouldn’t be a lot of overlapping command ranges. Drivers tend to have sequential ranges, and we only need to account for the occasional non-conforming driver.
+
