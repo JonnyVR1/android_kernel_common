@@ -172,3 +172,11 @@ Uses existing AVC as-is
 We can load the command -> tsid policy mapping presorted which would allow a faster binary search on the initial lookup and the command cache for faster subsequent lookups.
 In general, there shouldn’t be a lot of overlapping command ranges. Drivers tend to have sequential ranges, and we only need to account for the occasional non-conforming driver.
 
+3144
+Tue Jan 20 17:45:57 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ba5b782_2696b8d9
+UUID: 6b6c7315_19c72fda
+Bytes: 4
+Done
+
