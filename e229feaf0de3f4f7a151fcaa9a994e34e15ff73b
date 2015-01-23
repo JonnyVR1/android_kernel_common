@@ -1,0 +1,11 @@
+Revision: e229feaf0de3f4f7a151fcaa9a994e34e15ff73b
+Patch-set: 1
+File: drivers/usb/gadget/f_accessory.c
+
+1203:1-1203:14
+Fri Jan 23 23:57:48 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc7afd5_258b6eb2
+Bytes: 63
+Would it be better to check this inside kill_all_hid_devices ??
+
