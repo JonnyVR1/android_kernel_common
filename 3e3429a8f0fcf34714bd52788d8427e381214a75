@@ -10,3 +10,12 @@ Bytes: 151
 rt6_get_route_info takes a struct net* type, so I think this code is missing the following: (pls check 3.14 upstream?) 
 struct net *net = dev_net(dev);
 
+752:26-752:29
+Fri Jan 23 05:45:49 2015 +0000
+Author: Sumit Semwal <1052193@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b70bb17_aeb798c6
+UUID: 2b70bb17_2e8d6818
+Bytes: 121
+Apologies; I just checked the upstream version, and missed looking at the change in this file.
++1 from me for the change.
+
