@@ -1,0 +1,12 @@
+Revision: 3e3429a8f0fcf34714bd52788d8427e381214a75
+Patch-set: 1
+File: net/ipv6/route.c
+
+752:26-752:29
+Fri Jan 23 05:42:31 2015 +0000
+Author: Sumit Semwal <1052193@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b70bb17_aeb798c6
+Bytes: 151
+rt6_get_route_info takes a struct net* type, so I think this code is missing the following: (pls check 3.14 upstream?) 
+struct net *net = dev_net(dev);
+
