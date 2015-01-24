@@ -9,3 +9,11 @@ UUID: 4bc7afd5_258b6eb2
 Bytes: 63
 Would it be better to check this inside kill_all_hid_devices ??
 
+1203:1-1203:14
+Sat Jan 24 18:54:59 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc7afd5_258b6eb2
+UUID: 6b8f13ae_e1b78077
+Bytes: 293
+That actually make more sense because as per the code comments "_acc_dev" is expected to be temporary variable used between acc_open() and acc_gadget_bind(), so relying on that variable may not be a great idea after all. I'll move this check inside kill_all_hid_devices() in the next patchset.
+
