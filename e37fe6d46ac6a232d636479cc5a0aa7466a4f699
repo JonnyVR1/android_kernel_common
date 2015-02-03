@@ -54,3 +54,13 @@ instead of using a pointer, you don't have to worry about all the funky null ass
 
 but maybe I don't understand this code enough yet...
 
+52
+Tue Feb 03 16:41:08 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f74dab10_6ff2b976
+UUID: 5778376f_d96c37f3
+Bytes: 528
+Jeff may correct me, but I believe this is being done to conserve space in the cache.  There is an avtab_datum stored for every access vector (ssid, tsid, class), which currently just occupies one u32, but will effectively double/triple in size with just the pointer, and will grow larger if mapping an avtab_operations struct, which should presumably be needed in only a relatively small number of cache entries (the ones corresponding to rules with augmented ioctls).
+
+I'll be able to review more when in the office, though...
+
