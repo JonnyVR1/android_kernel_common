@@ -24,6 +24,14 @@ UUID: 97854f8c_342368a8
 Bytes: 78
 These are all stack variables. Modifying them outside the lock is intentional.
 
+769
+Tue Feb 03 18:26:15 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97854f8c_342368a8
+UUID: 7731bbd0_47c92e48
+Bytes: 309
+I dislike that this implementation requires that all callers of avc_has_perm_noaudit set avd.avo to null. This seems like an unnecessary constraint that will cause future issues. I am going to designate a flag that is set when the caller provides their own avo. Only one bit of the flag u32 is currently used.
+
 File: security/selinux/hooks.c
 
 1598
