@@ -711,6 +711,8 @@ static ssize_t sel_write_access(struct file *file, char *buf, size_t size)
 	struct av_decision avd;
 	ssize_t length;
 
+	memset(&avd, 0, sizeof(struct av_decision));
+
 	length = task_has_security(current, SECURITY__COMPUTE_AV);
 	if (length)
 		goto out;
