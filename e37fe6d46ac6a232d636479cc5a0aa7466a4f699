@@ -1,0 +1,56 @@
+Revision: e37fe6d46ac6a232d636479cc5a0aa7466a4f699
+Patch-set: 2
+File: security/selinux/avc.c
+
+619:8-619:11
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17515fa8_3003b0b2
+Bytes: 57
+goto out_unlock ? Since the lock is acquired on line 592.
+
+769
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f74dab10_6fcb9924
+Bytes: 71
+move block to line 777, after grabbing lock, and after BUG_ON line 774.
+
+File: security/selinux/hooks.c
+
+1598
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f74dab10_0fe3f5aa
+Bytes: 36
+avoid unnecessary whitespace changes
+
+3128
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 378ca3b9_40411078
+Bytes: 16
+should be size_t
+
+3138
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17515fa8_50175ce5
+Bytes: 114
+instead of having avd.avo be a pointer, can you put the entire struct into avd? At first glance, this feels odd...
+
+File: security/selinux/ss/avtab.h
+
+52
+Tue Feb 03 05:20:52 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f74dab10_6ff2b976
+Bytes: 221
+ya, it feels like if you declare this to be:
+
+  struct avtab_operations ops;
+
+instead of using a pointer, you don't have to worry about all the funky null assignments.
+
+but maybe I don't understand this code enough yet...
+
