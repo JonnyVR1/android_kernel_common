@@ -145,7 +145,8 @@ static inline int avc_audit(u32 ssid, u32 tsid,
 int avc_has_perm_noaudit(u32 ssid, u32 tsid,
 			 u16 tclass, u32 requested,
 			 unsigned flags,
-			 struct av_decision *avd);
+			 struct av_decision *avd,
+			 struct av_operations *avo);
 
 int avc_has_perm_flags(u32 ssid, u32 tsid,
 		       u16 tclass, u32 requested,
