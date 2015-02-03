@@ -16,6 +16,14 @@ UUID: f74dab10_6fcb9924
 Bytes: 71
 move block to line 777, after grabbing lock, and after BUG_ON line 774.
 
+769
+Tue Feb 03 17:52:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f74dab10_6fcb9924
+UUID: 97854f8c_342368a8
+Bytes: 78
+These are all stack variables. Modifying them outside the lock is intentional.
+
 File: security/selinux/hooks.c
 
 1598
@@ -38,6 +46,14 @@ Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17515fa8_50175ce5
 Bytes: 114
 instead of having avd.avo be a pointer, can you put the entire struct into avd? At first glance, this feels odd...
+
+3138
+Tue Feb 03 17:52:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17515fa8_50175ce5
+UUID: 97854f8c_946ef462
+Bytes: 377
+This is done because avo is fairly large (currently 33 bytes) and uncommon, while avd is used for every type enforcement decision. Looking at the hash_stats in sysfs, there are currently  511 entries. So saving at most (511*29 saved bytes) 15k hardly seems worth all the extra steps I am having to take. We also need to consider desktops though, perhaps 150k would be worth it?
 
 File: security/selinux/ss/avtab.h
 
@@ -63,4 +79,12 @@ Bytes: 528
 Jeff may correct me, but I believe this is being done to conserve space in the cache.  There is an avtab_datum stored for every access vector (ssid, tsid, class), which currently just occupies one u32, but will effectively double/triple in size with just the pointer, and will grow larger if mapping an avtab_operations struct, which should presumably be needed in only a relatively small number of cache entries (the ones corresponding to rules with augmented ioctls).
 
 I'll be able to review more when in the office, though...
+
+52
+Tue Feb 03 17:52:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5778376f_d96c37f3
+UUID: f74dab10_4adfab86
+Bytes: 253
+exactly. The avtab structure is currently storing 4-5k worth of avtab_nodes. 29 bytes of saved storage per avtab_node ~150k in memory. It would be interesting to know the savings on a desktop. We have been throwing around the 10x number for policy size.
 
