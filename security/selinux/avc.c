@@ -80,6 +80,7 @@ DEFINE_PER_CPU(struct avc_cache_stats, avc_cache_stats) = { 0 };
 static struct avc_cache avc_cache;
 static struct avc_callback_node *avc_callbacks;
 static struct kmem_cache *avc_node_cachep;
+static struct kmem_cache *av_operations_cachep;
 
 static inline int avc_hash(u32 ssid, u32 tsid, u16 tclass)
 {
@@ -171,6 +172,8 @@ void __init avc_init(void)
 
 	avc_node_cachep = kmem_cache_create("avc_node", sizeof(struct avc_node),
 					     0, SLAB_PANIC, NULL);
+	av_operations_cachep = kmem_cache_create("av_operations",
+			sizeof(struct av_operations), 0, SLAB_PANIC, NULL);
 
 	audit_log(current->audit_context, GFP_KERNEL, AUDIT_KERNEL, "AVC INITIALIZED\n");
 }
@@ -208,6 +211,8 @@ int avc_get_hash_stats(char *page)
 static void avc_node_free(struct rcu_head *rhead)
 {
 	struct avc_node *node = container_of(rhead, struct avc_node, rhead);
+	if (node->ae.avd.avo)
+		kmem_cache_free(av_operations_cachep, node->ae.avd.avo);
 	kmem_cache_free(avc_node_cachep, node);
 	avc_cache_stats_incr(frees);
 }
@@ -221,6 +226,8 @@ static void avc_node_delete(struct avc_node *node)
 
 static void avc_node_kill(struct avc_node *node)
 {
+	if (node->ae.avd.avo)
+		kmem_cache_free(av_operations_cachep, node->ae.avd.avo);
 	kmem_cache_free(avc_node_cachep, node);
 	avc_cache_stats_incr(frees);
 	atomic_dec(&avc_cache.active_nodes);
@@ -285,12 +292,28 @@ out:
 	return node;
 }
 
+static struct av_operations *avc_alloc_operations(void)
+{
+	return kmem_cache_zalloc(av_operations_cachep,
+			GFP_ATOMIC|__GFP_NOMEMALLOC);
+}
+
 static void avc_node_populate(struct avc_node *node, u32 ssid, u32 tsid, u16 tclass, struct av_decision *avd)
 {
 	node->ae.ssid = ssid;
 	node->ae.tsid = tsid;
 	node->ae.tclass = tclass;
 	memcpy(&node->ae.avd, avd, sizeof(node->ae.avd));
+}
+
+static void avc_operations_populate(struct avc_node *node, struct av_decision *avd,
+		struct av_operations *avo)
+{
+	if (avo && avd->avo->len > 0) {
+		node->ae.avd.avo = avo;
+		*(node->ae.avd.avo) = *(avd->avo);
+	} else
+		node->ae.avd.avo = NULL;
 }
 
 static inline struct avc_node *avc_search_node(u32 ssid, u32 tsid, u16 tclass)
@@ -381,6 +404,7 @@ static int avc_latest_notif_update(int seqno, int is_insert)
 static struct avc_node *avc_insert(u32 ssid, u32 tsid, u16 tclass, struct av_decision *avd)
 {
 	struct avc_node *pos, *node = NULL;
+	struct av_operations *avo = NULL;
 	int hvalue;
 	unsigned long flag;
 
@@ -394,6 +418,15 @@ static struct avc_node *avc_insert(u32 ssid, u32 tsid, u16 tclass, struct av_dec
 
 		hvalue = avc_hash(ssid, tsid, tclass);
 		avc_node_populate(node, ssid, tsid, tclass, avd);
+
+		if (avd->avo->len > 0) {
+			avo = avc_alloc_operations();
+			if (avo == NULL) {
+				kmem_cache_free(avc_node_cachep, node);
+				return NULL;
+			}
+		}
+		avc_operations_populate(node, avd, avo);
 
 		head = &avc_cache.slots[hvalue];
 		lock = &avc_cache.slots_lock[hvalue];
@@ -540,6 +573,7 @@ static int avc_update_node(u32 event, u32 perms, u32 ssid, u32 tsid, u16 tclass,
 	int hvalue, rc = 0;
 	unsigned long flag;
 	struct avc_node *pos, *node, *orig = NULL;
+	struct av_operations *avo = NULL;
 	struct hlist_head *head;
 	spinlock_t *lock;
 
@@ -576,8 +610,16 @@ static int avc_update_node(u32 event, u32 perms, u32 ssid, u32 tsid, u16 tclass,
 	/*
 	 * Copy and replace original node.
 	 */
-
 	avc_node_populate(node, ssid, tsid, tclass, &orig->ae.avd);
+	if (orig->ae.avd.avo) {
+		avo = avc_alloc_operations();
+		if (avo == NULL) {
+			kmem_cache_free(avc_node_cachep, node);
+			rc = -ENOMEM;
+			goto out_unlock;
+		}
+	}
+	avc_operations_populate(node, &orig->ae.avd, avo);
 
 	switch (event) {
 	case AVC_CALLBACK_GRANT:
@@ -694,7 +736,6 @@ static noinline int avc_denied(u32 ssid, u32 tsid,
 	return 0;
 }
 
-
 /**
  * avc_has_perm_noaudit - Check permissions but perform no auditing.
  * @ssid: source security identifier
@@ -722,7 +763,12 @@ inline int avc_has_perm_noaudit(u32 ssid, u32 tsid,
 {
 	struct avc_node *node;
 	int rc = 0;
+	struct av_operations lo_avo;
 	u32 denied;
+
+	/* use local operations structure if caller did not provide one */
+	if (!(flags && AVC_USE_SUPPLIED_AVO))
+		avd->avo = &lo_avo;
 
 	BUG_ON(!requested);
 
@@ -736,10 +782,15 @@ inline int avc_has_perm_noaudit(u32 ssid, u32 tsid,
 		avd = &node->ae.avd;
 	}
 
+	if (node->ae.avd.avo)
+		memcpy(&avd->avo, &node->ae.avd.avo,
+				sizeof(struct av_operations));
+	else
+		avd->avo = NULL;
+
 	denied = requested & ~(avd->allowed);
 	if (unlikely(denied))
 		rc = avc_denied(ssid, tsid, tclass, requested, flags, avd);
-
 	rcu_read_unlock();
 	return rc;
 }
@@ -768,6 +819,7 @@ int avc_has_perm_flags(u32 ssid, u32 tsid, u16 tclass,
 	struct av_decision avd;
 	int rc, rc2;
 
+	avd.avo = NULL;
 	rc = avc_has_perm_noaudit(ssid, tsid, tclass, requested, 0, &avd);
 
 	rc2 = avc_audit(ssid, tsid, tclass, requested, &avd, rc, auditdata,

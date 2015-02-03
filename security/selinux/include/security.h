@@ -34,13 +34,14 @@
 #define POLICYDB_VERSION_NEW_OBJECT_DEFAULTS	27
 #define POLICYDB_VERSION_DEFAULT_TYPE	28
 #define POLICYDB_VERSION_CONSTRAINT_NAMES	29
+#define POLICYDB_VERSION_IOCTL_OPERATIONS	30
 
 /* Range of policy versions we understand*/
 #define POLICYDB_VERSION_MIN   POLICYDB_VERSION_BASE
 #ifdef CONFIG_SECURITY_SELINUX_POLICYDB_VERSION_MAX
 #define POLICYDB_VERSION_MAX	CONFIG_SECURITY_SELINUX_POLICYDB_VERSION_MAX_VALUE
 #else
-#define POLICYDB_VERSION_MAX	POLICYDB_VERSION_CONSTRAINT_NAMES
+#define POLICYDB_VERSION_MAX	POLICYDB_VERSION_IOCTL_OPERATIONS
 #endif
 
 /* Mask for just the mount related flags */
@@ -94,6 +95,17 @@ size_t security_policydb_len(void);
 
 int security_policycap_supported(unsigned int req_cap);
 
+struct av_operations_range {
+	u16 low;
+	u16 high;
+};
+
+#define MAX_AV_OPS_RANGE_LEN 16
+struct av_operations {
+	u16 len;
+	struct av_operations_range range[MAX_AV_OPS_RANGE_LEN];
+};
+
 #define SEL_VEC_MAX 32
 struct av_decision {
 	u32 allowed;
@@ -101,6 +113,7 @@ struct av_decision {
 	u32 auditdeny;
 	u32 seqno;
 	u32 flags;
+	struct av_operations *avo;
 };
 
 /* definitions of av_decision.flags */
