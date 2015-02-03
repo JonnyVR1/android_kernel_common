@@ -664,6 +664,9 @@ static void context_struct_compute_av(struct context *scontext,
 					avd->auditallow |= node->datum.data;
 				else if (node->key.specified == AVTAB_AUDITDENY)
 					avd->auditdeny &= node->datum.data;
+				if (avd->avo && node->datum.ops)
+					memcpy(avd->avo, node->datum.ops,
+							sizeof(struct av_operations));
 			}
 
 			/* Check conditional av table for additional permissions */
@@ -896,6 +899,8 @@ static void avd_init(struct av_decision *avd)
 	avd->auditdeny = 0xffffffff;
 	avd->seqno = latest_granting;
 	avd->flags = 0;
+	if (avd->avo)
+		avd->avo->len = 0;
 }
 
 
@@ -2245,6 +2250,7 @@ out_unlock:
 	}
 	for (i = 0, j = 0; i < mynel; i++) {
 		struct av_decision dummy_avd;
+		dummy_avd.avo = NULL;
 		rc = avc_has_perm_noaudit(fromsid, mysids[i],
 					  SECCLASS_PROCESS, /* kernel value */
 					  PROCESS__TRANSITION, AVC_STRICT,
