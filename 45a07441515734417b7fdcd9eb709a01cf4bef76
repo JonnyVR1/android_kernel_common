@@ -9,3 +9,15 @@ UUID: 5c521c24_265b36f0
 Bytes: 134
 Trying to understand when would this happen... Can you be more elaborate ?? Any chance of pushing this patch to upstream, if possible.
 
+412:2-412:27
+Wed Feb 04 03:59:45 2015 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c521c24_265b36f0
+UUID: 7c5d2031_907c5a9e
+Bytes: 565
+f_midi_unbind will get called when USB is disconnected or we attempt to change the USB configuration. The problem here is that snd_card_free() will block until all userspace clients of this driver ALSA device close the ALSA device. But the client will not be notified that it should close until after we have completed the USB state change, so we have a chicken and egg problem, and we will end up deadlocking here in snd_card_free().
+
+The purpose of snd_card_free_when_closed() is to solve this sort of problem. 
+
+I do think this would be a good patch to upstream.
+
