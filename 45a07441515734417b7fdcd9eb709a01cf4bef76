@@ -1,0 +1,11 @@
+Revision: 45a07441515734417b7fdcd9eb709a01cf4bef76
+Patch-set: 1
+File: drivers/usb/gadget/f_midi.c
+
+412:2-412:27
+Wed Feb 04 01:30:19 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c521c24_265b36f0
+Bytes: 134
+Trying to understand when would this happen... Can you be more elaborate ?? Any chance of pushing this patch to upstream, if possible.
+
