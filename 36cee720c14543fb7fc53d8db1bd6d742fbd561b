@@ -1,0 +1,11 @@
+Revision: 36cee720c14543fb7fc53d8db1bd6d742fbd561b
+Patch-set: 1
+File: drivers/usb/gadget/android.c
+
+961:70-961:83
+Wed Feb 04 01:31:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc6318f1_0c13b707
+Bytes: 62
+Suggest: #defines for the constants to increase readability ??
+
