@@ -1,6 +1,29 @@
 Revision: a096521262d04bd706d694bd8c2fb2fe3ab2fe70
 Patch-set: 4
+File: security/selinux/avc.c
+
+745:12-745:27
+Wed Feb 04 02:01:34 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc10cc40_2eaf7f2d
+Bytes: 58
+Needs updating to reflect addition of AVC_USE_SUPPLIED_AVO
+
+771:2-771:21
+Wed Feb 04 02:01:34 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c293c84_6e0eaf30
+Bytes: 162
+what purpose does this serve?  Would it be easier to move the AVC_USE_SUPPLIED_AVO check down to the memcpy below and only memcpy if AVC_USE_SUPPLIED_AVO is true?
+
 File: security/selinux/hooks.c
+
+2793:1-2794:21
+Wed Feb 04 02:01:34 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c24dca3_994b7f17
+Bytes: 23
+just whitespace change?
 
 3128:2-3128:42
 Tue Feb 03 22:16:36 2015 +0000
@@ -13,4 +36,13 @@ if (sid != fsec->sid) {
     rc = file_has_perm();
     if rc
          return rc;
+
+File: security/selinux/include/security.h
+
+102:0-103:31
+Wed Feb 04 02:01:34 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc10cc40_c3fc5cc8
+Bytes: 3
+16?
 
