@@ -2790,7 +2790,8 @@ static int selinux_inode_permission(struct inode *inode, int mask)
 	sid = cred_sid(cred);
 	isec = inode->i_security;
 
-	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass, perms, 0, &avd);
+	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass,
+					perms, 0, &avd);
 	audited = avc_audit_required(perms, &avd, rc,
 				     from_access ? FILE__AUDIT_ACCESS : 0,
 				     &denied);
@@ -3108,6 +3109,65 @@ static void selinux_file_free_security(struct file *file)
 	file_free_security(file);
 }
 
+static int operation_has_perm(const struct cred *cred,
+		struct file *file,
+		u32 perms, u32 cmd)
+{
+	struct file_security_struct *fsec = file->f_security;
+	struct inode *inode = file_inode(file);
+	struct common_audit_data ad;
+	struct lsm_ioctlop_audit ioctl;
+	struct av_decision avd;
+	struct av_operations avo;
+	struct inode_security_struct *isec = inode->i_security;
+	u32 sid = cred_sid(cred);
+	int rc, rc2;
+	u16 i;
+
+	if (sid != fsec->sid) {
+		rc = avc_has_perm(sid, fsec->sid,
+				  SECCLASS_FD,
+				  FD__USE,
+				  &ad);
+		if (rc)
+			goto out;
+	}
+
+	validate_creds(cred);
+
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+
+	avd.avo = &avo;
+
+	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass,
+					perms, AVC_USE_SUPPLIED_AVO, &avd);
+	if (rc)
+		goto out;
+
+	/* if the permission is granted, check the command number */
+	if (avd.avo) {
+		rc = -EACCES;
+		for (i = 0; i < avd.avo->len; i++) {
+			if ((((u16) cmd) >= avd.avo->range[i].low)
+				&& (((u16) cmd) <= avd.avo->range[i].high)) {
+				rc = 0;
+				break;
+			}
+		}
+	}
+
+out:
+	ad.type = LSM_AUDIT_DATA_IOCTL_OP;
+	ioctl.cmd = cmd;
+	ioctl.path = file->f_path;
+	ad.u.op = &ioctl;
+	rc2 = avc_audit(sid, isec->sid, isec->sclass, perms, &avd, rc, &ad, 0);
+	if (rc2)
+		return rc2;
+	return rc;
+}
+
 static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 			      unsigned long arg)
 {
@@ -3150,7 +3210,7 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 	 * to the file's ioctl() function.
 	 */
 	default:
-		error = file_has_perm(cred, file, FILE__IOCTL);
+		error = operation_has_perm(cred, file, FILE__IOCTL, cmd);
 	}
 	return error;
 }
