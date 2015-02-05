@@ -1,0 +1,29 @@
+Revision: fa4005336ab085b0d927ccdbb858d17346017dcd
+Patch-set: 5
+File: security/selinux/hooks.c
+
+2794
+Thu Feb 05 00:31:19 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fca4b088_03184e70
+Bytes: 43
+let's avoid whitespace only changes please.
+
+File: security/selinux/selinuxfs.c
+
+714
+Thu Feb 05 00:31:19 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3caba858_650a6603
+Bytes: 10
+necessary?
+
+File: security/selinux/ss/services.c
+
+895
+Thu Feb 05 00:31:19 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3caba858_4505eaf1
+Bytes: 90
+It feels odd for an init function to be taking a partially populated av_decision object...
+
