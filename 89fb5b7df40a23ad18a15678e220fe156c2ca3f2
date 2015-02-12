@@ -1,0 +1,22 @@
+Revision: 89fb5b7df40a23ad18a15678e220fe156c2ca3f2
+Patch-set: 1
+File: /COMMIT_MSG
+
+9:26-10:30
+Thu Feb 12 19:22:20 2015 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56783d6f_f63d80eb
+Bytes: 103
+Shouldn't that be fixed instead?
+I was under the impression that ...get_*_sk() would handle the refcnt.
+
+File: net/netfilter/xt_qtaguid.c
+
+1608:3-1609:21
+Thu Feb 12 19:22:20 2015 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36758977_3571b0c6
+Bytes: 239
+Is it guarantied that if the skb->sk don't match, then the sk from xt_socket_get*_sk() doesn't need put()'ing ever?
+Maybe have a comment here explaining why this keeps on working and why xt_socket_get*_sk() isn't the one that needs fixing.
+
