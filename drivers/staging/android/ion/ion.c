@@ -674,13 +674,43 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 }
 EXPORT_SYMBOL(ion_unmap_kernel);
 
-static int ion_debug_client_show(struct seq_file *s, void *unused)
+static struct rb_node *ion_seq_client(struct seq_file *s, loff_t pos)
 {
-	struct ion_client *client = s->private;
-	struct rb_node *n;
+	struct rb_node *node;
+	loff_t off = 0;
+	struct ion_device *dev = (struct ion_device *)s->private;
+
+	for (node = rb_first(&dev->clients); node; node = rb_next(node)) {
+		if (off == pos)
+			return node;
+		else
+			++off;
+	}
+
+	return NULL;
+}
+
+static void *ion_client_seq_start(struct seq_file *s, loff_t *pos)
+{
+	struct ion_device *dev = (struct ion_device *)s->private;
+
+	down_write(&dev->lock);
+	return *pos ? ion_seq_client(s, *pos - 1): SEQ_START_TOKEN;
+}
+
+static int ion_client_seq_show(struct seq_file *s, void *v)
+{
+	struct rb_node *n, *cnode;
+	struct ion_client *client;
 	size_t sizes[ION_NUM_HEAP_IDS] = {0};
 	const char *names[ION_NUM_HEAP_IDS] = {NULL};
 	int i;
+
+	if (v == SEQ_START_TOKEN)
+		return 0;
+
+	cnode = v;
+	client = rb_entry(cnode, struct ion_client, node);
 
 	mutex_lock(&client->lock);
 	for (n = rb_first(&client->handles); n; n = rb_next(n)) {
@@ -703,16 +733,48 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 	return 0;
 }
 
+static void *ion_client_seq_next(struct seq_file *s, void *v, loff_t *pos)
+{
+	struct rb_node *cnode = v;
+
+	++*pos;
+	if (v == SEQ_START_TOKEN)
+		return ion_seq_client(s, 0);
+
+	return rb_next(cnode);
+}
+
+static void ion_client_seq_stop(struct seq_file *s, void *v)
+{
+       struct ion_device *dev = (struct ion_device *)s->private;
+
+       up_write(&dev->lock);
+}
+
+static const struct seq_operations ion_seq_ops = {
+	.start = ion_client_seq_start,
+	.next = ion_client_seq_next,
+	.stop = ion_client_seq_stop,
+	.show = ion_client_seq_show,
+};
+
 static int ion_debug_client_open(struct inode *inode, struct file *file)
 {
-	return single_open(file, ion_debug_client_show, inode->i_private);
+	int ret = seq_open(file, &ion_seq_ops);
+
+	if (!ret) {
+		struct seq_file *m = (struct seq_file *)file->private_data;
+		m->private = inode->i_private;
+	}
+
+	return ret;
 }
 
 static const struct file_operations debug_client_fops = {
 	.open = ion_debug_client_open,
 	.read = seq_read,
 	.llseek = seq_lseek,
-	.release = single_release,
+	.release = seq_release,
 };
 
 static int ion_get_client_serial(const struct rb_root *root,
@@ -795,16 +857,6 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 	rb_link_node(&client->node, parent, p);
 	rb_insert_color(&client->node, &dev->clients);
 
-	client->debug_root = debugfs_create_file(client->display_name, 0664,
-						dev->clients_debug_root,
-						client, &debug_client_fops);
-	if (!client->debug_root) {
-		char buf[256], *path;
-		path = dentry_path(dev->clients_debug_root, buf, 256);
-		pr_err("Failed to create client debugfs at %s/%s\n",
-			path, client->display_name);
-	}
-
 	up_write(&dev->lock);
 
 	return client;
@@ -838,12 +890,11 @@ void ion_client_destroy(struct ion_client *client)
 	if (client->task)
 		put_task_struct(client->task);
 	rb_erase(&client->node, &dev->clients);
-	debugfs_remove_recursive(client->debug_root);
-	up_write(&dev->lock);
 
 	kfree(client->display_name);
 	kfree(client->name);
 	kfree(client);
+	up_write(&dev->lock);
 }
 EXPORT_SYMBOL(ion_client_destroy);
 
@@ -1583,10 +1634,10 @@ struct ion_device *ion_device_create(long (*custom_ioctl)
 		pr_err("ion: failed to create debugfs heaps directory.\n");
 		goto debugfs_done;
 	}
-	idev->clients_debug_root = debugfs_create_dir("clients",
-						idev->debug_root);
+	idev->clients_debug_root = debugfs_create_file("clients", 0664,
+			idev->debug_root, idev, &debug_client_fops);
 	if (!idev->clients_debug_root)
-		pr_err("ion: failed to create debugfs clients directory.\n");
+		pr_err("ion: failed to create debugfs clients file.\n");
 
 debugfs_done:
 
