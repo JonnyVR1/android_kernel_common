@@ -1,0 +1,181 @@
+Revision: 99364866cacdea7e00c561d45dc9511dc12274d7
+Patch-set: 2
+File: /COMMIT_MSG
+
+24:37-24:38
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bbf18df_77e4b059
+Bytes: 23
+nit: whitespace needed.
+
+File: security/selinux/hooks.c
+
+3131:3-3131:4
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebca2890_b3b818c4
+Bytes: 123
+note: this differs from the file_has_perm() indentation of the same code, but that includes spaces and is likely incorrect.
+
+File: security/selinux/operations.c
+
+43
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b08ccac_68806392
+Bytes: 30
+no latest_notif functionality?
+
+132:2-132:29
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b205c81_c4e27ed8
+Bytes: 45
+kernel style guide re brackets here and below
+
+215:1-218:13
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b6398c4_7d0cef63
+Bytes: 144
+maybe just "return node;"?  The branch here was necessary in the avc code because it kept track of cache misses, which we don't seem to do here.
+
+328:3-329:13
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b31d8d0_8737a60b
+Bytes: 37
+see below comment re kernel brackets.
+
+332:1-333:11
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b31d8d0_e7d1425a
+Bytes: 163
+nit - kernel style guide: "This does not apply if only one branch of a conditional statement is a single
+statement; in the latter case use braces in both branches"
+
+392:41-392:42
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b644c9b_a8d19b5a
+Bytes: 10
+permission
+
+394:3-394:48
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b644c9b_88ccd7c1
+Bytes: 34
+this isn't quite accurate anymore.
+
+406:5-406:21
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b728058_70fb8ecd
+Bytes: 116
+kernel coding style: "Don't put multiple assignments on a single line either.  Kernel coding style is super simple."
+
+421
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b993cf9_02370e0a
+Bytes: 46
+We could call rcu_read_unlock() here, perhaps?
+
+455:1-456:11
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b513ca8_7c7839a8
+Bytes: 143
+Is there a reason we're relying on selinux_enabled here rather than calling sel_operation_init() from selinux_init, as is done with avc_init()?
+
+File: security/selinux/ss/avtab.h
+
+45:0-50:2
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b644c9b_a852fb53
+Bytes: 14
+please remove.
+
+File: security/selinux/ss/services.c
+
+621:24-621:25
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b585ce4_c7d88033
+Bytes: 22
+and operation decision
+
+631:1-631:23
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bd55878_67de1291
+Bytes: 7
+needed?
+
+671:6-671:42
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b993cf9_1f7be7a6
+Bytes: 149
+This reassigns the operation_decision allowed operation every time new policy concerning it is encountered, rather than combining allowed operations.
+
+677:6-677:44
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b6398c4_fad1e559
+Bytes: 10
+see above.
+
+683:6-683:43
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b6398c4_1ad7794d
+Bytes: 10
+see above.
+
+689:3-689:56
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb95c8bd_bef4b50f
+Bytes: 51
+Will likely need to add ioctl support here as well.
+
+703:3-703:45
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b6398c4_1a2cd9b9
+Bytes: 51
+Will likely need to add ioctl support here as well.
+
+708:1-723:2
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb95c8bd_9e9e19d4
+Bytes: 70
+Not needed, I think, as we will never be checking this for ioctl perm.
+
+730:1-731:18
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb95c8bd_de7fc1c9
+Bytes: 94
+Will likely need to add ioctl support here as well (although I don't know what this is doing).
+
+1035:1-1035:51
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be9ac2d_e019627b
+Bytes: 23
+nit: kernel-style guide
+
+1076:5-1076:6
+Wed Feb 18 23:13:24 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be9ac2d_60d432f5
+Bytes: 14
+This is weird.
+
