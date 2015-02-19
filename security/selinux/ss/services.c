@@ -96,6 +96,12 @@ static void context_struct_compute_av(struct context *scontext,
 				      u16 tclass,
 				      struct av_decision *avd);
 
+static void context_struct_compute_operation(struct context *scontext,
+				      struct context *tcontext,
+				      u16 tclass,
+					  struct av_decision *avd,
+				      struct operation_decision *od);
+
 struct selinux_mapping {
 	u16 value; /* policy value */
 	unsigned num_perms;
@@ -612,6 +618,106 @@ static void type_attribute_bounds_av(struct context *scontext,
 }
 
 /*
+ * Compute access vector and operation decision based on a context
+ * structure pair for the permissions in a particular class.
+ */
+static void context_struct_compute_operation(struct context *scontext,
+				      struct context *tcontext,
+				      u16 tclass,
+					  struct av_decision *avd,
+				      struct operation_decision *od)
+{
+	struct constraint_node *constraint;
+	struct avtab_key avkey;
+	struct avtab_node *node;
+	struct class_datum *tclass_datum;
+	struct ebitmap *sattr, *tattr;
+	struct ebitmap_node *snode, *tnode;
+	unsigned int i, j;
+
+	if (unlikely(!tclass || tclass > policydb.p_classes.nprim)) {
+		if (printk_ratelimit())
+			printk(KERN_WARNING "SELinux:  Invalid class %hu\n", tclass);
+		return;
+	}
+
+	tclass_datum = policydb.class_val_to_struct[tclass - 1];
+
+	/*
+	 * If a specific type enforcement rule was defined for
+	 * this permission check, then use it.
+	 */
+	avkey.target_class = tclass;
+	avkey.specified = AVTAB_AV;
+	sattr = flex_array_get(policydb.type_attr_map_array, scontext->type - 1);
+	BUG_ON(!sattr);
+	tattr = flex_array_get(policydb.type_attr_map_array, tcontext->type - 1);
+	BUG_ON(!tattr);
+	ebitmap_for_each_positive_bit(sattr, snode, i) {
+		ebitmap_for_each_positive_bit(tattr, tnode, j) {
+			avkey.source_type = i + 1;
+			avkey.target_type = j + 1;
+			for (node = avtab_search_node(&policydb.te_avtab, &avkey);
+			     node;
+			     node = avtab_search_node_next(node, avkey.specified)) {
+				/* only consider IOCTL permissions */
+				if (!(node->datum.data & FILE__IOCTL))
+					continue;
+				if (node->key.specified == AVTAB_ALLOWED) {
+					avd->allowed |= node->datum.data;
+					if (node->datum.ops) {
+						od->specified |= AVTAB_ALLOWED;
+						/* note: this is a place holder for functional testing.
+						 * Will need to combine ranges as this currently
+						 * only considers that last range-set encountered
+						 */
+						*(od->allowed) = *(node->datum.ops);
+					}
+				} else if (node->key.specified == AVTAB_AUDITALLOW) {
+					avd->auditallow |= node->datum.data;
+					if (node->datum.ops) {
+						od->specified |= AVTAB_AUDITALLOW;
+						*(od->auditallow) = *(node->datum.ops);
+					}
+				} else if (node->key.specified == AVTAB_AUDITDENY) {
+					avd->auditdeny &= node->datum.data;
+					if (node->datum.ops) {
+						od->specified |= AVTAB_AUDITDENY;
+						*(od->auditdeny) = *(node->datum.ops);
+					}
+				}
+			}
+
+			/* Check conditional av table for additional permissions */
+			cond_compute_av(&policydb.te_cond_avtab, &avkey, avd);
+
+		}
+	}
+
+	/*
+	 * Remove any permissions prohibited by a constraint (this includes
+	 * the MLS policy).
+	 */
+	constraint = tclass_datum->constraints;
+	while (constraint) {
+		if ((constraint->permissions & (avd->allowed)) &&
+		    !constraint_expr_eval(scontext, tcontext, NULL,
+					  constraint->expr)) {
+			avd->allowed &= ~(constraint->permissions);
+		}
+		constraint = constraint->next;
+	}
+
+	/*
+	 * If the given source and target types have boundary
+	 * constraint, lazy checks have to mask any violated
+	 * permission and notice it to userspace via audit.
+	 */
+	type_attribute_bounds_av(scontext, tcontext,
+				 tclass, avd);
+
+}
+/*
  * Compute access vectors based on a context structure pair for
  * the permissions in a particular class.
  */
@@ -898,6 +1004,71 @@ static void avd_init(struct av_decision *avd)
 	avd->flags = 0;
 }
 
+/**
+ * security_compute_operation - Compute access vector and
+ * retrieve operations ranges.
+ * @ssid: source security identifier
+ * @tsid: target security identifier
+ * @tclass: target security class
+ * @od: operation decision structure
+ * Compute access decision and populate operations ranges
+ * SID pair (@ssid, @tsid) for the permissions in @tclass.
+ */
+void security_compute_operation(u32 ssid, u32 tsid,
+			 u16 orig_tclass, struct operation_decision *od)
+{
+	u16 tclass;
+	struct context *scontext = NULL, *tcontext = NULL;
+	struct av_decision avd;
+
+	read_lock(&policy_rwlock);
+	avd_init(&avd);
+	if (!ss_initialized)
+		goto allow;
+
+	scontext = sidtab_search(&sidtab, ssid);
+	if (!scontext) {
+		printk(KERN_ERR "SELinux: %s:  unrecognized SID %d\n",
+		       __func__, ssid);
+		goto out;
+	}
+
+	/* permissive domain? */
+	if (ebitmap_get_bit(&policydb.permissive_map, scontext->type))
+		avd.flags |= AVD_FLAGS_PERMISSIVE;
+
+	tcontext = sidtab_search(&sidtab, tsid);
+	if (!tcontext) {
+		printk(KERN_ERR "SELinux: %s:  unrecognized SID %d\n",
+		       __func__, tsid);
+		goto out;
+	}
+
+	tclass = unmap_class(orig_tclass);
+	if (unlikely(orig_tclass && !tclass)) {
+		if (policydb.allow_unknown)
+			goto allow;
+		goto out;
+	}
+	context_struct_compute_operation(scontext, tcontext, tclass, &avd, od);
+	map_decision(orig_tclass, &avd, policydb.allow_unknown);
+out:
+	/* map from access vector decisions to operation
+	 * decisions */
+	if (avd.allowed & FILE__IOCTL)
+		od->av |= OPERATION_ALLOWED;
+	if (avd.auditallow & FILE__IOCTL)
+		od->av |= OPERATION_AUDITALLOW;
+	if (!(avd.auditdeny & FILE__IOCTL))
+		od->av |= OPERATION_AUDITDENY;
+	od->flags = avd.flags;
+
+	read_unlock(&policy_rwlock);
+	return;
+allow:
+	avd.allowed = 0xffffffff;
+	goto out;
+}
 
 /**
  * security_compute_av - Compute access vector decisions.
