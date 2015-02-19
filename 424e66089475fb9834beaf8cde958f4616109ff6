@@ -18,10 +18,26 @@ UUID: 08a1425e_5f4fef7e
 Bytes: 43
 Return without initialization of avd or od.
 
+640
+Thu Feb 19 21:27:14 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08a1425e_5f4fef7e
+UUID: 08cf8248_2c221319
+Bytes: 159
+avd is initialized in the calling function - security_compute_operation, od is initialized in operation_has_perm (in operations.c which I forgot to add...oops)
+
 719
 Thu Feb 19 21:14:30 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 68e0feaf_0f338520
 Bytes: 201
 I would prefer to avoid duplication of all of this code from context_struct_compute_av.  Let's make a common helper for both, which can simply skip the operation processing if not passed a non-NULL od.
+
+719
+Thu Feb 19 21:27:14 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68e0feaf_0f338520
+UUID: 88db7205_53db76f4
+Bytes: 8
+Will do.
 
