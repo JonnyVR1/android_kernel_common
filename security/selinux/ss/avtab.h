@@ -23,6 +23,8 @@
 #ifndef _SS_AVTAB_H_
 #define _SS_AVTAB_H_
 
+#include "security.h"
+
 struct avtab_key {
 	u16 source_type;	/* source type */
 	u16 target_type;	/* target type */
@@ -42,6 +44,7 @@ struct avtab_key {
 
 struct avtab_datum {
 	u32 data; /* access vector or type value */
+	struct operation *ops; /* array of allowed ioctl operations */
 };
 
 struct avtab_node {
