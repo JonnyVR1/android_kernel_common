@@ -27,12 +27,38 @@ UUID: 8b08ccac_68806392
 Bytes: 30
 no latest_notif functionality?
 
+43
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b08ccac_68806392
+UUID: 0b205c81_071f385e
+Bytes: 168
+I think it will need to be added eventually. However I'm reluctant to add code that I can't test. Is there a way to load new policy during runtime on an Android device?
+
 132:2-132:29
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b205c81_c4e27ed8
 Bytes: 45
 kernel style guide re brackets here and below
+
+132:2-132:29
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b205c81_c4e27ed8
+UUID: 6b31d8d0_6a3d17b5
+Bytes: 255
+Ah, I missed that in the coding style. Good catch!
+
+This does not apply if only one branch of a conditional statement is a single
+statement; in the latter case use braces in both branches:
+
+if (condition) {
+	do_this();
+	do_that();
+} else {
+	otherwise();
+}
 
 215:1-218:13
 Wed Feb 18 23:13:24 2015 +0000
@@ -70,6 +96,14 @@ UUID: 8b644c9b_88ccd7c1
 Bytes: 34
 this isn't quite accurate anymore.
 
+394:3-394:48
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b644c9b_88ccd7c1
+UUID: 6b31d8d0_2ac07f20
+Bytes: 65
+Class is still considered in the same way in the security server.
+
 406:5-406:21
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,12 +118,28 @@ UUID: 0b993cf9_02370e0a
 Bytes: 46
 We could call rcu_read_unlock() here, perhaps?
 
+421
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b993cf9_02370e0a
+UUID: 48241aa4_f6cba054
+Bytes: 98
+It's there for a future change. Logic for handling new policy load is going to go here eventually.
+
 455:1-456:11
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b513ca8_7c7839a8
 Bytes: 143
 Is there a reason we're relying on selinux_enabled here rather than calling sel_operation_init() from selinux_init, as is done with avc_init()?
+
+455:1-456:11
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b513ca8_7c7839a8
+UUID: 48241aa4_b6cf6830
+Bytes: 99
+Not particularly. This is more following precedence from the other caches (netport, netif netnode).
 
 File: security/selinux/ss/avtab.h
 
@@ -123,6 +173,14 @@ UUID: 0b993cf9_1f7be7a6
 Bytes: 149
 This reassigns the operation_decision allowed operation every time new policy concerning it is encountered, rather than combining allowed operations.
 
+671:6-671:42
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b993cf9_1f7be7a6
+UUID: 48525a24_06b39a97
+Bytes: 206
+The plan was to combine operation ranges in the policy compiler to ensure only one range array, but based on our offline discussion, that may get really messy (due to attributes). Back to the drawing board.
+
 677:6-677:44
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -151,6 +209,14 @@ UUID: 6b6398c4_1a2cd9b9
 Bytes: 51
 Will likely need to add ioctl support here as well.
 
+703:3-703:45
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b6398c4_1a2cd9b9
+UUID: 48525a24_c6e1024b
+Bytes: 133
+was not planning on adding constraint support for ranges. This maintains the ability to use constraints to disallow all ioctl access.
+
 708:1-723:2
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -178,4 +244,18 @@ Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8be9ac2d_60d432f5
 Bytes: 14
 This is weird.
+
+1076:5-1076:6
+Thu Feb 19 17:51:20 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be9ac2d_60d432f5
+UUID: 48525a24_465ab270
+Bytes: 208
+Agreed. Checkout how avd is initialized.
+
+	avd->allowed = 0;
+	avd->auditallow = 0;
+	avd->auditdeny = 0xffffffff;
+
+An auditdeny permission is "set" by zeroing that bit - the opposite of allowed and auditallow.
 
