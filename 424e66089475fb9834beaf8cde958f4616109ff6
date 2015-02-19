@@ -1,0 +1,27 @@
+Revision: 424e66089475fb9834beaf8cde958f4616109ff6
+Patch-set: 3
+File: security/selinux/ss/avtab.c
+
+465
+Thu Feb 19 21:14:30 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28c2861e_8d830135
+Bytes: 170
+We could avoid the need to store and read this size for every avtab datum by defining a new AVTAB_OPERATION flag in specified, only set when there is an operations array.
+
+File: security/selinux/ss/services.c
+
+640
+Thu Feb 19 21:14:30 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 08a1425e_5f4fef7e
+Bytes: 43
+Return without initialization of avd or od.
+
+719
+Thu Feb 19 21:14:30 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 68e0feaf_0f338520
+Bytes: 201
+I would prefer to avoid duplication of all of this code from context_struct_compute_av.  Let's make a common helper for both, which can simply skip the operation processing if not passed a non-NULL od.
+
