@@ -84,6 +84,16 @@ Bytes: 361
 I'm not clear that this is correct either.
 Do we truly want to support auditallow/dontaudit at per-ioctl-command granularity?  Or should we just leave those at ioctl permission granularity (i.e. audit all ioctl allows or denies for a given (source, target, class), which will always include the ioctl command value), and only apply the range for allow checking?
 
+363
+Fri Feb 20 23:38:05 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 887c52f2_48ae1f2e
+UUID: a813d6da_89acb903
+Bytes: 670
+auditallow functionality has been tested, auditdeny has not.
+
+I'm reluctant to remove auditallow. I originally implemented this using just allow, but quickly ran into an issue where auditallow of the entire ioctl (gpu) would fill up the log and trigger the watch-dog timer, or if rate-limited would miss commands that were infrequently called. This makes it difficult to create policy using the typical dmesg -> audit2allow method. Relying on actual denials seems fragile. Particularly because device-specific policy doesn't have the opportunity to mature the way general policy does. And I anticipate this being used to reduce attack surface on device-specific drivers.
+
 381
 Fri Feb 20 16:05:17 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
