@@ -18,6 +18,36 @@ UUID: 288a862f_0df19120
 Bytes: 811
 Have a look at commit 782ebb992ec20b5afdd5786ee8c2f1b58b631f24, which previously  reduced memory usage by the avtab and split what was previously stored in a single avtab entry into multiple entries.  We could do the same here, particularly if we introduce an AVTAB_OPERATION specified flag as I suggested, and then we can avoid wasting unused operation fields in both the kernel binary policy file and in the in-memory avtab.  That then raises the question of whether we truly want to unify the FILE__IOCTL check and the operation check as you have done or leave them separate, which would greatly simplify your code and avoid duplication with the AVC and the security server.  Current Nexus 5 -userdebug policy in AOSP has 6674 avtab entries.  How many of those do we truly expect to include ioctl operations?
 
+47
+Fri Feb 20 19:36:29 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 288a862f_0df19120
+UUID: a8c5967a_02c2d08f
+Bytes: 652
+Using the flag to reduce the size of the policy binary is straightforward. It's not clear to me what you are suggesting for the in-memory avtab. I could use a union for the datum structure.
+
+struct avtab_datum {
+	union {
+		u32 data;
+		struct operation *ops;
+	} u;
+}
+
+Or are you suggesting a single range per avtab.
+
+
+struct avtab_datum {
+	union {
+		u32 data;
+		struct {
+			u16 high;
+			u16 low;
+		} range;
+	} u;
+}
+
+That would provide significant memory reduction, but also the possibility of very long chains in the avtab. Based on the current setup, compile time restrictions on the number of ranges is necessary, so maybe this is not a valid concern.
+
 File: security/selinux/ss/services.c
 
 640
