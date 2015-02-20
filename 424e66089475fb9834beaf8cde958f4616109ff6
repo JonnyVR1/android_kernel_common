@@ -9,6 +9,15 @@ UUID: 28c2861e_8d830135
 Bytes: 170
 We could avoid the need to store and read this size for every avtab datum by defining a new AVTAB_OPERATION flag in specified, only set when there is an operations array.
 
+File: security/selinux/ss/avtab.h
+
+47
+Fri Feb 20 14:05:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 288a862f_0df19120
+Bytes: 811
+Have a look at commit 782ebb992ec20b5afdd5786ee8c2f1b58b631f24, which previously  reduced memory usage by the avtab and split what was previously stored in a single avtab entry into multiple entries.  We could do the same here, particularly if we introduce an AVTAB_OPERATION specified flag as I suggested, and then we can avoid wasting unused operation fields in both the kernel binary policy file and in the in-memory avtab.  That then raises the question of whether we truly want to unify the FILE__IOCTL check and the operation check as you have done or leave them separate, which would greatly simplify your code and avoid duplication with the AVC and the security server.  Current Nexus 5 -userdebug policy in AOSP has 6674 avtab entries.  How many of those do we truly expect to include ioctl operations?
+
 File: security/selinux/ss/services.c
 
 640
@@ -25,6 +34,21 @@ Parent: 08a1425e_5f4fef7e
 UUID: 08cf8248_2c221319
 Bytes: 159
 avd is initialized in the calling function - security_compute_operation, od is initialized in operation_has_perm (in operations.c which I forgot to add...oops)
+
+640
+Fri Feb 20 14:05:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08cf8248_2c221319
+UUID: 288a862f_8dbbc14b
+Bytes: 229
+That's fragile.  Better to perform the initialization in the function and not rely on all callers (present and future) to get it right.  Won't matter though if you coalesce with context_struct_compute_av since it already does it.
+
+664
+Fri Feb 20 14:05:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 288a862f_adb87d4f
+Bytes: 480
+Can't use FILE__IOCTL or other kernel definitions on the policy data structures, as they no longer need to match the policy values (dynamic class/perm mapping support).  security_compute_av() maps the av to the kernel values before returning to the caller.  Besides, we shouldn't make this logic so ioctl-specific; there is no reason for the security server or AVC (or operations cache) to be ioctl-specific, even if the operations lookup is only used presently by the ioctl hook.
 
 719
 Thu Feb 19 21:14:30 2015 +0000
