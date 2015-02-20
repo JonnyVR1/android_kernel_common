@@ -35,6 +35,17 @@ UUID: 0b205c81_071f385e
 Bytes: 168
 I think it will need to be added eventually. However I'm reluctant to add code that I can't test. Is there a way to load new policy during runtime on an Android device?
 
+43
+Fri Feb 20 14:05:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b205c81_071f385e
+UUID: 288a862f_4dd2b990
+Bytes: 115
+adb push out/target/product/<board>/root/sepolicy /data/local/tmp
+adb shell
+su
+load_policy /data/local/tmp/sepolicy
+
 132:2-132:29
 Wed Feb 18 23:13:24 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
