@@ -270,3 +270,11 @@ Agreed. Checkout how avd is initialized.
 
 An auditdeny permission is "set" by zeroing that bit - the opposite of allowed and auditallow.
 
+1076:5-1076:6
+Fri Feb 20 15:18:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48525a24_465ab270
+UUID: 887c52f2_08b267c5
+Bytes: 694
+auditdeny is the set of permissions that should be audited upon denial (i.e. generate an avc: denied message).  However, unlike auditallow and allow, it defaults to all-permissions-set, and one uses dontaudit rules in policy to turn off specific permissions (originally they were auditdeny rules but people always wrote them as auditdeny foo bar:class ~{perm1 perm2...};, and there was then confusion about how to union them, and it switched to dontaudit rules).  So if there is an auditdeny entry, we intersect with it to remove the permissions that should not be audited upon denial.  But it is still the case that you only audit a permission if it is set.  So I'm unclear on your logic here.
+
