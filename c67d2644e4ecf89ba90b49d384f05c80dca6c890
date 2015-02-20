@@ -1,0 +1,90 @@
+Revision: c67d2644e4ecf89ba90b49d384f05c80dca6c890
+Patch-set: 4
+File: security/selinux/include/security.h
+
+123
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_a8195b20
+Bytes: 78
+The meaning of av versus specified is unclear and the usage seems to be mixed.
+
+File: security/selinux/operations.c
+
+168
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4876da13_06d89a2e
+Bytes: 67
+Need to set node to NULL here or you'll return what you just freed.
+
+319
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_4839bf6c
+Bytes: 71
+Would be nicer to read as:
+if (!op->len)
+    return 1;
+
+for (i = 0;...)
+
+346
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 288a862f_10eb6aff
+Bytes: 158
+Would prefer that you pass FILE__IOCTL in as a requested vector from the hook functions and use it throughout operations.c rather than hardcoding FILE__IOCTL.
+
+349
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_8852d7a3
+Bytes: 52
+usually the variable comes first, then the constant.
+
+352
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_a84f9bf8
+Bytes: 54
+Is this correct if I have no operation ranges defined?
+
+363
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_48ae1f2e
+Bytes: 361
+I'm not clear that this is correct either.
+Do we truly want to support auditallow/dontaudit at per-ioctl-command granularity?  Or should we just leave those at ioctl permission granularity (i.e. audit all ioctl allows or denies for a given (source, target, class), which will always include the ioctl command value), and only apply the range for allow checking?
+
+381
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4876da13_e6d29e09
+Bytes: 84
+Pass requested==FILE__IOCTL and flags from caller and propagate to slow_avc_audit().
+
+432
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_e89ef3fc
+Bytes: 52
+Must support global and per-domain permissive modes.
+
+File: security/selinux/ss/services.c
+
+669
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 288a862f_70d10e59
+Bytes: 327
+AVTAB_* values are private to the security server, not exposed outside of the ss subdirectory.  So you can't set them in data structures returned to an external caller like the operations cache.  Interestingly, the operations.c code is using OPERATION_* instead for specified and seeming to assume that the values are the same.
+
+1063
+Fri Feb 20 16:05:17 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_0856e7a5
+Bytes: 284
+Would prefer not to hardcode FILE__IOCTL here.  This is after the map_decision() so it is technically correct but I would prefer that the caller of this function pass in the requested vector (ultimately should originate from the selinux_file_ioctl hook, not even the operations code).
+
