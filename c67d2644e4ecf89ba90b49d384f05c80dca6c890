@@ -18,6 +18,14 @@ UUID: 4876da13_06aeda7e
 Bytes: 127
 Haven't seen your checkpolicy patch but I'll assume you also support specifying as hex values since that would be more typical.
 
+30
+Fri Feb 20 18:29:43 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4876da13_06aeda7e
+UUID: 4876da13_e6c29eb7
+Bytes: 245
+Since the checkpolicy scanner already accepts 0xhexval for NUMBER and the parser converts with strtoul(yytext,NULL,0), you should just get that for free.  Might want to use hex values in the example since I would expect that to look more normal.
+
 File: security/selinux/include/security.h
 
 123
