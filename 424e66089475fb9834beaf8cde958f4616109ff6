@@ -48,6 +48,14 @@ struct avtab_datum {
 
 That would provide significant memory reduction, but also the possibility of very long chains in the avtab. Based on the current setup, compile time restrictions on the number of ranges is necessary, so maybe this is not a valid concern.
 
+47
+Fri Feb 20 19:39:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8c5967a_02c2d08f
+UUID: a8eaf6ec_f1ea08fa
+Bytes: 129
+The former.  Just trying to minimize cost on the majority of avtab entries, which I don't expect will have any operations listed.
+
 File: security/selinux/ss/services.c
 
 640
