@@ -1,5 +1,23 @@
 Revision: c67d2644e4ecf89ba90b49d384f05c80dca6c890
 Patch-set: 4
+File: /COMMIT_MSG
+
+11
+Fri Feb 20 16:22:21 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887c52f2_6822031a
+Bytes: 497
+We generally don't use the term "patch" in change descriptions since the description will live in the history forever, long after it ceases to be a patch.
+Just describe what it is that the patch/change does, focusing first on the logical effect and then only secondarily on implementation details (and even then only to the extent necessary to convey what is not obvious from the code).
+I would say something like "Extend the generic ioctl permission check with support for per-command filtering."
+
+30
+Fri Feb 20 16:22:21 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4876da13_06aeda7e
+Bytes: 127
+Haven't seen your checkpolicy patch but I'll assume you also support specifying as hex values since that would be more typical.
+
 File: security/selinux/include/security.h
 
 123
