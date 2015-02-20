@@ -91,6 +91,14 @@ UUID: 4876da13_e6d29e09
 Bytes: 84
 Pass requested==FILE__IOCTL and flags from caller and propagate to slow_avc_audit().
 
+381
+Fri Feb 20 19:26:05 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4876da13_e6d29e09
+UUID: e8ca2e90_13dd8c68
+Bytes: 63
+Never mind on flags, only used from selinux_inode_permission().
+
 432
 Fri Feb 20 16:05:17 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
