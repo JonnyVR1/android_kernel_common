@@ -1,0 +1,11 @@
+Revision: f5aa3045b11aeff79687236a2cebf1e4b068b995
+Base-for-patch-set: 1
+File: drivers/staging/android/ion/ion.c
+
+708
+Tue Feb 24 19:08:39 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65810917_8781e699
+Bytes: 194
+client is available here as inode->i_private.  Why not add a kref to ion_client, lock dev->lock here, check that client is in the rb_tree, if so use kref_get on it, and then kref_put in release?
+
