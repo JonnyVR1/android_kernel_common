@@ -313,22 +313,35 @@ int pstore_mkfile(enum pstore_type_id type, char *psname, u64 id, int count,
 
 	switch (type) {
 	case PSTORE_TYPE_DMESG:
-		sprintf(name, "dmesg-%s-%lld", psname, id);
+		scnprintf(name, sizeof(name), "dmesg-%s-%lld",
+			  psname, id);
 		break;
 	case PSTORE_TYPE_CONSOLE:
+<<<<<<< HEAD   (2527c3 Merge branch 'linux-3.10.y' into android-3.10.y)
 		sprintf(name, "console-%s-%lld", psname, id);
+=======
+		scnprintf(name, sizeof(name), "console-%s", psname);
+>>>>>>> BRANCH (f5aa30 kbuild: make it possible to specify the module output dir)
 		break;
 	case PSTORE_TYPE_FTRACE:
+<<<<<<< HEAD   (2527c3 Merge branch 'linux-3.10.y' into android-3.10.y)
 		sprintf(name, "ftrace-%s-%lld", psname, id);
+=======
+		scnprintf(name, sizeof(name), "ftrace-%s", psname);
+>>>>>>> BRANCH (f5aa30 kbuild: make it possible to specify the module output dir)
 		break;
 	case PSTORE_TYPE_MCE:
-		sprintf(name, "mce-%s-%lld", psname, id);
+		scnprintf(name, sizeof(name), "mce-%s-%lld", psname, id);
+		break;
+	case PSTORE_TYPE_PMSG:
+		scnprintf(name, sizeof(name), "pmsg-%s-%lld", psname, id);
 		break;
 	case PSTORE_TYPE_UNKNOWN:
-		sprintf(name, "unknown-%s-%lld", psname, id);
+		scnprintf(name, sizeof(name), "unknown-%s-%lld", psname, id);
 		break;
 	default:
-		sprintf(name, "type%d-%s-%lld", type, psname, id);
+		scnprintf(name, sizeof(name), "type%d-%s-%lld",
+			  type, psname, id);
 		break;
 	}
 
