@@ -1,5 +1,14 @@
 Revision: eceb13e1763c85db37c7b507c024213255e30553
 Patch-set: 5
+File: security/selinux/avc.c
+
+739
+Wed Feb 25 22:26:51 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02a1235e_9c8ca54f
+Bytes: 29
+need to update documentation.
+
 File: security/selinux/hooks.c
 
 3177
@@ -26,4 +35,20 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0233e3f5_afddb569
 Bytes: 115
 This will almost always be non-NULL since it is a union now.  Need to test (cur->key.specified & AVTAB_OP) instead.
+
+File: security/selinux/ss/services.c
+
+99
+Wed Feb 25 22:26:51 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 253ab1a9_4de6b9b3
+Bytes: 9
+extra tab
+
+1013
+Wed Feb 25 22:26:51 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 852c3d7c_28e96b84
+Bytes: 20
+need to update docs.
 
