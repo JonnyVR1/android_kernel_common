@@ -1,0 +1,29 @@
+Revision: eceb13e1763c85db37c7b507c024213255e30553
+Patch-set: 5
+File: security/selinux/hooks.c
+
+3177
+Wed Feb 25 21:36:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8258b342_689fc377
+Bytes: 112
+The latter half of this function should really be integrated into avc.c with a new avc_has_operation() function.
+
+File: security/selinux/operations.c
+
+144
+Wed Feb 25 21:36:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c25e2b2b_caa6a3d4
+Bytes: 378
+This should be &=; if the operation is not in range, we do not want to include the permission in the auditdeny vector, i.e. we do not want to audit denials of it.  Don't confuse the auditdeny vector in the avd with the poorly named auditdeny vector passed down from the hooks to support disabling auditing of access(2) requests without disabling actual open/read/write auditing.
+
+File: security/selinux/ss/avtab.c
+
+249
+Wed Feb 25 21:36:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0233e3f5_afddb569
+Bytes: 115
+This will almost always be non-NULL since it is a union now.  Need to test (cur->key.specified & AVTAB_OP) instead.
+
