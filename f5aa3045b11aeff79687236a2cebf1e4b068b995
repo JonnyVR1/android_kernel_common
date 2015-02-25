@@ -9,3 +9,15 @@ UUID: 65810917_8781e699
 Bytes: 194
 client is available here as inode->i_private.  Why not add a kref to ion_client, lock dev->lock here, check that client is in the rb_tree, if so use kref_get on it, and then kref_put in release?
 
+708
+Wed Feb 25 08:42:32 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65810917_8781e699
+UUID: 65bca932_2ff6a992
+Bytes: 436
+Hi Colin, 
+
+  Even if I add "struct kref refcount;" to ion_client, there is no way to synchronize between seq_read and debugfs_remove_dir(). (ion_client_destroy()). ion_client data pointer is still with inode->i_private data, which allows seq_read to proceed further and access the memory which is already freed by the ion_client_destroy().
+
+As per our trails, ion_client data struct is not consistent or valid after ion_client_destroy.
+

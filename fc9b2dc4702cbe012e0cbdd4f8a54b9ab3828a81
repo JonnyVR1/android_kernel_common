@@ -9,6 +9,39 @@ UUID: 65810917_275afac6
 Bytes: 68
 Do you have a stack trace from a crash to put in the commit message?
 
+16
+Wed Feb 25 08:42:32 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65810917_275afac6
+UUID: 05704d17_e7b1bc07
+Bytes: 1966
+Here is the call-stack showing the crash:-
+ 10087.163491:   <6> Unable to handle kernel paging request at virtual address 6b6b6b6b
+ 10087.170686:   <6> pgd = ea94c000
+ 10087.173371:   <2> [6b6b6b6b] *pgd=00000000
+ 10087.176940:   <6> Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+ 10087.182228:   <2> Modules linked in: radio_iris_transport [last unloaded: wlan]
+ 10087.189005:   <6> CPU: 2 PID: 20325 Comm: sh Tainted: G        W  O 3.10.28-g11f94e7-00012-g3135a8a #1
+ 10087.197780:   <6> task: e4263c00 ti: c35c4000 task.ti: c35c4000
+ 10087.203160:   <2> PC is at __list_add+0x34/0xcc
+ 10087.207145:   <2> LR is at __mutex_lock_slowpath+0x17c/0x410
+ 10087.212265:   <2> pc : [<c03430cc>]    lr : [<c09a533c>]    psr: 60070093
+sp : c35c5ea8  ip : c35c5ed8  fp : d22357c0
+ 10087.223725:   <2> r10: dc80b450  r9 : c35c5f80  r8 : e4263c00
+ 10087.228931:   <2> r7 : 00000001  r6 : c35c5ec8  r5 : dc80b450  r4 : 6b6b6b6b
+ 10087.235445:   <2> r3 : 6b6b6b6b  r2 : dc80b450  r1 : 6b6b6b6b  r0 : c35c5ec8
+ 10087.241961:   <2> Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+ 10087.249159:   <2> Control: 10c5383d  Table: aa94c06a  DAC: 00000015
+ ...
+ 10088.194658:   <2> [<c03430cc>] (__list_add+0x34/0xcc) from [<c09a533c>] (__mutex_lock_slowpath+0x17c/0x410)
+ 10088.203854:   <2> [<c09a533c>] (__mutex_lock_slowpath+0x17c/0x410) from [<c09a55f0>] (mutex_lock+0x20/0x3c)
+ 10088.213055:   <2> [<c09a55f0>] (mutex_lock+0x20/0x3c) from [<c06ddbc0>] (ion_debug_client_show+0x38/0xb4)
+ 10088.222086:   <2> [<c06ddbc0>] (ion_debug_client_show+0x38/0xb4) from [<c02113b4>] (seq_read+0x1d4/0x458)
+ 10088.231108:   <2> [<c02113b4>] (seq_read+0x1d4/0x458) from [<c01f4ce0>] (vfs_read+0xa4/0x12c)
+ 10088.239099:   <2> [<c01f4ce0>] (vfs_read+0xa4/0x12c) from [<c01f4e88>] (SyS_read+0x38/0x64)
+ 10088.246915:   <2> [<c01f4e88>] (SyS_read+0x38/0x64) from [<c0106160>] (ret_fast_syscall+0x0/0x30)
+ 10088.255242:   <6> Code: e59f0090 e1a03004 e59f208c ebf7602a (e5943000)
+
 File: drivers/staging/android/ion/ion.c
 
 683
@@ -18,6 +51,16 @@ UUID: 65810917_a74c2a09
 Bytes: 167
 I believe rbtrees may get reordered during add or delete, so you can't assume that an entry will stay at the same offset across multiple calls to ion_client_seq_start.
 
+683
+Wed Feb 25 08:42:32 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65810917_a74c2a09
+UUID: 65bca932_4f9fad40
+Bytes: 562
+Our intention was to show all the clients information as much as possible. If we are writing into seq_buf continuously in ion_client_seq_show() with single call some of the ion_clients debug data wont appear because initial seq_buf size will be limited to a PAGE_SIZE. 
+
+With this approach we can show as many ion clients debug information as much possible.  If I follow other approach such as taking lock once and printing every ion_client information in ion_client_seq_show at single attempt, we may not see all the clients information, if seq_buf is overflow.
+
 897
 Tue Feb 24 19:08:39 2015 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +68,32 @@ UUID: 4576c513_069dfad6
 Bytes: 136
 Why move the lock after the kfree?  If you're about to free the memory nobody better have a reference to it, so the lock is unnecessary.
 
+897
+Wed Feb 25 08:42:32 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4576c513_069dfad6
+UUID: 65bca932_afac5989
+Bytes: 496
+I would like to maintain synchronization between ion_client_destory() and ion_client_debug_show().
+
+ion_client data pointer is still with inode->i_private data, which allows seq_read to proceed further and access the memory which is already freed by the ion_client_destroy(). 
+
+debugfs_remove_recursively is not atomic and after freeing ion_client also, inode->i_private data still referencing to freed ion_client and which leads to system crash will reading/dereferencing the ion client members.
+
 1637
 Tue Feb 24 19:08:39 2015 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c582b518_4a1a93e6
 Bytes: 134
 This changes the output from a file per client to a single file, which is a pretty drastic change to make, and doesn't seem necessary.
+
+1637
+Wed Feb 25 08:42:32 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c582b518_4a1a93e6
+UUID: a59ce184_c712b254
+Bytes: 329
+hi colin, 
+
+have tried couple of options and none of them are working to synchronize between the ion_client_destory and ion_client_debug_show(). Because clients can be created and destroyed dynamically on one core and ion_client_debug_show() can execute on other core, leading to system crash as it is accessing the freed memory.
 
