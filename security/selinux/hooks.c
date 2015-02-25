@@ -89,6 +89,7 @@
 #include "netif.h"
 #include "netnode.h"
 #include "netport.h"
+#include "operations.h"
 #include "xfrm.h"
 #include "netlabel.h"
 #include "audit.h"
@@ -1523,7 +1524,7 @@ static int cred_has_capability(const struct cred *cred,
 		return -EINVAL;
 	}
 
-	rc = avc_has_perm_noaudit(sid, sid, sclass, av, 0, &avd);
+	rc = avc_has_perm_noaudit(sid, sid, sclass, av, 0, &avd, NULL);
 	if (audit == SECURITY_CAP_AUDIT) {
 		int rc2 = avc_audit(sid, sid, sclass, av, &avd, rc, &ad, 0);
 		if (rc2)
@@ -2790,7 +2791,8 @@ static int selinux_inode_permission(struct inode *inode, int mask)
 	sid = cred_sid(cred);
 	isec = inode->i_security;
 
-	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass, perms, 0, &avd);
+	rc = avc_has_perm_noaudit(sid, isec->sid, isec->sclass, perms,
+			0, &avd, NULL);
 	audited = avc_audit_required(perms, &avd, rc,
 				     from_access ? FILE__AUDIT_ACCESS : 0,
 				     &denied);
@@ -3108,6 +3110,72 @@ static void selinux_file_free_security(struct file *file)
 	file_free_security(file);
 }
 
+int operation_has_perm(const struct cred *cred, struct file *file,
+		u32 requested, u32 cmd)
+{
+	struct av_decision avd;
+	struct operation_decision od;
+	struct operation allowed, auditallow, auditdeny;
+	struct common_audit_data ad;
+	struct file_security_struct *fsec = file->f_security;
+	struct inode *inode = file_inode(file);
+	struct inode_security_struct *isec = inode->i_security;
+	struct lsm_ioctlop_audit ioctl;
+	u32 ssid = cred_sid(cred);
+	int rc = 0;
+	int rc2 = 0;
+
+	od.allowed = &allowed;
+	od.auditallow = &auditallow;
+	od.auditdeny = &auditdeny;
+
+	od.specified = 0;
+	od.allowed->len = 0;
+	od.auditallow->len = 0;
+	od.auditdeny->len = 0;
+
+	ad.type = LSM_AUDIT_DATA_IOCTL_OP;
+	ad.u.op = &ioctl;
+	ad.u.op->cmd = cmd;
+	ad.u.op->path = file->f_path;
+
+	if (ssid != fsec->sid) {
+		rc = avc_has_perm(ssid, fsec->sid,
+				SECCLASS_FD,
+				FD__USE,
+				&ad);
+		if (rc)
+			goto out;
+	}
+	validate_creds(cred);
+	if (unlikely(IS_PRIVATE(inode)))
+		return 0;
+
+	rc = avc_has_perm_noaudit(ssid, isec->sid, isec->sclass,
+			requested, 0, &avd, &od);
+
+	if (rc)
+		goto audit;
+
+	/* search through operation ranges for cmd */
+	if (!operation_in_range(od.allowed, (u16) cmd)) {
+		avd.allowed &= ~(requested);
+		/* check if domain is permissive */
+		if (selinux_enforcing && !(avd.flags & AVD_FLAGS_PERMISSIVE))
+			rc = -EACCES;
+		else
+			rc = 0;
+	}
+
+audit:
+	rc2 = operation_audit(ssid, isec->sid, isec->sclass, requested,
+			&avd, &od, (u16) cmd, rc, &ad);
+	if (rc2)
+		return rc2;
+out:
+	return rc;
+}
+
 static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 			      unsigned long arg)
 {
@@ -3150,7 +3218,7 @@ static int selinux_file_ioctl(struct file *file, unsigned int cmd,
 	 * to the file's ioctl() function.
 	 */
 	default:
-		error = file_has_perm(cred, file, FILE__IOCTL);
+		error = operation_has_perm(cred, file, FILE__IOCTL, cmd);
 	}
 	return error;
 }
