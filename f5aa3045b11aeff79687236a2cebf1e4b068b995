@@ -21,3 +21,11 @@ Hi Colin,
 
 As per our trails, ion_client data struct is not consistent or valid after ion_client_destroy.
 
+708
+Wed Feb 25 20:56:18 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65bca932_2ff6a992
+UUID: 0233e3f5_aca26385
+Bytes: 147
+You can pass client and dev in a struct in inode->i_private, and then you can validate client against dev->clients before taking a reference to it.
+

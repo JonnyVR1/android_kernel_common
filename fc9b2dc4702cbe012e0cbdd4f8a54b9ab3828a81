@@ -61,6 +61,16 @@ Our intention was to show all the clients information as much as possible. If we
 
 With this approach we can show as many ion clients debug information as much possible.  If I follow other approach such as taking lock once and printing every ion_client information in ion_client_seq_show at single attempt, we may not see all the clients information, if seq_buf is overflow.
 
+683
+Wed Feb 25 20:56:18 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65bca932_4f9fad40
+UUID: 0233e3f5_4c9adf56
+Bytes: 205
+If the seq_buf overflows, seq_file will allocate a bigger buffer and call show again.
+
+Your code will print clients multiple times or not at all if any new client is created between seq_start and seq_stop.
+
 897
 Tue Feb 24 19:08:39 2015 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,6 +89,14 @@ I would like to maintain synchronization between ion_client_destory() and ion_cl
 ion_client data pointer is still with inode->i_private data, which allows seq_read to proceed further and access the memory which is already freed by the ion_client_destroy(). 
 
 debugfs_remove_recursively is not atomic and after freeing ion_client also, inode->i_private data still referencing to freed ion_client and which leads to system crash will reading/dereferencing the ion client members.
+
+897
+Wed Feb 25 20:56:18 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65bca932_afac5989
+UUID: 222627b6_2d88ad04
+Bytes: 210
+Moving the lock after kfree isn't going to help, and is just going to mask other problems.  The client has already been destroyed by the time we call kfree, and ion_client_debug_show must not be referencing it.
 
 1637
 Tue Feb 24 19:08:39 2015 +0000
