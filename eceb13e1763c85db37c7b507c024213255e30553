@@ -9,6 +9,13 @@ UUID: 02a1235e_9c8ca54f
 Bytes: 29
 need to update documentation.
 
+781:0-781:22
+Wed Feb 25 23:59:43 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 626bbfdd_b789883e
+Bytes: 83
+This statement is no longer necessary. See 21193dcd1f3570ddfd8a04f4465e484c1f94252f
+
 File: security/selinux/hooks.c
 
 3177
