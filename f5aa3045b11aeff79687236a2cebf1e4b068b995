@@ -29,3 +29,15 @@ UUID: 0233e3f5_aca26385
 Bytes: 147
 You can pass client and dev in a struct in inode->i_private, and then you can validate client against dev->clients before taking a reference to it.
 
+708
+Thu Feb 26 04:44:05 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0233e3f5_aca26385
+UUID: 22ee27c7_ada97da5
+Bytes: 558
+Hi Colin, 
+
+  Yes. I have already tried this option. if I keep client and dev in a new struct and that struct is passed in inode->i_private also leads to system crash. Because what ever the memory allocated for new struct need to be freed in ion_client_destroy(). 
+
+"if I form a structure with ion_device and client pair. But we need to allocate memory for this struct and we need free that memory as a part ion_client_destory(). This struct memory is need to be freed in the ion_client_destroy. So same problem will come with SLUB_DEBUG_ON flag(6b string)."
+
