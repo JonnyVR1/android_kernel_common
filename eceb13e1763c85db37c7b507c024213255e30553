@@ -2,12 +2,26 @@ Revision: eceb13e1763c85db37c7b507c024213255e30553
 Patch-set: 5
 File: security/selinux/avc.c
 
+616
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ab1b9e_1e790d57
+Bytes: 421
+This means that in permissive mode, after the first occurrence of an ioctl denial for a given (ssid, tsid, tclass), you won't audit any further denials even for different ioctl commands.  Don't you want/need to add/merge the denied command into the existing entry's od?  Also not fond of hardcoded logic around FILE__IOCTL anywhere outside of the selinux_file_ioctl.  Can't we just leave it as just a test of node->ae.od?
+
 739
 Wed Feb 25 22:26:51 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 02a1235e_9c8ca54f
 Bytes: 29
 need to update documentation.
+
+771
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22738725_25ee6e10
+Bytes: 177
+Used to have similar logic for the NULL avd, but this was removed by Linus in f01e1af01e1af445fac107e91d62a2d59dd535f633810b.  Should probably avoid doing it for the od as well.
 
 781:0-781:22
 Wed Feb 25 23:59:43 2015 +0000
@@ -24,6 +38,13 @@ UUID: 62b3bffa_57ca2ca7
 Bytes: 70
 Hmmm...seemingly obsoleted by f01e1af445fac107e91d62a2d59dd535f633810b
 
+817
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02b5a3f7_dceded13
+Bytes: 90
+FWIW, this entire function is removed in cb4fbe5703be51f8a2dff4052b1901941ab99e12 (3.12?).
+
 File: security/selinux/hooks.c
 
 3177
@@ -35,12 +56,55 @@ The latter half of this function should really be integrated into avc.c with a n
 
 File: security/selinux/operations.c
 
+50
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ab1b9e_9e62bd79
+Bytes: 69
+Unnecessary since the entire od was allocated with kmem_cache_zalloc.
+
+59
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2c0eb6a_bae23122
+Bytes: 6
+Ditto.
+
+68
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2c0eb6a_9ae76d32
+Bytes: 5
+Ditto
+
+101
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82d51302_60021289
+Bytes: 127
+Would prefer to avoid hardcoded use of FILE__IOCTL outside of selinux_file_ioctl.  Is this micro-optimization truly worthwhile?
+
+104
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c282ab18_0ab09bb9
+Bytes: 190
+If you drop the above "optimization", then instead of copying specified twice (once in the caller, into operation_specified for passing to avc_denied and once here), you can just do it once.
+
 144
 Wed Feb 25 21:36:49 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c25e2b2b_caa6a3d4
 Bytes: 378
 This should be &=; if the operation is not in range, we do not want to include the permission in the auditdeny vector, i.e. we do not want to audit denials of it.  Don't confuse the auditdeny vector in the avd with the poorly named auditdeny vector passed down from the hooks to support disabling auditing of access(2) requests without disabling actual open/read/write auditing.
+
+144
+Thu Feb 26 18:55:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c25e2b2b_caa6a3d4
+UUID: 82ba73ec_b846b969
+Bytes: 217
+Sorry, I meant &= ~requested, just like with auditallow.  They are used identically by the AVC, i.e. audited = requested & X where X = auditallow or auditdeny depending on whether the permission was allowed or denied.
 
 File: security/selinux/ss/avtab.c
 
