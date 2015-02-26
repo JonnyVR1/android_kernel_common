@@ -41,3 +41,13 @@ Hi Colin,
 
 "if I form a structure with ion_device and client pair. But we need to allocate memory for this struct and we need free that memory as a part ion_client_destory(). This struct memory is need to be freed in the ion_client_destroy. So same problem will come with SLUB_DEBUG_ON flag(6b string)."
 
+708
+Thu Feb 26 05:33:07 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22ee27c7_ada97da5
+UUID: e2f7af97_eb6b7100
+Bytes: 477
+Hm, you're right, allocating a new structure doesn't help.
+
+I believe the open function should be synchronized with debugfs_remove by debugfs.  If that's the case, then client is guaranteed to still exist until open exits.  You should be able to add a kref there to keep client alive until release is called.  You may also need to move debugfs_remove_recursive to the beginning of ion_client_destroy, and while you're at it destroy needs a call to mutex_destroy(&client->lock).
+
