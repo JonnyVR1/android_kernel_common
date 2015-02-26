@@ -77,6 +77,13 @@ UUID: c2c0eb6a_9ae76d32
 Bytes: 5
 Ditto
 
+98
+Thu Feb 26 19:02:41 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82d51302_a00b3a9f
+Bytes: 124
+For this and all the below functions, be careful about use of inline.  See commit   a554bea89948dfb6d2f9c4c62ce2b12b2dac18ad
+
 101
 Thu Feb 26 18:55:11 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
