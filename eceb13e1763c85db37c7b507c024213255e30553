@@ -16,6 +16,14 @@ UUID: 626bbfdd_b789883e
 Bytes: 83
 This statement is no longer necessary. See 21193dcd1f3570ddfd8a04f4465e484c1f94252f
 
+781:0-781:22
+Thu Feb 26 13:54:20 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 626bbfdd_b789883e
+UUID: 62b3bffa_57ca2ca7
+Bytes: 70
+Hmmm...seemingly obsoleted by f01e1af445fac107e91d62a2d59dd535f633810b
+
 File: security/selinux/hooks.c
 
 3177
