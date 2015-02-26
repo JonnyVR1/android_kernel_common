@@ -9,6 +9,14 @@ UUID: 42ab1b9e_1e790d57
 Bytes: 421
 This means that in permissive mode, after the first occurrence of an ioctl denial for a given (ssid, tsid, tclass), you won't audit any further denials even for different ioctl commands.  Don't you want/need to add/merge the denied command into the existing entry's od?  Also not fond of hardcoded logic around FILE__IOCTL anywhere outside of the selinux_file_ioctl.  Can't we just leave it as just a test of node->ae.od?
 
+616
+Thu Feb 26 19:23:12 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 42ab1b9e_1e790d57
+UUID: c2e54b1d_f26688b8
+Bytes: 176
+The problem with adding/merging the command is that we have a fixed array size for ranges. This creates the possibility of an array size that is larger than the allocated size.
+
 739
 Wed Feb 25 22:26:51 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +30,14 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 22738725_25ee6e10
 Bytes: 177
 Used to have similar logic for the NULL avd, but this was removed by Linus in f01e1af01e1af445fac107e91d62a2d59dd535f633810b.  Should probably avoid doing it for the od as well.
+
+771
+Thu Feb 26 19:23:12 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22738725_25ee6e10
+UUID: 82efd3fe_f09e8079
+Bytes: 28
+updated in the next patchset
 
 781:0-781:22
 Wed Feb 25 23:59:43 2015 +0000
