@@ -17,6 +17,15 @@ UUID: c2e54b1d_f26688b8
 Bytes: 176
 The problem with adding/merging the command is that we have a fixed array size for ranges. This creates the possibility of an array size that is larger than the allocated size.
 
+616
+Thu Feb 26 19:44:33 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2e54b1d_f26688b8
+UUID: 82efd3fe_90061499
+Bytes: 382
+We can at least add/merge until we reach the limit, and return an error to the caller if we hit the limit (although it won't matter for the only current caller, but if e.g. a dynamic policy engine wanted to add commands dynamically, it would want to know if it wasn't possible).
+This is a slow path anyway; permissive mode (global or per-domain) should only be used for development.
+
 739
 Wed Feb 25 22:26:51 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
