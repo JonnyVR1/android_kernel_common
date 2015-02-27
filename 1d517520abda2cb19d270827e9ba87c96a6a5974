@@ -2,6 +2,20 @@ Revision: 1d517520abda2cb19d270827e9ba87c96a6a5974
 Patch-set: 7
 File: security/selinux/avc.c
 
+231
+Fri Feb 27 17:54:05 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 628adf9e_5ff1eb97
+Bytes: 21
+merge with prior line
+
+272
+Fri Feb 27 17:54:05 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 228c67b9_3d2c2fba
+Bytes: 126
+Here and for many of the other functions, the indentation doesn't look right for the arguments on the second and beyond lines.
+
 275
 Fri Feb 27 15:43:06 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
