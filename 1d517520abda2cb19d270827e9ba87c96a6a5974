@@ -140,3 +140,32 @@ UUID: 42ca3bdf_460dd25f
 Bytes: 60
 No point in calling this here since we don't use cred below.
 
+File: security/selinux/include/security.h
+
+124
+Fri Feb 27 16:04:03 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_6629eea9
+Bytes: 137
+Prefer putting | or & at end of line, not beginning.
+Also, not clear this needs to be split into 3 lines and
+the indentation looks wrong.
+
+File: security/selinux/ss/avtab.c
+
+418
+Fri Feb 27 16:04:03 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_467f928b
+Bytes: 218
+Need to return an error if (key.specified & AVTAB_OP) here since it should never happen in these policy versions and if by some random bit flipping it was set, we'd set data here but try to dereference it as ops later.
+
+File: security/selinux/ss/avtab.h
+
+45
+Fri Feb 27 16:04:03 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_7d720f47
+Bytes: 6
+Ditto.
+
