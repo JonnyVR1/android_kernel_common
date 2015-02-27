@@ -23,6 +23,16 @@ UUID: 62073fcc_7d55efb7
 Bytes: 141
 Wondering we should take this test to the callers since it will be the common case, e.g. if (!op->len || avc_operation_in_range(op, cmd)) ...
 
+302
+Fri Feb 27 16:48:13 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62073fcc_7d55efb7
+UUID: c27b8b5e_22616eed
+Bytes: 189
+Actually, since all of the callers negate avc_operation_in_range, it would be:
+if (op->len && !avc_operation_in_range(op, cmd))
+Then we'll never call the function at all in the common case.
+
 305
 Fri Feb 27 15:43:06 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
