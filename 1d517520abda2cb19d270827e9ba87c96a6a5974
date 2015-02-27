@@ -120,6 +120,19 @@ UUID: 62073fcc_9ddd63e7
 Bytes: 875
 I don't think this is appropriate behavior.  Policy development is commonly done in permissive mode (either global for initial board bringup or per-domain for new services), and if we immediately silence all ioctl denials for a given (ssid, tsid, tclass) after the first one and only log that first cmd, then we'll have a very painful policy development process if we ever want to develop least privilege ioctl policies.  Our only real options are to either never call avc_update_node() if node->ae.od, i.e. audit all the denials even in permissive mode, or actually add/merge the operation_ranges.  The first option carries the potential cost of flooding the system with repeated ioctl denials; the second option carries a cost of the merge logic but only in permissive and only if denied, so not critical path.  Regardless, I would omit the (perms & FILE__IOCTL) test here.
 
+761
+Fri Feb 27 17:57:30 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62073fcc_9ddd63e7
+UUID: 628adf9e_1fce8368
+Bytes: 379
+Should have some code up shortly. Considering the return code when there is no space. The Caller does not presently check the return value, but that could change. Some candidates:  
+ENOMEM - /* Out of memory */
+E2BIG  - /* Argument list too long */
+ENOSPC - /* No space left on device */
+
+None of the available options seem great, I'll choose ENOMEM if there is not a preference.
+
 913
 Fri Feb 27 15:43:06 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
