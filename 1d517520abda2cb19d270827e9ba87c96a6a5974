@@ -169,3 +169,96 @@ UUID: 62073fcc_7d720f47
 Bytes: 6
 Ditto.
 
+File: security/selinux/ss/services.c
+
+98
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_1d4e73ff
+Bytes: 14
+Too many tabs.
+
+569
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_3d9a570b
+Bytes: 402
+Not critical now, but at some point we may want to integrate typebounds support for operations as well.  The typebounds relation can be defined in policy through typebounds statements and establishes a hierarchy among types where child types are limited to a subset of the permissions of the parent type.  So imposing the same kind of restriction for operations would make sense if the type is bounded.
+
+616
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22c707d7_a59e3e78
+Bytes: 37
+Need an empty line between functions.
+
+625
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_9d93a3f2
+Bytes: 57
+typically put comments within the { } block they describe
+
+636
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_1d9793e3
+Bytes: 47
+Prefer && and || at end of line, not beginning.
+
+640
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_86ba2ae8
+Bytes: 5
+Ditto
+
+645
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_c6c4226c
+Bytes: 40
+Collapse to else if, reduce indentation.
+
+650
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22c707d7_25936e71
+Bytes: 14
+Comment style.
+
+657
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_26aa5699
+Bytes: 62
+Move to outer else, reduce indentation, make checkpatch happy.
+
+671
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_66b44ef9
+Bytes: 19
+add empty line here
+
+719
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_46b15207
+Bytes: 14
+Too many tabs.
+
+1012
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_1d803393
+Bytes: 24
+@od: operation decisions
+
+1101
+Fri Feb 27 16:17:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_5d7aab04
+Bytes: 159
+Another future extension is that we'll likely want to extend the userspace interface for getting access decisions to support these operation decisions as well.
+
