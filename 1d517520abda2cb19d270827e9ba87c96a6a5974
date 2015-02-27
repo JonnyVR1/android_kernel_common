@@ -133,6 +133,14 @@ ENOSPC - /* No space left on device */
 
 None of the available options seem great, I'll choose ENOMEM if there is not a preference.
 
+761
+Fri Feb 27 18:04:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 628adf9e_1fce8368
+UUID: e295efbd_3bf43789
+Bytes: 92
+-ERANGE is commonly used elsewhere when a buffer is not sufficiently large to hold a result.
+
 913
 Fri Feb 27 15:43:06 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
