@@ -1,0 +1,119 @@
+Revision: 1d517520abda2cb19d270827e9ba87c96a6a5974
+Patch-set: 7
+File: security/selinux/avc.c
+
+275
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_bd6667b7
+Bytes: 34
+checked by caller, drop from here.
+
+286
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_dd651bab
+Bytes: 259
+Since requested is no longer used, this function is now identical to the previous function, just with reverse order of arguments.  So drop one and just call it twice with different argument order.  Arguments can just be src and dst rather than local_od vs od.
+
+302
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_7d55efb7
+Bytes: 141
+Wondering we should take this test to the callers since it will be the common case, e.g. if (!op->len || avc_operation_in_range(op, cmd)) ...
+
+305
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_5d52abd1
+Bytes: 67
+Prefer && and || to be at the end of line rather than at beginning.
+
+308
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02168300_97fc260e
+Bytes: 378
+Documentation/CodingStyle says:
+	/*
+	 * This is the preferred style for multi-line
+	 * comments in the Linux kernel source code.
+	 * Please use it consistently.
+	 *
+	 * Description:  A column of asterisks on the left side,
+	 * with beginning and ending almost-blank lines.
+	 */
+
+Also, I would typically put this comment within the following { } block above the return statement.
+
+320
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62d57f78_67de1266
+Bytes: 31
+u16 cmd (already u16 in caller)
+
+327
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62d57f78_47db0e74
+Bytes: 17
+No need for (u16)
+
+329
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2dbf7ab_c94b9170
+Bytes: 169
+I wuold compute audited first, then clear the bit in it.  No point in clearing it in avd because it is just a stack variable in the caller that will never be used again.
+
+333
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82b7d34b_b0ab1870
+Bytes: 17
+No need for (u16)
+
+335
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2dbf7ab_29618ded
+Bytes: 6
+Ditto.
+
+345
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82b7d34b_90b094db
+Bytes: 7
+u16 cmd
+
+761
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_9ddd63e7
+Bytes: 875
+I don't think this is appropriate behavior.  Policy development is commonly done in permissive mode (either global for initial board bringup or per-domain for new services), and if we immediately silence all ioctl denials for a given (ssid, tsid, tclass) after the first one and only log that first cmd, then we'll have a very painful policy development process if we ever want to develop least privilege ioctl policies.  Our only real options are to either never call avc_update_node() if node->ae.od, i.e. audit all the denials even in permissive mode, or actually add/merge the operation_ranges.  The first option carries the potential cost of flooding the system with repeated ioctl denials; the second option carries a cost of the merge logic but only in permissive and only if denied, so not critical path.  Regardless, I would omit the (perms & FILE__IOCTL) test here.
+
+913
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_5de46ba9
+Bytes: 11
+Why inline?
+
+929
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_c6cee2b8
+Bytes: 146
+Should we take this inside of avc_decision() since it is repeated by both callers except for clearing the od state?  Is it worth keeping separate?
+
+939
+Fri Feb 27 15:43:06 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82e9932d_432f78b0
+Bytes: 29
+No need for parentheses here.
+
