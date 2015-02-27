@@ -117,3 +117,26 @@ UUID: 82e9932d_432f78b0
 Bytes: 29
 No need for parentheses here.
 
+File: security/selinux/hooks.c
+
+3113
+Fri Feb 27 15:54:10 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22c707d7_457f8a8b
+Bytes: 35
+We should truncate to u16 cmd here.
+
+3125
+Fri Feb 27 15:54:10 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62073fcc_dd623b7a
+Bytes: 155
+So that the audited command value matches what was actually checked.  Also so that if we generate policy from denials, we can just directly use that value.
+
+3136
+Fri Feb 27 15:54:10 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42ca3bdf_460dd25f
+Bytes: 60
+No point in calling this here since we don't use cred below.
+
