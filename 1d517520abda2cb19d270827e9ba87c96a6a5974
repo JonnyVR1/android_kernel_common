@@ -24,6 +24,14 @@ UUID: 32111a43_da2445df
 Bytes: 384
 I'm not sure what you mean. The coding standard says "Descendants are always substantially shorter than the parent and are placed substantially to the right." As-is this seems to fit both those criterion. Is the preference for three tabs instead of two or something different? I have noticed a lot of mixed tabs and spaces in the existing code (e.g. see Dan's comment on indentation).
 
+272
+Sat Feb 28 01:12:09 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32111a43_da2445df
+UUID: 123976d0_d1cf84a5
+Bytes: 283
+I would have expected the start of struct operation_decision *local_od to line up with the start of struct operation_decision *od.  Doesn't have to be exact but it is pretty far off here and elsewhere.  But I'm not a stickler for it; just noting it as other maintainers may complain.
+
 275
 Fri Feb 27 15:43:06 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -155,6 +163,14 @@ Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12141632_b9f3dfed
 Bytes: 78
 This is another good example of strange indentation. Three tabs and one space?
+
+880:3-880:4
+Sat Feb 28 01:12:09 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12141632_b9f3dfed
+UUID: 02204381_040c96b6
+Bytes: 30
+Yep, that should be fixed too.
 
 913
 Fri Feb 27 15:43:06 2015 +0000
