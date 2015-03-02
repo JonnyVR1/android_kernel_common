@@ -217,6 +217,14 @@ UUID: 32111a43_bd7d0b9d
 Bytes: 45
 My checkpolicy code currently accepts either.
 
+3125
+Mon Mar 02 18:39:05 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32111a43_bd7d0b9d
+UUID: 923e46eb_5d6a3bed
+Bytes: 244
+It creates an inconsistency between what is actually checked and what is audited and specified.  What's the benefit of auditing the full value, and what's the benefit of accepting the full value in checkpolicy and silently truncating it to u16?
+
 3136
 Fri Feb 27 15:54:10 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
