@@ -982,6 +982,8 @@ static void __ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
 	if (!fl4.flowi4_mark)
 		fl4.flowi4_mark = IP4_REPLY_MARK(sock_net(sk), skb->mark);
 
+printk(KERN_INFO "%s: mtu=%u fl4.flowi4_mark=%u fl4.flowi4_uid=%u\n",
+__func__, mtu, fl4.flowi4_mark, fl4.flowi4_uid);
 	rt = __ip_route_output_key(sock_net(sk), &fl4);
 	if (!IS_ERR(rt)) {
 		__ip_rt_update_pmtu(rt, &fl4, mtu);
@@ -1000,6 +1002,7 @@ void ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
 	bh_lock_sock(sk);
 	rt = (struct rtable *) __sk_dst_get(sk);
 
+printk(KERN_INFO "%s: mtu=%u rt=%p owned_by_user=%d\n", __func__, mtu, rt, sock_owned_by_user(sk));
 	if (sock_owned_by_user(sk) || !rt) {
 		__ipv4_sk_update_pmtu(skb, sk, mtu);
 		goto out;
@@ -1007,13 +1010,24 @@ void ipv4_sk_update_pmtu(struct sk_buff *skb, struct sock *sk, u32 mtu)
 
 	__build_flow_key(&fl4, sk, iph, 0, 0, 0, 0, 0);
 
+printk(KERN_INFO "%s: fl4.flowi4_iif=%d\n", __func__, fl4.flowi4_iif);
+fl4.flowi4_iif = LOOPBACK_IFINDEX;
+//	if (!fl4.flowi4_mark)
+//		fl4.flowi4_mark = IP4_REPLY_MARK(sock_net(sk), skb->mark);
+
+printk(KERN_INFO "%s: mtu=%u fl4.flowi4_mark=%u fl4.flowi4_uid=%u\n",
+__func__, mtu, fl4.flowi4_mark, fl4.flowi4_uid);
+
 	if (!__sk_dst_check(sk, 0)) {
 		rt = ip_route_output_flow(sock_net(sk), &fl4, sk);
+printk(KERN_INFO "%s: rt=%p (%ld)\n", __func__, rt, IS_ERR(rt) ? PTR_ERR(rt) : 0);
 		if (IS_ERR(rt))
 			goto out;
 
 		new = true;
 	}
+printk(KERN_INFO "%s: rt=%p, rt->rt_pmtu=%d, new=%d\n",
+__func__, rt, rt ? rt->rt_pmtu : -1, new);
 
 	__ip_rt_update_pmtu((struct rtable *) rt->dst.path, &fl4, mtu);
 
