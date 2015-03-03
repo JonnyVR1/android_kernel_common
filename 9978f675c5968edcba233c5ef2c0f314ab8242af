@@ -1,0 +1,42 @@
+Revision: 9978f675c5968edcba233c5ef2c0f314ab8242af
+Patch-set: 9
+File: security/selinux/avc.c
+
+237
+Tue Mar 03 20:29:23 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 524cce13_3bdab767
+Bytes: 116
+Would it make sense to set od->specified = specified; here so that we can later validate what fields were allocated?
+
+273
+Tue Mar 03 20:29:23 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 524cce13_dbe5d326
+Bytes: 206
+Then we could replace this with BUG_ON(dest->specified != src->specified);
+Otherwise, even with the other fix, there is still the potential that dest could have a different set of fields allocated than src.
+
+763
+Tue Mar 03 20:29:23 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b247caeb_9e417d16
+Bytes: 65
+Here we allocate the node with a caller-provided specified value.
+
+797
+Tue Mar 03 20:29:23 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d240bed5_5f552bd6
+Bytes: 115
+Here we populate using whatever specified value was set in the original node.  Potential for a difference to arise?
+
+802
+Tue Mar 03 20:29:23 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b247caeb_1e5fadf8
+Bytes: 152
+Replace with:
+ if (!cmd || !node->ae.od || (!node->ae.od->specified & OPERATION_ALLOWED)
+Both for clarity and to test whether allowed is even allocated.
+
