@@ -2,6 +2,13 @@ Revision: 1ef9c830b56263193d5553c95b0f0b0180c73780
 Patch-set: 8
 File: security/selinux/avc.c
 
+274
+Tue Mar 03 16:29:35 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72147288_0776b80b
+Bytes: 160
+This assumes that dest was allocated with the same specified flags as src.  Is that a safe assumption?  Kernel with this patch crashes in this function on boot.
+
 683
 Tue Mar 03 14:02:39 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
