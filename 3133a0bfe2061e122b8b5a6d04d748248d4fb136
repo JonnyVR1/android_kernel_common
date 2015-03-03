@@ -1,0 +1,11 @@
+Revision: 3133a0bfe2061e122b8b5a6d04d748248d4fb136
+Patch-set: 4
+File: security/lsm_audit.c
+
+260
+Tue Mar 03 21:34:45 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f216a2db_384de993
+Bytes: 3
+%hx
+
