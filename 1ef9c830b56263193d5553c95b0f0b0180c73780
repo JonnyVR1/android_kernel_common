@@ -1,0 +1,29 @@
+Revision: 1ef9c830b56263193d5553c95b0f0b0180c73780
+Patch-set: 8
+File: security/selinux/avc.c
+
+683
+Tue Mar 03 14:02:39 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32c11a6d_7a013931
+Bytes: 140
+Why not check for this within this function and avoid the need to separately call avc_operation_in_range, as the only user does this anyway?
+
+File: security/selinux/ss/avtab.c
+
+569
+Tue Mar 03 14:02:39 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d20a7e5c_95c5a4b7
+Bytes: 351
+Need to update avtab_write_item to also write out the operations.  This is used to generate the policy file readable via /sys/fs/selinux/policy, used to obtain the currently loaded kernel policy for analysis/testing.  Should be essentially the same logic as used in the corresponding libsepol functions but just using the kernel types and conventions.
+
+File: security/selinux/ss/services.c
+
+622
+Tue Mar 03 14:02:39 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32c11a6d_fa5ae95c
+Bytes: 490
+So, we could end up denying an operation allowed by policy simply because we end up running out of space in the operation_range while merging multiple allow rules written on different attributes associated with the type, right?  And that truncation of the allowed operations would be silent?  Should we at least log if we bump up against the max operation range len during the merge for debugging purposes?  Is checkpolicy/libsepol doing anything to help detect/prevent this from happening?
+
