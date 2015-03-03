@@ -40,3 +40,12 @@ Replace with:
  if (!cmd || !node->ae.od || (!node->ae.od->specified & OPERATION_ALLOWED)
 Both for clarity and to test whether allowed is even allocated.
 
+802
+Tue Mar 03 20:31:47 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b247caeb_1e5fadf8
+UUID: 524cce13_1bf49bd4
+Bytes: 93
+Sorry, should be:
+ if (!cmd || !node->ae.od || !(node->ae.od->specified & OPERATION_ALLOWED))
+
