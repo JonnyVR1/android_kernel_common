@@ -9,6 +9,14 @@ UUID: 72147288_0776b80b
 Bytes: 160
 This assumes that dest was allocated with the same specified flags as src.  Is that a safe assumption?  Kernel with this patch crashes in this function on boot.
 
+274
+Tue Mar 03 17:16:03 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 72147288_0776b80b
+UUID: 12e976fa_71e058c2
+Bytes: 69
+Hmm...the fix for this didn't end up in this commit. I'll upload now.
+
 683
 Tue Mar 03 14:02:39 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,4 +41,12 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 32c11a6d_fa5ae95c
 Bytes: 490
 So, we could end up denying an operation allowed by policy simply because we end up running out of space in the operation_range while merging multiple allow rules written on different attributes associated with the type, right?  And that truncation of the allowed operations would be silent?  Should we at least log if we bump up against the max operation range len during the merge for debugging purposes?  Is checkpolicy/libsepol doing anything to help detect/prevent this from happening?
+
+622
+Tue Mar 03 17:16:03 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32c11a6d_fa5ae95c
+UUID: 72ce32a5_94f4e459
+Bytes: 117
+Yes, the plan is to add checks in the policy compiler to make sure this doesn't occur. I'll add the logging here too.
 
