@@ -33,6 +33,14 @@ UUID: d20a7e5c_95c5a4b7
 Bytes: 351
 Need to update avtab_write_item to also write out the operations.  This is used to generate the policy file readable via /sys/fs/selinux/policy, used to obtain the currently loaded kernel policy for analysis/testing.  Should be essentially the same logic as used in the corresponding libsepol functions but just using the kernel types and conventions.
 
+569
+Wed Mar 04 14:43:22 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d20a7e5c_95c5a4b7
+UUID: 32d75a80_0a2f5b8b
+Bytes: 426
+Note that avtab_write/avtab_write_item in the kernel do not need to support policyvers < POLICYDB_VERSION_AVTAB, as this is prohibited at the beginning of policydb_write().  This is because /sys/fs/selinux/policy support was added long after that version change and it wasn't viewed as worthwhile to bring in the legacy support from libsepol.  But you do need to support the before and after cases for your new policy version.
+
 File: security/selinux/ss/services.c
 
 622
