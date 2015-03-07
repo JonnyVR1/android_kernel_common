@@ -94,7 +94,8 @@ static int context_struct_to_string(struct context *context, char **scontext,
 static void context_struct_compute_av(struct context *scontext,
 				      struct context *tcontext,
 				      u16 tclass,
-				      struct av_decision *avd);
+				      struct av_decision *avd,
+					  struct operation_decision *od);
 
 struct selinux_mapping {
 	u16 value; /* policy value */
@@ -564,7 +565,8 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(&lo_scontext,
 					  tcontext,
 					  tclass,
-					  &lo_avd);
+					  &lo_avd,
+					  NULL);
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -579,7 +581,8 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(scontext,
 					  &lo_tcontext,
 					  tclass,
-					  &lo_avd);
+					  &lo_avd,
+					  NULL);
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -595,7 +598,8 @@ static void type_attribute_bounds_av(struct context *scontext,
 		context_struct_compute_av(&lo_scontext,
 					  &lo_tcontext,
 					  tclass,
-					  &lo_avd);
+					  &lo_avd,
+					  NULL);
 		if ((lo_avd.allowed & avd->allowed) == avd->allowed)
 			return;		/* no masked permission */
 		masked = ~lo_avd.allowed & avd->allowed;
@@ -612,13 +616,119 @@ static void type_attribute_bounds_av(struct context *scontext,
 }
 
 /*
- * Compute access vectors based on a context structure pair for
- * the permissions in a particular class.
+ * Merge operations ranges a and b, copy result into a. This assumes that for
+ * each input, ranges are sorted, non-overlapping, and the array length
+ * is short such that O(n) merge time is reasonable. If longer arrays are
+ * desired, this function should be upgraded to something more efficient.
+ */
+static void operation_merge_range(struct operation *a, struct operation *b)
+{
+	struct operation_range tmp[MAX_OPERATION_RANGE_LEN];
+	size_t i = 0;
+	size_t j = 0;
+	size_t k = 0;
+	/* sort into tmp */
+	while (j < a->len && k < b->len && i < MAX_OPERATION_RANGE_LEN) {
+		if (a->range[j].high + 1 < b->range[k].low) {
+			/* a comes before b */
+			tmp[i] = a->range[j];
+			i++;
+			j++;
+		} else if (b->range[k].high + 1 < a->range[j].low) {
+			/* b comes before a */
+			tmp[i] = b->range[k];
+			i++;
+			k++;
+		} else if (a->range[j].low <= b->range[k].low &&
+				a->range[j].high >= b->range[k].high) {
+			/* b is completely contained by a, skip */
+			k++;
+		} else if (b->range[k].low <= a->range[j].low &&
+				b->range[k].high >= a->range[j].high) {
+			/* a is completely contained by b, skip */
+			j++;
+		} else if ((a->range[j].low <= b->range[k].low) &&
+				(b->range[k].high + 1 >= a->range[j].high)) {
+			/* a and b overlap, merge */
+			a->range[j].high = b->range[k].high;
+			k++;
+			/*
+			 * a has a new high, ensure it doesn't
+			 * overlap with a + 1
+			 */
+			if ((a->len > j + 1) &&
+					(a->range[j].high + 1 >= a->range[j + 1].low)) {
+				a->range[j + 1].low = a->range[j].low;
+				j++;
+			}
+		} else if ((b->range[k].low <= a->range[j].low) &&
+				(a->range[j].high > b->range[k].high)) {
+			/* a and b overlap, merge */
+			b->range[k].high = a->range[j].high;
+			j++;
+			/*
+			 * b has a new high, ensure it doesn't
+			 * overlap with b + 1
+			 */
+			if ((b->len > k + 1) &&
+					(b->range[k].high + 1 >= b->range[k + 1].low)) {
+				b->range[k + 1].low = b->range[k].low;
+				k++;
+			}
+		}
+	}
+
+	while (j < a->len && i < MAX_OPERATION_RANGE_LEN) {
+		tmp[i] = a->range[j];
+		i++;
+		j++;
+	}
+	while (k < b->len && i < MAX_OPERATION_RANGE_LEN) {
+		tmp[i] = b->range[k];
+		i++;
+		k++;
+	}
+
+	if (j < a->len || k < b->len)
+		printk(KERN_WARNING "SELinux: unable to complete merge of operation ranges.\n");
+
+	memcpy(&a->range, &tmp[0], i * sizeof(struct operation_range));
+	a->len = i;
+}
+
+static void compute_operation_range(struct operation *local,
+		struct operation *in)
+{
+	if (local->len == 0)
+		*local = *in;
+	else
+		operation_merge_range(local, in);
+}
+static void context_struct_compute_operation(
+		struct operation_decision *od,
+		struct avtab_node *node)
+{
+	if (node->key.specified == AVTAB_OP_ALLOWED) {
+		od->specified |= OPERATION_ALLOWED;
+		compute_operation_range(od->allowed, node->datum.u.ops);
+	} else if (node->key.specified == AVTAB_OP_AUDITALLOW) {
+		od->specified |= OPERATION_AUDITALLOW;
+		compute_operation_range(od->auditallow, node->datum.u.ops);
+	} else if (node->key.specified == AVTAB_OP_AUDITDENY) {
+		od->specified |= OPERATION_AUDITDENY;
+		compute_operation_range(od->auditdeny, node->datum.u.ops);
+	}
+}
+
+/*
+ * Compute access vectors and operations ranges based on a context
+ * structure pair for the permissions in a particular class.
  */
 static void context_struct_compute_av(struct context *scontext,
-				      struct context *tcontext,
-				      u16 tclass,
-				      struct av_decision *avd)
+				struct context *tcontext,
+				u16 tclass,
+				struct av_decision *avd,
+				struct operation_decision *od)
 {
 	struct constraint_node *constraint;
 	struct role_allow *ra;
@@ -632,6 +742,12 @@ static void context_struct_compute_av(struct context *scontext,
 	avd->allowed = 0;
 	avd->auditallow = 0;
 	avd->auditdeny = 0xffffffff;
+	if (od) {
+		od->specified = 0;
+		od->allowed->len = 0;
+		od->auditallow->len = 0;
+		od->auditdeny->len = 0;
+	}
 
 	if (unlikely(!tclass || tclass > policydb.p_classes.nprim)) {
 		if (printk_ratelimit())
@@ -646,7 +762,7 @@ static void context_struct_compute_av(struct context *scontext,
 	 * this permission check, then use it.
 	 */
 	avkey.target_class = tclass;
-	avkey.specified = AVTAB_AV;
+	avkey.specified = AVTAB_AV | AVTAB_OP;
 	sattr = flex_array_get(policydb.type_attr_map_array, scontext->type - 1);
 	BUG_ON(!sattr);
 	tattr = flex_array_get(policydb.type_attr_map_array, tcontext->type - 1);
@@ -659,11 +775,13 @@ static void context_struct_compute_av(struct context *scontext,
 			     node;
 			     node = avtab_search_node_next(node, avkey.specified)) {
 				if (node->key.specified == AVTAB_ALLOWED)
-					avd->allowed |= node->datum.data;
+					avd->allowed |= node->datum.u.data;
 				else if (node->key.specified == AVTAB_AUDITALLOW)
-					avd->auditallow |= node->datum.data;
+					avd->auditallow |= node->datum.u.data;
 				else if (node->key.specified == AVTAB_AUDITDENY)
-					avd->auditdeny &= node->datum.data;
+					avd->auditdeny &= node->datum.u.data;
+				else if (od && (node->key.specified & AVTAB_OP))
+					context_struct_compute_operation(od, node);
 			}
 
 			/* Check conditional av table for additional permissions */
@@ -898,13 +1016,13 @@ static void avd_init(struct av_decision *avd)
 	avd->flags = 0;
 }
 
-
 /**
  * security_compute_av - Compute access vector decisions.
  * @ssid: source security identifier
  * @tsid: target security identifier
  * @tclass: target security class
  * @avd: access vector decisions
+ * @od: operation decisions
  *
  * Compute a set of access vector decisions based on the
  * SID pair (@ssid, @tsid) for the permissions in @tclass.
@@ -912,7 +1030,8 @@ static void avd_init(struct av_decision *avd)
 void security_compute_av(u32 ssid,
 			 u32 tsid,
 			 u16 orig_tclass,
-			 struct av_decision *avd)
+			 struct av_decision *avd,
+			 struct operation_decision *od)
 {
 	u16 tclass;
 	struct context *scontext = NULL, *tcontext = NULL;
@@ -946,7 +1065,7 @@ void security_compute_av(u32 ssid,
 			goto allow;
 		goto out;
 	}
-	context_struct_compute_av(scontext, tcontext, tclass, avd);
+	context_struct_compute_av(scontext, tcontext, tclass, avd, od);
 	map_decision(orig_tclass, avd, policydb.allow_unknown);
 out:
 	read_unlock(&policy_rwlock);
@@ -992,7 +1111,7 @@ void security_compute_av_user(u32 ssid,
 		goto out;
 	}
 
-	context_struct_compute_av(scontext, tcontext, tclass, avd);
+	context_struct_compute_av(scontext, tcontext, tclass, avd, NULL);
  out:
 	read_unlock(&policy_rwlock);
 	return;
@@ -1512,7 +1631,7 @@ static int security_compute_sid(u32 ssid,
 
 	if (avdatum) {
 		/* Use the type from the type transition/member/change rule. */
-		newcontext.type = avdatum->data;
+		newcontext.type = avdatum->u.data;
 	}
 
 	/* if we have a objname this is a file trans check so check those rules */
