@@ -16,6 +16,18 @@ UUID: 77fc64c5_24c05294
 Bytes: 36
 What happened to the !cmd test here?
 
+802
+Mon Mar 09 18:05:32 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 77fc64c5_24c05294
+UUID: 971718fb_75a6a8be
+Bytes: 170
+0x0000 is a valid command.
+
+Documentation/ioctl/ioctl-number.txt
+
+I'm having difficulty finding a driver that actually uses it, but it seems incorrect to include it here.
+
 File: security/selinux/ss/avtab.c
 
 565
