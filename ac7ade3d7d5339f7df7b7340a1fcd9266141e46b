@@ -36,6 +36,14 @@ UUID: 57f840fa_1b079b17
 Bytes: 122
 So then don't you need another way to skip this logic when called from avc_has_perm_noaudit rather than avc_has_operation?
 
+802
+Mon Mar 09 18:28:37 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57f840fa_1b079b17
+UUID: f7b7744a_702370d6
+Bytes: 340
+As-is, this would just add command zero to the list of ranges (if specified), which seems harmless for a permissive domain, but certainly not ideal. Originally, this checked if one of the permissions being added was the ioctl permission, so that gated the adding of the command from avc_has_perm_noaudit. I need to think about it some more.
+
 File: security/selinux/ss/avtab.c
 
 565
@@ -58,6 +66,14 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 77fc64c5_a484425d
 Bytes: 9
 put_entry
+
+570
+Mon Mar 09 18:28:37 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 77fc64c5_a484425d
+UUID: 77fd44e8_9cc8c552
+Bytes: 63
+No more late-afternoon commits on Friday. This is embarrassing.
 
 572
 Mon Mar 09 16:31:50 2015 +0000
