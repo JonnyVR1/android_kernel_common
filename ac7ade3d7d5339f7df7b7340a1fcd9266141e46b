@@ -1,0 +1,55 @@
+Revision: ac7ade3d7d5339f7df7b7340a1fcd9266141e46b
+Patch-set: 10
+File: security/selinux/avc.c
+
+278
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f71694db_382ac978
+Bytes: 206
+Why this approach instead of the one I suggested?  This approach will silently drop fields of src that are not allocated in dst.  The one I suggested will trigger a kernel BUG if they are ever inconsistent.
+
+802
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 77fc64c5_24c05294
+Bytes: 36
+What happened to the !cmd test here?
+
+File: security/selinux/ss/avtab.c
+
+565
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97fd58c2_c8106f86
+Bytes: 127
+Wondering if we even need the version check here since AVTAB_OP can't be set in older versions, as enforced by the reader code.
+
+569
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97fd58c2_08f207eb
+Bytes: 13
+cpu_to_le16()
+
+570
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 77fc64c5_a484425d
+Bytes: 9
+put_entry
+
+572
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 77fc64c5_e48a3a6a
+Bytes: 133
+Don't think we generally log such errors when generating the policy image.  And could be confusing as same error is using on reading.
+
+580
+Mon Mar 09 16:31:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 77fc64c5_649f6aa9
+Bytes: 5
+Ditto
+
