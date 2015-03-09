@@ -28,6 +28,14 @@ Documentation/ioctl/ioctl-number.txt
 
 I'm having difficulty finding a driver that actually uses it, but it seems incorrect to include it here.
 
+802
+Mon Mar 09 18:16:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 971718fb_75a6a8be
+UUID: 57f840fa_1b079b17
+Bytes: 122
+So then don't you need another way to skip this logic when called from avc_has_perm_noaudit rather than avc_has_operation?
+
 File: security/selinux/ss/avtab.c
 
 565
