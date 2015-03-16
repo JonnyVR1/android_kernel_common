@@ -1,0 +1,20 @@
+Revision: 110bb8cfe9401ce5e0f5f0b5702655d39512eb53
+Patch-set: 12
+File: security/selinux/avc.c
+
+491
+Mon Mar 16 21:44:58 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c61ac4b3_c072c2df
+Bytes: 48
+this is an impossible to occur condition, right?
+
+File: security/selinux/ss/services.c
+
+626:18-626:19
+Mon Mar 16 21:44:58 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86144c89_58a6cd8c
+Bytes: 43
+extract out and make a #define out of this?
+
