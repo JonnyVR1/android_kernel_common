@@ -9,10 +9,26 @@ UUID: fc9d9026_7e574d9d
 Bytes: 89
 Maybe it will be safer to move it before line #943 to init f->config to NULL in any case?
 
+947:1-947:2
+Mon Mar 16 18:07:06 2015 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc9d9026_7e574d9d
+UUID: e60a685c_6fb791eb
+Bytes: 4
+Done
+
 961:70-961:83
 Wed Feb 04 01:31:27 2015 +0000
 Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bc6318f1_0c13b707
 Bytes: 62
 Suggest: #defines for the constants to increase readability ??
+
+961:70-961:83
+Mon Mar 16 18:07:06 2015 +0000
+Author: Mike Lockwood <1004957@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc6318f1_0c13b707
+UUID: 8147d63d_80bb0623
+Bytes: 4
+Done
 
