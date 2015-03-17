@@ -125,6 +125,22 @@ UUID: a6da3033_c3204ac7
 Bytes: 72
 Should likely introduce a flag or specific parameter to indicate no-cmd.
 
+File: security/selinux/include/security.h
+
+117
+Tue Mar 17 15:08:55 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_62793246
+Bytes: 262
+This field is never used or set by the security server (ss/*.h), so it doesn't belong in security.h or as part of this interface.  It belongs in a AVC-private data structure that wraps the operation_decision returned by the security server and adds it to a list.
+
+128
+Tue Mar 17 15:08:55 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_1e036993
+Bytes: 6
+Ditto.
+
 File: security/selinux/ss/avtab.c
 
 467
