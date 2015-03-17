@@ -80,6 +80,7 @@ struct ion_device {
  * as well as the handles themselves, and should be held while modifying either.
  */
 struct ion_client {
+	struct kref ref;
 	struct rb_node node;
 	struct ion_device *dev;
 	struct rb_root handles;
@@ -113,6 +114,8 @@ struct ion_handle {
 	unsigned int kmap_cnt;
 	int id;
 };
+
+static void ion_client_release(struct kref *kref);
 
 bool ion_buffer_fault_user_mappings(struct ion_buffer *buffer)
 {
@@ -674,6 +677,16 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 }
 EXPORT_SYMBOL(ion_unmap_kernel);
 
+static void ion_client_get(struct ion_client *client)
+{
+	kref_get(&client->ref);
+}
+
+static void ion_client_put(struct ion_client *client)
+{
+	kref_put(&client->ref, ion_client_release);
+}
+
 static int ion_debug_client_show(struct seq_file *s, void *unused)
 {
 	struct ion_client *client = s->private;
@@ -682,6 +695,8 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 	const char *names[ION_NUM_HEAP_IDS] = {NULL};
 	int i;
 
+	ion_client_get(client);
+	down_write(&client->dev->lock);
 	mutex_lock(&client->lock);
 	for (n = rb_first(&client->handles); n; n = rb_next(n)) {
 		struct ion_handle *handle = rb_entry(n, struct ion_handle,
@@ -700,6 +715,8 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 			continue;
 		seq_printf(s, "%16.16s: %16zu\n", names[i], sizes[i]);
 	}
+	up_write(&client->dev->lock);
+	ion_client_put(client);
 	return 0;
 }
 
@@ -805,6 +822,8 @@ struct ion_client *ion_client_create(struct ion_device *dev,
 			path, client->display_name);
 	}
 
+	kref_init(&client->ref);
+	ion_client_get(client);
 	up_write(&dev->lock);
 
 	return client;
@@ -820,8 +839,9 @@ err_put_task_struct:
 }
 EXPORT_SYMBOL(ion_client_create);
 
-void ion_client_destroy(struct ion_client *client)
+static void ion_client_release(struct kref *kref)
 {
+	struct ion_client *client = container_of(kref, struct ion_client, ref);
 	struct ion_device *dev = client->dev;
 	struct rb_node *n;
 
@@ -844,6 +864,11 @@ void ion_client_destroy(struct ion_client *client)
 	kfree(client->display_name);
 	kfree(client->name);
 	kfree(client);
+}
+
+void ion_client_destroy(struct ion_client *client)
+{
+	ion_client_put(client);
 }
 EXPORT_SYMBOL(ion_client_destroy);
 
