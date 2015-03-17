@@ -2,12 +2,151 @@ Revision: 110bb8cfe9401ce5e0f5f0b5702655d39512eb53
 Patch-set: 12
 File: security/selinux/avc.c
 
+231
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_23bbae0a
+Bytes: 12
+unsigned int
+
+239
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_dee8217f
+Bytes: 287
+Can simplify the if statement and return statements to:
+
+return 1U & (op->perms[num >> 5] >> (num & 0x1f));
+
+And should likely define a macro that can be reused for both perms and type arrays for bit testing and setting, thereby reducing duplication and centralizing the magic constants.
+
+256
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_a2dedadf
+Bytes: 69
+Why isn't this always done, even if we had to set the type bit first?
+
+282
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_0304f241
+Bytes: 366
+Should probably be using the Linux kernel list structures and macros, include/linux/list.h.  AVC already converted to use hlists as appropriate for hash chains.  AVC and security server originally predated Linux and thus didn't use native Linux types and security server policy data structures shared with userspace but for in-kernel structures, should convert over.
+
+313
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_42d0b6ce
+Bytes: 28
+sizeof(dest->allowed->perms)
+
+324
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_be30b597
+Bytes: 74
+Maybe this belongs in the caller so it is only applied in the proper case?
+
+346
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_e2e8e27e
+Bytes: 3
+++;
+
+353
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_430efa6b
+Bytes: 31
+Why not insert as the new head?
+
+363
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_de8ca1cf
+Bytes: 18
+sizeof(dest->type)
+
 491
 Mon Mar 16 21:44:58 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c61ac4b3_c072c2df
 Bytes: 48
 this is an impossible to occur condition, right?
+
+492
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_5e5091b5
+Bytes: 90
+This kind of test, if necessary/appropriate at all, should be a BUG_ON, i.e. an assertion.
+
+797
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_23300e1b
+Bytes: 8
+spelling
+
+861
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_a205facb
+Bytes: 147
+Didn't you say that a cmd==0 is possible for an ioctl?  If so, you need a separate parameter or other way to determine whether this should be done.
+
+977
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_832f22b8
+Bytes: 66
+inlined and only called once, and short enough to inline directly?
+
+1000
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_7ecc6d08
+Bytes: 45
+Small function, one caller.  Inline directly?
+
+1025
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_5ec7b1e4
+Bytes: 41
+No callers within this file.  Why inline?
+
+1134
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_c3204ac7
+Bytes: 72
+Should likely introduce a flag or specific parameter to indicate no-cmd.
+
+File: security/selinux/ss/avtab.c
+
+467
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_a20c1af0
+Bytes: 186
+Not sure we need the version check in the kernel writer code since the policy can only originate from a prior load and the reader code prohibits AVTAB_OP unless the vers >= this version.
+
+487
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_5e9ed1e4
+Bytes: 24
+ARRAY_SIZE(ops.op.perms)
+
+569
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_031b129f
+Bytes: 10
+ARRAY_SIZE
 
 File: security/selinux/ss/services.c
 
@@ -17,4 +156,40 @@ Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 86144c89_58a6cd8c
 Bytes: 43
 extract out and make a #define out of this?
+
+626:18-626:19
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86144c89_58a6cd8c
+UUID: a6da3033_235f2e53
+Bytes: 21
+ARRAY_SIZE(ops->type)
+
+631
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_9e9779c4
+Bytes: 69
+Use a common macro for getting/setting bits in type and perms arrays.
+
+661
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_e21622fe
+Bytes: 10
+ARRAY_SIZE
+
+662
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86e9acd1_0214eef3
+Bytes: 48
+Do we need this initialization if ops->len == 0?
+
+936
+Tue Mar 17 15:06:51 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66e4b8f7_de9101cf
+Bytes: 25
+Needed if specified == 0?
 
