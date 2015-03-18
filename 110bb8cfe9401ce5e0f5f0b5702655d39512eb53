@@ -237,3 +237,10 @@ UUID: 66e4b8f7_de9101cf
 Bytes: 25
 Needed if specified == 0?
 
+948
+Wed Mar 18 14:41:12 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6a6b0d3_bde1ffc5
+Bytes: 57
+Why is this only if AVTAB_OPNUM and not for AVTAB_OPTYPE?
+
