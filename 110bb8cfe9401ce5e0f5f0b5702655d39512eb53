@@ -173,6 +173,13 @@ ARRAY_SIZE
 
 File: security/selinux/ss/services.c
 
+569
+Wed Mar 18 14:31:32 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c6aba49c_1e7a2db7
+Bytes: 196
+We should go ahead and pass ops to type_attribute_bounds_av() and adjust it for bounded types, and define and pass a lo_ops struct here to use for masking out operations not allowed to the parent.
+
 626:18-626:19
 Mon Mar 16 21:44:58 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -208,6 +215,13 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 86e9acd1_0214eef3
 Bytes: 48
 Do we need this initialization if ops->len == 0?
+
+701
+Wed Mar 18 14:31:32 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86b52cfa_5cfafdb9
+Bytes: 103
+Should pass ops down to the cond_compute_av and adjust it there as well based on any conditional rules.
 
 936
 Tue Mar 17 15:06:51 2015 +0000
