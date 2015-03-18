@@ -1,0 +1,11 @@
+Revision: deb1413f9e1373230a223a2daa93d2bb6f8193dd
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Wed Mar 18 22:35:37 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6d4f037_90a29a1e
+Bytes: 122
+fixup! is a git command that gets executed when running git rebase --autosquash. It is not meant to be published that way.
+
