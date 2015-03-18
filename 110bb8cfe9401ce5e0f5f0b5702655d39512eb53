@@ -195,6 +195,13 @@ UUID: a6da3033_235f2e53
 Bytes: 21
 ARRAY_SIZE(ops->type)
 
+627
+Wed Mar 18 14:35:45 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86b52cfa_dc63ad14
+Bytes: 177
+Not sure if I am just misunderstanding, but this looks wrong.  Setting op->type[i] from a perms[i] value?  Don't you just want to set the type value at this point in both cases?
+
 631
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
