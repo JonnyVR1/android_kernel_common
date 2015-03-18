@@ -62,6 +62,14 @@ UUID: c6aba49c_fef2e1b3
 Bytes: 238
 Not necessarily.  Between the time you incremented operations_len in avc_has_operation() and the time we reach here, you have dropped and re-acquired the rcu read lock and thus this entry may in fact have been allocated by another thread!
 
+349
+Wed Mar 18 20:41:53 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6aba49c_fef2e1b3
+UUID: c6d48430_f6456076
+Bytes: 109
+hmm...suggestions? Do I just need due diligence here e.g. check that the operation decision is in fact empty?
+
 353
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -187,6 +195,16 @@ UUID: c6aba49c_1e7a2db7
 Bytes: 196
 We should go ahead and pass ops to type_attribute_bounds_av() and adjust it for bounded types, and define and pass a lo_ops struct here to use for masking out operations not allowed to the parent.
 
+569
+Wed Mar 18 20:41:53 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6aba49c_1e7a2db7
+UUID: e6bd08e7_9192ac23
+Bytes: 228
+Some name overloading on the word "type." Perhaps I should change to code/function from type/number...
+
+As-is, we would only be able to consider ioctl command types, not the numbers, as the numbers are looked up later as needed.
+
 626:18-626:19
 Mon Mar 16 21:44:58 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -208,6 +226,18 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 86b52cfa_dc63ad14
 Bytes: 177
 Not sure if I am just misunderstanding, but this looks wrong.  Setting op->type[i] from a perms[i] value?  Don't you just want to set the type value at this point in both cases?
+
+627
+Wed Mar 18 20:41:53 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86b52cfa_dc63ad14
+UUID: 06f05cdb_301e4890
+Bytes: 249
+AVTAB_OPTYPE is a way to allow entire types. Since there are 256 of them, using the perms value works nicely.
+
+AVTAB_OPNUM is for allowing permissions within a type.
+
+Would you prefer a separate structure since the type value is unused in this case?
 
 631
 Tue Mar 17 15:06:51 2015 +0000
@@ -237,6 +267,14 @@ UUID: 86b52cfa_5cfafdb9
 Bytes: 103
 Should pass ops down to the cond_compute_av and adjust it there as well based on any conditional rules.
 
+701
+Wed Mar 18 20:41:53 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86b52cfa_5cfafdb9
+UUID: 06f05cdb_5021ccc7
+Bytes: 147
+Agreed. My preference would be to limit the scope of this patch and save that as an extension. I'm a bit concerned about how large this is getting.
+
 936
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -250,4 +288,12 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a6a6b0d3_bde1ffc5
 Bytes: 57
 Why is this only if AVTAB_OPNUM and not for AVTAB_OPTYPE?
+
+948
+Wed Mar 18 20:41:53 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6a6b0d3_bde1ffc5
+UUID: 46e6d429_f2f208b4
+Bytes: 143
+OPTYPE allows an entire type so we care about any specified=OPTYPE that we find, whereas we only care about matching types for specified=OPNUM.
 
