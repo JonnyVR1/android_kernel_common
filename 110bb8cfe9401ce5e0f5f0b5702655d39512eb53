@@ -127,6 +127,13 @@ Should likely introduce a flag or specific parameter to indicate no-cmd.
 
 File: security/selinux/include/security.h
 
+37
+Wed Mar 18 12:43:39 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6da3033_f14990bd
+Bytes: 325
+Policy version 30 was just allocated upstream for a change in the Xen policy format, but the current definition for SELinux kernel policy is identical to policy 29, so you can still reuse version 30 for your change as long as it lands before we make another release of the selinux userspace (wouldn't expect one for a while).
+
 117
 Tue Mar 17 15:08:55 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
