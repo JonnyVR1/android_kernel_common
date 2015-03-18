@@ -55,6 +55,13 @@ UUID: 86e9acd1_e2e8e27e
 Bytes: 3
 ++;
 
+349
+Wed Mar 18 15:00:48 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c6aba49c_fef2e1b3
+Bytes: 238
+Not necessarily.  Between the time you incremented operations_len in avc_has_operation() and the time we reach here, you have dropped and re-acquired the rcu read lock and thus this entry may in fact have been allocated by another thread!
+
 353
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
