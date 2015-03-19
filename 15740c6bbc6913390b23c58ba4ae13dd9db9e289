@@ -9,3 +9,25 @@ UUID: 06a4dcb8_93aafe4d
 Bytes: 107
 kref_init initializes the refcount to 1, this probably sets it to 2, and then the client is never released.
 
+826
+Thu Mar 19 10:27:31 2015 +0000
+Author: Prasad Sodagudi <1067053@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a4dcb8_93aafe4d
+UUID: 8670cc19_380851ad
+Bytes: 1073
+Yes. I agree with you and I should removed ion_client_get() call.
+
+If I remove ion_client_get() call from ion_client_create, so that ion_client_release() getting called. 
+
+But same original race condition is getting reproduced again with kref too. 
+
+Here is the call stack showing panic. 
+<6>[   87.065872] [<c039b7f4>] (__list_add+0x34/0x98) from [<c0962074>] (__mutex_lock_slowpath+0x134/0x33c)
+<6>[   87.065880] [<c0962074>] (__mutex_lock_slowpath+0x134/0x33c) from [<c096229c>] (mutex_lock+0x20/0x3c)
+<6>[   87.065888] [<c096229c>] (mutex_lock+0x20/0x3c) from [<c043ec94>] (ion_debug_client_show+0x74/0x10c)
+<6>[   87.065897] [<c043ec94>] (ion_debug_client_show+0x74/0x10c) from [<c0275f2c>] (seq_read+0x1bc/0x410)
+<6>[   87.065905] [<c0275f2c>] (seq_read+0x1bc/0x410) from [<c025a574>] (vfs_read+0xa4/0x134)
+<6>[   87.065911] [<c025a574>] (vfs_read+0xa4/0x134) from [<c025a8f8>] (sys_read+0x34/0x68)
+<6>[   87.065919] [<c025a8f8>] (sys_read+0x34/0x68) from [<c0105f20>] (ret_fast_syscall+0x0/0x30)
+<0>[   87.065927] Code: e3a0101d e59f2060 e1a03004 ebf7ee85 (e5943000)
+
