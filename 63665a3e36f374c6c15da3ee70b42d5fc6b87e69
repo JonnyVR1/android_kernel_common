@@ -1,0 +1,36 @@
+Revision: 63665a3e36f374c6c15da3ee70b42d5fc6b87e69
+Patch-set: 2
+File: drivers/clk/Kconfig
+
+137:7-137:28
+Thu Mar 19 19:50:37 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 461df4f5_7a7039d7
+Bytes: 30
+namespace these in COMMON_CLK_
+
+File: drivers/clk/clk.c
+
+120:7-120:10
+Thu Mar 19 19:50:37 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 461df4f5_fa4a0986
+Bytes: 4
+bool
+
+1144:20-1144:34
+Thu Mar 19 19:50:37 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 06177cd9_f84a1186
+Bytes: 39
+is ktime_get too expensive to use here?
+
+File: include/linux/clk-private.h
+
+17
+Thu Mar 19 19:50:37 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 461df4f5_9afc2d88
+Bytes: 29
+keep the includes list sorted
+
