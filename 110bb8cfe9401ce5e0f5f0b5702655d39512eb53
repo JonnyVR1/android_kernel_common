@@ -106,6 +106,13 @@ UUID: 66e4b8f7_5e5091b5
 Bytes: 90
 This kind of test, if necessary/appropriate at all, should be a BUG_ON, i.e. an assertion.
 
+526
+Thu Mar 19 15:25:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a6a6b0d3_0c40bff4
+Bytes: 336
+Maybe we should defer the allocation of the operations until we know the actual length, e.g. during populate.  The only real reason we allocate the node up front is a) that allocation does not have any dependencies, and b) if we reach the threshhold, we run a reclaim scan.  But allocation of the operations could occur during populate.
+
 797
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -140,6 +147,15 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 66e4b8f7_5ec7b1e4
 Bytes: 41
 No callers within this file.  Why inline?
+
+1054
+Thu Mar 19 15:25:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86b52cfa_d0770c89
+Bytes: 373
+node can be NULL here from avc_compute_av().
+We should only use the avd and ops structures here.
+Not sure even why we are returning node from avc_compute_av() as it wasn't being used by avc_has_perm; probably legacy.  The AVC is a cache, so it is always ok to not save the entry if we have a memory allocation failure, but we always get a response from the security server.
 
 1134
 Tue Mar 17 15:06:51 2015 +0000
