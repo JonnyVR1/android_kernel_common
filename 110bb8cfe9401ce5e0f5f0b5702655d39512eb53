@@ -157,6 +157,14 @@ node can be NULL here from avc_compute_av().
 We should only use the avd and ops structures here.
 Not sure even why we are returning node from avc_compute_av() as it wasn't being used by avc_has_perm; probably legacy.  The AVC is a cache, so it is always ok to not save the entry if we have a memory allocation failure, but we always get a response from the security server.
 
+1054
+Thu Mar 19 15:36:05 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86b52cfa_d0770c89
+UUID: 86b52cfa_308990f4
+Bytes: 350
+commit 21193dcd1f3570ddfd8a04f4465e484c1f94252f removed the conditional use of node if non-NULL.  We should just make avc_insert() and avc_compute_av() void functions as nothing is using the return value and nothing should depend on a successful AVC insertion.  Only the avd (and now ops) structures returned via parameters should be used by callers.
+
 1134
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
