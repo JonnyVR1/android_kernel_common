@@ -18,6 +18,15 @@ UUID: 461df4f5_7a7039d7
 Bytes: 30
 namespace these in COMMON_CLK_
 
+142:0-144:16
+Thu Mar 19 20:21:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2620002d_b9dfbf8d
+Bytes: 331
+You can write more here, give us a more complete description. Not as verbose as you put in your commit message, but put enough here where someone can decide if they want yes or no here when going through the configuration dialogue.
+
+What do I get by turning this one, how can I use this accounting to make the world a better place?
+
 File: drivers/clk/clk.c
 
 120:7-120:10
@@ -33,6 +42,13 @@ Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2620002d_f944570a
 Bytes: 98
 This is mixing cputime64_t and jiffies (u64).  If you want cputime64_t, use jiffies64_to_cputime64
+
+440:56-440:57
+Thu Mar 19 20:21:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 461df4f5_3a8ac1b1
+Bytes: 36
+continuation character not necessary
 
 1144:20-1144:34
 Thu Mar 19 19:50:37 2015 +0000
