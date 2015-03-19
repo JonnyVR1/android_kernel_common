@@ -70,6 +70,14 @@ UUID: c6d48430_f6456076
 Bytes: 109
 hmm...suggestions? Do I just need due diligence here e.g. check that the operation decision is in fact empty?
 
+349
+Thu Mar 19 12:27:04 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6d48430_f6456076
+UUID: a6a6b0d3_ec635314
+Bytes: 642
+I'm wondering whether the entire approach to allocation of these structures ought to be reconsidered.  Preallocating all fields and then freeing the unused ones seems wasteful, and allocating based on what will effectively be a guess as to the right number of elements since the node may have been updated or even reclaimed and replaced in the interim seems error prone.  Since these entries are allocated with GFP_ATOMIC, the allocation is nonblocking and thus can occur under the spinlock so it would be possible to allocate the new operation_decision and add it to the list here, without relying on having guessed the right number earlier.
+
 353
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
