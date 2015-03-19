@@ -181,6 +181,14 @@ UUID: 46825452_f2ec68bf
 Bytes: 475
 Seems like I should be able to use node (if not NULL) from anywhere within the rcu_lock. Otherwise I will do an unnecessary memcpy of the ops structure which is not needed outside the rcu. Note that I still require the the lock on node in order to retrieve and copy the operation_decision later (avc_operation_lookup) such that it is accessible outside the rcu for auditing. So even if I copy ops, I still need the node locked so my preference is to skip unnecessary copying.
 
+1054
+Thu Mar 19 23:19:04 2015 +0000
+Author: Stephen Smalley <1010099@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46825452_f2ec68bf
+UUID: c675643f_8e137b5a
+Bytes: 777
+The point is that avc_insert can fail due to transient memory pressure, thereby causing no node to be returned from avc_compute_av, and this condition should not cause a false denial or a false granting.  It should only prevent the result from being cached in the AVC for future lookups, so the next lookup will trigger another avc_compute_av call and at some point the transient memory pressure will likely alleviate and the result will get cached.  For the logic after the avc_compute_av() call, you can only rely on the avd and ops passed back via the arguments to avc_compute_av / security_compute_av.  Note that we do not rely on the node for the av decision, only the avd is referenced after the avc_compute_av call, and this has its own copy of the relevant information.
+
 1134
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
