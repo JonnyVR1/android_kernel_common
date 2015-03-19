@@ -78,6 +78,14 @@ UUID: a6a6b0d3_ec635314
 Bytes: 642
 I'm wondering whether the entire approach to allocation of these structures ought to be reconsidered.  Preallocating all fields and then freeing the unused ones seems wasteful, and allocating based on what will effectively be a guess as to the right number of elements since the node may have been updated or even reclaimed and replaced in the interim seems error prone.  Since these entries are allocated with GFP_ATOMIC, the allocation is nonblocking and thus can occur under the spinlock so it would be possible to allocate the new operation_decision and add it to the list here, without relying on having guessed the right number earlier.
 
+349
+Thu Mar 19 22:27:33 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6a6b0d3_ec635314
+UUID: 66de785c_a5d9d2fb
+Bytes: 59
+That would certainly reduce the complexity of the approach.
+
 353
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -164,6 +172,14 @@ Parent: 86b52cfa_d0770c89
 UUID: 86b52cfa_308990f4
 Bytes: 350
 commit 21193dcd1f3570ddfd8a04f4465e484c1f94252f removed the conditional use of node if non-NULL.  We should just make avc_insert() and avc_compute_av() void functions as nothing is using the return value and nothing should depend on a successful AVC insertion.  Only the avd (and now ops) structures returned via parameters should be used by callers.
+
+1054
+Thu Mar 19 22:27:33 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86b52cfa_308990f4
+UUID: 46825452_f2ec68bf
+Bytes: 475
+Seems like I should be able to use node (if not NULL) from anywhere within the rcu_lock. Otherwise I will do an unnecessary memcpy of the ops structure which is not needed outside the rcu. Note that I still require the the lock on node in order to retrieve and copy the operation_decision later (avc_operation_lookup) such that it is accessible outside the rcu for auditing. So even if I copy ops, I still need the node locked so my preference is to skip unnecessary copying.
 
 1134
 Tue Mar 17 15:06:51 2015 +0000
