@@ -27,6 +27,13 @@ UUID: 461df4f5_fa4a0986
 Bytes: 4
 bool
 
+207:4-207:38
+Thu Mar 19 20:04:53 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2620002d_f944570a
+Bytes: 98
+This is mixing cputime64_t and jiffies (u64).  If you want cputime64_t, use jiffies64_to_cputime64
+
 1144:20-1144:34
 Thu Mar 19 19:50:37 2015 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,4 +56,12 @@ Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 06177cd9_5859bd17
 Bytes: 13
 asm/cputime.h
+
+17:10-17:31
+Thu Mar 19 20:04:53 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06177cd9_5859bd17
+UUID: 461df4f5_dacaa51f
+Bytes: 73
+Now that you point it out, if all you want is jiffies use linux/jiffies.h
 
