@@ -114,6 +114,8 @@ struct ion_handle {
 	int id;
 };
 
+struct ion_device *ion_dev;
+
 bool ion_buffer_fault_user_mappings(struct ion_buffer *buffer)
 {
 	return (buffer->flags & ION_FLAG_CACHED) &&
@@ -677,10 +679,32 @@ EXPORT_SYMBOL(ion_unmap_kernel);
 static int ion_debug_client_show(struct seq_file *s, void *unused)
 {
 	struct ion_client *client = s->private;
-	struct rb_node *n;
+	struct rb_node *n, *cnode;
 	size_t sizes[ION_NUM_HEAP_IDS] = {0};
 	const char *names[ION_NUM_HEAP_IDS] = {NULL};
-	int i;
+	int i, found = 0;;
+
+	down_write(&ion_dev->lock);
+
+	if(!client || (client->device != ion_dev)) {
+		down_write(&ion_dev->lock);
+		return -EINVAL;
+	}
+
+	cnode = rb_first(&ion_dev->clients);
+	for ( ; cnode; cnode = rb_next(cnode)) {
+		struct ion_client *temp_client = rb_entry(cnode,
+				struct ion_client, node);
+		if(client == temp_client) {
+			found = 1;
+			break;
+		}
+	}
+
+	if (!found){
+		up_write(&ion_dev->lock);
+		return --EINVAL;
+	}
 
 	mutex_lock(&client->lock);
 	for (n = rb_first(&client->handles); n; n = rb_next(n)) {
@@ -700,6 +724,7 @@ static int ion_debug_client_show(struct seq_file *s, void *unused)
 			continue;
 		seq_printf(s, "%16.16s: %16zu\n", names[i], sizes[i]);
 	}
+	up_write(&ion_dev->lock);
 	return 0;
 }
 
@@ -1596,6 +1621,7 @@ debugfs_done:
 	init_rwsem(&idev->lock);
 	plist_head_init(&idev->heaps);
 	idev->clients = RB_ROOT;
+	ion_dev = idev;
 	return idev;
 }
 
