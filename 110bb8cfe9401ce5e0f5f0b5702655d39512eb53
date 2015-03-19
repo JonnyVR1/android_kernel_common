@@ -213,6 +213,20 @@ Some name overloading on the word "type." Perhaps I should change to code/functi
 
 As-is, we would only be able to consider ioctl command types, not the numbers, as the numbers are looked up later as needed.
 
+569
+Thu Mar 19 12:44:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e6bd08e7_9192ac23
+UUID: c6aba49c_07d1bc83
+Bytes: 743
+If you define:
+
+typebounds A B;
+
+typebounds B C;
+
+in policy, then C can only be allowed a subset of permissions of B, and B can only be allowed a subset of permissions of A.  The type_attribute_bounds_av() function enforces this restriction in the kernel, and this relationship is relied upon by certain SELinux hooks to guarantee that a context is no more privileged than another context, checked via security_bounded_transition().  So with this new construct of allowed operations, unless we extend the logic to also remove any operation types and/or numbers not permitted to the ancestor domains, then it becomes possible for a bounded type to be allowed more than its parent.  Can be done as a separate change on top but wanted to note it.
+
 626:18-626:19
 Mon Mar 16 21:44:58 2015 +0000
 Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -246,6 +260,14 @@ AVTAB_OPTYPE is a way to allow entire types. Since there are 256 of them, using 
 AVTAB_OPNUM is for allowing permissions within a type.
 
 Would you prefer a separate structure since the type value is unused in this case?
+
+627
+Thu Mar 19 12:44:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06f05cdb_301e4890
+UUID: 86b52cfa_30a87083
+Bytes: 22
+Might be clearer, yes.
 
 631
 Tue Mar 17 15:06:51 2015 +0000
@@ -283,6 +305,14 @@ UUID: 06f05cdb_5021ccc7
 Bytes: 147
 Agreed. My preference would be to limit the scope of this patch and save that as an extension. I'm a bit concerned about how large this is getting.
 
+701
+Thu Mar 19 12:44:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06f05cdb_5021ccc7
+UUID: 86b52cfa_d08dcc35
+Bytes: 259
+I think it is a fairly trivial change to cond_compute_av() that logically fits with this one, and unless you are doing something to prevent it in your checkpolicy patch, it is already possible for these operations to be specified in the conditional avtab too.
+
 936
 Tue Mar 17 15:06:51 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -304,4 +334,12 @@ Parent: a6a6b0d3_bde1ffc5
 UUID: 46e6d429_f2f208b4
 Bytes: 143
 OPTYPE allows an entire type so we care about any specified=OPTYPE that we find, whereas we only care about matching types for specified=OPNUM.
+
+948
+Thu Mar 19 12:44:59 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46e6d429_f2f208b4
+UUID: 86b52cfa_10945442
+Bytes: 111
+Don't you have to check somewhere that the od->type matches one of the bits set in node->datum.u.ops->op.perms?
 
