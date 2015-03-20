@@ -142,10 +142,15 @@ static inline int avc_audit(u32 ssid, u32 tsid,
 }
 
 #define AVC_STRICT 1 /* Ignore permissive mode. */
+#define AVC_NO_CMD 2	/* ignore command when updating operations */
+#define AVC_OPERATION 2	/* ignore command when updating operations */
 int avc_has_perm_noaudit(u32 ssid, u32 tsid,
 			 u16 tclass, u32 requested,
 			 unsigned flags,
 			 struct av_decision *avd);
+
+int avc_has_operation(u32 ssid, u32 tsid, u16 tclass, u32 requested,
+		u16 cmd, struct common_audit_data *ad);
 
 int avc_has_perm_flags(u32 ssid, u32 tsid,
 		       u16 tclass, u32 requested,
