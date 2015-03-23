@@ -112,6 +112,14 @@ UUID: 66a67829_b193185c
 Bytes: 86
 More complex than needed since the expression itself will evaluate to 1 or 0 directly.
 
+108
+Mon Mar 23 18:35:11 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66a67829_b193185c
+UUID: 66a67829_11c2ecb1
+Bytes: 35
+(1 & (perms[x >> 5] >> (x & 0x1f)))
+
 File: security/selinux/ss/services.c
 
 635
