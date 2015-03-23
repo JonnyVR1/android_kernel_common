@@ -17,6 +17,13 @@ UUID: 260c80ed_bff13f6a
 Bytes: 12
 Unnecessary.
 
+266
+Mon Mar 23 18:54:18 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_d18ce489
+Bytes: 43
+Might as well just make this unconditional.
+
 293
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,6 +80,14 @@ UUID: 66a67829_11578c2c
 Bytes: 30
 check and handle return value.
 
+852
+Mon Mar 23 18:54:18 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66a67829_11578c2c
+UUID: 260c80ed_a207649c
+Bytes: 113
+Define and use a new event value for this and handle it in the switch statement, e.g. AVC_CALLBACK_ADD_OPERATION.
+
 858
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,12 +95,27 @@ UUID: 260c80ed_5f1e23e7
 Bytes: 123
 Shouldn't that be !(flags & AVC_NO_CMD)?  Or alternatively (flags & AVC_CMD) if using the flag to indicate presence of cmd?
 
+858
+Mon Mar 23 18:54:18 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 260c80ed_5f1e23e7
+UUID: 66a67829_31a288ef
+Bytes: 98
+Rather than using flags, you could use a different AVC_CALLBACK_* event code when adding commands.
+
 1033
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 260c80ed_7fe68759
 Bytes: 36
 od_local.allowed uninitialized here?
+
+1037
+Mon Mar 23 18:54:18 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_6de9d180
+Bytes: 229
+Could take everything from od_local.allowed = &allowed; to here into a noinline helper function and thereby shrink the common case code path and stack.  Case where security_compute_operation() has to be called is a slow(er) path.
 
 File: security/selinux/include/avc.h
 
