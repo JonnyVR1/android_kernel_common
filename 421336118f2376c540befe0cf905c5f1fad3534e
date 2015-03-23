@@ -103,6 +103,14 @@ UUID: 66a67829_31a288ef
 Bytes: 98
 Rather than using flags, you could use a different AVC_CALLBACK_* event code when adding commands.
 
+858
+Mon Mar 23 18:58:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66a67829_31a288ef
+UUID: 46d7b47e_4dfded34
+Bytes: 125
+Never mind, since it is called from avc_denied() with AVC_CALLBACK_GRANT always and the cmd and flags provided by the caller.
+
 1033
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
