@@ -1,0 +1,151 @@
+Revision: 421336118f2376c540befe0cf905c5f1fad3534e
+Patch-set: 13
+File: security/selinux/avc.c
+
+76
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_0a663b51
+Bytes: 225
+Potentially confusing to use the same field name as above.
+od_head would be more accurate IIUC; this points to the first/head avc_operation_decision_node which in turn contains its own od_list link to the next one, and so on.
+
+238
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_bff13f6a
+Bytes: 12
+Unnecessary.
+
+293
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_4a9953c5
+Bytes: 12
+Unnecessary.
+
+306
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_8d340510
+Bytes: 46
+Just dest->allowed->perms, src->allowed->perms
+
+392
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_7fbb2754
+Bytes: 12
+Unnecessary.
+
+512
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_aa5baf8c
+Bytes: 13
+Extra newline
+
+529
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_8a606b32
+Bytes: 13
+Extra newline
+
+533
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_ea55a756
+Bytes: 30
+Unnecessary whitespace change.
+
+650
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_7f9207d4
+Bytes: 90
+No need/unsafe to goto found - lock not yet assigned or locked; just return NULL directly.
+
+852
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_11578c2c
+Bytes: 30
+check and handle return value.
+
+858
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_5f1e23e7
+Bytes: 123
+Shouldn't that be !(flags & AVC_NO_CMD)?  Or alternatively (flags & AVC_CMD) if using the flag to indicate presence of cmd?
+
+1033
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_7fe68759
+Bytes: 36
+od_local.allowed uninitialized here?
+
+File: security/selinux/include/avc.h
+
+145
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_ade10918
+Bytes: 51
+Seems to be used in the opposite sense in the code.
+
+146
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_119e6c68
+Bytes: 7
+Unused.
+
+File: security/selinux/include/security.h
+
+108
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_b193185c
+Bytes: 86
+More complex than needed since the expression itself will evaluate to 1 or 0 directly.
+
+File: security/selinux/ss/services.c
+
+635
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_911edc62
+Bytes: 91
+Only if ops->len == 0, right?  Can be taken under the same conditional as the memset above.
+
+937
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_4d04cd42
+Bytes: 85
+For AVTAB_OPTYPE, where do we check that od->type is set in node->datum.u.ops->perms?
+
+960
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 260c80ed_ff557756
+Bytes: 184
+So for any AVTAB_OPTYPE entry that matches on the other key fields, we unconditionally set all bits in op_perms->perms?  How do we know that this entry was for that ioctl command type?
+
+962
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66a67829_510e3435
+Bytes: 10
+ARRAY_SIZE
+
+963
+Mon Mar 23 16:53:29 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 46d7b47e_ed12e18d
+Bytes: 26
+May be uninitialized here.
+
