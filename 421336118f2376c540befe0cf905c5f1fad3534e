@@ -125,6 +125,14 @@ UUID: 46d7b47e_6de9d180
 Bytes: 229
 Could take everything from od_local.allowed = &allowed; to here into a noinline helper function and thereby shrink the common case code path and stack.  Case where security_compute_operation() has to be called is a slow(er) path.
 
+1037
+Tue Mar 24 20:28:18 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46d7b47e_6de9d180
+UUID: 23eb9264_4a12a790
+Bytes: 96
+It's required for both the fast and slow path - avc_copy_operation_decision copies into od_local
+
 File: security/selinux/include/avc.h
 
 145
@@ -205,6 +213,17 @@ Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 260c80ed_ff557756
 Bytes: 184
 So for any AVTAB_OPTYPE entry that matches on the other key fields, we unconditionally set all bits in op_perms->perms?  How do we know that this entry was for that ioctl command type?
+
+960
+Tue Mar 24 20:28:18 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 260c80ed_ff557756
+UUID: c3fb9632_07c49cbd
+Bytes: 728
+AVTAB_OPTYPE is a way of selecting ioctl types where all the numbers are allowed. I added this to handle policy that looks like:
+source target:class ~{ 0x8900 0x8911 0x8927-0x8930 0x8940 } 
+
+Here all commands outside the 0x89 type are allowed. Rather than an avtab entry for each type, they can be combined into one entry - AVTAB_OPTYPE. If ioctl 0x8B1B was called on the above source/target/class grouping, it would hit the AVTAB_OPTYPE statement, see that all numbers are allowed within 0x8B and set all numbers to allowed (within that type). If on the other hand 0x8927 was called, the AVTAB_OPTYPE test would evaluate to 0, the AVTAB_OPNUM would find the matching type=0x89 statement and set the permissions specified there.
 
 962
 Mon Mar 23 16:53:29 2015 +0000
