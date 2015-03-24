@@ -2,10 +2,24 @@ Revision: 25d276774b10b35524415591eb01d3304538e7dd
 Patch-set: 1
 File: drivers/staging/android/sync.c
 
+117
+Tue Mar 24 02:37:38 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 267f204e_47804291
+Bytes: 30
+this needs to be list_del_init
+
 434
 Tue Mar 24 02:14:09 2015 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 267f204e_4703e2c5
 Bytes: 207
 This is unnecessary, just use list_del_init everywhere and then list_empty is valid.  This was done correctly in our original driver, it was broken by the upstream "android: convert sync to fence api" patch.
+
+437
+Tue Mar 24 02:37:38 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 267f204e_a7558ea9
+Bytes: 83
+this can stay list_del, because the struct containing the node is about to be freed
 
