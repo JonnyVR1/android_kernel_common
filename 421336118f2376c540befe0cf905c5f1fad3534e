@@ -167,6 +167,14 @@ UUID: a3f6a249_00fc88b2
 Bytes: 489
 I rely on non-unique entries in the avtab to allow different operation types for a source/target/class/specified set. This would require changing to avtab_insert_nonunique for (specified & AVTAB_OPNUM). Will allowing non-unique key entries in the avtab break something? The conditional table allows it, and when searching the avtab for entries, the context_struct_compute_av accounts for it using avtab_search_node_next. Can I get your thoughts in this? libsepol requires a similar change.
 
+496
+Tue Mar 24 18:10:10 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3f6a249_00fc88b2
+UUID: a68a309d_26a25cef
+Bytes: 658
+That seems sane.  Originally context_struct_compute_av() only did a single avtab_search() call since originally all attributes were expanded by checkpolicy and all allow/auditallow/dontaudit rules on the same (source type, target type, target class) were merged to a single entry.  Then when I changed it to preserve policy in attribute form when simple, we switched to avtab_search_node/next.  Conditional policy always required search_node/next since there could be multiple entries for different conditional branches on the same key/specified.  Still need to maintain uniqueness for type transition/change/member rules as otherwise we'd have an ambiguity.
+
 File: security/selinux/ss/services.c
 
 635
