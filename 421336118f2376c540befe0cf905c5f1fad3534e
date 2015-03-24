@@ -225,6 +225,14 @@ source target:class ~{ 0x8900 0x8911 0x8927-0x8930 0x8940 }
 
 Here all commands outside the 0x89 type are allowed. Rather than an avtab entry for each type, they can be combined into one entry - AVTAB_OPTYPE. If ioctl 0x8B1B was called on the above source/target/class grouping, it would hit the AVTAB_OPTYPE statement, see that all numbers are allowed within 0x8B and set all numbers to allowed (within that type). If on the other hand 0x8927 was called, the AVTAB_OPTYPE test would evaluate to 0, the AVTAB_OPNUM would find the matching type=0x89 statement and set the permissions specified there.
 
+960
+Tue Mar 24 20:39:07 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3fb9632_07c49cbd
+UUID: a68a309d_91e60cae
+Bytes: 127
+Where in the kernel code do you check that the ioctl command 0x8B1B cmd matches any of the types set in the AVTAB_OPTYPE datum?
+
 962
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
