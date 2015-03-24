@@ -233,6 +233,14 @@ UUID: a68a309d_91e60cae
 Bytes: 127
 Where in the kernel code do you check that the ioctl command 0x8B1B cmd matches any of the types set in the AVTAB_OPTYPE datum?
 
+960
+Tue Mar 24 20:50:26 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a68a309d_91e60cae
+UUID: 6694b8c1_4ad92b1f
+Bytes: 650
+You pass in the type (ioctl cmd type) value into security_compute_operation().  You store it in the od->type field.  You call services_compute_operation_num() on every node that matches on the key (source type, target type, target class) for any AVTAB_OP specifier.  In the AVTAB_OPNUM case, you check that the od->type matches the node->datum.u.ops->type value.  But I don't see where you check that this node/entry matches the type value if it is an AVTAB_OPTYPE. Don't you have to check that the bit representing od->type is set in node->datum.u.ops->perms for AVTAB_OPTYPE entries to know if this entry has anything to do with the requested type?
+
 962
 Mon Mar 23 16:53:29 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
