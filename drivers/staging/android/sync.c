@@ -426,12 +426,16 @@ static void android_fence_release(struct fence *fence)
 {
 	struct sync_pt *pt = container_of(fence, struct sync_pt, base);
 	struct sync_timeline *parent = sync_pt_parent(pt);
+	struct sync_pt *entry, *next;
 	unsigned long flags;
 
 	spin_lock_irqsave(fence->lock, flags);
 	list_del(&pt->child_list);
-	if (WARN_ON_ONCE(!list_empty(&pt->active_list)))
-		list_del(&pt->active_list);
+	list_for_each_entry_safe(entry, next, &parent->active_list_head,
+				 active_list) {
+		if (WARN_ON_ONCE(entry == pt))
+			list_del(&pt->active_list);
+	}
 	spin_unlock_irqrestore(fence->lock, flags);
 
 	if (parent->ops->free_pt)
