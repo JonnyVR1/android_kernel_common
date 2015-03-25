@@ -1,0 +1,27 @@
+Revision: c5ba7248e41f0caaa86dd3577d3b5b7a87b17f29
+Patch-set: 14
+File: security/selinux/avc.c
+
+376
+Wed Mar 25 12:55:08 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4336c6df_f8926924
+Bytes: 134
+Modifying src as a side effect of avc_operation_populate() seems wrong.  And why is this needed as you do it in avc_operation_alloc()?
+
+File: security/selinux/ss/services.c
+
+912
+Wed Mar 25 12:55:08 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4336c6df_d88fa5f8
+Bytes: 12
+What's this?
+
+941
+Wed Mar 25 12:55:08 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4336c6df_b88ce104
+Bytes: 30
+Should be AVTAB_OPTYPE, right?
+
