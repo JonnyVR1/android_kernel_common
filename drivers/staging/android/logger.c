@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (a8f080 Merge branch 'android-3.10' into android-3.10.y)
 /*
  * drivers/misc/logger.c
  *
@@ -852,3 +853,5 @@ module_exit(logger_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Robert Love, <rlove@google.com>");
 MODULE_DESCRIPTION("Android Logger");
+=======
+>>>>>>> BRANCH (ae2019 USB: gadget: android: Integrate f_midi USB MIDI gadget drive)
