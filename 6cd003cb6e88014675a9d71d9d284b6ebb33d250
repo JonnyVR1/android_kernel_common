@@ -9,6 +9,14 @@ UUID: 2339d2d0_5a5cc9d2
 Bytes: 154
 This triggers a compiler warning about possibly being uninitialized.  I see that it is initialized in the caller; not sure on best way to avoid the noise.
 
+963
+Wed Mar 25 19:07:56 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2339d2d0_5a5cc9d2
+UUID: 2339d2d0_3a9fc5e0
+Bytes: 184
+Oh, it is op_perms that might be uninitialized.  Because you only set it if you match one of the expected specified values, and do not have a general else case to return or BUG if not.
+
 988
 Wed Mar 25 19:04:53 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
