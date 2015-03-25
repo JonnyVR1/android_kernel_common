@@ -1,0 +1,18 @@
+Revision: 6cd003cb6e88014675a9d71d9d284b6ebb33d250
+Patch-set: 15
+File: security/selinux/ss/services.c
+
+963
+Wed Mar 25 19:04:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2339d2d0_5a5cc9d2
+Bytes: 154
+This triggers a compiler warning about possibly being uninitialized.  I see that it is initialized in the caller; not sure on best way to avoid the noise.
+
+988
+Wed Mar 25 19:04:53 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2339d2d0_da679995
+Bytes: 158
+I think you want to goto allow; here so that any calls to security_compute_operation() before policy is loaded are permitted.  Policy load will flush the AVC.
+
