@@ -9,6 +9,14 @@ UUID: 4336c6df_f8926924
 Bytes: 134
 Modifying src as a side effect of avc_operation_populate() seems wrong.  And why is this needed as you do it in avc_operation_alloc()?
 
+376
+Wed Mar 25 13:26:15 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4336c6df_f8926924
+UUID: 03592e45_48cf5f2e
+Bytes: 148
+I see you removed the initialization from the caller, but I don't think this is preferable - we shouldn't have side effects on src in this function.
+
 File: security/selinux/ss/services.c
 
 912
