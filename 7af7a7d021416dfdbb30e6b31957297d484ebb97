@@ -1,0 +1,11 @@
+Revision: 7af7a7d021416dfdbb30e6b31957297d484ebb97
+Patch-set: 1
+File: kernel/power/process.c
+
+69
+Thu Mar 26 00:01:43 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2362b2ee_864c12a2
+Bytes: 104
+you might want to log abort for todo as well, either wakeup or todo will return EBUSY and abort suspend.
+
