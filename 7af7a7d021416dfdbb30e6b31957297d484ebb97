@@ -9,3 +9,13 @@ UUID: 2362b2ee_864c12a2
 Bytes: 104
 you might want to log abort for todo as well, either wakeup or todo will return EBUSY and abort suspend.
 
+69
+Thu Mar 26 00:17:16 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2362b2ee_864c12a2
+UUID: 834c3e8c_7ef3f171
+Bytes: 113
+Error because tasks failing to suspend is taken care in the suspend.c Line 151.
+
+The error propagates till there.
+
