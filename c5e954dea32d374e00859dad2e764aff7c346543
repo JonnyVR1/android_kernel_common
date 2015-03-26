@@ -72,6 +72,22 @@ UUID: 2370f2c2_39cfaf5d
 Bytes: 182
 For auditdeny, you want different behavior - &= instead of |= as in compute_av.  You are clearing bits not set in the entry in order to suppress denials silenced via dontaudit rules.
 
+966
+Thu Mar 26 21:35:35 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2370f2c2_39cfaf5d
+UUID: 43d246e8_bb12bb08
+Bytes: 813
+I account for this in the avc_operation_audit_required code.
+
+I considered doing it the other way (following precedence in the av_decision) but decided against it primarily for simplicity. Unlike AV permissions, only one ioctl command permission will be requested at a time, whether that bit is set or unset for auditdeny doesn't particularly matter because the auditdeny operation permission is not used directly to modify the av_decision (i.e. they are not bitwise & or | together), the permission is checked, and based on that decision audited may be modified.
+
+audited = denied & avd->auditdeny;
+if (audited && od && avc_operation_has_perm(od->auditdeny, cmd))
+	audited &= ~requested;
+
+Leaving the operation_decision->auditdeny structure the same as the others simplifies code here and in the policy compiler.
+
 987
 Thu Mar 26 17:49:27 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
