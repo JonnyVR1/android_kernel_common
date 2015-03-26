@@ -10,6 +10,14 @@ Bytes: 103
 Shouldn't that be fixed instead?
 I was under the impression that ...get_*_sk() would handle the refcnt.
 
+9:26-10:30
+Thu Mar 26 19:56:39 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56783d6f_f63d80eb
+UUID: 831efe57_37c6b2ea
+Bytes: 215
+Doesn't look like a bug there. The skb already grabbed a reference [see commit: 00028aa37098 (netfilter: xt_socket: use IP early demux)], so no need to take a new one just to put it later since we are in a fastpath.
+
 File: net/netfilter/xt_qtaguid.c
 
 1608:3-1609:21
@@ -19,4 +27,12 @@ UUID: 36758977_3571b0c6
 Bytes: 239
 Is it guarantied that if the skb->sk don't match, then the sk from xt_socket_get*_sk() doesn't need put()'ing ever?
 Maybe have a comment here explaining why this keeps on working and why xt_socket_get*_sk() isn't the one that needs fixing.
+
+1608:3-1609:21
+Thu Mar 26 19:56:39 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36758977_3571b0c6
+UUID: e30dfa2c_5a62713b
+Bytes: 145
+commit: 00028aa37098 (netfilter: xt_socket: use IP early demux), and equivalent Android code changes, in xt_socket does guarantee that by design.
 
