@@ -65,3 +65,17 @@ UUID: 2339d2d0_ab8fe5a6
 Bytes: 19
 else return or BUG.
 
+966
+Thu Mar 26 17:49:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2370f2c2_39cfaf5d
+Bytes: 182
+For auditdeny, you want different behavior - &= instead of |= as in compute_av.  You are clearing bits not set in the entry in order to suppress denials silenced via dontaudit rules.
+
+987
+Thu Mar 26 17:49:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2370f2c2_391a4f6e
+Bytes: 83
+auditdeny should be initialized to all-bits-set, i.e. audit all denials by default.
+
