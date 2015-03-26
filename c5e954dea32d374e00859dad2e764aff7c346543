@@ -1,0 +1,67 @@
+Revision: c5e954dea32d374e00859dad2e764aff7c346543
+Patch-set: 16
+File: security/selinux/avc.c
+
+408
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 038e8eef_20da0a9f
+Bytes: 171
+Should be !avc_operation_has_perm(), same as for auditallow.
+auditdeny is the set of permissions that should be audited when denied, the complement of any dontaudit rules.
+
+File: security/selinux/hooks.c
+
+3112
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 038e8eef_c0355e57
+Bytes: 16
+typo: permission
+
+3113
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2339d2d0_ebaccd1a
+Bytes: 16
+missing word: to
+
+File: security/selinux/ss/conditional.c
+
+633
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4336c6df_ecb067d1
+Bytes: 195
+We want to call it for any AVTAB_OP value, right?  And in fact, we don't need this test at all since the key already specifies AVTAB_OP specifier only.  Should only need to test for ENABLED here.
+
+File: security/selinux/ss/services.c
+
+629
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 038e8eef_e0c3c2b5
+Bytes: 42
+Or if allowing one or more complete types.
+
+632
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2339d2d0_cb9229d3
+Bytes: 60
+Normally I would put this comment within the else { } below.
+
+941
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 038e8eef_00c106ad
+Bytes: 45
+else if... since they are mutually exclusive?
+
+944
+Thu Mar 26 13:01:14 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2339d2d0_ab8fe5a6
+Bytes: 19
+else return or BUG.
+
