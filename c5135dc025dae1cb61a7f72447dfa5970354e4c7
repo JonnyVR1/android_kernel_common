@@ -1,0 +1,25 @@
+Revision: c5135dc025dae1cb61a7f72447dfa5970354e4c7
+Patch-set: 6
+File: drivers/staging/android/ion/ion.c
+
+117
+Thu Mar 26 05:09:34 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2362b2ee_0052453a
+Bytes: 134
+ion is designed to support multiple nodes, if you need access to the ion device it needs to be passed in through the file private data
+
+687
+Thu Mar 26 05:09:34 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2362b2ee_e0acd19f
+Bytes: 31
+wouldn't a read lock be enough?
+
+690
+Thu Mar 26 05:09:34 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2362b2ee_a0b6d9ed
+Bytes: 56
+use goto out here, so you always drop the lock correctly
+
