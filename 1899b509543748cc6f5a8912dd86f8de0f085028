@@ -9,3 +9,12 @@ UUID: 03dccefb_b63730ae
 Bytes: 29
 Don't need the double parens.
 
+File: security/selinux/ss/services.c
+
+941
+Fri Mar 27 12:20:25 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43308612_e22566a5
+Bytes: 215
+else if.  Or maybe even just else { } since this is only called if specified & AVTAB_OP?  Parallels services_compute_operation_type() where you assume that it is only called if one of the AVTAB_OP specifiers is set.
+
