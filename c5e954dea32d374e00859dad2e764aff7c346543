@@ -88,6 +88,15 @@ if (audited && od && avc_operation_has_perm(od->auditdeny, cmd))
 
 Leaving the operation_decision->auditdeny structure the same as the others simplifies code here and in the policy compiler.
 
+966
+Fri Mar 27 12:14:50 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43d246e8_bb12bb08
+UUID: 43308612_c22e628a
+Bytes: 998
+In that case, please rename auditdeny to dontaudit or something to make it clear that you are using it in the reverse sense of the avd auditdeny vector.  As a historical note, originally the policy rules were auditdeny rules, but because the default was to audit all denials, people would write them using permission set complements, e.g.
+auditdeny a b:c ~{ read write };  This became ambiguous when we allowed multiple allow rules to affect the same (domain, type, class) triple, e.g. if I have auditdeny a b:c ~{ read write }; and auditdeny a b:c ~ioctl;.  So then we introduced dontaudit rules in the policy to make it clear that you are disabling auditing of denials, but complement them internally and keep the internal representation as auditdeny vectors.  You seem to be using your auditdeny vectors in the same way as dontaudit rules, so just call them that.  The language still supports use of auditdeny rules but I don't think anyone is using them anymore; they all migrated to dontaudit.
+
 987
 Thu Mar 26 17:49:27 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
