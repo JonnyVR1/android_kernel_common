@@ -1,0 +1,11 @@
+Revision: 0b289c7c47afa362a4351606f38caee92dcb32d1
+Patch-set: 1
+File: drivers/usb/gadget/configfs.c
+
+1658:1-1658:15
+Fri Mar 27 22:08:40 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a3ca80_98cd81e2
+Bytes: 31
+Android device can be only one?
+
