@@ -46,7 +46,6 @@ struct cpufreq_interactive_cpuinfo {
 	struct cpufreq_frequency_table *freq_table;
 	spinlock_t target_freq_lock; /*protects target freq */
 	unsigned int target_freq;
-	unsigned int floor_freq;
 	unsigned int max_freq;
 	u64 floor_validate_time;
 	u64 hispeed_validate_time;
@@ -405,10 +404,10 @@ static void cpufreq_interactive_timer(unsigned long data)
 	new_freq = pcpu->freq_table[index].frequency;
 
 	/*
-	 * Do not scale below floor_freq unless we have been at or above the
-	 * floor frequency for the minimum sample time since last validated.
+	 * Do not scale below target_freq unless we have been at or above
+	 * the frequency for the minimum sample time since last validated.
 	 */
-	if (new_freq < pcpu->floor_freq) {
+	if (new_freq < pcpu->target_freq) {
 		if (now - pcpu->floor_validate_time <
 				tunables->min_sample_time) {
 			trace_cpufreq_interactive_notyet(
@@ -427,10 +426,8 @@ static void cpufreq_interactive_timer(unsigned long data)
 	 * (or the indefinite boost is turned off).
 	 */
 
-	if (!tunables->boosted || new_freq > tunables->hispeed_freq) {
-		pcpu->floor_freq = new_freq;
+	if (!tunables->boosted || new_freq > tunables->hispeed_freq)
 		pcpu->floor_validate_time = now;
-	}
 
 	if (pcpu->target_freq == new_freq &&
 			pcpu->target_freq <= pcpu->policy->cur) {
@@ -609,14 +606,6 @@ static void cpufreq_interactive_boost(struct cpufreq_interactive_tunables *tunab
 				ktime_to_us(ktime_get());
 			anyboost = 1;
 		}
-
-		/*
-		 * Set floor freq and (re)start timer for when last
-		 * validated.
-		 */
-
-		pcpu->floor_freq = tunables->hispeed_freq;
-		pcpu->floor_validate_time = ktime_to_us(ktime_get());
 		spin_unlock_irqrestore(&pcpu->target_freq_lock, flags[1]);
 	}
 
@@ -1233,7 +1222,6 @@ static int cpufreq_governor_interactive(struct cpufreq_policy *policy,
 			pcpu->policy = policy;
 			pcpu->target_freq = policy->cur;
 			pcpu->freq_table = freq_table;
-			pcpu->floor_freq = pcpu->target_freq;
 			pcpu->floor_validate_time =
 				ktime_to_us(ktime_get());
 			pcpu->hispeed_validate_time =
