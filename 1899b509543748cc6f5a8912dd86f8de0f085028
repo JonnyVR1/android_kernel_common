@@ -1,0 +1,11 @@
+Revision: 1899b509543748cc6f5a8912dd86f8de0f085028
+Patch-set: 17
+File: security/selinux/ss/conditional.c
+
+632
+Fri Mar 27 12:17:36 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03dccefb_b63730ae
+Bytes: 29
+Don't need the double parens.
+
