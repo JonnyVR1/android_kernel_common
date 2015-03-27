@@ -1,0 +1,32 @@
+Revision: d0335b4cf67e8bb74bd96f151835973313c632b6
+Patch-set: 2
+File: drivers/usb/gadget/f_audio_source.c
+
+643:1-643:7
+Fri Mar 27 22:12:25 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a3ca80_98e6e158
+Bytes: 47
+Removing lines from original source is not good
+
+651:0-651:1
+Fri Mar 27 22:12:25 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63758ab8_ebf067e0
+Bytes: 9
+Same here
+
+898:3-898:7
+Fri Mar 27 22:12:25 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63758ab8_2b25ffd6
+Bytes: 25
+No need to remove one tab
+
+913:1-913:7
+Fri Mar 27 22:12:25 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63758ab8_eb1e278e
+Bytes: 31
+No need to add empty line above
+
