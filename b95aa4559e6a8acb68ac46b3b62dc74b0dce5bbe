@@ -1,0 +1,29 @@
+Revision: b95aa4559e6a8acb68ac46b3b62dc74b0dce5bbe
+Patch-set: 18
+File: security/selinux/avc.c
+
+242
+Sat Mar 28 00:25:59 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3a94260_14416268
+Bytes: 106
+Keep a single exit point. You should set od to NULL at the top and break here, return od outside the loop.
+
+File: security/selinux/hooks.c
+
+3191:50-3191:60
+Sat Mar 28 00:25:59 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3b7bab3_0a57fb60
+Bytes: 95
+not great... what happens if you have collisions between the command and this overloaded value?
+
+File: security/selinux/include/avc.h
+
+176
+Sat Mar 28 00:25:59 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3b7bab3_ea4dc7c9
+Bytes: 90
+Ugh, usually you'd want to define these as (1 << X) - makes it obvious that it's a bitmask
+
