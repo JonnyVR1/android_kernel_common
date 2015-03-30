@@ -33,6 +33,14 @@ UUID: 8366fe34_3764b2ce
 Bytes: 222
 This is explained in the comments above avc_has_operation in avc.c (only interested in magic and command #s).  We should probably be more explicit about this here, or else pass the whole thing in and be explicit elsewhere?
 
+3191:50-3191:60
+Mon Mar 30 15:45:37 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8366fe34_3764b2ce
+UUID: 837a7ea8_c399e0c5
+Bytes: 211
+I recommended truncating cmd either here or in ioctl_has_perm() so that the value to be audited (set in ad.u.op->cmd) and the value that is ultimately checked are identical.  Certainly we can add a comment here.
+
 File: security/selinux/include/avc.h
 
 176
@@ -41,4 +49,13 @@ Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3b7bab3_ea4dc7c9
 Bytes: 90
 Ugh, usually you'd want to define these as (1 << X) - makes it obvious that it's a bitmask
+
+176
+Mon Mar 30 15:45:37 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3b7bab3_ea4dc7c9
+UUID: 03dccefb_655eec56
+Bytes: 503
+I wouldn't worry about it for this change; just being consistent with the current definitions is fine.
+As a separate change, we can actually remove most of these definitions as they are unused and either redefine the remaining ones as 1 << X or just switch to discrete values; nothing really requires a bitmask (avc_ss_reset would just need to be changed to use (c->events == AVC_CALLBACK_RESET) rather than (c->events & AVC_CALLBACK_RESET) and the callers never pass more than a single event currently.
 
