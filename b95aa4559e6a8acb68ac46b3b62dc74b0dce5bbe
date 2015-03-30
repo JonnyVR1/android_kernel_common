@@ -11,12 +11,27 @@ Keep a single exit point. You should set od to NULL at the top and break here, r
 
 File: security/selinux/hooks.c
 
+3116:2-3116:15
+Mon Mar 30 15:26:43 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a3ca80_40470f2e
+Bytes: 51
+don't really need this, as it is always FILE__IOCTL
+
 3191:50-3191:60
 Sat Mar 28 00:25:59 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3b7bab3_0a57fb60
 Bytes: 95
 not great... what happens if you have collisions between the command and this overloaded value?
+
+3191:50-3191:60
+Mon Mar 30 15:26:43 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3b7bab3_0a57fb60
+UUID: 8366fe34_3764b2ce
+Bytes: 222
+This is explained in the comments above avc_has_operation in avc.c (only interested in magic and command #s).  We should probably be more explicit about this here, or else pass the whole thing in and be explicit elsewhere?
 
 File: security/selinux/include/avc.h
 
