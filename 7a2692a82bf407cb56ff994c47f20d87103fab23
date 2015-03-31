@@ -1,0 +1,11 @@
+Revision: 7a2692a82bf407cb56ff994c47f20d87103fab23
+Patch-set: 20
+File: security/selinux/avc.c
+
+381
+Tue Mar 31 16:10:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_98c041ab
+Bytes: 33
+Did you mean to delete this line?
+
