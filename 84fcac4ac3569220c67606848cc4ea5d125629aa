@@ -1,0 +1,11 @@
+Revision: 84fcac4ac3569220c67606848cc4ea5d125629aa
+Patch-set: 19
+File: security/selinux/avc.c
+
+387
+Tue Mar 31 00:24:31 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_6915c13e
+Bytes: 105
+if we're in the second or greater loop of this list, and we get an allocation error, will we leak memory?
+
