@@ -9,3 +9,12 @@ UUID: 630f4a79_6915c13e
 Bytes: 105
 if we're in the second or greater loop of this list, and we get an allocation error, will we leak memory?
 
+387
+Tue Mar 31 12:51:36 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 630f4a79_6915c13e
+UUID: 630f4a79_3df3ff72
+Bytes: 241
+Hmm..even on the first iteration, would leak dest itself.
+avc_insert() only frees the node on error while avc_update_node() calls avc_operation_free() on error.  Should probably do the avc_operation_free() on the error path in this function.
+
