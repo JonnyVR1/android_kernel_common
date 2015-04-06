@@ -481,22 +481,6 @@ static inline u32 avc_operation_audit_required(u32 requested,
 	return audited;
 }
 
-static inline int avc_operation_audit(u32 ssid, u32 tsid, u16 tclass,
-				u32 requested, struct av_decision *avd,
-				struct operation_decision *od,
-				u16 cmd, int result,
-				struct common_audit_data *ad)
-{
-	u32 audited, denied;
-
-	audited = avc_operation_audit_required(
-			requested, avd, od, cmd, result, &denied);
-	if (likely(!audited))
-		return 0;
-	return slow_avc_audit(ssid, tsid, tclass, requested,
-			audited, denied, result, ad, 0);
-}
-
 static void avc_node_free(struct rcu_head *rhead)
 {
 	struct avc_node *node = container_of(rhead, struct avc_node, rhead);
@@ -793,6 +777,21 @@ static noinline int slow_avc_audit(u32 ssid, u32 tsid, u16 tclass,
 	a->selinux_audit_data->slad = &slad;
 	common_lsm_audit(a, avc_audit_pre_callback, avc_audit_post_callback);
 	return 0;
+}
+
+static inline int avc_operation_audit(u32 ssid, u32 tsid, u16 tclass,
+				u32 requested, struct av_decision *avd,
+				struct operation_decision *od,
+				u16 cmd, int result,
+				struct common_audit_data *ad)
+{
+	u32 audited, denied;
+	audited = avc_operation_audit_required(
+			requested, avd, od, cmd, result, &denied);
+	if (likely(!audited))
+		return 0;
+	return slow_avc_audit(ssid, tsid, tclass, requested,
+			      audited, denied, result, ad, 0);
 }
 
 /**
