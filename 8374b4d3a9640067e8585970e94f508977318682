@@ -18,12 +18,38 @@ UUID: 83519eaa_7c3ef98c
 Bytes: 440
 Possibly a saner interface would be to pass od and the desired OPERATION_* specifier value to avc_operation_has_perm() and let avc_operation_has_perm() internally test od && (od->specified & specified).  Avoids repeating this test in each caller and risk of failing to check it.  avc_operation_has_perm() could then also select the right field (od->auditdeny, auditallow or allowed) based on the specified value and reduce risk of mismatch.
 
+410
+Mon Apr 06 18:02:30 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83519eaa_7c3ef98c
+UUID: c34716eb_857281e0
+Bytes: 86
+od->auditdeny makes surprisingly difficult. Strongly considering changing to dontaudit
+
 1023
 Mon Apr 06 13:26:38 2015 +0000
 Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c34716eb_52c1a49a
 Bytes: 59
 Why don't we want to still do this test up above as before?
+
+1023
+Mon Apr 06 18:02:30 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c34716eb_52c1a49a
+UUID: c34716eb_ad776952
+Bytes: 868
+The returned operation_decision includes the type. This check is not necessary for the typical allowed lookup where od is found.
+
+struct operation_decision {
+	u8 type;
+	u8 specified;
+	struct operation_perm *allowed;
+	struct operation_perm *auditallow;
+	struct operation_perm *auditdeny;
+};
+
+This check seems to belong in the slow path. The concern I had with chaining operation_decision is the possibility of a misbehaving application attempting to access a wide range of ungranted ioctl commands and thus creating long chains of operation_decision with no individual permissions granted. This would make ioctl calls take longer for other applications in the same domain, and use up a lot of unecessary kernel memory. This is a mechanism to prohibit that. If the type has not been flagged as a type with permissions, then don't create an operation_decision, just deny.
 
 File: security/selinux/ss/services.c
 
