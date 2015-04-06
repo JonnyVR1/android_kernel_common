@@ -1,0 +1,36 @@
+Revision: 8374b4d3a9640067e8585970e94f508977318682
+Patch-set: 23
+File: /COMMIT_MSG
+
+7
+Mon Apr 06 13:26:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83519eaa_5c93fd29
+Bytes: 8
+selinux:
+
+File: security/selinux/avc.c
+
+410
+Mon Apr 06 13:26:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83519eaa_7c3ef98c
+Bytes: 440
+Possibly a saner interface would be to pass od and the desired OPERATION_* specifier value to avc_operation_has_perm() and let avc_operation_has_perm() internally test od && (od->specified & specified).  Avoids repeating this test in each caller and risk of failing to check it.  avc_operation_has_perm() could then also select the right field (od->auditdeny, auditallow or allowed) based on the specified value and reduce risk of mismatch.
+
+1023
+Mon Apr 06 13:26:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c34716eb_52c1a49a
+Bytes: 59
+Why don't we want to still do this test up above as before?
+
+File: security/selinux/ss/services.c
+
+631
+Mon Apr 06 13:26:38 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83519eaa_dc638dc6
+Bytes: 100
+Let's just take this to the beginning of context_struct_compute_av() and do it once unconditionally.
+
