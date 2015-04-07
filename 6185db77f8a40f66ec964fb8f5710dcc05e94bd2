@@ -1,0 +1,57 @@
+Revision: 6185db77f8a40f66ec964fb8f5710dcc05e94bd2
+Patch-set: 24
+File: security/selinux/avc.c
+
+635
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_d607e24d
+Bytes: 119
+move variable declaration into block at line 641. Variable declaration should be as close as practical to variable use.
+
+974:24-974:25
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_1606ba4d
+Bytes: 53
+magic constant? What does "5" mean here? Add comment?
+
+File: security/selinux/ss/avtab.c
+
+479
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_180109bd
+Bytes: 104
+For consistency, I'd recommend moving the memset to where the other memset operations are at (line 368).
+
+557
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_38fe4532
+Bytes: 26
+should be size_t, not int.
+
+File: security/selinux/ss/services.c
+
+624
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_96672a21
+Bytes: 6
+size_t
+
+939
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 832a7e12_7a86f117
+Bytes: 6
+size_t
+
+986
+Tue Apr 07 16:02:57 2015 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_766feef5
+Bytes: 6
+size_t
+
