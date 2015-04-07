@@ -1,0 +1,11 @@
+Revision: 703fb248c10919fcbefb23d47aa863c74492164b
+Patch-set: 25
+File: security/selinux/avc.c
+
+1041
+Tue Apr 07 17:22:54 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 832a7e12_68a06b9f
+Bytes: 275
+Can you clarify my earlier question?  If type is not set in ops_node->ops.type, is it even possible that avc_operation_lookup(type, ops_node) will succeed?  And if not, why not still keep this test earlier as it was originally since it is cheaper than avc_operation_lookup().
+
