@@ -51,6 +51,14 @@ struct operation_decision {
 
 This check seems to belong in the slow path. The concern I had with chaining operation_decision is the possibility of a misbehaving application attempting to access a wide range of ungranted ioctl commands and thus creating long chains of operation_decision with no individual permissions granted. This would make ioctl calls take longer for other applications in the same domain, and use up a lot of unecessary kernel memory. This is a mechanism to prohibit that. If the type has not been flagged as a type with permissions, then don't create an operation_decision, just deny.
 
+1023
+Tue Apr 07 14:17:41 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c34716eb_ad776952
+UUID: 832a7e12_9424042e
+Bytes: 205
+security_operation_test() is just a bit test so it is cheap.  I thought the purpose was to avoid having to pay the cost of an avc_operation_lookup() if we already know that the type can never appear in it.
+
 File: security/selinux/ss/services.c
 
 631
