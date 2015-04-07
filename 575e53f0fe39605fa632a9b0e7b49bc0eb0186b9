@@ -1,0 +1,13 @@
+Revision: 575e53f0fe39605fa632a9b0e7b49bc0eb0186b9
+Patch-set: 6
+File: security/lsm_audit.c
+
+256:50-256:51
+Tue Apr 07 23:27:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_d0a50a04
+Bytes: 132
+BUG in gerrit review, in _my_ view there is a missing trailing semi-colon. I can clearly see it in the patch.
+
+Anyone else see this?
+
