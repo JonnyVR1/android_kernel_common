@@ -1,0 +1,11 @@
+Revision: b541a0a0bf07fb9c4233ff42d6f9824d15939dce
+Patch-set: 1
+File: drivers/base/power/wakeup.c
+
+665
+Wed Apr 08 23:53:08 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 237f124e_8d398454
+Bytes: 19
+bool active = false
+
