@@ -1,6 +1,101 @@
 Revision: 703fb248c10919fcbefb23d47aa863c74492164b
 Patch-set: 25
+File: /COMMIT_MSG
+
+30:0-31:52
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_819919fa
+Bytes: 117
+Our standard is to place these two last (Change-Id being last is easier to strip if this goes upstream to kernel.org)
+
 File: security/selinux/avc.c
+
+193:33-193:77
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_26cffb2e
+Bytes: 14
+>80 characters
+
+232:0-245:1
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_a690eb1c
+Bytes: 108
+what about having a hash-table lookup on od.type?
+
+Lots of complaints about the cost of avc_operation_lookup
+
+269:7-269:8
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_a6db0bef
+Bytes: 141
+blank line after declarations. To match style in avc_operation_has_perm, you might also merge the initialization below into the declarations.
+
+280:30-280:31
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_26f85b4a
+Bytes: 65
+Ditto on blank line after declaration and merging initialization.
+
+293:44-293:45
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_1bd4b3c1
+Bytes: 29
+blank line after declarations
+
+344:30-344:31
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_b2c109b0
+Bytes: 29
+blank line after declaration.
+
+353:28-353:61
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_066e7f7e
+Bytes: 82
+This trio (359 and 365 incl) exceed 80 characters, you folded once, fold again :-}
+
+377:44-377:45
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_86828f9a
+Bytes: 29
+blank line after declaration.
+
+392:50-392:81
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_db6d2b83
+Bytes: 16
+> 80 characters.
+
+438:20-438:21
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_db56cbb4
+Bytes: 29
+blank line after declaration.
+
+466:20-466:21
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_c6c5e7dd
+Bytes: 28
+blank line after declaration
+
+1017:27-1017:28
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_a6ad4b16
+Bytes: 28
+blank line after declaration
 
 1041
 Tue Apr 07 17:22:54 2015 +0000
@@ -16,4 +111,128 @@ Parent: 832a7e12_68a06b9f
 UUID: 832a7e12_489a4fbb
 Bytes: 239
 My assumption was that I should optimize for the typical cache hit / permission granted state. having that check earlier optimizes for the permission denied state. I would be happy to change it back. The single bit test is certainly cheap.
+
+1048:18-1048:81
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_26aa9bfa
+Bytes: 21
+exceeds 80 characters
+
+File: security/selinux/hooks.c
+
+3124:7-3124:11
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_0d745cff
+Bytes: 149
+unnecessary initialization, unless you want to do (?) :
+
+    if (likely(!IS_PRIVATE(inode)))
+        rc = avc_has_operation(...);
+out:
+    return rc;
+
+File: security/selinux/ss/avtab.c
+
+359:14-359:15
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_26793bf7
+Bytes: 154
+What can we do so that we ensure that we do not get buffer overflow? Is there any characteristic that we can use to keep us safe from coding errors below?
+
+555:14-555:15
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_162beaad
+Bytes: 40
+ARRAY_SIZE(cur->datum.u.ops->op.perms) ?
+
+570:37-570:38
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_cde2e4c9
+Bytes: 40
+ARRAY_SIZE(cur->datum.u.ops->op.perms) ?
+
+File: security/selinux/ss/avtab.h
+
+66:2-66:70
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_6dd4f0e5
+Bytes: 15
+> 80 characters
+
+File: security/selinux/ss/conditional.c
+
+641:0-641:88
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23e3924b_7652363c
+Bytes: 28
+> 80 characters, fold sooner
+
+File: security/selinux/ss/services.c
+
+939:15-939:16
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_6de5d0a2
+Bytes: 28
+blank line after declaration
+
+981:43-981:50
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_edf7a008
+Bytes: 26
+unnecessary initialization
+
+981:25-981:31
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_2dfef8e7
+Bytes: 26
+unnecessary initialization
+
+986:18-986:19
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_01318920
+Bytes: 28
+blank line after declaration
+
+989:8-989:19
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_0118a92e
+Bytes: 92
+should I be worried about od->allowed being initialized? What about auditallow or dontaudit?
+
+1020:2-1021:9
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_2d5cb8d1
+Bytes: 159
+printk_ratelimited(KERN_WARNING ...)
+
+(or because this may exceeds 80 characters, try pr_warn_ratelimited("SELinux: ...) instead?)
+
+defined in <linux/printk.h>
+
+1068:25-1068:32
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a32b0216_2dd5986f
+Bytes: 26
+unnecessary initialization
+
+1068:43-1068:50
+Wed Apr 08 00:31:50 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63258a42_216925a5
+Bytes: 26
+unnecessary initialization
 
