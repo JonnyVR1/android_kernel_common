@@ -1,0 +1,51 @@
+Revision: 3d1e9c9e4deab7f32f1ee3daf7172c806e59a673
+Patch-set: 3
+File: drivers/base/power/wakeup.c
+
+9:0-9:1
+Fri Apr 10 17:29:42 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 234d525a_08aba9d6
+Bytes: 120
+optional:
+
+#include <sys/types.h>
+
+(to make sure bool remains defined regardless of the other include files in this set)
+
+666:20-666:21
+Fri Apr 10 17:29:42 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 234d525a_4883f150
+Bytes: 179
+optional (not required here in linux coding standards because all vars are initialized and thus _look_ like code)
+
+blank line between vars and code is still preferred for clarity.
+
+671:11-671:19
+Fri Apr 10 17:29:42 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e356daec_22309319
+Bytes: 417
+use scnprintf (for all) as it returns the number of characters that were _actually_ placed into the buffer. snprintf returns the number of characters that would have been placed into the buffer.
+
+In other words, it acts like:
+
+len += min(snprintf(...,max,...),max);
+
+This will ensure you do not get a pending_wakeup_source + len that is beyond the buffer boundaries, and a max - len that turns into a negative number.
+
+673:48-673:51
+Fri Apr 10 17:29:42 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e356daec_e7785df5
+Bytes: 9
+max - len
+
+684:2-684:9
+Fri Apr 10 17:29:42 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 234d525a_b3a772b3
+Bytes: 33
+len is not used after this point.
+
