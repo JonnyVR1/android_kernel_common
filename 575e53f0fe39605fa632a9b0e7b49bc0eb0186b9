@@ -11,3 +11,11 @@ BUG in gerrit review, in _my_ view there is a missing trailing semi-colon. I can
 
 Anyone else see this?
 
+256:50-256:51
+Fri Apr 10 20:21:12 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23e3924b_d0a50a04
+UUID: e32fba6e_67b71267
+Bytes: 28
+semicolon is visible for me.
+
