@@ -1,0 +1,13 @@
+Revision: a13ecbae14fed602103bc3a5ac32fe674c2c7313
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+410:20-410:22
+Mon Apr 13 23:55:30 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_9a7a6db4
+Bytes: 267
+Actually floor_freq is still useful when policy->min/max is changed in GOV_LIMITS. That could result in a change of target_freq. In that case we probably would still want to react based on previous floor_freq. 
+
+Let me think more before re-uploading or abandoning it.
+
