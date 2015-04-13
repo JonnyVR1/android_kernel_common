@@ -1,0 +1,24 @@
+Revision: f8ad216f37e6a7b07d5f6982a25c426c72f661f6
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+1159
+Mon Apr 13 20:15:35 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_86541eab
+Bytes: 411
+Shouldn't this code be something like:
+
+  int got_global_kobject = 0;
+  ...
+  get_kobject_failed = cpufreq_get_global_kobject();
+  WARN_ON(get_kobject_failed);
+
+Then below at line 1168 where we are handling a  sysfs_create_group() failure we would back out the reference with:
+
+  if (!have_governor_per_policy()) {
+    common_tunables = NULL;
+    if (!get_kobject_failed)
+      cpufreq_put_global_kobject();
+  }
+
