@@ -1,0 +1,11 @@
+Revision: 3cad941453d74d68f3812d957b810449eb0587a6
+Patch-set: 2
+File: drivers/misc/uid_cputime.c
+
+90
+Tue Apr 14 22:57:27 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_a69a58e9
+Bytes: 28
+please use from_kuid_munged.
+
