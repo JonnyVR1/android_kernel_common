@@ -504,6 +504,7 @@ static void __build_flow_key(struct flowi4 *fl4, struct sock *sk,
 			     int oif, u8 tos,
 			     u8 prot, u32 mark, int flow_flags)
 {
+	kuid_t uid = GLOBAL_ROOT_UID;
 	if (sk) {
 		const struct inet_sock *inet = inet_sk(sk);
 
@@ -511,12 +512,13 @@ static void __build_flow_key(struct flowi4 *fl4, struct sock *sk,
 		mark = sk->sk_mark;
 		tos = RT_CONN_FLAGS(sk);
 		prot = inet->hdrincl ? IPPROTO_RAW : sk->sk_protocol;
+		uid = sock_i_uid(sk);
 	}
 	flowi4_init_output(fl4, oif, mark, tos,
 			   RT_SCOPE_UNIVERSE, prot,
 			   flow_flags,
 			   iph->daddr, iph->saddr, 0, 0,
-			   sock_i_uid(sk));
+			   uid);
 }
 
 static void build_skb_flow_key(struct flowi4 *fl4, const struct sk_buff *skb,
