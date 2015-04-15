@@ -1,0 +1,9 @@
+Code-Review+1: Jeffrey Vander Stoep <jeffv@google.com>
+Code-Review+1: Stephen Smalley <sds@tycho.nsa.gov>
+Code-Review+2: Mark Salyzyn <salyzyn@google.com>
+Verified+1: Mark Salyzyn <salyzyn@google.com>
+Submitted-by: Mark Salyzyn <salyzyn@google.com>
+Submitted-at: Wed, 15 Apr 2015 16:46:30 +0000
+Reviewed-on: https://android-review.googlesource.com/146909
+Project: kernel/common
+Branch: refs/heads/android-3.18
