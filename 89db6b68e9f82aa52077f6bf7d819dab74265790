@@ -28,12 +28,32 @@ UUID: 30d59acf_3a0b20ad
 Bytes: 190
 if new_freq > cur but new_freq < target, we leave target alone on this pass even though it is now stale. We don't want to skip to "rearm" since that skips setting the new target at line 487.
 
+433
+Thu Apr 16 17:41:08 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30d59acf_3a0b20ad
+UUID: 10597645_43260ee6
+Bytes: 1075
+"new_freq > cur but new_freq < target" means target > cur, which shouldn't really happen as long as we are always waking up speedchange task correctly and setting frequency properly, right?
+
+Even if it happens, I could argue that policy->cur should have been target_freq and not letting target_freq to drop is the right thing. The CPU never gets a chance to run at target_freq and apparently current frequency is still not enough.
+
+More importantly though we probably want to wake up speedchange_task if target > cur. On the other hand new_freq could be same as target_freq at any time. So if we really want to handle the error case where speedchange task could fail to change frequency, 55c5ba1 alone is not enough. We need to diligently check before every return whether we want to wake it up or not. Worse yet, if we cancel timer at fmax, we might never have such a chance to remedy the situation in timer function, and speedchange_task needs to check return value of __cpufreq_driver_target() and somehow recover. I think that's a separate (and not trivial) issue though.
+
 475
 Thu Apr 16 15:36:58 2015 +0000
 Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30d59acf_5a4144f7
 Bytes: 235
 This doesn't seem right either. This conditional is deciding whether our target_freq is staying the same and if so skips setting target_freq to the new value at line 487. If we've calculated a new frequency, we want to set target_freq.
+
+475
+Thu Apr 16 17:41:08 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30d59acf_5a4144f7
+UUID: 10597645_23231ad5
+Bytes: 51
+Agree. Missed this one. It needs to be target_freq.
 
 499:5-499:9
 Fri Apr 10 18:20:16 2015 +0000
