@@ -12,6 +12,29 @@ https://android-review.googlesource.com/#/c/146291/
 https://android-review.googlesource.com/#/c/146292/
 https://android-review.googlesource.com/#/c/146310/
 
+424
+Thu Apr 16 15:36:58 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 907ac6a8_6c155173
+Bytes: 349
+I think the changes above here look fine -- they mean we are calculating the new_freq based on the current frequency instead of our un-attained target that might no longer be appropriate.
+
+The changes below here don't seem right though since they are deciding whether we need to set target_freq to the new_freq and whether or not to rearm the timer.
+
+433
+Thu Apr 16 15:36:58 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30d59acf_3a0b20ad
+Bytes: 190
+if new_freq > cur but new_freq < target, we leave target alone on this pass even though it is now stale. We don't want to skip to "rearm" since that skips setting the new target at line 487.
+
+475
+Thu Apr 16 15:36:58 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30d59acf_5a4144f7
+Bytes: 235
+This doesn't seem right either. This conditional is deciding whether our target_freq is staying the same and if so skips setting target_freq to the new value at line 487. If we've calculated a new frequency, we want to set target_freq.
+
 499:5-499:9
 Fri Apr 10 18:20:16 2015 +0000
 Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,4 +45,12 @@ I think this has to be target_freq or we could keep CPU at high freq indefinitel
 Imagining two CPUs managed by one policy. CPU A is fully busy and its target_freq is policy->max, and thus keeping cluster frequency at policy->max. CPU B is idling at non-min freq with both timer scheduled. (They could be scheduled before CPU A ramped up to policy->max.)
 
 CPU B wakes up at beginning of the window where slack_timer would fire. Its regulaor timer drops its target_freq to policy->min because load is 0. With this change, it won't schedule regular timer, but slack timer is left unchanged.  CPU B does quite a lot of work before going to sleep again in same window. CPU B's slack time fires at end of this window, sees the busy time CPU B consumed in that window, and ramps up its target_freq to some middle frequency. CPU B's timers are again not scheduled because CPU A is keeping policy->cur at policy->max. If CPU B goes to long idle afterwards, its target_freq will keep policy frequency high forever even if CPU A ramps down to policy->min later.
+
+499:5-499:9
+Thu Apr 16 15:36:58 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4365e6c2_5d164f00
+UUID: 907ac6a8_6c679123
+Bytes: 239
+I agree with Junjie that line 499 should use target_freq -- remember, this is the newly calculated target_freq (line 487), and our check for rearm should be based on the expectations of where we think we are going to be during the interval
 
