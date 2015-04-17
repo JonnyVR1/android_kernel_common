@@ -1,0 +1,18 @@
+Revision: 6902d1f6c261ed7fe256f75611bc7125a160b621
+Patch-set: 2
+File: drivers/cpufreq/cpufreq_interactive.c
+
+410:12-410:23
+Fri Apr 17 22:29:21 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f03ce2f3_1f626313
+Bytes: 297
+I feel this target_freq should be policy->cur as in first patch. If policy->cur is already >= hispeed_freq, and we know the exact cpu_load of this sampling window, I don't see why we want to cap it at hispeed_freq. It could be same thread that just migrated to this CPU at beginning of the window.
+
+421:10-421:21
+Fri Apr 17 22:29:21 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03eeaea_1de55323
+Bytes: 10
+Same here.
+
