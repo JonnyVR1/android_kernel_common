@@ -407,7 +407,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	tunables->boosted = tunables->boost_val || now < tunables->boostpulse_endtime;
 
 	if (cpu_load >= tunables->go_hispeed_load || tunables->boosted) {
-		if (pcpu->target_freq < tunables->hispeed_freq) {
+		if (pcpu->policy->cur < tunables->hispeed_freq) {
 			new_freq = tunables->hispeed_freq;
 		} else {
 			new_freq = choose_freq(pcpu, loadadjfreq);
@@ -418,7 +418,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	} else {
 		new_freq = choose_freq(pcpu, loadadjfreq);
 		if (new_freq > tunables->hispeed_freq &&
-				pcpu->target_freq < tunables->hispeed_freq)
+				pcpu->policy->cur < tunables->hispeed_freq)
 			new_freq = tunables->hispeed_freq;
 	}
 
