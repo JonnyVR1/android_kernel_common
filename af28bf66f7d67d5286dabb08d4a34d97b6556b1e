@@ -1,0 +1,13 @@
+Revision: af28bf66f7d67d5286dabb08d4a34d97b6556b1e
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+425:1-428:64
+Thu Apr 23 01:37:50 2015 +0000
+Author: Saravana Kannan <1003665@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d076fe11_fa6151b9
+Bytes: 424
+Can we please hold off on this change? I think to fix this correctly, this needs a whole bunch of other changes that need to go with it. For example, we'll have to change how we enforce above hispeed delay, etc.
+
+Junjie and I were just about to upload a bunch of changes we made on our internal tree. We'll upload it tomorrow or day after. So, if we can pick those up instead, I think it would work out better for all of us.
+
