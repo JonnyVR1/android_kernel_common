@@ -1,0 +1,11 @@
+Revision: 4ca0c80ee8aff286b8f445b3564cb2a6ff4d0b69
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+52
+Fri Apr 24 21:09:43 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0d43e30_eb6b201c
+Bytes: 97
+can we name these to indicate that they are differ in scope. eg, local_hvtime and cluster_hvtime?
+
