@@ -19,3 +19,13 @@ UUID: 309d9a70_9e9bce71
 Bytes: 106
 Did you convince yourself that floor is not needed? What was the rationale for the case you describe here?
 
+410:20-410:22
+Fri Apr 24 18:31:59 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309d9a70_9e9bce71
+UUID: 30867a2e_d261da82
+Bytes: 459
+floor_freq is not redundant actually so I kept it in latest patch.
+
+Say frequency X < Y < Z. target_freq and floor_freq is Y and policy->max is Z. Thermal driver scales down policy->max to X, and we would rewrite target_freq with X in GOV_LIMITS. Thermal driver then restores policy->max to Z. This could all happen within a window. We would have target_freq == X and floor_freq = Y. In this case, I feel it's more correct to enforce frequency Y instead of X.
+
