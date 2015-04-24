@@ -11,3 +11,11 @@ Actually floor_freq is still useful when policy->min/max is changed in GOV_LIMIT
 
 Let me think more before re-uploading or abandoning it.
 
+410:20-410:22
+Fri Apr 24 17:52:32 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 506daeeb_9a7a6db4
+UUID: 309d9a70_9e9bce71
+Bytes: 106
+Did you convince yourself that floor is not needed? What was the rationale for the case you describe here?
+
