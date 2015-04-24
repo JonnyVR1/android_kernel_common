@@ -9,3 +9,13 @@ UUID: 10a416b9_cf067da3
 Bytes: 145
 It seems like this could be spammy and isn't very valuable. I presume you actually saw this... how frequent was the message? Is it really needed?
 
+866
+Fri Apr 24 18:23:19 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10a416b9_cf067da3
+UUID: 5083ee1c_de89e5f7
+Bytes: 643
+It only prints when user is writing to sysfs. I think that won't happen often, right? Internally we only set timer_rate during boot, so we would at most see it once. The reason we print is that we treat this more of a user error than a valid request, even though we still honor it.
+
+We added this to inform user that setting rates like 25/35 doesn't make sense if jiffy is 10ms. People tuning for performance and power don't necessary know the code, and they might be confused why 15 vs 20 or 25 vs 30 timer_rate doesn't make any difference. They could also be setting delays based on 15/25 rate. It happened internally so we added this print.
+
