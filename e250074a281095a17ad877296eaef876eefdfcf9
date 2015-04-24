@@ -9,3 +9,11 @@ UUID: 309d9a70_b7c35589
 Bytes: 80
 Since these two differ only in scope, how about cluster_fvtime and local_fvtime?
 
+51
+Fri Apr 24 22:01:09 2015 +0000
+Author: Junjie Wu <1070083@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309d9a70_b7c35589
+UUID: 5083ee1c_b9da8b10
+Bytes: 124
+Good idea. I should probably use policy_fvtime instead of cluster. I will wait for other comments and fix in next patch set.
+
