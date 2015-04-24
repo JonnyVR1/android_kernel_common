@@ -1,0 +1,11 @@
+Revision: e250074a281095a17ad877296eaef876eefdfcf9
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+51
+Fri Apr 24 21:01:23 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 309d9a70_b7c35589
+Bytes: 80
+Since these two differ only in scope, how about cluster_fvtime and local_fvtime?
+
