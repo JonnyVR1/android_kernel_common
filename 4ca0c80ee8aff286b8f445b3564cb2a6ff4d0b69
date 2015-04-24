@@ -9,3 +9,15 @@ UUID: d0d43e30_eb6b201c
 Bytes: 97
 can we name these to indicate that they are differ in scope. eg, local_hvtime and cluster_hvtime?
 
+52
+Fri Apr 24 23:17:06 2015 +0000
+Author: Saravana Kannan <1003665@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0d43e30_eb6b201c
+UUID: 5083ee1c_79ef3383
+Bytes: 292
+Agree with your comment about adding policy_ or cluster_ prefix, but really, hispeed_validate_time is a better name than hvtime since it's more meaningful.
+
+However policy_hispeed_validate_time makes it unwieldy. I guess p_hispeed_validate_time and l_... works?
+
+I'm just nit picking I guess.
+
