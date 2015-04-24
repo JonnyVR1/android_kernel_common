@@ -21,3 +21,17 @@ However policy_hispeed_validate_time makes it unwieldy. I guess p_hispeed_valida
 
 I'm just nit picking I guess.
 
+52
+Fri Apr 24 23:22:52 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_79ef3383
+UUID: b0d42a38_adcc1d6b
+Bytes: 290
+Some other options:
+pol_hispeed_validate_time / loc_hispeed_validate_time
+pol_hispeed_val_time / loc_hispeed_val_time
+
+p_ and l_ don't have quite enough to know what they are if you see them in the code, but "pol_" or "clu_" might.
+
+Anyway, I'll leave it to you to come up with something :)
+
