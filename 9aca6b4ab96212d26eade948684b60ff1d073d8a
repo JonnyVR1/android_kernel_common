@@ -1,0 +1,11 @@
+Revision: 9aca6b4ab96212d26eade948684b60ff1d073d8a
+Patch-set: 1
+File: drivers/cpufreq/cpufreq_interactive.c
+
+866
+Fri Apr 24 17:27:36 2015 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10a416b9_cf067da3
+Bytes: 145
+It seems like this could be spammy and isn't very valuable. I presume you actually saw this... how frequent was the message? Is it really needed?
+
