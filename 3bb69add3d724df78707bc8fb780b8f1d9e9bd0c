@@ -1,0 +1,13 @@
+Revision: 3bb69add3d724df78707bc8fb780b8f1d9e9bd0c
+Patch-set: 2
+File: kernel/power/suspend.c
+
+239:3-239:8
+Thu May 07 20:51:00 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d8435cc_72cf2fd6
+Bytes: 55
+It will be better to do:
+if (*wakeup)
+  error = -EBUSY;
+
