@@ -33,3 +33,11 @@ UUID: 8d1e2d58_83853358
 Bytes: 115
 In this case the variable wakeup will be set to non-zero which is going to prevent the suspend_again any which way.
 
+239:0-239:3
+Thu May 07 18:30:20 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_83853358
+UUID: cd24a5a6_18dcf70b
+Bytes: 61
+Ah, you're right. The code won't try again if wakeup is true.
+
