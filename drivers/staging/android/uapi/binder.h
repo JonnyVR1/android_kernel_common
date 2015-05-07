@@ -266,6 +266,12 @@ enum binder_driver_return_protocol {
 	 * The the last transaction (either a bcTRANSACTION or
 	 * a bcATTEMPT_ACQUIRE) failed (e.g. out of memory).  No parameters.
 	 */
+
+	BR_LSM_DENIED = _IO('r', 18),
+	/*
+	 * The the last transaction failed due to a failed LSM access check. No
+	 * parameters.
+	 */
 };
 
 enum binder_driver_command_protocol {
