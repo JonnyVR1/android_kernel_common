@@ -9,3 +9,11 @@ UUID: cd24a5a6_6d444b7a
 Bytes: 68
 It will prevent suspend_again try. Why this is a problem in general?
 
+239:0-239:3
+Thu May 07 17:42:31 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_6d444b7a
+UUID: cd24a5a6_2d889321
+Bytes: 257
+The accounting in the kernal as well as the framework will consider this as a valid suspend and wakeup, but the device never suspended. Additionally this is no different than the case where the wakeup source was pending in the earlier stages of the suspend.
+
