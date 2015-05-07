@@ -1,0 +1,11 @@
+Revision: aa89df3e974c05bfb7b3974ae389e16a67634d2b
+Patch-set: 1
+File: kernel/power/suspend.c
+
+239:0-239:3
+Thu May 07 17:40:03 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd24a5a6_6d444b7a
+Bytes: 68
+It will prevent suspend_again try. Why this is a problem in general?
+
