@@ -17,3 +17,11 @@ UUID: cd24a5a6_2d889321
 Bytes: 257
 The accounting in the kernal as well as the framework will consider this as a valid suspend and wakeup, but the device never suspended. Additionally this is no different than the case where the wakeup source was pending in the earlier stages of the suspend.
 
+239:0-239:3
+Thu May 07 17:59:17 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_2d889321
+UUID: 4d8435cc_9b896ea6
+Bytes: 549
+It looks this will lower the chance kernel enter suspend since otherwise kernel will just try again. suspend_ops are very low level suspend code and retry has high chance to succeed. Theoretically, the wakeup signal here is not aborting suspend since kernel will try again, so it's not exactly same as normal suspend abort. I think we shouldn't make the no-abort wakeup a valid suspend abort wakeup by changing its behavior to really abort suspend. Just a thought, maybe we can make wakeup reason here a separate category from normal suspend reason.
+
