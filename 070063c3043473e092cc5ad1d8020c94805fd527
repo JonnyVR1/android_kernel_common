@@ -1,0 +1,120 @@
+Revision: 070063c3043473e092cc5ad1d8020c94805fd527
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/Makefile
+
+182:2-182:11
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6d15ec_443f0fd9
+Bytes: 17
+Please comment it
+
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+3004:3-3004:17
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_cc334f6f
+Bytes: 39
+How this is related to STATIC_IOCTLBUF?
+
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+154:37-154:38
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_6cd24389
+Bytes: 12
+Remove blank
+
+155:39-155:40
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d70e1c2_339ee839
+Bytes: 12
+Remove blank
+
+227:2-227:20
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6d15ec_c4847f11
+Bytes: 35
+Should be under at least PCIE ifdef
+
+230:1-230:7
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_4ce17f4c
+Bytes: 26
+Should be under PCIE ifdef
+
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+69:6-69:7
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6d15ec_04b6f7cb
+Bytes: 12
+Remove blank
+
+File: drivers/net/wireless/bcmdhd/dhd_pcie.h
+
+34:0-34:26
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_cc97cf8f
+Bytes: 121
+Let's remove this to use either 
+#include <mach/msm_pcie.h>
+or 
+#include <linux/msm_pcie.h>
+and change kernel accordingly
+
+140:7-140:26
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d70e1c2_d3fbec3d
+Bytes: 58
+I don't want ARCH ifdefs in the driver. How can we fix it?
+
+File: drivers/net/wireless/bcmdhd/dhd_pcie_linux.c
+
+55:13-55:32
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_4c85ff54
+Bytes: 12
+Same here...
+
+File: drivers/net/wireless/bcmdhd/linux_osl.c
+
+34:12-34:23
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_0c506760
+Bytes: 13
+Please remove
+
+70:7-70:22
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_ac4cdbce
+Bytes: 9
+Same here
+
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+7720:8-7720:9
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d70e1c2_333d8870
+Bytes: 12
+remove blank
+
+7745:7-7745:8
+Fri May 08 23:37:19 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d679d0f_cc702f06
+Bytes: 12
+remove blank
+
