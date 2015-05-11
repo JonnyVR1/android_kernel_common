@@ -1,0 +1,11 @@
+Revision: 875ef7caaec5e2400899df62d207043ab054c067
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+154
+Mon May 11 19:58:59 2015 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d39c1d0_e0650c91
+Bytes: 24
+Please make an alignment
+
