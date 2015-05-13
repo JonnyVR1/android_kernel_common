@@ -1,0 +1,46 @@
+Revision: e573966392804060c8dba72ad41ce396be70203a
+Patch-set: 2
+File: /COMMIT_MSG
+
+7:0-7:7
+Wed May 13 23:16:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd1ae5b3_37e67731
+Bytes: 72
+Please use common conversion:
+net: wireless: bcmdhd: Add bcm4358 support
+
+File: drivers/net/wireless/bcmdhd/Makefile
+
+59:1-59:10
+Wed May 13 23:16:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad15b184_56d7b476
+Bytes: 50
+Should be:
+  DHDCFLAGS += -DLINKSTAT_SUPPORT
+sorry
+
+117:16-117:27
+Wed May 13 23:16:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad15b184_5600546f
+Bytes: 108
+Please add this as CONFIG_DHD_DTS option that can be set from Kconfig - we want to use it for other project.
+
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+328:1-328:15
+Wed May 13 23:16:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad15b184_56a974dd
+Bytes: 30
+Please allow no regulator case
+
+637:7-637:36
+Wed May 13 23:16:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd1ae5b3_b7fa67b3
+Bytes: 40
+Why this is different from non-DTS case?
+
