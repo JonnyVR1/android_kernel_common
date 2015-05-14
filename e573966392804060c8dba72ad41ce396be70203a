@@ -10,6 +10,14 @@ Bytes: 72
 Please use common conversion:
 net: wireless: bcmdhd: Add bcm4358 support
 
+7:0-7:7
+Thu May 14 18:39:12 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd1ae5b3_37e67731
+UUID: 6dbd79c9_13944c1a
+Bytes: 38
+Ok. will raise new CLs with fixed one.
+
 File: drivers/net/wireless/bcmdhd/Makefile
 
 59:1-59:10
@@ -21,12 +29,28 @@ Should be:
   DHDCFLAGS += -DLINKSTAT_SUPPORT
 sorry
 
+59:1-59:10
+Thu May 14 18:39:12 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad15b184_56d7b476
+UUID: 4d9a7579_3200706f
+Bytes: 46
+Ok. will enable again. also will raise new cl.
+
 117:16-117:27
 Wed May 13 23:16:51 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ad15b184_5600546f
 Bytes: 108
 Please add this as CONFIG_DHD_DTS option that can be set from Kconfig - we want to use it for other project.
+
+117:16-117:27
+Thu May 14 18:39:12 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad15b184_5600546f
+UUID: 6dbd79c9_33994851
+Bytes: 22
+Ok. will raise new Cl.
 
 File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
 
@@ -36,6 +60,15 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ad15b184_56a974dd
 Bytes: 30
 Please allow no regulator case
+
+328:1-328:15
+Thu May 14 18:39:12 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad15b184_56a974dd
+UUID: 8dc2ad55_34cdb037
+Bytes: 151
+It is under CONFIG_DTS define, so regulator_get should be used to get correct information. 
+If my understanding is not correct, please advise for this.
 
 637:7-637:36
 Wed May 13 23:16:51 2015 +0000
