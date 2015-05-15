@@ -9,12 +9,32 @@ UUID: 0da4fdb8_8b99d752
 Bytes: 17
 specify component
 
+7
+Fri May 15 21:16:26 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0da4fdb8_8b99d752
+UUID: eda6c9c2_03fea7aa
+Bytes: 41
+e.g. "android: binder: Fix BR_ERROR ..."?
+
 13
 Fri May 15 20:46:18 2015 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0da4fdb8_0ba5e77f
 Bytes: 96
 Does libbinder already handle these new return values correctly, or does it also need to change?
+
+13
+Fri May 15 21:16:26 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0da4fdb8_0ba5e77f
+UUID: 0da4fdb8_2b9b8bbd
+Bytes: 389
+IPCThreadState already assumes this with:
+case BR_ERROR:
+        result = mIn.readInt32()
+
+I'm actually not sure what the practical result of this would be for the one case where BR_ERROR was already being used (in the case of a failed allocation of binder_ref_death struct when processing a BC_CLEAR_DEATH_NOTIFICATION), as an extra, unprovided 4 bytes would be read from the read buffer.
 
 File: drivers/android/binder.c
 
@@ -24,4 +44,12 @@ Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd8d8546_ed26e8e4
 Bytes: 65
 This should be checked before writing the first part of BR_ERROR.
+
+2190
+Fri May 15 21:16:26 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd8d8546_ed26e8e4
+UUID: cd8d8546_cd284c03
+Bytes: 186
+There is no change in behavior here.  The first check is done above in ptr < end, although it could be argued that these checks should also make sure that ptr <= (end - sizeof(uint32_t))
 
