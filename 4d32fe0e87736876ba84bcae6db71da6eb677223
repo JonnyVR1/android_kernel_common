@@ -17,6 +17,14 @@ UUID: eda6c9c2_03fea7aa
 Bytes: 41
 e.g. "android: binder: Fix BR_ERROR ..."?
 
+7
+Fri May 15 21:27:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eda6c9c2_03fea7aa
+UUID: eda6c9c2_83eb77a7
+Bytes: 141
+yes that will work. Usually it is best to use the same prefix as other changes to the file, but this one has a lot of different formats used.
+
 13
 Fri May 15 20:46:18 2015 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +44,14 @@ case BR_ERROR:
 
 I'm actually not sure what the practical result of this would be for the one case where BR_ERROR was already being used (in the case of a failed allocation of binder_ref_death struct when processing a BC_CLEAR_DEATH_NOTIFICATION), as an extra, unprovided 4 bytes would be read from the read buffer.
 
+13
+Fri May 15 21:27:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0da4fdb8_2b9b8bbd
+UUID: 0da4fdb8_96b81ad9
+Bytes: 65
+That would be fatal, but those allocations never fail on android.
+
 File: drivers/android/binder.c
 
 2190
@@ -52,4 +68,12 @@ Parent: cd8d8546_ed26e8e4
 UUID: cd8d8546_cd284c03
 Bytes: 186
 There is no change in behavior here.  The first check is done above in ptr < end, although it could be argued that these checks should also make sure that ptr <= (end - sizeof(uint32_t))
+
+2190
+Fri May 15 21:27:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd8d8546_cd284c03
+UUID: cd8d8546_087de22c
+Bytes: 276
+There is a change in behavior since BR_ERROR will now be returned, where in practice it is never returned with the existing driver. Also, with the new code added below you may return BR_ERROR for the same error more than once, since it is only cleared after writing the param.
 
