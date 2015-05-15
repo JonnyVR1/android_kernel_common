@@ -1,0 +1,21 @@
+Revision: f9563389316b7eb1e8ad08f71be87285161d5d34
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:3
+Fri May 15 17:42:09 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8dc2ad55_69faed89
+Bytes: 86
+Let's use common convension:
+net: wireless: bcmdhd: Fix bcm4358 non-static memory mode
+
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1886:12-1886:26
+Fri May 15 17:42:09 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d9a7579_bc042ed2
+Bytes: 61
+Why this is related to bcm4358? And why it is ok for bcm4356?
+
