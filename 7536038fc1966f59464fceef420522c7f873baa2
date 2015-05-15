@@ -1,0 +1,12 @@
+Revision: 7536038fc1966f59464fceef420522c7f873baa2
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:0-7:7
+Fri May 15 17:45:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d9a7579_9c292a3f
+Bytes: 72
+Please use common convention:
+net: wireless: bcmdhd: Add bcm4358 support
+
