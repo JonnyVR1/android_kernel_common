@@ -346,9 +346,11 @@ struct binder_thread {
 	struct binder_transaction *transaction_stack;
 	struct list_head todo;
 	uint32_t return_error; /* Write failed, return error code in read buf */
+	int32_t return_error_param; /* additional error parameter */
 	uint32_t return_error2; /* Write failed, return error code in read */
 		/* buffer. Used when sending a reply to a dead process that */
 		/* we are also waiting on */
+	int32_t return_error_param2;
 	wait_queue_head_t wait;
 	struct binder_stats stats;
 };
@@ -1188,7 +1190,8 @@ static void binder_pop_transaction(struct binder_thread *target_thread,
 }
 
 static void binder_send_failed_reply(struct binder_transaction *t,
-				     uint32_t error_code)
+				     uint32_t error_code,
+				     int32_t error_param)
 {
 	struct binder_thread *target_thread;
 	struct binder_transaction *next;
@@ -1201,7 +1204,10 @@ static void binder_send_failed_reply(struct binder_transaction *t,
 			   target_thread->return_error2 == BR_OK) {
 				target_thread->return_error2 =
 					target_thread->return_error;
+				target_thread->return_error_param2 =
+					target_thread->return_error_param;
 				target_thread->return_error = BR_OK;
+				target_thread->return_error_param = 0;
 			}
 			if (target_thread->return_error == BR_OK) {
 				binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
@@ -1212,6 +1218,7 @@ static void binder_send_failed_reply(struct binder_transaction *t,
 
 				binder_pop_transaction(target_thread, t);
 				target_thread->return_error = error_code;
+				target_thread->return_error_param = error_param;
 				wake_up_interruptible(&target_thread->wait);
 			} else {
 				pr_err("reply failed, target thread, %d:%d, has error code %d already\n",
@@ -1333,6 +1340,7 @@ static void binder_transaction(struct binder_proc *proc,
 	struct binder_transaction *in_reply_to = NULL;
 	struct binder_transaction_log_entry *e;
 	uint32_t return_error;
+	int32_t return_error_param;
 
 	e = binder_transaction_log_add(&binder_transaction_log);
 	e->call_type = reply ? 2 : !!(tr->flags & TF_ONE_WAY);
@@ -1406,7 +1414,8 @@ static void binder_transaction(struct binder_proc *proc,
 			goto err_dead_binder;
 		}
 		if (security_binder_transaction(proc->tsk, target_proc->tsk) < 0) {
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EPERM;
 			goto err_invalid_target_handle;
 		}
 		if (!(tr->flags & TF_ONE_WAY) && thread->transaction_stack) {
@@ -1567,7 +1576,8 @@ static void binder_transaction(struct binder_proc *proc,
 				goto err_binder_get_ref_for_node_failed;
 			}
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EPERM;
 				goto err_binder_get_ref_for_node_failed;
 			}
 			ref = binder_get_ref_for_node(target_proc, node);
@@ -1601,7 +1611,8 @@ static void binder_transaction(struct binder_proc *proc,
 				goto err_binder_get_ref_failed;
 			}
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EPERM;
 				goto err_binder_get_ref_failed;
 			}
 			if (ref->node->proc == target_proc) {
@@ -1663,7 +1674,8 @@ static void binder_transaction(struct binder_proc *proc,
 			}
 			if (security_binder_transfer_file(proc->tsk, target_proc->tsk, file) < 0) {
 				fput(file);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EPERM;
 				goto err_get_unused_fd_failed;
 			}
 			target_fd = task_get_unused_fd_flags(target_proc, O_CLOEXEC);
@@ -1752,9 +1764,12 @@ err_no_context_mgr_node:
 	BUG_ON(thread->return_error != BR_OK);
 	if (in_reply_to) {
 		thread->return_error = BR_TRANSACTION_COMPLETE;
-		binder_send_failed_reply(in_reply_to, return_error);
-	} else
+		binder_send_failed_reply(in_reply_to, return_error,
+					 return_error_param);
+	} else {
 		thread->return_error = return_error;
+		thread->return_error_param = return_error_param;
+	}
 }
 
 static int binder_thread_write(struct binder_proc *proc,
@@ -2024,6 +2039,7 @@ static int binder_thread_write(struct binder_proc *proc,
 				death = kzalloc(sizeof(*death), GFP_KERNEL);
 				if (death == NULL) {
 					thread->return_error = BR_ERROR;
+					thread->return_error_param = -ENOMEM;
 					binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
 						     "%d:%d BC_REQUEST_DEATH_NOTIFICATION failed\n",
 						     proc->pid, thread->pid);
@@ -2168,19 +2184,39 @@ retry:
 
 	if (thread->return_error != BR_OK && ptr < end) {
 		if (thread->return_error2 != BR_OK) {
+			if (thread->return_error2 == BR_ERROR
+			    && (ptr + sizeof(uint32_t) + sizeof(int32_t) > end))
+				goto done;
 			if (put_user(thread->return_error2, (uint32_t __user *)ptr))
 				return -EFAULT;
 			ptr += sizeof(uint32_t);
+			if (thread->return_error2 == BR_ERROR) {
+				if (put_user(thread->return_error_param2,
+					     (int32_t __user *)ptr))
+					return -EFAULT;
+				ptr += sizeof(int32_t);
+			}
 			binder_stat_br(proc, thread, thread->return_error2);
 			thread->return_error2 = BR_OK;
+			thread->return_error_param2 = 0;
 			if (ptr == end)
 				goto done;
 		}
+		if (thread->return_error == BR_ERROR
+		    && (ptr + sizeof(uint32_t) + sizeof(int32_t) > end))
+			goto done;
 		if (put_user(thread->return_error, (uint32_t __user *)ptr))
 			return -EFAULT;
 		ptr += sizeof(uint32_t);
+		if (thread->return_error == BR_ERROR) {
+			if (put_user(thread->return_error_param,
+				     (int32_t __user *)ptr))
+				return -EFAULT;
+			ptr += sizeof(int32_t);
+		}
 		binder_stat_br(proc, thread, thread->return_error);
 		thread->return_error = BR_OK;
+		thread->return_error_param = 0;
 		goto done;
 	}
 
@@ -2484,7 +2520,7 @@ static void binder_release_work(struct list_head *list)
 			t = container_of(w, struct binder_transaction, work);
 			if (t->buffer->target_node &&
 			    !(t->flags & TF_ONE_WAY)) {
-				binder_send_failed_reply(t, BR_DEAD_REPLY);
+				binder_send_failed_reply(t, BR_DEAD_REPLY, 0);
 			} else {
 				binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
 					"undelivered transaction %d\n",
@@ -2550,7 +2586,9 @@ static struct binder_thread *binder_get_thread(struct binder_proc *proc)
 		rb_insert_color(&thread->rb_node, &proc->threads);
 		thread->looper |= BINDER_LOOPER_STATE_NEED_RETURN;
 		thread->return_error = BR_OK;
+		thread->return_error_param = 0;
 		thread->return_error2 = BR_OK;
+		thread->return_error_param2 = 0;
 	}
 	return thread;
 }
@@ -2589,7 +2627,7 @@ static int binder_free_thread(struct binder_proc *proc,
 			BUG();
 	}
 	if (send_reply)
-		binder_send_failed_reply(send_reply, BR_DEAD_REPLY);
+		binder_send_failed_reply(send_reply, BR_DEAD_REPLY, 0);
 	binder_release_work(&thread->todo);
 	kfree(thread);
 	binder_stats_deleted(BINDER_STAT_THREAD);
