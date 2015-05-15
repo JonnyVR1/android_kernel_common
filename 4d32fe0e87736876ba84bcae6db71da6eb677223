@@ -1,0 +1,27 @@
+Revision: 4d32fe0e87736876ba84bcae6db71da6eb677223
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Fri May 15 20:46:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0da4fdb8_8b99d752
+Bytes: 17
+specify component
+
+13
+Fri May 15 20:46:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0da4fdb8_0ba5e77f
+Bytes: 96
+Does libbinder already handle these new return values correctly, or does it also need to change?
+
+File: drivers/android/binder.c
+
+2190
+Fri May 15 20:46:18 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd8d8546_ed26e8e4
+Bytes: 65
+This should be checked before writing the first part of BR_ERROR.
+
