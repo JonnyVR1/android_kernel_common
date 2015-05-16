@@ -85,3 +85,12 @@ UUID: 0da4fdb8_dc68036a
 Bytes: 466
 I guess what I mean is that adding an "if (ptr == end)" before the first put_user() call is pointless since immediately before it we already ensure ptr < end.  Should I be checking before copying the thread->return_error that "ptr <= end - (sizeof(uint32_t) + sizeof(int32_t))" in the case of BR_ERROR?  In that case, we'd not record BR_ERROR unless there were enough room for the param as well.  I'm assuming we used "ptr == end" before due to alignment guarantees?
 
+2190
+Sat May 16 00:01:12 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0da4fdb8_dc68036a
+UUID: 0da4fdb8_dca003eb
+Bytes: 392
+My point is that you should not write a partial return value. The old code was only writing return values without parameters correctly, and the ptr == end check was needed to not write both return_error2 and return_error to the buffer when there was only room for one of them. (There is an existing bug in this code that Riley has a fix for in "
+android: binder: fix duplicate error return.")
+
