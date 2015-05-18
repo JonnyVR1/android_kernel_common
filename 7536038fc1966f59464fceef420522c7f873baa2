@@ -10,3 +10,29 @@ Bytes: 72
 Please use common convention:
 net: wireless: bcmdhd: Add bcm4358 support
 
+7:0-7:7
+Mon May 18 17:59:55 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d9a7579_9c292a3f
+UUID: 0da23dbf_f4bc40fe
+Bytes: 12
+And this one
+
+File: drivers/net/wireless/bcmdhd/Makefile
+
+59:0-59:1
+Mon May 18 17:59:55 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0da23dbf_e9634d3f
+Bytes: 13
+Please enable
+
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+637:2-637:4
+Mon May 18 17:59:55 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eda409cd_ee1d8f65
+Bytes: 40
+Why this is different from non-DTS case?
+
