@@ -94,3 +94,11 @@ Bytes: 392
 My point is that you should not write a partial return value. The old code was only writing return values without parameters correctly, and the ptr == end check was needed to not write both return_error2 and return_error to the buffer when there was only room for one of them. (There is an existing bug in this code that Riley has a fix for in "
 android: binder: fix duplicate error return.")
 
+2190
+Tue May 19 22:27:21 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0da4fdb8_dca003eb
+UUID: 2d37016d_ef86bf6a
+Bytes: 159
+Ok.  Could you please share the link to that commit?  I wasn't able to find it using a quick search and would like to make sure my change plays nicely with it.
+
