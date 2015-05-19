@@ -1,0 +1,18 @@
+Revision: 0ec5e19315f54ede614d7cdc0ca5d889a8356251
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1879:2-1879:3
+Tue May 19 21:45:23 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adfdb1c1_fa652dcd
+Bytes: 48
+This is called !defined(DHD_USE_STATIC_IOCTLBUF)
+
+1886:12-1886:26
+Tue May 19 21:45:23 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d8cfd85_5a1ea28c
+Bytes: 58
+Why this is related to BCM4358 (and not 4356 for example)?
+
