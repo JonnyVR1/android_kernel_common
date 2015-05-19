@@ -1,0 +1,20 @@
+Revision: c9cbf09d06f98b4cd8ec5187ed2634aeb192931f
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/Makefile
+
+59:0-59:1
+Tue May 19 21:42:36 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d8cfd85_fa099664
+Bytes: 8
+Remove #
+
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+637:5-637:7
+Tue May 19 21:42:36 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d37016d_ef28003b
+Bytes: 45
+Why this is the opposite for CONFIG_DTS case?
+
