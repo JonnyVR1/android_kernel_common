@@ -9,6 +9,14 @@ UUID: 0d8cfd85_fa099664
 Bytes: 8
 Remove #
 
+59:0-59:1
+Wed May 20 18:20:41 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d8cfd85_fa099664
+UUID: ed4089d5_687077d7
+Bytes: 20
+Sorry I will fix it.
+
 File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
 
 637:5-637:7
@@ -17,4 +25,12 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d37016d_ef28003b
 Bytes: 45
 Why this is the opposite for CONFIG_DTS case?
+
+637:5-637:7
+Wed May 20 18:20:41 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d37016d_ef28003b
+UUID: ad4211dc_ecf01365
+Bytes: 70
+In CONFIG_DTS case, we need to power up adapter earlier than non Case.
 
