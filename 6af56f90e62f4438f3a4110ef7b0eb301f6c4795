@@ -1,0 +1,13 @@
+Revision: 6af56f90e62f4438f3a4110ef7b0eb301f6c4795
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1886:4-1886:28
+Wed May 20 23:33:11 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed4089d5_c8cc230b
+Bytes: 102
+Hi, Dmitry. 
+CONFIG_BCM4358 is still exist. We agreed that removing it. 
+Can I modify it here as well?
+
