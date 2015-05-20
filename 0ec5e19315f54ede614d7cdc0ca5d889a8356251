@@ -25,6 +25,14 @@ UUID: 6d7ad934_0061940f
 Bytes: 61
 You are right! Then you need to add this PKTGET() under #else
 
+1879:2-1879:3
+Wed May 20 20:53:54 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d7ad934_0061940f
+UUID: ad4211dc_77f5b0cd
+Bytes: 155
+Many of DHD_DONOT_FORWARD_BCMEVENT_AS_NETWORK_PKT code was written in same manner. So I will think change of define order of them later. But not this time.
+
 1886:12-1886:26
 Tue May 19 21:45:23 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
