@@ -59,3 +59,11 @@ UUID: 2d6e217b_9dadf3eb
 Bytes: 44
 Still why just not to remove CONFIG_BCM4358?
 
+1886:12-1886:26
+Wed May 20 21:01:51 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d6e217b_9dadf3eb
+UUID: ed4089d5_e8932732
+Bytes: 33
+Ok. I will remove CONFIG_BCM4358.
+
