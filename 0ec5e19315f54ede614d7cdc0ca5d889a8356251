@@ -51,3 +51,11 @@ This is temporal patch for 4358 case. We haven't used kernel preallocated memory
 
 We're now adding platform function to handle this memory allocation. When it's done we will revise code.
 
+1886:12-1886:26
+Wed May 20 20:56:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd4745eb_24e616b4
+UUID: 2d6e217b_9dadf3eb
+Bytes: 44
+Still why just not to remove CONFIG_BCM4358?
+
