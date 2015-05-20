@@ -42,3 +42,11 @@ UUID: adfdb1c1_13190f7a
 Bytes: 114
 Does it mean that you need to do this regardless 'dhd_download_fw_on_driverload' value and not only when it false?
 
+637:5-637:7
+Wed May 20 18:53:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adfdb1c1_13190f7a
+UUID: ed4089d5_e896c74a
+Bytes: 219
+Yes, We currently set this dhd_download_fw_on_driverload to false when wl_android_init. In CONFIG_DTS case, it seems to be regardless checking here as you said. We will revise code through later CONFIG_DTS modification.
+
