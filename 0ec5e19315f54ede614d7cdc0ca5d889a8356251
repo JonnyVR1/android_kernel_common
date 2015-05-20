@@ -9,10 +9,29 @@ UUID: adfdb1c1_fa652dcd
 Bytes: 48
 This is called !defined(DHD_USE_STATIC_IOCTLBUF)
 
+1879:2-1879:3
+Wed May 20 19:42:34 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adfdb1c1_fa652dcd
+UUID: ed4089d5_a8f99f95
+Bytes: 121
+I don't think so. that "#else" belongs to DHD_DONOT_FORWARD_BCMEVENT_AS_NETWORK_PKT. and not for DHD_USE_STATIC_IOCTLBUF.
+
 1886:12-1886:26
 Tue May 19 21:45:23 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d8cfd85_5a1ea28c
 Bytes: 58
 Why this is related to BCM4358 (and not 4356 for example)?
+
+1886:12-1886:26
+Wed May 20 19:42:34 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d8cfd85_5a1ea28c
+UUID: cd4745eb_24e616b4
+Bytes: 266
+This is temporal patch for 4358 case. We haven't used kernel preallocated memory(STATIC buffer) yet. 
+4356 case we used static buffer. So this code not needed. 
+
+We're now adding platform function to handle this memory allocation. When it's done we will revise code.
 
