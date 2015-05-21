@@ -1876,6 +1876,10 @@ static long unix_stream_data_wait(struct sock *sk, long timeo)
 		unix_state_unlock(sk);
 		timeo = freezable_schedule_timeout(timeo);
 		unix_state_lock(sk);
+
+		if (sock_flag(sk, SOCK_DEAD))
+			break;
+
 		clear_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 	}
 
