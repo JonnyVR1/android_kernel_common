@@ -1,0 +1,11 @@
+Revision: 02b77791c70ca40588e66f8f525cff9d4c63a067
+Patch-set: 2
+File: security/selinux/hooks.c
+
+691:31-691:38
+Thu May 21 16:35:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d7ad934_e6d1f6d1
+Bytes: 54
+What about "pstore" ? Do we not need it there as well?
+
