@@ -9,3 +9,11 @@ UUID: 6d7ad934_e6d1f6d1
 Bytes: 54
 What about "pstore" ? Do we not need it there as well?
 
+691:31-691:38
+Thu May 21 16:38:37 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d7ad934_e6d1f6d1
+UUID: 6d53b9ca_83c11e85
+Bytes: 84
+Only if we want to initially label kernel-created files in pstore based on pathname.
+
