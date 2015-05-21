@@ -11,3 +11,11 @@ Hi, Dmitry.
 CONFIG_BCM4358 is still exist. We agreed that removing it. 
 Can I modify it here as well?
 
+1886:4-1886:28
+Thu May 21 00:16:15 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed4089d5_c8cc230b
+UUID: ad4211dc_120f9a68
+Bytes: 60
+Sure! For some reason we have too many versions of the code.
+
