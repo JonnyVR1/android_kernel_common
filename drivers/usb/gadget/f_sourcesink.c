@@ -67,7 +67,7 @@ static unsigned isoc_interval;
 static unsigned isoc_maxpacket;
 static unsigned isoc_mult;
 static unsigned isoc_maxburst;
-static unsigned buflen;
+static unsigned buflen_sourcesink;
 
 /*-------------------------------------------------------------------------*/
 
@@ -310,7 +310,7 @@ struct usb_request *alloc_ep_req(struct usb_ep *ep, int len)
 		if (len)
 			req->length = len;
 		else
-			req->length = buflen;
+			req->length = buflen_sourcesink;
 		req->buf = kmalloc(req->length, GFP_ATOMIC);
 		if (!req->buf) {
 			usb_ep_free_request(ep, req);
@@ -883,7 +883,7 @@ static struct usb_function *source_sink_alloc_func(
 	isoc_maxpacket = ss_opts->isoc_maxpacket;
 	isoc_mult = ss_opts->isoc_mult;
 	isoc_maxburst = ss_opts->isoc_maxburst;
-	buflen = ss_opts->bulk_buflen;
+	buflen_sourcesink = ss_opts->bulk_buflen;
 
 	ss->function.name = "source/sink";
 	ss->function.bind = sourcesink_bind;
@@ -916,7 +916,13 @@ static struct usb_function_instance *source_sink_alloc_inst(void)
 	ss_opts->func_inst.free_func_inst = source_sink_free_instance;
 	return &ss_opts->func_inst;
 }
-DECLARE_USB_FUNCTION(SourceSink, source_sink_alloc_inst,
+
+/*
+ * Commenting the code as it requuired for configfs based
+ * driver. Will be uncommented for configfs based driver
+ */
+
+/*DECLARE_USB_FUNCTION(SourceSink, source_sink_alloc_inst,
 		source_sink_alloc_func);
 
 static int __init sslb_modinit(void)
@@ -938,5 +944,5 @@ static void __exit sslb_modexit(void)
 }
 module_init(sslb_modinit);
 module_exit(sslb_modexit);
-
+*/
 MODULE_LICENSE("GPL");

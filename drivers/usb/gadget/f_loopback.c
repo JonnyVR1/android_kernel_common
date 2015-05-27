@@ -45,8 +45,8 @@ static inline struct f_loopback *func_to_loop(struct usb_function *f)
 	return container_of(f, struct f_loopback, function);
 }
 
-static unsigned qlen;
-static unsigned buflen;
+static unsigned qlen_loopback;
+static unsigned buflen_loopback;
 
 /*-------------------------------------------------------------------------*/
 
@@ -258,7 +258,7 @@ static void loopback_complete(struct usb_ep *ep, struct usb_request *req)
 		}
 
 		/* queue the buffer for some later OUT packet */
-		req->length = buflen;
+		req->length = buflen_loopback;
 		status = usb_ep_queue(loop->out_ep, req, GFP_ATOMIC);
 		if (status == 0)
 			return;
@@ -331,8 +331,8 @@ fail0:
 	 * we buffer at most 'qlen' transfers; fewer if any need more
 	 * than 'buflen' bytes each.
 	 */
-	for (i = 0; i < qlen && result == 0; i++) {
-		req = alloc_ep_req(ep, 0);
+	for (i = 0; i < qlen_loopback && result == 0; i++) {
+		req = alloc_ep_req(ep, buflen_loopback);
 		if (req) {
 			req->complete = loopback_complete;
 			result = usb_ep_queue(ep, req, GFP_ATOMIC);
@@ -380,10 +380,10 @@ static struct usb_function *loopback_alloc(struct usb_function_instance *fi)
 		return ERR_PTR(-ENOMEM);
 
 	lb_opts = container_of(fi, struct f_lb_opts, func_inst);
-	buflen = lb_opts->bulk_buflen;
-	qlen = lb_opts->qlen;
-	if (!qlen)
-		qlen = 32;
+	buflen_loopback = lb_opts->bulk_buflen;
+	qlen_loopback = lb_opts->qlen;
+	if (!qlen_loopback)
+		qlen_loopback = 32;
 
 	loop->function.name = "loopback";
 	loop->function.bind = loopback_bind;
@@ -414,6 +414,13 @@ static struct usb_function_instance *loopback_alloc_instance(void)
 	lb_opts->func_inst.free_func_inst = lb_free_instance;
 	return  &lb_opts->func_inst;
 }
+
+/*
+ * Commenting the code as it requuired for configfs based
+ * driver. Will be uncommented for configfs based driver
+ */
+
+/*
 DECLARE_USB_FUNCTION(Loopback, loopback_alloc_instance, loopback_alloc);
 
 int __init lb_modinit(void)
@@ -430,4 +437,34 @@ void __exit lb_modexit(void)
 	usb_function_unregister(&Loopbackusb_func);
 }
 
-MODULE_LICENSE("GPL");
+MODULE_LICENSE("GPL"); */
+
+static struct f_loopback *loop;
+
+static int loopback_bind_config(struct usb_configuration *c)
+{
+	buflen_loopback = 32;
+	qlen_loopback = 32;
+
+	loop->function.name = "loopback";
+	loop->function.bind = loopback_bind;
+	loop->function.set_alt = loopback_set_alt;
+	loop->function.disable = loopback_disable;
+	loop->function.strings = loopback_strings;
+
+	return usb_add_function(c, &loop->function);
+}
+
+static int loopback_setup(void)
+{
+	loop = kzalloc(sizeof *loop, GFP_KERNEL);
+	if (!loop)
+		return -ENOMEM;
+
+	return 0;
+}
+
+static void loopback_cleanup(void)
+{
+	kfree(loop);
+}

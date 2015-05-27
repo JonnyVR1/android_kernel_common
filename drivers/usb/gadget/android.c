@@ -34,6 +34,8 @@
 #include "f_audio_source.c"
 #include "f_midi.c"
 #include "f_mass_storage.c"
+#include "f_sourcesink.c"
+#include "f_loopback.c"
 #include "f_mtp.c"
 #include "f_accessory.c"
 #define USB_ETH_RNDIS y
@@ -994,6 +996,31 @@ static struct android_usb_function midi_function = {
 	.attributes	= midi_function_attributes,
 };
 
+static int loopback_function_init(struct android_usb_function *f,
+					struct usb_composite_dev *cdev)
+{
+	return loopback_setup();
+}
+
+static void loopback_function_cleanup(struct android_usb_function *f)
+{
+	loopback_cleanup();
+}
+
+static int loopback_function_bind_config(struct android_usb_function *f,
+						struct usb_configuration *c)
+{
+	return loopback_bind_config(c);
+}
+
+
+static struct android_usb_function loopback_function = {
+	.name           = "loopback",
+	.init           = loopback_function_init,
+	.cleanup        = loopback_function_cleanup,
+	.bind_config    = loopback_function_bind_config,
+};
+
 static struct android_usb_function *supported_functions[] = {
 	&ffs_function,
 	&acm_function,
@@ -1004,6 +1031,7 @@ static struct android_usb_function *supported_functions[] = {
 	&accessory_function,
 	&audio_source_function,
 	&midi_function,
+	&loopback_function,
 	NULL
 };
 
