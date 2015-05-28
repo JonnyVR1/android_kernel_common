@@ -1,0 +1,18 @@
+Revision: b92a8c41f343e676d2ba0fc325bc98a1ae3b1250
+Patch-set: 1
+File: drivers/android/binder.c
+
+2979
+Thu May 28 21:21:53 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_81bcdd48
+Bytes: 18
+this is not needed
+
+3616
+Thu May 28 21:21:53 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_41b2f578
+Bytes: 27
+you left the lock held here
+
