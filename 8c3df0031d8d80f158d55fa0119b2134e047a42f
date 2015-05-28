@@ -1,0 +1,11 @@
+Revision: 8c3df0031d8d80f158d55fa0119b2134e047a42f
+Patch-set: 5
+File: drivers/android/binder.c
+
+2219
+Thu May 28 22:12:57 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_562d508e
+Bytes: 129
+why did you move this? Now it reports every error as BR_OK instead. (You also added the same bug in the return_error2 case above)
+
