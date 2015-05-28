@@ -785,6 +785,13 @@ typedef struct dhd_dev_priv {
 #define DHD_DEV_IFP(dev)        (((dhd_dev_priv_t *)DEV_PRIV(dev))->ifp)
 #define DHD_DEV_IFIDX(dev)      (((dhd_dev_priv_t *)DEV_PRIV(dev))->ifidx)
 
+#if !defined(CONFIG_DTS)
+#if defined(DHD_OF_SUPPORT)
+extern int dhd_wlan_init(void);
+#endif /* defined(DHD_OF_SUPPORT) */
+#endif /* !defind(CONFIG_DTS) */
+
+
 /** Clear the dhd net_device's private structure. */
 static inline void
 dhd_dev_priv_clear(struct net_device * dev)
@@ -6915,6 +6922,16 @@ dhd_module_init(void)
 	int retry = POWERUP_MAX_RETRY;
 
 	DHD_ERROR(("%s in\n", __FUNCTION__));
+#if !defined(CONFIG_DTS)
+#if defined(DHD_OF_SUPPORT)
+	err = dhd_wlan_init();
+	if(err) {
+		DHD_ERROR(("%s: failed in dhd_wlan_init.",__FUNCTION__));
+		return err;
+	}
+#endif /* defined(DHD_OF_SUPPORT) */
+#endif /* !defind(CONFIG_DTS) */
+
 
 	DHD_PERIM_RADIO_INIT();
 
