@@ -113,9 +113,6 @@ DRIVER_TYPE ?= y
 #########################
 
 ifneq ($(CONFIG_BCM4358),)
-#for dts
-  DHDCFLAGS += -DCONFIG_DTS
-
   DHDCFLAGS += -DUSE_WL_TXBF
   DHDCFLAGS += -DUSE_WL_FRAMEBURST
   DHDCFLAGS += -DCUSTOM_DPC_CPUCORE=0
@@ -291,6 +288,9 @@ DHDOFILES := dhd_pno.o dhd_common.o dhd_ip.o dhd_custom_gpio.o \
 	wl_android.o wl_roam.o wl_cfg80211.o wl_cfgp2p.o wl_cfg_btcoex.o wldev_common.o wl_linux_mon.o  \
 	dhd_linux_platdev.o dhd_pno.o dhd_rtt.o dhd_linux_wq.o wl_cfg_btcoex.o \
 	hnd_pktq.o hnd_pktpool.o wl_cfgvendor.o bcmxtlv.o dhd_debug.o dhd_debug_linux.o
+ifneq ($(CONFIG_ARCH_MSM),)
+  DHDOFILES += dhd_custom_platdev.o
+endif
 
 ifneq ($(CONFIG_BCMDHD_SDIO),)
   DHDOFILES += bcmsdh.o bcmsdh_linux.o bcmsdh_sdmmc.o bcmsdh_sdmmc_linux.o
