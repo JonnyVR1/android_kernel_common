@@ -1,0 +1,12 @@
+Revision: ca8b3a13050768a99a6da0a640b79e767b9f22b8
+Patch-set: 2
+File: drivers/usb/gadget/android.c
+
+999:0-999:6
+Thu May 28 21:57:34 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_fce46ed8
+Bytes: 68
+Do you think it will be Ok to put it under ifdef?
+CONFIG_USB_F_SS_LB
+
