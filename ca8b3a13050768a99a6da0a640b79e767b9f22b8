@@ -27,6 +27,14 @@ UUID: 0d54fde2_bcf02664
 Bytes: 43
 want to change var name in comment as well?
 
+332:10-332:16
+Thu May 28 22:56:14 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_bcf02664
+UUID: 0d54fde2_42bd94c5
+Bytes: 4
+sure
+
 383:1-383:16
 Thu May 28 22:13:03 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,10 +42,26 @@ UUID: 0d54fde2_5c0bbad7
 Bytes: 122
 You are using global vars without mutual exclusion (that can be Ok) and without memory barriers that may be Ok on N9 only.
 
+383:1-383:16
+Thu May 28 22:56:14 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_5c0bbad7
+UUID: ed56c9ec_8a378c8e
+Bytes: 215
+This function is not going to be called unless configfs based driver is used.. If we use configfs based driver we don't have to merge my patch at all... So, for now including synchronization is almost an overkill...
+
 446:19-446:21
 Thu May 28 22:13:03 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d1bb95b_2dc87af5
 Bytes: 11
 Use define?
+
+446:19-446:21
+Thu May 28 22:56:14 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d1bb95b_2dc87af5
+UUID: 6d1bb95b_c39897c1
+Bytes: 14
+Yes... will do
 
