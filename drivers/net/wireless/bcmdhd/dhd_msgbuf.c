@@ -1882,10 +1882,6 @@ dhd_prot_rxbufpost_ctrl(dhd_pub_t *dhd, bool event_buf)
 #if defined(CONFIG_DHD_USE_STATIC_BUF) && defined(DHD_USE_STATIC_IOCTLBUF)
 	}
 #endif /* CONFIG_DHD_USE_STATIC_BUF && DHD_USE_STATIC_IOCTLBUF */
-
-#if !defined(DHD_USE_STATIC_IOCTLBUF)
-	p = PKTGET(dhd->osh,pktsz,FALSE);
-#endif
 	if (p == NULL) {
 		DHD_ERROR(("%s:%d: PKTGET for %s rxbuf failed\n",
 			__FUNCTION__, __LINE__, event_buf ? "event" :
