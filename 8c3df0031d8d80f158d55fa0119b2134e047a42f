@@ -9,3 +9,11 @@ UUID: ed56c9ec_562d508e
 Bytes: 129
 why did you move this? Now it reports every error as BR_OK instead. (You also added the same bug in the return_error2 case above)
 
+2219
+Thu May 28 22:30:45 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_562d508e
+UUID: ed56c9ec_6a326822
+Bytes: 308
+Yes, that was stupid.  I think I originally noticed that the binder_stat_br() was separated from the setting of BR_OK across the ptr == end check and resolved to put them together, which is precisely the error Riley's patch addresses, but I may have messed it up when transferring from one branch to another.
+
