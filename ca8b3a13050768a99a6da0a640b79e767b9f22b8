@@ -10,3 +10,11 @@ Bytes: 68
 Do you think it will be Ok to put it under ifdef?
 CONFIG_USB_F_SS_LB
 
+999:0-999:6
+Thu May 28 22:06:56 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_fce46ed8
+UUID: 0d54fde2_5c401a14
+Bytes: 299
+That's where we diverge from upstream... We include the ".c" file into android.c instead of compiling them separately... So, CONFIG_USB_F_SS_LB does not influence this at all... This is similar to how we have dealt with other gadget function drivers. Hopefully, configfs stuff can clear all this up.
+
