@@ -18,3 +18,26 @@ UUID: 0d54fde2_5c401a14
 Bytes: 299
 That's where we diverge from upstream... We include the ".c" file into android.c instead of compiling them separately... So, CONFIG_USB_F_SS_LB does not influence this at all... This is similar to how we have dealt with other gadget function drivers. Hopefully, configfs stuff can clear all this up.
 
+File: drivers/usb/gadget/f_loopback.c
+
+332:10-332:16
+Thu May 28 22:13:03 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_bcf02664
+Bytes: 43
+want to change var name in comment as well?
+
+383:1-383:16
+Thu May 28 22:13:03 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_5c0bbad7
+Bytes: 122
+You are using global vars without mutual exclusion (that can be Ok) and without memory barriers that may be Ok on N9 only.
+
+446:19-446:21
+Thu May 28 22:13:03 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d1bb95b_2dc87af5
+Bytes: 11
+Use define?
+
