@@ -2975,7 +2975,9 @@ static int binder_open(struct inode *nodp, struct file *filp)
 
 		snprintf(strbuf, sizeof(strbuf), "%u", proc->pid);
 		proc->debugfs_entry = debugfs_create_file(strbuf, S_IRUGO,
-			binder_debugfs_dir_entry_proc, proc, &binder_proc_fops);
+			binder_debugfs_dir_entry_proc,
+			(void *)(uintptr_t)proc->pid,
+			&binder_proc_fops);
 	}
 
 	return 0;
@@ -3598,11 +3600,21 @@ static int binder_transactions_show(struct seq_file *m, void *unused)
 
 static int binder_proc_show(struct seq_file *m, void *unused)
 {
-	struct binder_proc *proc = m->private;
+	int pid = (uintptr_t)m->private;
+	struct binder_proc *itr;
+	struct binder_proc *proc = NULL;
 	int do_lock = !binder_debug_no_lock;
 
 	if (do_lock)
 		binder_lock(__func__);
+
+	hlist_for_each_entry(itr, &binder_procs, proc_node) {
+		if (itr->pid == pid)
+			proc = itr;
+	}
+	if (!proc)
+		return 0;
+
 	seq_puts(m, "binder proc state:\n");
 	print_binder_proc(m, proc, 1);
 	if (do_lock)
