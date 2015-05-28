@@ -9381,9 +9381,9 @@ void dhd_set_cpucore(dhd_pub_t *dhd, int set)
 				OSL_SLEEP(1);
 		} while (e_rxf < 0);
 	}
-#ifdef DHD_OF_SUPPORT
+#ifdef CONFIG_DHD_OF_SUPPORT
 	interrupt_set_cpucore(set);
-#endif /* DHD_OF_SUPPORT */
+#endif /* CONFIG_DHD_OF_SUPPORT */
 	DHD_TRACE(("%s: set(%d) cpucore success!\n", __FUNCTION__, set));
 
 	return;
