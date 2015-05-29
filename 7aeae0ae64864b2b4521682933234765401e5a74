@@ -9,6 +9,16 @@ UUID: 0d54fde2_0ce1fa18
 Bytes: 46
 This is not good - please do it Kconfig option
 
+186:16-186:31
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_0ce1fa18
+UUID: 3914a832_5ce39119
+Bytes: 210
+Your meaning is that moving this to Kconfig?
+we're now using 4356 for Qcom and Nvidia project. 
+I just seperated Qcom project, Nvidia they manage their own platform driver functions. So it's hard to track them.
+
 File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
 
 39:32-39:39
@@ -18,6 +28,19 @@ UUID: b91fb853_5e314929
 Bytes: 57
 I suspect CONFIG_64BIT defines path - should be separate.
 
+39:32-39:39
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91fb853_5e314929
+UUID: 190b6419_dbe447cf
+Bytes: 221
+Actually this file used for MSM platform. Nvidia case they are using their own platform driver/function. 
+
+But, I under stand your suggestion. seperate two defines. 
+
+#if defined(CONFIG_ARCH_MSM)
+#if defined(CONFIG_64BIT)
+
 248:1-248:8
 Fri May 29 19:30:16 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +48,30 @@ UUID: ed56c9ec_e5fbdeb7
 Bytes: 32
 Why do you need so long line? ;)
 
+248:1-248:8
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_e5fbdeb7
+UUID: 190b6419_bbe193bd
+Bytes: 38
+It's from N6... Ok. removing that log.
+
 348:0-348:6
 Fri May 29 19:30:16 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b91fb853_1e62b10b
 Bytes: 22
 We can get it from DTS
+
+348:0-348:6
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91fb853_1e62b10b
+UUID: 59115c41_c07572ab
+Bytes: 147
+Yes, we can use DTS later. But I need to keep legacy way until DTS feature change finalized and bringup done.
+
+Can we discuss this DTS topic later?
 
 File: drivers/net/wireless/bcmdhd/include/bcmdevs.h
 
@@ -41,6 +82,14 @@ UUID: ed56c9ec_e56d9eff
 Bytes: 25
 Should be separate change
 
+367:8-367:24
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_e56d9eff
+UUID: 3914a832_3c0fbd6b
+Bytes: 29
+Yes, I will raise another CL.
+
 File: drivers/net/wireless/bcmdhd/siutils.c
 
 417:2-417:6
@@ -49,4 +98,12 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b91fb853_fe4db58f
 Bytes: 9
 Same here
+
+417:2-417:6
+Fri May 29 21:57:50 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91fb853_fe4db58f
+UUID: 190b6419_5ba0377c
+Bytes: 28
+Yes, I will raise another CL
 
