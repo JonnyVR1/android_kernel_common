@@ -1,0 +1,52 @@
+Revision: 7aeae0ae64864b2b4521682933234765401e5a74
+Patch-set: 4
+File: drivers/net/wireless/bcmdhd/Makefile
+
+186:16-186:31
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_0ce1fa18
+Bytes: 46
+This is not good - please do it Kconfig option
+
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+39:32-39:39
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91fb853_5e314929
+Bytes: 57
+I suspect CONFIG_64BIT defines path - should be separate.
+
+248:1-248:8
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_e5fbdeb7
+Bytes: 32
+Why do you need so long line? ;)
+
+348:0-348:6
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91fb853_1e62b10b
+Bytes: 22
+We can get it from DTS
+
+File: drivers/net/wireless/bcmdhd/include/bcmdevs.h
+
+367:8-367:24
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_e56d9eff
+Bytes: 25
+Should be separate change
+
+File: drivers/net/wireless/bcmdhd/siutils.c
+
+417:2-417:6
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91fb853_fe4db58f
+Bytes: 9
+Same here
+

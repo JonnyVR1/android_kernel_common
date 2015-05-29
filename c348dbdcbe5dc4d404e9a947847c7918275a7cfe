@@ -1,0 +1,11 @@
+Revision: c348dbdcbe5dc4d404e9a947847c7918275a7cfe
+Base-for-patch-set: 4
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1886:0-1886:1
+Fri May 29 19:30:16 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_6c19a6ae
+Bytes: 24
+This was removed already
+
