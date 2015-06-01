@@ -1,5 +1,14 @@
 Revision: 9471857e604f32cc64fe6d3401fd9b3c618e2273
 Patch-set: 7
+File: /COMMIT_MSG
+
+7:23-7:29
+Mon Jun 01 18:16:45 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_b52746e0
+Bytes: 34
+Please use more meaningful message
+
 File: drivers/net/wireless/bcmdhd/Makefile
 
 296:9-296:24
