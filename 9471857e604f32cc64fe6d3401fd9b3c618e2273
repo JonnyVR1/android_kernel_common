@@ -1,5 +1,14 @@
 Revision: 9471857e604f32cc64fe6d3401fd9b3c618e2273
 Patch-set: 7
+File: drivers/net/wireless/bcmdhd/Makefile
+
+296:9-296:24
+Mon Jun 01 18:14:04 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_d2506064
+Bytes: 29
+ifneq CONFIG_DHD_OF_SUPPORT ?
+
 File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
 
 287:34-287:35
@@ -19,6 +28,14 @@ Hi, Dmitry.
 Can we seperate this task to another one?
 I will make new CL for this. 
 We should work from organizing DTS format and do some testing.
+
+287:34-287:35
+Mon Jun 01 18:14:04 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3914a832_42bba863
+UUID: 0d54fde2_f5d62e44
+Bytes: 2
+Ok
 
 442:2-442:4
 Mon Jun 01 17:02:39 2015 +0000
