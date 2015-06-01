@@ -1,0 +1,37 @@
+Revision: bd462f12ba5748cf5dd91f28e5795764363121a2
+Patch-set: 1
+File: security/selinux/include/avc.h
+
+164
+Mon Jun 01 13:36:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d42d931_a32e4537
+Bytes: 325
+1. Not sure about splitting it up into two u8 arguments; we're already violating davem's maxim: "If you write interfaces with more than 4 or 5 function arguments, it's possible that you and I cannot be friends.﻿".
+2. Not sure about naming it "token".  Maybe "subsystem" or "driver" or anything at all that would be clearer.
+
+File: security/selinux/include/security.h
+
+126
+Mon Jun 01 13:36:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d42d931_439be1ee
+Bytes: 264
+This list is only used by the AVC, not by the security server, and therefore belongs in an AVC-private data structure that wraps the structure returned by the security server.  In the old version of the ptach, this was in the avc_operation_decision_node structure?
+
+132
+Mon Jun 01 13:36:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9fb8c32_883f98e8
+Bytes: 47
+Ditto, was in the avc_operation_node structure?
+
+File: security/selinux/ss/avtab.h
+
+59
+Mon Jun 01 13:36:27 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d42d931_03a1d91e
+Bytes: 248
+Names don't really convey the meaning clearly.  Can we use IOCTLNUM and IOCTLTYPE here unambiguously since it is specific to ioctls?  Or perhaps IOCTLDRIVER and IOCTLCMD?  Or IOCTLDRIVER and IOCTLFUNC?  Anything that would be clearer than SEQ/CODE.
+
