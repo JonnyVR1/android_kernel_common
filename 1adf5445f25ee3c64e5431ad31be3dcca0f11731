@@ -44,3 +44,11 @@ Usually measured 3~6sec gap between two function.
 
 Anyway I will review it more.
 
+511:0-511:13
+Mon Jun 01 23:41:56 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d980ecc6_96700cd3
+UUID: 59d23ce8_d5942e4e
+Bytes: 21
+Try to CONFIG_MODULES
+
