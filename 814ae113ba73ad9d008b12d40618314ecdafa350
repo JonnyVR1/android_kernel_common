@@ -9,3 +9,11 @@ UUID: 0d54fde2_404f3a48
 Bytes: 55
 Please remove this, why custom_platdev is only for MSM?
 
+296:9-296:24
+Mon Jun 01 19:48:42 2015 +0000
+Author: Greg Goldman <1070608@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_404f3a48
+UUID: 3914a832_a2296415
+Bytes: 65
+Yes, CONFIG_ARCH_MSM removed. instead CONFIG_DHD_OF_SUPPORT used.
+
