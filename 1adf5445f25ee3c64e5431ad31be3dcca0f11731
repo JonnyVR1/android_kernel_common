@@ -24,3 +24,11 @@ dhd_module_init() -> late_initcall_sync.
 In N6, we also have similar implementation.
 Let me know any concern you have.
 
+511:0-511:13
+Mon Jun 01 23:18:59 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a11461_1c2655f1
+UUID: 59d23ce8_928f9cfd
+Bytes: 229
+You are 100% right - dhd_wlan_init() should be called BEFORE (on inside) dhd_module_init(). But device_initcall == late_initcall when MODULES are defined, so you can not ensure order unless you call the first one from second one.
+
