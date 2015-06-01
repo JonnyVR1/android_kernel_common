@@ -34,6 +34,15 @@ UUID: 3914a832_623b4c5d
 Bytes: 7
 Changed
 
+296:9-296:24
+Mon Jun 01 23:40:37 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_d2506064
+UUID: 190b6419_2c88ab6e
+Bytes: 114
+OK. Nvidia N9 use their own platform, So only QCOM part needed this.
+I will couple CONFIG_DHD_OF_SUPPORT together.
+
 File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
 
 287:34-287:35
