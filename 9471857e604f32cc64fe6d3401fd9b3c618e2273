@@ -9,6 +9,14 @@ UUID: 0d54fde2_b52746e0
 Bytes: 34
 Please use more meaningful message
 
+7:23-7:29
+Mon Jun 01 19:48:42 2015 +0000
+Author: Greg Goldman <1070608@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_b52746e0
+UUID: 3914a832_82366073
+Bytes: 47
+changed to unified driver support for 4358/4356
+
 File: drivers/net/wireless/bcmdhd/Makefile
 
 296:9-296:24
@@ -17,6 +25,14 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d54fde2_d2506064
 Bytes: 29
 ifneq CONFIG_DHD_OF_SUPPORT ?
+
+296:9-296:24
+Mon Jun 01 19:48:42 2015 +0000
+Author: Greg Goldman <1070608@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_d2506064
+UUID: 3914a832_623b4c5d
+Bytes: 7
+Changed
 
 File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
 
