@@ -1,0 +1,11 @@
+Revision: 1adf5445f25ee3c64e5431ad31be3dcca0f11731
+Patch-set: 9
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+511:0-511:13
+Mon Jun 01 23:08:30 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b97b38ac_75d208fd
+Bytes: 85
+It makes sense to call it in dhd_module_init() to avoid possible call ordering issue.
+
