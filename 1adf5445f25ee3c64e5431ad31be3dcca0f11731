@@ -32,3 +32,15 @@ UUID: 59d23ce8_928f9cfd
 Bytes: 229
 You are 100% right - dhd_wlan_init() should be called BEFORE (on inside) dhd_module_init(). But device_initcall == late_initcall when MODULES are defined, so you can not ensure order unless you call the first one from second one.
 
+511:0-511:13
+Mon Jun 01 23:40:37 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59d23ce8_928f9cfd
+UUID: d980ecc6_96700cd3
+Bytes: 157
+Usually measured 3~6sec gap between two function.
+<6>[    3.365933] dhd_wlan_init: START.
+<4>[    6.458836] dhd_module_init in
+
+Anyway I will review it more.
+
