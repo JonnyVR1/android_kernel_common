@@ -26,6 +26,15 @@ UUID: d9fb8c32_883f98e8
 Bytes: 47
 Ditto, was in the avc_operation_node structure?
 
+File: security/selinux/ss/avtab.c
+
+470
+Mon Jun 01 13:48:49 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d42d931_a34ac5af
+Bytes: 151
+Let's change this to match the logic in libsepol i.e. treat it as an error if (vers < POLICYDB_VERSION_XPERMS_IOCTL) && (key.specified & AVTAB_XPERMS).
+
 File: security/selinux/ss/avtab.h
 
 59
