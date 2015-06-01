@@ -9,3 +9,18 @@ UUID: b97b38ac_75d208fd
 Bytes: 85
 It makes sense to call it in dhd_module_init() to avoid possible call ordering issue.
 
+511:0-511:13
+Mon Jun 01 23:16:37 2015 +0000
+Author: Greg Goldman <1070608@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b97b38ac_75d208fd
+UUID: 99a11461_1c2655f1
+Bytes: 351
+dhd_wlan_init() should be called earlier than dhd_module_init(). It prepares kernel platform data/driver and preallocated memory. 
+
+We tested with below call sequence and there's no problem found.
+dhd_wlan_init()-> device_initcall
+dhd_module_init() -> late_initcall_sync. 
+
+In N6, we also have similar implementation.
+Let me know any concern you have.
+
