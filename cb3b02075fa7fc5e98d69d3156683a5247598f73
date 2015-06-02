@@ -1,0 +1,27 @@
+Revision: cb3b02075fa7fc5e98d69d3156683a5247598f73
+Patch-set: 10
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+603:4-603:17
+Tue Jun 02 19:54:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39d588cf_692560b2
+Bytes: 6
+__init
+
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+6916:0-6916:1
+Tue Jun 02 19:54:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59d23ce8_9268f16e
+Bytes: 62
+You need also dhd_wlan_exit() call to clean memory allocations
+
+6925:13-6925:23
+Tue Jun 02 19:54:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59d23ce8_b2809594
+Bytes: 22
+You removed it, right?
+
