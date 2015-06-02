@@ -2,6 +2,13 @@ Revision: cb3b02075fa7fc5e98d69d3156683a5247598f73
 Patch-set: 10
 File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
 
+199:0-199:1
+Tue Jun 02 20:17:10 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_593ab3fa
+Bytes: 17
+No default return
+
 603:4-603:17
 Tue Jun 02 19:54:33 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
