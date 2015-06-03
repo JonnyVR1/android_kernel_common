@@ -59,3 +59,12 @@ UUID: d9ae2c65_cdffbaa1
 Bytes: 74
 Only because the XPERMS_ALL macro is never used and thus never compiled...
 
+File: security/selinux/ss/services.c
+
+1078
+Wed Jun 03 16:57:48 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_4d874a18
+Bytes: 29
+@xperms: extended permissions
+
