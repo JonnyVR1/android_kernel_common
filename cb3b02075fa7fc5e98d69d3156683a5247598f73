@@ -9,6 +9,14 @@ UUID: f955b039_d79bbc78
 Bytes: 46
 Please remove this - it should be generic file
 
+2:30-2:31
+Wed Jun 03 18:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f955b039_d79bbc78
+UUID: b9a97860_8468bb6e
+Bytes: 18
+Ok. I will test it
+
 199:0-199:1
 Tue Jun 02 20:17:10 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: b9a97860_593ab3fa
 Bytes: 17
 No default return
 
+199:0-199:1
+Wed Jun 03 18:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_593ab3fa
+UUID: 99a8345d_0464cb13
+Bytes: 14
+Ok. I will add
+
 603:4-603:17
 Tue Jun 02 19:54:33 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39d588cf_692560b2
 Bytes: 6
 __init
+
+603:4-603:17
+Wed Jun 03 18:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d588cf_692560b2
+UUID: d9ae2c65_4d72ea5e
+Bytes: 26
+Ok. I will test it and fix
 
 File: drivers/net/wireless/bcmdhd/dhd_linux.c
 
@@ -32,10 +56,27 @@ UUID: 59d23ce8_9268f16e
 Bytes: 62
 You need also dhd_wlan_exit() call to clean memory allocations
 
+6916:0-6916:1
+Wed Jun 03 18:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59d23ce8_9268f16e
+UUID: d9ae2c65_8d68e26e
+Bytes: 108
+Usually we initiated prealloc memory one time when boot, and keep it until power off. 
+Any concern for this?
+
 6925:13-6925:23
 Tue Jun 02 19:54:33 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59d23ce8_b2809594
 Bytes: 22
 You removed it, right?
+
+6925:13-6925:23
+Wed Jun 03 18:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59d23ce8_b2809594
+UUID: b9a97860_e4764f50
+Bytes: 21
+Ok. I will remove it.
 
