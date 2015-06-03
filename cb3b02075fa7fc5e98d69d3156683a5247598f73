@@ -65,6 +65,14 @@ Bytes: 108
 Usually we initiated prealloc memory one time when boot, and keep it until power off. 
 Any concern for this?
 
+6916:0-6916:1
+Wed Jun 03 18:04:22 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_8d68e26e
+UUID: b967b830_b5f8c0bd
+Bytes: 67
+Indeed, but for generic solution you need to handle module removal.
+
 6925:13-6925:23
 Tue Jun 02 19:54:33 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
