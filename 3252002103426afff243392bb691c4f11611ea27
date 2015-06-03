@@ -26,6 +26,14 @@ UUID: 395ca863_d973f30b
 Bytes: 596
 There are a number of issues that need to be addressed for netlink e.g. can you have netlink and ioctl extended permissions on the same avc_node? If so do we need to chain extended_perms structures? Rather than trying to guess all the netlink issues I decided to concentrate on 1) making the policy binary structure stable so that version XPERMS_IOCTL will be valid if/when version XPERMS_NETLINK is added 2) keeping the ioctl implementation simple. It seems reasonable that these questions are answered when netlink is added. The internals can change as long as the binary policy stays the same.
 
+164
+Wed Jun 03 16:34:19 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 395ca863_d973f30b
+UUID: d9ae2c65_0df632d0
+Bytes: 16
+Ok, fair enough.
+
 File: security/selinux/include/security.h
 
 112
@@ -42,4 +50,12 @@ Parent: 99a8345d_cb29e614
 UUID: 395ca863_1ce3991a
 Bytes: 26
 How did this even compile?
+
+112
+Wed Jun 03 16:34:19 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 395ca863_1ce3991a
+UUID: d9ae2c65_cdffbaa1
+Bytes: 74
+Only because the XPERMS_ALL macro is never used and thus never compiled...
 
