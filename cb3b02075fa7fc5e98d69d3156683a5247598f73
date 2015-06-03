@@ -73,6 +73,16 @@ UUID: b967b830_b5f8c0bd
 Bytes: 67
 Indeed, but for generic solution you need to handle module removal.
 
+6916:0-6916:1
+Wed Jun 03 18:13:33 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b967b830_b5f8c0bd
+UUID: 99a8345d_2420e7a2
+Bytes: 83
+Yes, I agree..
+I will discuss it internally. 
+Can we keep it note and change later?
+
 6925:13-6925:23
 Tue Jun 02 19:54:33 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
