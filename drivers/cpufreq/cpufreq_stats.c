@@ -597,7 +597,7 @@ static int cpufreq_stat_notifier_policy(struct notifier_block *nb,
 	int ret, count = 0, i;
 	struct cpufreq_policy *policy = data;
 	struct cpufreq_frequency_table *table;
-	unsigned int cpu = policy->cpu;
+	unsigned int cpu_num, cpu = policy->cpu;
 
 	if (val == CPUFREQ_UPDATE_POLICY_CPU) {
 		cpufreq_stats_update_policy_cpu(policy);
@@ -621,8 +621,10 @@ static int cpufreq_stat_notifier_policy(struct notifier_block *nb,
 	if (!per_cpu(all_cpufreq_stats, cpu))
 		cpufreq_allstats_create(cpu, table, count);
 
-	if (!per_cpu(cpufreq_power_stats, cpu))
-		cpufreq_powerstats_create(cpu, table, count);
+	for_each_possible_cpu(cpu_num) {
+		if (!per_cpu(cpufreq_power_stats, cpu_num))
+			cpufreq_powerstats_create(cpu_num, table, count);
+	}
 
 	ret = cpufreq_stats_create_table(policy, table, count);
 	if (ret)
@@ -670,7 +672,7 @@ static int cpufreq_stats_create_table_cpu(unsigned int cpu)
 {
 	struct cpufreq_policy *policy;
 	struct cpufreq_frequency_table *table;
-	int ret = -ENODEV, i, count = 0;
+	int ret = -ENODEV, i, count = 0, cpu_num;
 
 	policy = cpufreq_cpu_get(cpu);
 	if (!policy)
@@ -691,8 +693,11 @@ static int cpufreq_stats_create_table_cpu(unsigned int cpu)
 	if (!per_cpu(all_cpufreq_stats, cpu))
 		cpufreq_allstats_create(cpu, table, count);
 
-	if (!per_cpu(cpufreq_power_stats, cpu))
-		cpufreq_powerstats_create(cpu, table, count);
+	for_each_possible_cpu(cpu_num) {
+		if (!per_cpu(cpufreq_power_stats, cpu_num)) {
+			cpufreq_powerstats_create(cpu_num, table, count);
+		}
+	}
 
 	ret = cpufreq_stats_create_table(policy, table, count);
 
