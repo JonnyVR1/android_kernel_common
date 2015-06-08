@@ -109,6 +109,9 @@
 #include <dhd_ip.h>
 #endif /* DHDTCPACK_SUPPRESS */
 
+#ifdef CONFIG_BCMDHD_NVRAM_PME_PATH
+#include <linux/of.h>
+#endif /* CONFIG_BCMDHD_NVRAM_PME_PATH */
 
 #ifdef WLMEDIA_HTSF
 #include <linux/time.h>
@@ -4958,6 +4961,16 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 	const char *nv = NULL;
 	wifi_adapter_info_t *adapter = dhdinfo->adapter;
 
+#ifdef CONFIG_BCMDHD_NVRAM_PME_PATH
+	bool is_pme = false;
+	struct device_node *np;
+
+	np = of_find_compatible_node(NULL, NULL, "android,bcmdhd_wlan");
+	if (!np) {
+		WARN(1, "failed to get device node of BRCM WLAN\n");
+	}
+	is_pme = of_property_read_bool(np,"wake_by_pme");
+#endif /* CONFIG_BCMDHD_NVRAM_PME_PATH */
 
 	/* Update firmware and nvram path. The path may be from adapter info or module parameter
 	 * The path from adapter info is used for initialization only (as it won't change).
@@ -4976,6 +4989,11 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 #endif /* CONFIG_BCMDHD_FW_PATH */
 #ifdef CONFIG_BCMDHD_NVRAM_PATH
 		nv = CONFIG_BCMDHD_NVRAM_PATH;
+#ifdef CONFIG_BCMDHD_NVRAM_PME_PATH
+		if (is_pme) {
+			nv = CONFIG_BCMDHD_NVRAM_PME_PATH;
+		}
+#endif /* CONFIG_BCMDHD_NVRAM_PME_PATH */
 #endif /* CONFIG_BCMDHD_NVRAM_PATH */
 	}
 
