@@ -1,0 +1,49 @@
+Revision: 21c955299b6c8bcae437bd2b45d408e6adbc4eb6
+Patch-set: 1
+File: /COMMIT_MSG
+
+14:15-14:51
+Mon Jun 08 15:57:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ab8c9c_3845f962
+Bytes: 139
+space in email address
+
+Signed-off-by: Ruchi Kandoi <kandoiruchi@google.com>
+Bug: ????
+Change-Id: I938f45e92ff6d5371c32c4d0e37274e6de66769c
+
+File: drivers/cpufreq/cpufreq_stats.c
+
+675:32-675:41
+Mon Jun 08 15:57:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 399bc88e_b071265b
+Bytes: 162
+Not a strict rule, but it does aid readability if the automatics that are not being initialized are placed first eg:
+    int i, cpu_num, count = 0, ret = -ENODEV;
+
+675:23-675:32
+Mon Jun 08 15:57:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ab8c9c_78f6e1d0
+Bytes: 111
+And _only_ because I am here, for efficiency, count is used below at the for loop, initialize it there instead?
+
+688:0-690:10
+Mon Jun 08 15:57:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ab8c9c_d85cd550
+Bytes: 97
+optimization, drop continue? (optional):
+
+    if (freq != CPUFREQ_ENTRY_INVALID)
+        count++;
+
+697:2-699:3
+Mon Jun 08 15:57:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ab8c9c_389cd970
+Bytes: 78
+linux coding standard: braces {} are not necessary for single statement blocks
+
