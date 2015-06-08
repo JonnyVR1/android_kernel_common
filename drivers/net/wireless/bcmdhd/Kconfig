@@ -43,6 +43,13 @@ config BCMDHD_NVRAM_PATH
 	---help---
 	  Path to the calibration file.
 
+config BCMDHD_NVRAM_PME_PATH
+        depends on BCM4358
+        string "pme NVRAM path"
+        default "/system/etc/wifi/bcmdhd-pme.cal"
+        ---help---
+          Path to the calibration file with pme configuration.
+
 config BCMDHD_WEXT
 	bool "Enable WEXT support"
 	depends on BCMDHD && CFG80211 = n
