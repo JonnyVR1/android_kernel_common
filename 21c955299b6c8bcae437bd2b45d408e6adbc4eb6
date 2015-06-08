@@ -13,6 +13,14 @@ Signed-off-by: Ruchi Kandoi <kandoiruchi@google.com>
 Bug: ????
 Change-Id: I938f45e92ff6d5371c32c4d0e37274e6de66769c
 
+14:15-14:51
+Mon Jun 08 17:27:38 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ab8c9c_3845f962
+UUID: d9d9cc70_51643614
+Bytes: 4
+Done
+
 File: drivers/cpufreq/cpufreq_stats.c
 
 675:32-675:41
@@ -30,6 +38,22 @@ UUID: d9ab8c9c_78f6e1d0
 Bytes: 111
 And _only_ because I am here, for efficiency, count is used below at the for loop, initialize it there instead?
 
+675:32-675:41
+Mon Jun 08 17:27:38 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 399bc88e_b071265b
+UUID: d9d9cc70_51f676d0
+Bytes: 4
+Done
+
+675:23-675:32
+Mon Jun 08 17:27:38 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ab8c9c_78f6e1d0
+UUID: d9d9cc70_9113be95
+Bytes: 4
+Done
+
 688:0-690:10
 Mon Jun 08 15:57:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,10 +64,26 @@ optimization, drop continue? (optional):
     if (freq != CPUFREQ_ENTRY_INVALID)
         count++;
 
+688:0-690:10
+Mon Jun 08 17:27:38 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ab8c9c_d85cd550
+UUID: d9d9cc70_b10eba6b
+Bytes: 4
+Done
+
 697:2-699:3
 Mon Jun 08 15:57:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ab8c9c_389cd970
 Bytes: 78
 linux coding standard: braces {} are not necessary for single statement blocks
+
+697:2-699:3
+Mon Jun 08 17:27:38 2015 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ab8c9c_389cd970
+UUID: d9ab8c9c_b31daaf3
+Bytes: 4
+Done
 
