@@ -9,6 +9,14 @@ UUID: b9a6d8d3_925e2abc
 Bytes: 43
 Why not to use just "android,bcmdhd_wlan" ?
 
+4969:42-4969:51
+Tue Jun 09 23:28:57 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a6d8d3_925e2abc
+UUID: 39c4a87c_e2e7d7a2
+Bytes: 17
+Ok. I will fix it
+
 4972:2-4972:8
 Tue Jun 09 21:45:13 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,27 @@ UUID: 39c4a87c_6ece13d4
 Bytes: 40
 Maybe it will be better to fall through?
 
+4972:2-4972:8
+Tue Jun 09 23:28:57 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39c4a87c_6ece13d4
+UUID: b9a6d8d3_263cb783
+Bytes: 51
+I thinks just returning error is OK.
+How about you?
+
 4995:4-4995:5
 Tue Jun 09 21:45:13 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39c4a87c_0e043784
 Bytes: 24
 Add blank: if (is_pme) {
+
+4995:4-4995:5
+Tue Jun 09 23:28:57 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39c4a87c_0e043784
+UUID: b9a6d8d3_0641bbec
+Bytes: 14
+Thanks, fixed.
 
