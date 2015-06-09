@@ -1,0 +1,11 @@
+Revision: da8d78f224b0f7c0611d4771ee97f30d0aac93df
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+4971:2-4971:8
+Tue Jun 09 23:34:20 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5934fc65_25b938b7
+Bytes: 56
+You need to continue here without changing is_pme value.
+
