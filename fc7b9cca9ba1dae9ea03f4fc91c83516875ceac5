@@ -9,3 +9,11 @@ UUID: 59e07c3c_18f3129b
 Bytes: 89
 You still have the return 0 on line 368 which will be dead code if you have this enabled.
 
+365:0-365:30
+Fri Jun 12 22:34:35 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59e07c3c_18f3129b
+UUID: 596b1c6a_1efc9d35
+Bytes: 70
+The return 0 was used for other condition if the Macro is not matched.
+
