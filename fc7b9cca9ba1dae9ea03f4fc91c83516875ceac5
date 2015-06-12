@@ -32,3 +32,11 @@ I agree with Pat.  This isn't correct.  With undefined CONFIG_BCMDHD_PCIE your c
   return 0;
 }
 
+365:0-365:30
+Fri Jun 12 23:55:08 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 992af412_662df01f
+UUID: 19d1a48c_a839fb06
+Bytes: 47
+Sorry for my misunderstanding. I will modify it
+
