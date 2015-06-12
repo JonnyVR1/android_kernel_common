@@ -9,3 +9,11 @@ UUID: 190364c0_bea021af
 Bytes: 168
 Return value is hard-coded and gives no indication of msm_pcie_enumerate() success or failure.  Should this bubble up the return value or at least take it into account?
 
+368
+Fri Jun 12 22:34:35 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 190364c0_bea021af
+UUID: 19652496_9dc08f71
+Bytes: 13
+Thanks, fixed
+
