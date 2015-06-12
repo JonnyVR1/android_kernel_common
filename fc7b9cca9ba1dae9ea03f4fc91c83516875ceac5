@@ -17,3 +17,18 @@ UUID: 596b1c6a_1efc9d35
 Bytes: 70
 The return 0 was used for other condition if the Macro is not matched.
 
+365:0-365:30
+Fri Jun 12 23:38:35 2015 +0000
+Author: Ed Tam <1037988@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 596b1c6a_1efc9d35
+UUID: 992af412_662df01f
+Bytes: 233
+I agree with Pat.  This isn't correct.  With undefined CONFIG_BCMDHD_PCIE your code will look like this:
+
+{
+  extern int msm_pcie_enumerate(u32 rc_idx);
+  printk("%s: enter\n", __func__);
+  return msm_pcie_enumerate(1);
+  return 0;
+}
+
