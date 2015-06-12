@@ -1,0 +1,11 @@
+Revision: 0e9eddbf52355950d1589977a8375ca5beccf0a9
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+368
+Fri Jun 12 20:45:37 2015 +0000
+Author: Ed Tam <1037988@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 190364c0_bea021af
+Bytes: 168
+Return value is hard-coded and gives no indication of msm_pcie_enumerate() success or failure.  Should this bubble up the return value or at least take it into account?
+
