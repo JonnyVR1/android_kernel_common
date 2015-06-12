@@ -527,49 +527,45 @@ static int dhd_wifi_platform_load_pcie(void)
 	if (dhd_wifi_platdata == NULL) {
 		err = dhd_bus_register();
 	} else {
-		if (dhd_download_fw_on_driverload) {
-			/* power up all adapters */
-			for (i = 0; i < dhd_wifi_platdata->num_adapters; i++) {
-				int retry = POWERUP_MAX_RETRY;
-				adapter = &dhd_wifi_platdata->adapters[i];
-
-				DHD_ERROR(("Power-up adapter '%s'\n", adapter->name));
-				DHD_INFO((" - irq %d [flags %d], firmware: %s, nvram: %s\n",
-					adapter->irq_num, adapter->intr_flags, adapter->fw_path,
-					adapter->nv_path));
-				DHD_INFO((" - bus type %d, bus num %d, slot num %d\n\n",
-					adapter->bus_type, adapter->bus_num, adapter->slot_num));
-
-				do {
-					err = wifi_platform_set_power(adapter,
-						TRUE, WIFI_TURNON_DELAY);
+		/* power up all adapters */
+		for (i = 0; i < dhd_wifi_platdata->num_adapters; i++) {
+			int retry = POWERUP_MAX_RETRY;
+			adapter = &dhd_wifi_platdata->adapters[i];
+			DHD_ERROR(("Power-up adapter '%s'\n", adapter->name));
+			DHD_INFO((" - irq %d [flags %d], firmware: %s, nvram: %s\n",
+				adapter->irq_num, adapter->intr_flags, adapter->fw_path,
+				adapter->nv_path));
+			DHD_INFO((" - bus type %d, bus num %d, slot num %d\n\n",
+				adapter->bus_type, adapter->bus_num, adapter->slot_num));
+			do {
+				err = wifi_platform_set_power(adapter,
+				TRUE, WIFI_TURNON_DELAY);
+				if (err) {
+					DHD_ERROR(("failed to power up %s,"
+						" %d retry left\n",
+						adapter->name, retry));
+					/* WL_REG_ON state unknown, Power off forcely */
+					wifi_platform_set_power(adapter,
+						FALSE, WIFI_TURNOFF_DELAY);
+					continue;
+				} else {
+					err = wifi_platform_bus_enumerate(adapter, TRUE);
 					if (err) {
-						DHD_ERROR(("failed to power up %s,"
-							" %d retry left\n",
+						DHD_ERROR(("failed to enumerate bus %s, "
+							"%d retry left\n",
 							adapter->name, retry));
-						/* WL_REG_ON state unknown, Power off forcely */
-						wifi_platform_set_power(adapter,
-							FALSE, WIFI_TURNOFF_DELAY);
-						continue;
+						wifi_platform_set_power(adapter, FALSE,
+							WIFI_TURNOFF_DELAY);
 					} else {
-						err = wifi_platform_bus_enumerate(adapter, TRUE);
-						if (err) {
-							DHD_ERROR(("failed to enumerate bus %s, "
-								"%d retry left\n",
-								adapter->name, retry));
-							wifi_platform_set_power(adapter, FALSE,
-								WIFI_TURNOFF_DELAY);
-						} else {
-							break;
-						}
+						break;
 					}
-				} while (retry--);
-
-				if (!retry) {
-					DHD_ERROR(("failed to power up %s, max retry reached**\n",
-						adapter->name));
-					return -ENODEV;
 				}
+			} while (retry--);
+
+			if (!retry) {
+				DHD_ERROR(("failed to power up %s, max retry reached**\n",
+					adapter->name));
+				return -ENODEV;
 			}
 		}
 
@@ -577,14 +573,12 @@ static int dhd_wifi_platform_load_pcie(void)
 
 		if (err) {
 			DHD_ERROR(("%s: pcie_register_driver failed\n", __FUNCTION__));
-			if (dhd_download_fw_on_driverload) {
-				/* power down all adapters */
-				for (i = 0; i < dhd_wifi_platdata->num_adapters; i++) {
-					adapter = &dhd_wifi_platdata->adapters[i];
-					wifi_platform_bus_enumerate(adapter, FALSE);
-					wifi_platform_set_power(adapter,
-						FALSE, WIFI_TURNOFF_DELAY);
-				}
+			/* power down all adapters */
+			for (i = 0; i < dhd_wifi_platdata->num_adapters; i++) {
+				adapter = &dhd_wifi_platdata->adapters[i];
+				wifi_platform_bus_enumerate(adapter, FALSE);
+				wifi_platform_set_power(adapter,
+					FALSE, WIFI_TURNOFF_DELAY);
 			}
 		}
 	}
