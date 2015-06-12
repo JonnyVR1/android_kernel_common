@@ -620,5 +620,48 @@ int __init dhd_wlan_init(void)
 
 void __exit dhd_wlan_exit(void)
 {
-	/* TODO: Add memory cleanup */
+
+	int i;
+
+	for (i = 0; i < DHD_SKB_1PAGE_BUF_NUM; i++) {
+		if (wlan_static_skb[i]) {
+			dev_kfree_skb(wlan_static_skb[i]);
+			wlan_static_skb[i]=NULL;
+		}
+	}
+
+	for (i = DHD_SKB_1PAGE_BUF_NUM; i < WLAN_SKB_1_2PAGE_BUF_NUM; i++) {
+		if (wlan_static_skb[i]) {
+			dev_kfree_skb(wlan_static_skb[i]);
+			wlan_static_skb[i]=NULL;
+		}
+	}
+
+#if !defined(CONFIG_BCMDHD_PCIE)
+	if(wlan_static_skb[i]) {
+		dev_kfree_skb(wlan_static_skb[i]);
+		wlan_static_skb[i]=NULL;
+	}
+#endif /* !CONFIG_BCMDHD_PCIE */
+
+	if (wlan_static_prot)
+		kfree(wlan_static_prot);
+
+	if (wlan_static_osl_buf)
+		kfree(wlan_static_osl_buf);
+
+	if (wlan_static_scan_buf0)
+		kfree(wlan_static_scan_buf0);
+
+	if (wlan_static_dhd_info_buf)
+		kfree(wlan_static_dhd_info_buf);
+
+	if (wlan_static_scan_buf1)
+		kfree(wlan_static_scan_buf1);
+
+#ifdef CONFIG_BCMDHD_PCIE
+	if (wlan_static_if_flow_lkup)
+		kfree(wlan_static_if_flow_lkup);
+#endif
+	return;
 }
