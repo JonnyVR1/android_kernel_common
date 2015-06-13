@@ -9,10 +9,26 @@ UUID: 19b8c43c_3067281c
 Bytes: 56
 How come you removed the gpio_wl_reg_on initial setting?
 
+328
+Sat Jun 13 01:56:17 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19b8c43c_3067281c
+UUID: 99abd4ef_cc2a8fb4
+Bytes: 125
+This code used for GPIO initial for further use, but not gpio setting. We remove GPIO setting in dhd_wifi_platform_load_pcie.
+
 362:0-362:43
 Sat Jun 13 00:29:03 2015 +0000
 Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19b8c43c_9057f42a
 Bytes: 93
 should include the proper include file instead of declaring it here: include/linux/msm_pcie.h
+
+362:0-362:43
+Sat Jun 13 01:56:17 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19b8c43c_9057f42a
+UUID: 39b10858_9157fc2a
+Bytes: 21
+Thanks I will fix it.
 
