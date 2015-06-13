@@ -1,0 +1,18 @@
+Revision: 45920804108cac4e8d36f91e1f1749c4346ee4be
+Patch-set: 4
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+328
+Sat Jun 13 00:29:03 2015 +0000
+Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19b8c43c_3067281c
+Bytes: 56
+How come you removed the gpio_wl_reg_on initial setting?
+
+362:0-362:43
+Sat Jun 13 00:29:03 2015 +0000
+Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19b8c43c_9057f42a
+Bytes: 93
+should include the proper include file instead of declaring it here: include/linux/msm_pcie.h
+
