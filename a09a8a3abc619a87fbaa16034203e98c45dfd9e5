@@ -9,3 +9,11 @@ UUID: f95690ec_753b40a7
 Bytes: 295
 There is a change in behavior here is the buffer is too small. The old code would block waiting for work, where the new code will return with a just a BR_NOOP in the buffer. This is probably OK, as long as no-one calls this with an 8-byte buffer (which would be too small to get an transaction).
 
+2189
+Tue Jun 16 22:40:40 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f95690ec_753b40a7
+UUID: 597cfc56_eacca960
+Bytes: 213
+I'm open to suggestions for this.  We could, for instance, return an error if passed such a buffer, or change it to wait for work before finishing if the buffer doesn't meet that threshold, or even leave it as is.
+
