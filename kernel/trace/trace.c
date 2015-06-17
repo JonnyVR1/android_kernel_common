@@ -1147,23 +1147,79 @@ void tracing_reset_all_online_cpus(void)
 	mutex_unlock(&trace_types_lock);
 }
 
-#define SAVED_CMDLINES 128
+
 #define NO_CMDLINE_MAP UINT_MAX
+#define SAVED_CMDLINE_MAX 2048
+#define EXTEND_FAILED INT_MIN
+#define EXTEND_SIZE 256
+
+static unsigned saved_cmdline_len = 256;
 static unsigned map_pid_to_cmdline[PID_MAX_DEFAULT+1];
-static unsigned map_cmdline_to_pid[SAVED_CMDLINES];
-static char saved_cmdlines[SAVED_CMDLINES][TASK_COMM_LEN];
-static unsigned saved_tgids[SAVED_CMDLINES];
+static unsigned *map_cmdline_to_pid;
+static char **saved_cmdlines;
+static unsigned *saved_tgids;
 static int cmdline_idx;
 static arch_spinlock_t trace_cmdline_lock = __ARCH_SPIN_LOCK_UNLOCKED;
 
 /* temporary disable recording */
 static atomic_t trace_record_cmdline_disabled __read_mostly;
 
-static void trace_init_cmdlines(void)
+static int trace_init_cmdlines(void)
 {
+
+	size_t len;
+	unsigned i;
+	char *temp;
+
+	map_cmdline_to_pid = kmalloc(saved_cmdline_len * sizeof(*map_cmdline_to_pid),
+				     GFP_KERNEL);
+
+	if (!map_cmdline_to_pid)
+		return -ENOMEM;
+
+
+	saved_tgids = kzalloc(saved_cmdline_len * sizeof(*saved_tgids),
+			      GFP_KERNEL);
+
+	if (!saved_tgids)
+		goto free_cmd_2_pid;
+
+	/* setup the 2d array */
+	len = (saved_cmdline_len * TASK_COMM_LEN);
+	temp = kzalloc(len, GFP_KERNEL);
+
+	if (!temp)
+		goto free_savedtgids;
+
+	saved_cmdlines = kmalloc(saved_cmdline_len * sizeof(*saved_cmdlines),
+				 GFP_KERNEL);
+
+	if (!saved_cmdlines)
+		goto free_tmp;
+
+	for (i = 0; i < saved_cmdline_len; i++)
+		saved_cmdlines[i] = &(temp[TASK_COMM_LEN * i]);
+
 	memset(&map_pid_to_cmdline, NO_CMDLINE_MAP, sizeof(map_pid_to_cmdline));
-	memset(&map_cmdline_to_pid, NO_CMDLINE_MAP, sizeof(map_cmdline_to_pid));
+	memset(map_cmdline_to_pid, NO_CMDLINE_MAP,
+	       saved_cmdline_len * sizeof(*map_cmdline_to_pid));
+
 	cmdline_idx = 0;
+
+	return 0;
+
+
+ free_tmp:
+	kfree(temp);
+
+ free_savedtgids:
+	kfree(saved_tgids);
+
+ free_cmd_2_pid:
+	kfree(map_cmdline_to_pid);
+
+	return -ENOMEM;
+
 }
 
 int is_tracing_stopped(void)
@@ -1319,9 +1375,101 @@ static void tracing_stop_tr(struct trace_array *tr)
 
 void trace_stop_cmdline_recording(void);
 
+
+static int extend_mappings(void)
+{
+
+	unsigned *tmpcmdline2pid, *tmpsavedtgids;
+	char *tmpcmdlines_data, **tmpcmdlines, *newdata;
+	unsigned i;
+	size_t newsize = saved_cmdline_len + EXTEND_SIZE;
+
+	if (newsize > SAVED_CMDLINE_MAX)
+		return EXTEND_FAILED;
+
+	tmpcmdline2pid = map_cmdline_to_pid;
+	tmpsavedtgids = saved_tgids;
+	tmpcmdlines_data = saved_cmdlines[0];
+	tmpcmdlines = saved_cmdlines;
+
+	/*
+	 * Get chunks of memory before we do any copying
+	 * if memory alloc fails its easier to roll back
+	 */
+
+	/* we're holding a spin lock, no sleeping! */
+	map_cmdline_to_pid = kmalloc(newsize * sizeof(*map_cmdline_to_pid),
+				     GFP_ATOMIC);
+
+	if (!map_cmdline_to_pid)
+		goto failed_mapcmdline;
+
+	saved_tgids = kzalloc(newsize * sizeof(*saved_tgids), GFP_ATOMIC);
+
+	if (!saved_tgids)
+		goto failed_savedtgids;
+
+	newdata = kzalloc(newsize * TASK_COMM_LEN, GFP_ATOMIC);
+
+	if (!newdata)
+		goto failed_newdata;
+
+	saved_cmdlines = kmalloc(newsize * sizeof(*saved_cmdlines), GFP_ATOMIC);
+
+	if (!saved_cmdlines))
+		goto failed_cmdlines;
+
+
+	/* all allocs completed, move data and free previous allocations */
+
+	memcpy(map_cmdline_to_pid, tmpcmdline2pid,
+	       saved_cmdline_len * sizeof(*map_cmdline_to_pid));
+
+	memcpy(saved_tgids, tmpsavedtgids,
+	       saved_cmdline_len * sizeof(*saved_tgids));
+
+	memcpy(newdata, tmpcmdlines_data, saved_cmdline_len * TASK_COMM_LEN);
+
+	/* init the back size of the array*/
+	memset((map_cmdline_to_pid + saved_cmdline_len),
+	       NO_CMDLINE_MAP, 256 * sizeof(*map_cmdline_to_pid));
+
+	/* free the old buffers */
+	kfree(tmpcmdline2pid);
+	kfree(tmpsavedtgids);
+	kfree(tmpcmdlines_data);
+	kfree(tmpcmdlines);
+
+	/* fixup pointers for 2d saved cmdlines */
+	for (i = 0; i < newsize; i++)
+		saved_cmdlines[i] = &(newdata[i * TASK_COMM_LEN]);
+
+	saved_cmdline_len += EXTEND_SIZE;
+	return 0;
+
+
+ failed_cmdlines:
+	kfree(newdata);
+	saved_cmdlines = tmpcmdlines;
+
+ failed_newdata:
+	kfree(saved_tgids);
+
+ failed_savedtgids:
+	kfree(map_cmdline_to_pid);
+	saved_tgids = tmpsavedtgids;
+
+ failed_mapcmdline:
+	map_cmdline_to_pid = tmpcmdline2pid;
+
+
+	return EXTEND_FAILED;
+}
+
 static void trace_save_cmdline(struct task_struct *tsk)
 {
 	unsigned pid, idx;
+	static bool should_extend = true;
 
 	if (!tsk->pid || unlikely(tsk->pid > PID_MAX_DEFAULT))
 		return;
@@ -1337,17 +1485,29 @@ static void trace_save_cmdline(struct task_struct *tsk)
 
 	idx = map_pid_to_cmdline[tsk->pid];
 	if (idx == NO_CMDLINE_MAP) {
-		idx = (cmdline_idx + 1) % SAVED_CMDLINES;
+retry:
+		idx = (cmdline_idx + 1) % saved_cmdline_len;
 
 		/*
 		 * Check whether the cmdline buffer at idx has a pid
-		 * mapped. We are going to overwrite that entry so we
-		 * need to clear the map_pid_to_cmdline. Otherwise we
+		 * mapped. We may overwrite that entry, if extension fails,
+		 * so we need to clear the map_pid_to_cmdline. Otherwise we
 		 * would read the new comm for the old pid.
 		 */
 		pid = map_cmdline_to_pid[idx];
-		if (pid != NO_CMDLINE_MAP)
+		if (pid != NO_CMDLINE_MAP) {
+			/*
+			 * If we've previously failed to alloc or we've
+			 * reached the max size don't attempt to extend
+			 */
+			if (should_extend) {
+				if (extend_mappings() == EXTEND_FAILED)
+					should_extend = false;
+				else
+					goto retry;
+			}
 			map_pid_to_cmdline[pid] = NO_CMDLINE_MAP;
+		}
 
 		map_cmdline_to_pid[idx] = tsk->pid;
 		map_pid_to_cmdline[tsk->pid] = idx;
@@ -1355,7 +1515,7 @@ static void trace_save_cmdline(struct task_struct *tsk)
 		cmdline_idx = idx;
 	}
 
-	memcpy(&saved_cmdlines[idx], tsk->comm, TASK_COMM_LEN);
+	memcpy(saved_cmdlines[idx], tsk->comm, TASK_COMM_LEN);
 	saved_tgids[idx] = tsk->tgid;
 
 	arch_spin_unlock(&trace_cmdline_lock);
@@ -3461,7 +3621,7 @@ tracing_saved_cmdlines_read(struct file *file, char __user *ubuf,
 	int pid;
 	int i;
 
-	file_buf = kmalloc(SAVED_CMDLINES*(16+TASK_COMM_LEN), GFP_KERNEL);
+	file_buf = kmalloc(saved_cmdline_len*(16+TASK_COMM_LEN), GFP_KERNEL);
 	if (!file_buf)
 		return -ENOMEM;
 
@@ -3473,7 +3633,7 @@ tracing_saved_cmdlines_read(struct file *file, char __user *ubuf,
 
 	buf = file_buf;
 
-	for (i = 0; i < SAVED_CMDLINES; i++) {
+	for (i = 0; i < saved_cmdline_len; i++) {
 		int r;
 
 		pid = map_cmdline_to_pid[i];
@@ -3511,13 +3671,13 @@ tracing_saved_tgids_read(struct file *file, char __user *ubuf,
 	int pid;
 	int i;
 
-	file_buf = kmalloc(SAVED_CMDLINES*(16+1+16), GFP_KERNEL);
+	file_buf = kmalloc(saved_cmdline_len*(16+1+16), GFP_KERNEL);
 	if (!file_buf)
 		return -ENOMEM;
 
 	buf = file_buf;
 
-	for (i = 0; i < SAVED_CMDLINES; i++) {
+	for (i = 0; i < saved_cmdline_len; i++) {
 		int tgid;
 		int r;
 
@@ -6314,7 +6474,10 @@ __init static int tracer_alloc_buffers(void)
 	if (global_trace.buffer_disabled)
 		tracing_off();
 
-	trace_init_cmdlines();
+	if (trace_init_cmdlines()) {
+		pr_err("tracer: failed to alloc memory for cmdlines/tgids\n");
+		goto out_free_cpumask;
+	}
 
 	/*
 	 * register_tracer() might reference current_trace, so it
