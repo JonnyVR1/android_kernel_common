@@ -1,0 +1,132 @@
+Revision: 4be80133cb7a4f2d980fb27f45f95542211fa997
+Patch-set: 2
+File: /COMMIT_MSG
+
+9:28-9:30
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_a77f1422
+Bytes: 4
+typo
+
+13:46-13:47
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6dc2eb_e302e0c6
+Bytes: 4
+no s
+
+16
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_8750d0ac
+Bytes: 17
+Missing Change-Id
+
+File: kernel/trace/trace.c
+
+1154:16-1154:33
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6dc2eb_c37c7c2f
+Bytes: 43
+should probably be called saved_cmdline_len
+
+1172:57-1172:65
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3e700ec3_8d88f1f9
+Bytes: 43
+use *map_cmdline_to_pid instead of unsigned
+
+1175
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_075cc0c1
+Bytes: 37
+return a meaningful value like ENOMEM
+
+1178:50-1178:58
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9e7adaa8_7de18b48
+Bytes: 4
+same
+
+1190:53-1190:59
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6dc2eb_c30ebce7
+Bytes: 4
+same
+
+1199:71-1199:79
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9e7adaa8_5d05af81
+Bytes: 4
+same
+
+1213
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9e7adaa8_bd4163b9
+Bytes: 139
+same - make sure to return something somewhat meaningful - probably need an "err" variable that will have the error code you want to return
+
+1377:38-1377:41
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6dc2eb_8ed1cbf9
+Bytes: 37
+replace magic constant with a #define
+
+1393:58-1393:68
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3e700ec3_adfcd536
+Bytes: 68
+Why do you need the GFP_ATOMIC - can these run in interrupt context?
+
+1393:47-1393:55
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_6737bc72
+Bytes: 19
+*map_cmdline_to_pid
+
+1398:40-1398:48
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_2731c47a
+Bytes: 4
+same
+
+1405:5-1405:13
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9e7adaa8_c8d6df6a
+Bytes: 125
+why are you using unlikely here and not above? try to stay consistent - and not sure that GFP_ATOMIC is that unlikely to fail
+
+1408:43-1408:48
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3e700ec3_4dd5f9b0
+Bytes: 39
+same - I'm going to stop here for these
+
+1453
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6dc2eb_c3279c67
+Bytes: 114
+same here - use a meaningful error code and depending on it, you could decide to abort or retry in your retry loop
+
+1474
+Thu Jun 18 21:27:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_e78c2cbc
+Bytes: 77
+Use a loop instead of a goto label - and goto labels should never be indented
+
