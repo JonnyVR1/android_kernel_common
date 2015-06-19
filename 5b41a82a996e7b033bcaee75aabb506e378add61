@@ -1,0 +1,18 @@
+Revision: 5b41a82a996e7b033bcaee75aabb506e378add61
+Patch-set: 5
+File: kernel/trace/trace.c
+
+1472
+Fri Jun 19 01:47:30 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7eca863a_0ee94b77
+Bytes: 65
+Could you have reentrancy issues? If so, you should use an atomic
+
+1507
+Fri Jun 19 01:47:30 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ebe4e91_f204decb
+Bytes: 112
+Still not a fan of using a goto... Have you thought about using a do {} while()  and then test outside the loop?
+
