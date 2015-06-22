@@ -1,0 +1,11 @@
+Revision: 5d98144a0b14883743d308b004c4cc554133d674
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+648:8-648:24
+Mon Jun 22 19:54:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ef6069f_519874f8
+Bytes: 43
+Let's set them to NULL, like you did above.
+
