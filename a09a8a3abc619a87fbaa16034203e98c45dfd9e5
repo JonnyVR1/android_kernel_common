@@ -17,3 +17,11 @@ UUID: 597cfc56_eacca960
 Bytes: 213
 I'm open to suggestions for this.  We could, for instance, return an error if passed such a buffer, or change it to wait for work before finishing if the buffer doesn't meet that threshold, or even leave it as is.
 
+2189
+Mon Jun 22 18:40:57 2015 +0000
+Author: Chris Tate <1000322@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 597cfc56_eacca960
+UUID: 5e2782f4_90893cab
+Bytes: 152
+I'm inclined to say it should return an error if passed a too-small buffer, unless we know of existing clients that depend on the accumulation behavior.
+
