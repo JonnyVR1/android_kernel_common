@@ -1,0 +1,7 @@
+Code-Review+2: Dmitry Shmidt <dimitrysh@google.com>
+Verified+1: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-by: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-at: Tue, 23 Jun 2015 19:10:20 +0000
+Reviewed-on: https://android-review.googlesource.com/154471
+Project: kernel/common
+Branch: refs/heads/bcmdhd-3.10
