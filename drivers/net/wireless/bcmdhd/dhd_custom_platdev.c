@@ -49,6 +49,7 @@
 #include <linux/fcntl.h>
 #include <linux/fs.h>
 
+#include <bcmutils.h>
 
 #define BCM_DBG pr_debug
 
@@ -58,6 +59,17 @@ static int brcm_wake_irq = -1;
 #if !defined(CONFIG_WIFI_CONTROL_FUNC)
 #define WLAN_PLAT_NODFS_FLAG	0x01
 #endif
+
+#define WLC_CNTRY_BUF_SZ 4
+struct cntry_locales_custom {
+	char iso_abbrev[WLC_CNTRY_BUF_SZ];
+	char custom_locale[WLC_CNTRY_BUF_SZ];
+	int  custom_locale_rev;
+};
+struct cntry_locales_custom locale;
+#define UNIV_SAFE_CCODE "XT" /* universal safe ccode*/
+#define CCODE_NODE_NAME "android,bcmdhd_ccode"
+#define CCODE_NODFS_NODE_NAME "android,bcmdhd_ccode_nodfs"
 
 #ifdef CONFIG_DHD_USE_STATIC_BUF
 
@@ -369,148 +381,62 @@ static int dhd_wlan_set_carddetect(int val)
 {
 	return 0;
 }
-
-/* Customized Locale table : OPTIONAL feature */
-#define WLC_CNTRY_BUF_SZ        4
-struct cntry_locales_custom {
-	char iso_abbrev[WLC_CNTRY_BUF_SZ];
-	char custom_locale[WLC_CNTRY_BUF_SZ];
-	int  custom_locale_rev;
-};
-
-static struct cntry_locales_custom brcm_wlan_translate_custom_table[] = {
-	/* Table should be filled out based on custom platform regulatory requirement */
-	{"",   "XT", 49},  /* Universal if Country code is unknown or empty */
-	{"US", "US", 176},
-	{"AE", "AE", 1},
-	{"AR", "AR", 21},
-	{"AT", "AT", 4},
-	{"AU", "AU", 40},
-	{"BE", "BE", 4},
-	{"BG", "BG", 4},
-	{"BN", "BN", 4},
-	{"BR", "BR", 4},
-	{"CA", "US", 176},   /* Previousely was CA/31 */
-	{"CH", "CH", 4},
-	{"CY", "CY", 4},
-	{"CZ", "CZ", 4},
-	{"DE", "DE", 7},
-	{"DK", "DK", 4},
-	{"EE", "EE", 4},
-	{"ES", "ES", 4},
-	{"FI", "FI", 4},
-	{"FR", "FR", 5},
-	{"GB", "GB", 6},
-	{"GR", "GR", 4},
-	{"HK", "HK", 2},
-	{"HR", "HR", 4},
-	{"HU", "HU", 4},
-	{"IE", "IE", 5},
-	{"IN", "IN", 28},
-	{"IS", "IS", 4},
-	{"IT", "IT", 4},
-	{"ID", "ID", 5},
-	{"JP", "JP", 86},
-	{"KR", "KR", 57},
-	{"KW", "KW", 5},
-	{"LI", "LI", 4},
-	{"LT", "LT", 4},
-	{"LU", "LU", 3},
-	{"LV", "LV", 4},
-	{"MA", "MA", 2},
-	{"MT", "MT", 4},
-	{"MX", "MX", 20},
-	{"MY", "MY", 16},
-	{"NL", "NL", 4},
-	{"NO", "NO", 4},
-	{"NZ", "NZ", 4},
-	{"PL", "PL", 4},
-	{"PT", "PT", 4},
-	{"PY", "PY", 2},
-	{"RO", "RO", 4},
-	{"RU", "RU", 13},
-	{"SE", "SE", 4},
-	{"SG", "SG", 19},
-	{"SI", "SI", 4},
-	{"SK", "SK", 4},
-	{"TH", "TH", 5},
-	{"TR", "TR", 7},
-	{"TW", "TW", 1},
-	{"VN", "VN", 4},
-};
-
-struct cntry_locales_custom brcm_wlan_translate_nodfs_table[] = {
-	{"",   "XT", 50},  /* Universal if Country code is unknown or empty */
-	{"US", "US", 177},
-	{"AU", "AU", 41},
-	{"BR", "BR", 18},
-	{"CA", "US", 177},
-	{"CH", "E0", 33},
-	{"CY", "E0", 33},
-	{"CZ", "E0", 33},
-	{"DE", "E0", 33},
-	{"DK", "E0", 33},
-	{"EE", "E0", 33},
-	{"ES", "E0", 33},
-	{"EU", "E0", 33},
-	{"FI", "E0", 33},
-	{"FR", "E0", 33},
-	{"GB", "E0", 33},
-	{"GR", "E0", 33},
-	{"HK", "SG", 20},
-	{"HR", "E0", 33},
-	{"HU", "E0", 33},
-	{"IE", "E0", 33},
-	{"IN", "IN", 29},
-	{"ID", "ID", 5},
-	{"IS", "E0", 33},
-	{"IT", "E0", 33},
-	{"JP", "JP", 87},
-	{"KR", "KR", 79},
-	{"KW", "KW", 5},
-	{"LI", "E0", 33},
-	{"LT", "E0", 33},
-	{"LU", "E0", 33},
-	{"LV", "LV", 4},
-	{"MA", "MA", 2},
-	{"MT", "E0", 33},
-	{"MY", "MY", 17},
-	{"MX", "US", 177},
-	{"NL", "E0", 33},
-	{"NO", "E0", 33},
-	{"PL", "E0", 33},
-	{"PT", "E0", 33},
-	{"RO", "E0", 33},
-	{"SE", "E0", 33},
-	{"SG", "SG", 20},
-	{"SI", "E0", 33},
-	{"SK", "E0", 33},
-	{"SZ", "E0", 33},
-	{"TH", "TH", 9},
-	{"TW", "TW", 60},
-};
-
 static void *dhd_wlan_get_country_code(char *ccode, u32 flags)
 {
-	struct cntry_locales_custom *locales;
-	int size;
-	int i;
+
+	struct device_node *np;
+	int ret;
+	const char *bp;
+	char *tok, *tmp;
+
+	BCM_DBG("%s: ENTER\n", __FUNCTION__);
 
 	if (!ccode)
 		return NULL;
+	ccode="BR";
+	if(ccode &&!bcmstrnicmp(ccode,"",WLC_CNTRY_BUF_SZ)) //set universal one if ccode is empty.
+		ccode = UNIV_SAFE_CCODE;
 
 	if (flags & WLAN_PLAT_NODFS_FLAG) {
-		locales = brcm_wlan_translate_nodfs_table;
-		size = ARRAY_SIZE(brcm_wlan_translate_nodfs_table);
+		np = of_find_compatible_node(NULL, NULL, CCODE_NODFS_NODE_NAME);
 	} else {
-		locales = brcm_wlan_translate_custom_table;
-		size = ARRAY_SIZE(brcm_wlan_translate_custom_table);
+		np = of_find_compatible_node(NULL, NULL, CCODE_NODE_NAME);
 	}
 
-	for (i = 0; i < size; i++)
-		if (strcmp(ccode, locales[i].iso_abbrev) == 0)
-			return &locales[i];
-	return &locales[0];
+	if (!np) {
+		BCM_DBG("%s: failed to get device node of bcmdhd ccode \n",__FUNCTION__);
+		return NULL;
+	}
+
+	ret = of_property_read_string(np, ccode, &bp);
+	if (ret) {
+		BCM_DBG( "%s: can't find entry for %s ccode. set t XT ccode \n", __FUNCTION__, ccode);
+		ccode = UNIV_SAFE_CCODE;
+		ret = of_property_read_string(np, ccode, &bp);
+	}
+
+	strncpy((char *)&locale.iso_abbrev,ccode,WLC_CNTRY_BUF_SZ);
+
+	tmp = (char *)bp;
+	tok = bcmstrtok(&tmp,"/",0);
+
+	if(tok) {
+		strncpy((char *)&locale.custom_locale,tok,WLC_CNTRY_BUF_SZ);
+	} else {
+		return NULL;
+	}
+
+	tok = bcmstrtok(&tmp,"/",0);
+
+	if(tok) {
+		ret = bcm_atoi(tok);
+		locale.custom_locale_rev=ret;
+	} else {
+		return NULL;
+	}
+
+	return (void *)(&locale);
+
 }
 
 static unsigned char brcm_mac_addr[IFHWADDRLEN] = { 0, 0x90, 0x4c, 0, 0, 0 };
