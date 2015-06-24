@@ -1,0 +1,26 @@
+Revision: ffd5225026fd980e5abaa7cf8726cd361b0c8ce8
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_custom_platdev.c
+
+397
+Wed Jun 24 22:07:15 2015 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de75323f_ee56bf2f
+Bytes: 84
+Please comply with the coding rule.
+we need to add space between , and next argument
+
+433
+Wed Jun 24 22:07:15 2015 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7a8634_6bf081dc
+Bytes: 43
+locale.customer_locale_rev = bcm_atoi(tok);
+
+439
+Wed Jun 24 22:07:15 2015 +0000
+Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e252642_13d48c31
+Bytes: 12
+remove space
+
