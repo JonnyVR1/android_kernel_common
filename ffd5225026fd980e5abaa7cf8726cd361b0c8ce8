@@ -10,6 +10,14 @@ Bytes: 84
 Please comply with the coding rule.
 we need to add space between , and next argument
 
+397
+Wed Jun 24 22:23:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: de75323f_ee56bf2f
+UUID: be707e50_6d91755b
+Bytes: 10
+OK. fixed.
+
 433
 Wed Jun 24 22:07:15 2015 +0000
 Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,10 +25,26 @@ UUID: 7e7a8634_6bf081dc
 Bytes: 43
 locale.customer_locale_rev = bcm_atoi(tok);
 
+433
+Wed Jun 24 22:23:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e7a8634_6bf081dc
+UUID: 7e252642_f3e31019
+Bytes: 9
+OK. fixed
+
 439
 Wed Jun 24 22:07:15 2015 +0000
 Author: Ecco Park <1021673@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7e252642_13d48c31
 Bytes: 12
 remove space
+
+439
+Wed Jun 24 22:23:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e252642_13d48c31
+UUID: 7e7a8634_0bed3dff
+Bytes: 10
+OK. fixed.
 
