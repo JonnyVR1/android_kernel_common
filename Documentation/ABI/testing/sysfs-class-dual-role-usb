@@ -1,0 +1,74 @@
+What:		/sys/class/dual_role_usb/.../
+Date:		June 2015
+Contact:	Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		Provide a generic interface to monitor and change
+		the state of dual role usb ports. The name here
+		refers to the name mentioned in the
+		dual_role_phy_desc that is passed while registering
+		the dual_role_phy_intstance through
+		devm_dual_role_instance_register.
+
+What:           /sys/class/dual_role_usb/.../supported_modes
+Date:           June 2015
+Contact:        Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		This is a static node, once initialized this
+		is not expected to change during runtime. "dfp"
+		refers to "downstream facing port" i.e. port can
+		only act as host. "ufp" refers to "upstream
+		facing port" i.e. port can only act as device.
+		"dfp ufp" refers to "dual role port" i.e. the port
+		can either be a host port or a device port.
+
+What:		/sys/class/dual_role_usb/.../mode
+Date:		June 2015
+Contact:	Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		The mode node refers to the current mode in which the
+		port is operting. "dfp" for host ports. "ufp" for device
+		ports and "none" when cable is not connected.
+
+		Depending on the implementation of the usb phy
+		driver, the usb phy driver can register callback
+		to enable userspace to control the mode in which
+		the ports operates.
+
+What:		/sys/class/dual_role_usb/.../power_role
+Date:		June 2015
+Contact:	Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		The power_role node mentions whether the port
+		is "sink"ing or "source"ing power. "none" if
+		they are not connected.
+
+		Depending on the implementation of the usb phy
+		driver, the usb phy driver can register callback
+		to enable userspace to switch the power_role exclusively.
+		For example, when TYPE-C USB-PD is implemented.
+
+What:		/sys/class/dual_role_usb/.../data_role
+Date:		June 2015
+Contact:	Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		The data_role node mentions whether the port
+		is acting as "host" or "device" for USB data connection.
+		"none" if there is no active data link.
+
+		Depending on the implementation of the usb phy
+		driver, the usb phy driver can register callback
+		to enable userspace to switch he data_role exclusively.
+		For example, when TYPE-C USB-PD is implemented. Or,
+		starting HNP from host when OTG is implemented.
+
+What:		/sys/class/dual_role_usb/.../powers_vconn
+Date:		June 2015
+Contact:	Badhri Jagan Sridharan<badhri@google.com>
+Description:
+		The powers_vconn node mentions whether the port
+		is supplying power for VCONN pin.
+
+		Depending on the implementation of the usb phy
+		driver, the usb phy driver can register callback
+		to enable userspace to enable (or) disable power
+		supply to VCONN.
