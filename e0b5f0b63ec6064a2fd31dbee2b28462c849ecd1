@@ -9,10 +9,26 @@ UUID: 138ee5ef_6f90fda1
 Bytes: 33
 What is the point of this change?
 
+836:31-836:33
+Mon Jun 29 17:15:11 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 138ee5ef_6f90fda1
+UUID: 73a3a180_a68aa8ec
+Bytes: 116
+Based on the rules discussed with customer, we can set 127 if we want to recovery regulatory limit.(for SAR disable)
+
 839:3-839:10
 Mon Jun 29 16:53:30 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5384ddcb_d1c3ee97
 Bytes: 49
 You are loosing update flag in case it is normal.
+
+839:3-839:10
+Mon Jun 29 17:15:11 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5384ddcb_d1c3ee97
+UUID: 133a65f6_c3ef88fc
+Bytes: 138
+If this flag was set, FW will ignore other limitation and just use the tx power user set. So we need to clear this flag when SAR disabled.
 
