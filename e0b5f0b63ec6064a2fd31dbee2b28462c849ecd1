@@ -1,0 +1,18 @@
+Revision: e0b5f0b63ec6064a2fd31dbee2b28462c849ecd1
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+836:31-836:33
+Mon Jun 29 16:53:30 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 138ee5ef_6f90fda1
+Bytes: 33
+What is the point of this change?
+
+839:3-839:10
+Mon Jun 29 16:53:30 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5384ddcb_d1c3ee97
+Bytes: 49
+You are loosing update flag in case it is normal.
+
