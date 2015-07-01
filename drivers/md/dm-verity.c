@@ -36,6 +36,8 @@
 #define DM_VERITY_OPT_LOGGING		"ignore_corruption"
 #define DM_VERITY_OPT_RESTART		"restart_on_corruption"
 
+#define DM_VERITY_OPTS_MAX		1
+
 static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
 
 module_param_named(prefetch_cluster, dm_verity_prefetch_cluster, uint, S_IRUGO | S_IWUSR);
@@ -767,6 +769,21 @@ static void verity_dtr(struct dm_target *ti)
 	kfree(v);
 }
 
+static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
+				 const char *opt_string)
+{
+	if (!strcasecmp(opt_string, DM_VERITY_OPT_LOGGING)) {
+		v->mode = DM_VERITY_MODE_LOGGING;
+		return 0;
+	} else if (!strcasecmp(opt_string, DM_VERITY_OPT_RESTART)) {
+		v->mode = DM_VERITY_MODE_RESTART;
+		return 0;
+	}
+
+	v->ti->error = "Invalid feature arguments";
+	return -EINVAL;
+}
+
 /*
  * Target parameters:
  *	<version>	The current format is version 1.
@@ -794,7 +811,7 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 	char dummy;
 
 	static struct dm_arg _args[] = {
-		{0, 1, "Invalid number of feature args"},
+		{0, DM_VERITY_OPTS_MAX, "Invalid number of feature args"},
 	};
 
 	v = kzalloc(sizeof(struct dm_verity), GFP_KERNEL);
@@ -954,15 +971,11 @@ static int verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
 				goto bad;
 			}
 
-			if (!strcasecmp(opt_string, DM_VERITY_OPT_LOGGING))
-				v->mode = DM_VERITY_MODE_LOGGING;
-			else if (!strcasecmp(opt_string, DM_VERITY_OPT_RESTART))
-				v->mode = DM_VERITY_MODE_RESTART;
-			else {
-				ti->error = "Invalid feature arguments";
-				r = -EINVAL;
+			r = verity_parse_opt_args(&as, v, opt_string);
+			if (r < 0)
 				goto bad;
-			}
+
+			opt_params -= r;
 		}
 	}
 
