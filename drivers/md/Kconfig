@@ -398,6 +398,8 @@ config DM_VERITY
 	select CRYPTO
 	select CRYPTO_HASH
 	select DM_BUFIO
+	select REED_SOLOMON
+	select REED_SOLOMON_DEC8
 	---help---
 	  This device-mapper target creates a read-only device that
 	  transparently validates the data on one underlying device against
