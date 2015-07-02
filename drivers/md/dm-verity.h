@@ -41,6 +41,7 @@ struct dm_verity {
 	struct crypto_shash *tfm;
 	u8 *root_digest;	/* digest of the root block */
 	u8 *salt;		/* salt: its size is salt_size */
+	u8 *zero_digest;	/* digest for a zero block */
 	unsigned salt_size;
 	sector_t data_start;	/* data offset in 512-byte sectors */
 	sector_t hash_start;	/* hash start in blocks */
