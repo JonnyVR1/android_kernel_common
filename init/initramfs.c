@@ -579,7 +579,7 @@ static void __init clean_rootfs(void)
 }
 #endif
 
-static int __init populate_rootfs(void)
+int __init populate_rootfs(void)
 {
 	char *err = unpack_to_rootfs(__initramfs_start, __initramfs_size);
 	if (err)
@@ -624,4 +624,3 @@ static int __init populate_rootfs(void)
 	}
 	return 0;
 }
-rootfs_initcall(populate_rootfs);
