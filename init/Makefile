@@ -3,11 +3,11 @@
 #
 
 obj-y                          := main.o version.o mounts.o
-ifneq ($(CONFIG_BLK_DEV_INITRD),y)
 obj-y                          += noinitramfs.o
-else
-obj-$(CONFIG_BLK_DEV_INITRD)   += initramfs.o
+ifneq ($(CONFIG_BLK_DEV_INITRD),)
+obj-y                          += load_initramfs.o
 endif
+obj-$(CONFIG_BLK_DEV_INITRD)   += initramfs.o
 obj-$(CONFIG_GENERIC_CALIBRATE_DELAY) += calibrate.o
 
 ifneq ($(CONFIG_ARCH_INIT_TASK),y)

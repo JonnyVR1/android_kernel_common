@@ -25,7 +25,10 @@
 /*
  * Create a simple rootfs that is similar to the default initramfs
  */
-static int __init default_rootfs(void)
+#ifndef CONFIG_BLK_DEV_INITRD
+static
+#endif
+int __init default_rootfs(void)
 {
 	int err;
 
@@ -49,4 +52,6 @@ out:
 	printk(KERN_WARNING "Failed to create a rootfs\n");
 	return err;
 }
+#ifndef CONFIG_BLK_DEV_INITRD
 rootfs_initcall(default_rootfs);
+#endif
