@@ -1,0 +1,33 @@
+Revision: f756cd388fde1d47849074eb4f62dd09298a0f5a
+Patch-set: 4
+File: init/Makefile
+
+7:0-9:45
+Tue Jul 07 17:38:03 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f80dae2c_fa6dc52c
+Bytes: 280
+How is 
+obj-$(CONFIG_BLK_DEV_INITRD)  += initramfs.o load_initramfs.o
+different from above ??
+
+Can we make the initramfs.o take the kernel command line paramater defined in load_initramfs.o ?? Then we can merge load_initramfs.o and initramfs.o together. Will it break something ??
+
+File: init/load_initramfs.c
+
+27:0-28:11
+Tue Jul 07 17:38:03 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f80dae2c_9a85a990
+Bytes: 321
+Saw the following code stub in kernel used for no_console_suspend
+
+static int __init console_suspend_disable(char *str)
+{
+        console_suspend_enabled = 0;
+        return 1;
+}
+__setup("no_console_suspend", console_suspend_disable);
+
+Do we have to check the string that gets passed, if we don't care about it anyways ??
+
