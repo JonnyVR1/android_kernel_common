@@ -13,6 +13,14 @@ different from above ??
 
 Can we make the initramfs.o take the kernel command line paramater defined in load_initramfs.o ?? Then we can merge load_initramfs.o and initramfs.o together. Will it break something ??
 
+7:0-9:45
+Tue Jul 07 18:11:56 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f80dae2c_fa6dc52c
+UUID: 736d61b3_bc37600d
+Bytes: 4
+Done
+
 File: init/load_initramfs.c
 
 27:0-28:11
