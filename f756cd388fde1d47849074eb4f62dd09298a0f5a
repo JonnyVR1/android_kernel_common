@@ -31,3 +31,11 @@ __setup("no_console_suspend", console_suspend_disable);
 
 Do we have to check the string that gets passed, if we don't care about it anyways ??
 
+27:0-28:11
+Tue Jul 07 18:00:58 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f80dae2c_9a85a990
+UUID: f80dae2c_9d436362
+Bytes: 38
+See retain_initrd_param in initramfs.c
+
