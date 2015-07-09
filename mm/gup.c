@@ -166,7 +166,7 @@ struct page *follow_page_mask(struct vm_area_struct *vma,
 	pud = pud_offset(pgd, address);
 	if (pud_none(*pud))
 		return no_page_table(vma, flags);
-	if (pud_huge(*pud) && vma->vm_flags & VM_HUGETLB) {
+	if (pud_huge(*pud) && is_vm_hugetlb_page(vma)) {
 		if (flags & FOLL_GET)
 			return NULL;
 		page = follow_huge_pud(mm, address, pud, flags & FOLL_WRITE);
@@ -178,7 +178,7 @@ struct page *follow_page_mask(struct vm_area_struct *vma,
 	pmd = pmd_offset(pud, address);
 	if (pmd_none(*pmd))
 		return no_page_table(vma, flags);
-	if (pmd_huge(*pmd) && vma->vm_flags & VM_HUGETLB) {
+	if (pmd_huge(*pmd) && is_vm_hugetlb_page(vma)) {
 		page = follow_huge_pmd(mm, address, pmd, flags & FOLL_WRITE);
 		if (flags & FOLL_GET) {
 			/*
