@@ -356,7 +356,7 @@ static int cpufreq_stat_notifier_policy(struct notifier_block *nb,
 	if (!table)
 		return 0;
 
-	cpufreq_for_each_valid_entry(pos, table);
+	cpufreq_for_each_valid_entry(pos, table)
 		count++;
 
 	if (!per_cpu(cpufreq_power_stats, cpu))
