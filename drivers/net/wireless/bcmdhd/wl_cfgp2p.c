@@ -321,12 +321,15 @@ wl_cfgp2p_init_priv(struct bcm_cfg80211 *cfg)
 void
 wl_cfgp2p_deinit_priv(struct bcm_cfg80211 *cfg)
 {
+	unsigned long flags;
 	CFGP2P_DBG(("In\n"));
+	spin_lock_irqsave(&cfg->cfgp2p_lock, flags);
 	if (cfg->p2p) {
 		kfree(cfg->p2p);
 		cfg->p2p = NULL;
 	}
 	cfg->p2p_supported = 0;
+	spin_unlock_irqrestore(&cfg->cfgp2p_lock, flags);
 }
 /*
  * Set P2P functions into firmware
