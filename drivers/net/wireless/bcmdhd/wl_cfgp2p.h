@@ -131,13 +131,13 @@ enum wl_cfgp2p_status {
 #define wl_to_p2p_bss_saved_ie(cfg, type)	((cfg)->p2p->bss[type].saved_ie)
 #define wl_to_p2p_bss_private(cfg, type)		((cfg)->p2p->bss[type].private_data)
 #define wl_to_p2p_bss(cfg, type)			((cfg)->p2p->bss[type])
-#define wl_get_p2p_status(cfg, stat) ((!(cfg)->p2p_supported) ? 0 : \
+#define wl_get_p2p_status(cfg, stat) ((!wl_cfgp2p_check_enabled(cfg)) ? 0 : \
 		test_bit(WLP2P_STATUS_ ## stat, &(cfg)->p2p->status))
-#define wl_set_p2p_status(cfg, stat) ((!(cfg)->p2p_supported) ? 0 : \
+#define wl_set_p2p_status(cfg, stat) ((!wl_cfgp2p_check_enabled(cfg)) ? 0 : \
 		set_bit(WLP2P_STATUS_ ## stat, &(cfg)->p2p->status))
-#define wl_clr_p2p_status(cfg, stat) ((!(cfg)->p2p_supported) ? 0 : \
+#define wl_clr_p2p_status(cfg, stat) ((!wl_cfgp2p_check_enabled(cfg)) ? 0 : \
 		clear_bit(WLP2P_STATUS_ ## stat, &(cfg)->p2p->status))
-#define wl_chg_p2p_status(cfg, stat) ((!(cfg)->p2p_supported) ? 0 : \
+#define wl_chg_p2p_status(cfg, stat) ((!wl_cfgp2p_check_enabled(cfg)) ? 0 : \
 	change_bit(WLP2P_STATUS_ ## stat, &(cfg)->p2p->status))
 #define p2p_on(cfg) ((cfg)->p2p->on)
 #define p2p_scan(cfg) ((cfg)->p2p->scan)
@@ -377,6 +377,9 @@ wl_cfgp2p_stop_p2p_device(struct wiphy *wiphy, struct wireless_dev *wdev);
 extern int
 wl_cfgp2p_del_p2p_disc_if(struct wireless_dev *wdev, struct bcm_cfg80211 *cfg);
 #endif /* WL_CFG80211_P2P_DEV_IF */
+
+extern int
+wl_cfgp2p_check_enabled (struct bcm_cfg80211 * cfg);
 
 /* WiFi Direct */
 #define SOCIAL_CHAN_1 1
