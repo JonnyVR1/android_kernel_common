@@ -1,0 +1,11 @@
+Revision: 530d8cecd24291f997ae6e39e3071ce581a07625
+Patch-set: 5
+File: drivers/usb/gadget/configfs.c
+
+1725:17-1725:22
+Tue Jul 14 22:51:39 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 58987a8f_517e5e25
+Bytes: 20
+attrs is wrong here.
+
