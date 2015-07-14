@@ -1,0 +1,25 @@
+Revision: 93200e405c0c0f0168fa3c0003040d24b1776cbd
+Patch-set: 4
+File: drivers/usb/gadget/configfs.c
+
+1616:21-1616:24
+Tue Jul 14 22:16:59 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 187d22ed_1c2f05ca
+Bytes: 15
+Can it be NULL?
+
+1695:2-1695:6
+Tue Jul 14 22:16:59 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98975254_8cf65c87
+Bytes: 54
+You will crash - android_device->class is not defined.
+
+1720:1-1720:15
+Tue Jul 14 22:16:59 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98975254_4cfc7469
+Bytes: 51
+Will it destroy all dev files created in 1699-1703?
+
