@@ -9,6 +9,14 @@ UUID: b8c33659_b5538061
 Bytes: 80
 Can it be both - CONFIGURED and CONNECTED? If yes, which one you want to report?
 
+1628:11-1628:20
+Tue Jul 14 22:11:41 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8c33659_b5538061
+UUID: 187d22ed_3ce20919
+Bytes: 293
+When the gadget_layer gets the first control packet, we infer that the device is "connected"... when the host sends the set_configuration request, we move from "connected" state to "configured"... So the preference would be to report as configured when we are both "connected" and "configured"
+
 1702:3-1702:17
 Tue Jul 14 20:20:07 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,30 @@ UUID: 389d8670_147a7ae6
 Bytes: 38
 If you fail to create, why to destroy?
 
+1702:3-1702:17
+Tue Jul 14 22:11:41 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389d8670_147a7ae6
+UUID: 98975254_cc92245e
+Bytes: 170
+I am intending to remove the android_device that I created previously:
+
+Line 1692:
+android_device = device_create(android_class, NULL,
+				MKDEV(0, 0), NULL, "android0");
+
 1722:1-1722:6
 Tue Jul 14 20:20:07 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18a442b9_f3534aae
 Bytes: 48
 Do we need to destroy stuff created for Android?
+
+1722:1-1722:6
+Tue Jul 14 22:11:41 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a442b9_f3534aae
+UUID: 98975254_0c9d0c6b
+Bytes: 44
+Probably, I should move Line 1702 to here...
 
