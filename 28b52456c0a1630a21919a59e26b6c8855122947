@@ -1,0 +1,25 @@
+Revision: 28b52456c0a1630a21919a59e26b6c8855122947
+Patch-set: 3
+File: drivers/usb/gadget/configfs.c
+
+1628:11-1628:20
+Tue Jul 14 20:20:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b8c33659_b5538061
+Bytes: 80
+Can it be both - CONFIGURED and CONNECTED? If yes, which one you want to report?
+
+1702:3-1702:17
+Tue Jul 14 20:20:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 389d8670_147a7ae6
+Bytes: 38
+If you fail to create, why to destroy?
+
+1722:1-1722:6
+Tue Jul 14 20:20:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18a442b9_f3534aae
+Bytes: 48
+Do we need to destroy stuff created for Android?
+
