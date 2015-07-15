@@ -1,0 +1,11 @@
+Revision: d7c74e9f254b2bbeca69bade66b8b0802fba6193
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_pcie.c
+
+3051:3-3051:4
+Wed Jul 15 05:57:09 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f80beea6_c733be31
+Bytes: 14
+Please add tab
+
