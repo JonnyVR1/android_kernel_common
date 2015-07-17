@@ -1,0 +1,20 @@
+Revision: 8b37737ef3ef3cdc64ccab00ba8725792c9f81a7
+Patch-set: 3
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+11663:5-11663:28
+Fri Jul 17 20:45:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 586b1a6a_de9045a5
+Bytes: 13
+Is it needed?
+
+File: drivers/net/wireless/bcmdhd/wl_cfgp2p.c
+
+2664:0-2664:3
+Fri Jul 17 20:45:33 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b8709650_61573e50
+Bytes: 20
+Add empty line above
+
