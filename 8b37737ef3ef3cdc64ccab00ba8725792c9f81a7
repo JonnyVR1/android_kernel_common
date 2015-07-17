@@ -9,6 +9,15 @@ UUID: 586b1a6a_de9045a5
 Bytes: 13
 Is it needed?
 
+11663:5-11663:28
+Fri Jul 17 20:56:42 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 586b1a6a_de9045a5
+UUID: 38858659_251aa675
+Bytes: 61
+It's checking flag with spin_lock.
+So I think this is needed.
+
 File: drivers/net/wireless/bcmdhd/wl_cfgp2p.c
 
 2664:0-2664:3
@@ -17,4 +26,12 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b8709650_61573e50
 Bytes: 20
 Add empty line above
+
+2664:0-2664:3
+Fri Jul 17 20:56:42 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8709650_61573e50
+UUID: 987f5221_00b75677
+Bytes: 9
+Ok. fixed
 
