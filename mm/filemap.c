@@ -1477,6 +1477,8 @@ static ssize_t do_generic_file_read(struct file *filp, loff_t *ppos,
 	unsigned int prev_offset;
 	int error = 0;
 
+	trace_mm_filemap_do_generic_file_read(filp, *ppos, desc->count, 1);
+
 	index = *ppos >> PAGE_CACHE_SHIFT;
 	prev_index = ra->prev_pos >> PAGE_CACHE_SHIFT;
 	prev_offset = ra->prev_pos & (PAGE_CACHE_SIZE-1);
@@ -2460,6 +2462,8 @@ ssize_t generic_perform_write(struct file *file,
 	long status = 0;
 	ssize_t written = 0;
 	unsigned int flags = 0;
+
+	trace_mm_filemap_generic_perform_write(file, pos, iov_iter_count(i), 0);
 
 	/*
 	 * Copies from kernel address space cannot fail (NFSD is a big user).
