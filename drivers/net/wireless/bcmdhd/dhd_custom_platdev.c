@@ -437,6 +437,7 @@ static struct cntry_locales_custom brcm_wlan_translate_custom_table[] = {
 	{"TR", "TR", 7},
 	{"TW", "TW", 1},
 	{"VN", "VN", 4},
+	{"CN", "CN", 38},
 };
 
 struct cntry_locales_custom brcm_wlan_translate_nodfs_table[] = {
