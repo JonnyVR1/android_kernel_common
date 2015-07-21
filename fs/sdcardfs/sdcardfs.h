@@ -69,8 +69,8 @@
 
 #define fix_derived_permission(x)	\
 	do {						\
-		(x)->i_uid = SDCARDFS_I(x)->d_uid;	\
-		(x)->i_gid = SDCARDFS_I(x)->d_gid;	\
+		(x)->i_uid = make_kuid(&init_user_ns, SDCARDFS_I(x)->d_uid);	\
+		(x)->i_gid = make_kgid(&init_user_ns, SDCARDFS_I(x)->d_gid);	\
 		(x)->i_mode = ((x)->i_mode & S_IFMT) | SDCARDFS_I(x)->d_mode;\
 	} while (0)
 
@@ -421,11 +421,11 @@ static inline int prepare_dir(const char *path_s, uid_t uid, gid_t gid, mode_t m
 		goto out_dput;
 	}
 
-	attrs.ia_uid = uid;
-	attrs.ia_gid = gid;
+	attrs.ia_uid = make_kuid(&init_user_ns, uid);
+	attrs.ia_gid = make_kgid(&init_user_ns, gid);
 	attrs.ia_valid = ATTR_UID | ATTR_GID;
 	mutex_lock(&dent->d_inode->i_mutex);
-	notify_change(dent, &attrs);
+	notify_change(dent, &attrs, NULL);
 	mutex_unlock(&dent->d_inode->i_mutex);
 
 out_dput:
