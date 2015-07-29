@@ -1,0 +1,18 @@
+Revision: b74ef945dcabe64215064f15ee1660b6524d65ce
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:73
+Wed Jul 29 01:24:36 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dbb223c_be63e535
+Bytes: 103
+Put this line in square brackets after David's Signed-off-by: and add a second Signed-off-by: after it.
+
+18
+Wed Jul 29 01:24:36 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad1696fe_8829a713
+Bytes: 136
+Add a Bug: line and a Change-Id: line at the bottom of the commit description. You can get the change ID for this CL from the gerrit UI.
+
