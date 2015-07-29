@@ -198,7 +198,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
 		goto out;
 	}
 
-	if ((end != TLB_FLUSH_ALL) && !(vmflag & VM_HUGETLB))
+	if ((end != TLB_FLUSH_ALL) && !TestVmHugetlb(vmflag))
 		base_pages_to_flush = (end - start) >> PAGE_SHIFT;
 
 	if (base_pages_to_flush > tlb_single_page_flush_ceiling) {
