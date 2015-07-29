@@ -1942,7 +1942,6 @@ out:
 	return ret;
 }
 
-#define VM_NO_THP (VM_SPECIAL | VM_HUGETLB | VM_SHARED | VM_MAYSHARE)
 
 int hugepage_madvise(struct vm_area_struct *vma,
 		     unsigned long *vm_flags, int advice)
@@ -1961,7 +1960,9 @@ int hugepage_madvise(struct vm_area_struct *vma,
 		/*
 		 * Be somewhat over-protective like KSM for now!
 		 */
-		if (*vm_flags & (VM_HUGEPAGE | VM_NO_THP))
+		if (*vm_flags & (VM_HUGEPAGE | VM_SPECIAL |
+						VM_SHARED | VM_MAYSHARE) ||
+						TestVmHugetlb(*vm_flags))
 			return -EINVAL;
 		*vm_flags &= ~VM_NOHUGEPAGE;
 		*vm_flags |= VM_HUGEPAGE;
@@ -1977,7 +1978,9 @@ int hugepage_madvise(struct vm_area_struct *vma,
 		/*
 		 * Be somewhat over-protective like KSM for now!
 		 */
-		if (*vm_flags & (VM_NOHUGEPAGE | VM_NO_THP))
+		if (*vm_flags & (VM_NOHUGEPAGE | VM_SPECIAL |
+						VM_SHARED | VM_MAYSHARE) ||
+						TestVmHugetlb(*vm_flags))
 			return -EINVAL;
 		*vm_flags &= ~VM_HUGEPAGE;
 		*vm_flags |= VM_NOHUGEPAGE;
@@ -2084,7 +2087,8 @@ int khugepaged_enter_vma_merge(struct vm_area_struct *vma,
 	if (vma->vm_ops)
 		/* khugepaged not yet working on file or special mappings */
 		return 0;
-	VM_BUG_ON_VMA(vm_flags & VM_NO_THP, vma);
+	VM_BUG_ON_VMA(vm_flags & (VM_SPECIAL | VM_SHARED | VM_MAYSHARE) ||
+		TestVmHugetlb(vm_flags), vma);
 	hstart = (vma->vm_start + ~HPAGE_PMD_MASK) & HPAGE_PMD_MASK;
 	hend = vma->vm_end & HPAGE_PMD_MASK;
 	if (hstart < hend)
@@ -2407,7 +2411,9 @@ static bool hugepage_vma_check(struct vm_area_struct *vma)
 		return false;
 	if (is_vma_temporary_stack(vma))
 		return false;
-	VM_BUG_ON_VMA(vma->vm_flags & VM_NO_THP, vma);
+	VM_BUG_ON_VMA(vma->vm_flags &
+		(VM_SPECIAL | VM_SHARED | VM_MAYSHARE) ||
+		is_vm_hugetlb_page(vma), vma);
 	return true;
 }
 

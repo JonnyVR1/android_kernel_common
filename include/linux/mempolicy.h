@@ -178,7 +178,7 @@ static inline int vma_migratable(struct vm_area_struct *vma)
 		return 0;
 
 #ifndef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
-	if (vma->vm_flags & VM_HUGETLB)
+	if (is_vm_hugetlb_page(vma))
 		return 0;
 #endif
 

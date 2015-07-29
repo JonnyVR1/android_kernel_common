@@ -1021,8 +1021,8 @@ int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 	 * readonly mappings. The tradeoff is that copy_page_range is more
 	 * efficient than faulting.
 	 */
-	if (!(vma->vm_flags & (VM_HUGETLB | VM_NONLINEAR |
-			       VM_PFNMAP | VM_MIXEDMAP))) {
+	if (!(vma->vm_flags & (VM_NONLINEAR | VM_PFNMAP | VM_MIXEDMAP) ||
+			is_vm_hugetlb_page(vma))) {
 		if (!vma->anon_vma)
 			return 0;
 	}
