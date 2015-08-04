@@ -197,6 +197,20 @@ static int __exit ramoops_remove(struct platform_device *pdev)
 	return 0;
 }
 
+static int ramoops_console_notify(struct notifier_block *this,
+		unsigned long event, void *ptr)
+{
+	pr_emerg("ramoops unlock console ...\n");
+	emergency_unlock_console();
+
+	return 0;
+}
+
+static struct notifier_block ramoop_nb = {
+	.notifier_call = ramoops_console_notify,
+	.priority = INT_MAX,
+};
+
 static struct platform_driver ramoops_driver = {
 	.remove		= __exit_p(ramoops_remove),
 	.driver		= {
@@ -208,6 +222,7 @@ static struct platform_driver ramoops_driver = {
 static int __init ramoops_init(void)
 {
 	int ret;
+	atomic_notifier_chain_register(&panic_notifier_list, &ramoop_nb);
 	ret = platform_driver_probe(&ramoops_driver, ramoops_probe);
 	if (ret == -ENODEV) {
 		/*
@@ -240,6 +255,7 @@ static void __exit ramoops_exit(void)
 {
 	platform_driver_unregister(&ramoops_driver);
 	kfree(dummy_data);
+	atomic_notifier_chain_unregister(&panic_notifier_list, &ramoop_nb);
 }
 
 module_init(ramoops_init);
