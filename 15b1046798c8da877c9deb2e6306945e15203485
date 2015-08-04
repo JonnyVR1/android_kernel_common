@@ -1,0 +1,11 @@
+Revision: 15b1046798c8da877c9deb2e6306945e15203485
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+350:0-350:1
+Tue Aug 04 23:37:26 2015 +0000
+Author: wang ping <1075379@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa14bc88_506cd9ad
+Bytes: 6
+indent
+
