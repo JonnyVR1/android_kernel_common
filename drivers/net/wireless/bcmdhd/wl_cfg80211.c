@@ -254,6 +254,10 @@ common_iface_combinations[] = {
 #define WL_AKM_SUITE_MFP_PSK 0x000FAC06
 #endif /* MFP */
 
+#define WL_AKM_SUITE_SHA256_1X  0x000FAC05
+#define WL_AKM_SUITE_SHA256_PSK 0x000FAC06
+#define WL_MFP_CAPABLE  0x1
+#define WL_MFP_REQUIRED 0x2
 
 #ifndef IBSS_COALESCE_ALLOWED
 #define IBSS_COALESCE_ALLOWED 0
@@ -3612,9 +3616,12 @@ wl_set_set_cipher(struct net_device *dev, struct cfg80211_connect_params *sme)
 							return -EINVAL;
 						}
 
-						wsec_val |= MFP_CAPABLE;
 						if (rsn_cap[0] & RSN_CAP_MFPR)
-							wsec_val |= MFP_REQUIRED;
+							wsec_val = MFP_REQUIRED;
+						else
+							wsec_val = MFP_CAPABLE;
+						err = wldev_iovar_setint_bsscfg(dev, "mfp",
+								wsec_val, bssidx);
 					}
 				}
 			}
@@ -4544,7 +4551,7 @@ wl_cfg80211_del_key(struct wiphy *wiphy, struct net_device *dev,
 	}
 	WL_DBG(("Enter\n"));
 
-#ifndef IEEE80211W
+#ifndef MFP
 	if ((key_idx >= DOT11_MAX_DEFAULT_KEYS) && (key_idx < DOT11_MAX_DEFAULT_KEYS+2))
 		return -EINVAL;
 #endif
@@ -4651,8 +4658,13 @@ static s32
 wl_cfg80211_config_default_mgmt_key(struct wiphy *wiphy,
 	struct net_device *dev, u8 key_idx)
 {
+#ifdef MFP
+	/* TODO/XXX Need to see whether we need to something specific here. */
+	return 0;
+#else
 	WL_INFORM(("Not supported\n"));
 	return -EOPNOTSUPP;
+#endif	/* MFP */
 }
 
 static s32
@@ -6139,6 +6151,10 @@ wl_validate_wpa2ie(struct net_device *dev, bcm_tlv_t *wpa2ie, s32 bssidx)
 	wpa_suite_mcast_t *mcast;
 	wpa_suite_ucast_t *ucast;
 	wpa_suite_auth_key_mgmt_t *mgmt;
+	int cnt = 0;
+#ifdef MFP
+	int mfp = 0;
+#endif /* MFP */
 
 	u16 suite_count;
 	u8 rsn_cap[2];
@@ -6199,19 +6215,29 @@ wl_validate_wpa2ie(struct net_device *dev, bcm_tlv_t *wpa2ie, s32 bssidx)
 	wsec = (pval | gval | SES_OW_ENABLED);
 	/* check the AKM */
 	mgmt = (wpa_suite_auth_key_mgmt_t *)&ucast->list[suite_count];
-	suite_count = ltoh16_ua(&mgmt->count);
-	switch (mgmt->list[0].type) {
+	suite_count = cnt = ltoh16_ua(&mgmt->count);
+	for (cnt = suite_count; cnt > 0; cnt--) {
+	switch (mgmt->list[cnt].type) {
 		case RSN_AKM_NONE:
-			wpa_auth = WPA_AUTH_NONE;
+			wpa_auth |= WPA_AUTH_NONE;
 			break;
 		case RSN_AKM_UNSPECIFIED:
-			wpa_auth = WPA2_AUTH_UNSPECIFIED;
+			wpa_auth |= WPA2_AUTH_UNSPECIFIED;
 			break;
 		case RSN_AKM_PSK:
-			wpa_auth = WPA2_AUTH_PSK;
+			wpa_auth |= WPA2_AUTH_PSK;
 			break;
+#ifdef MFP
+		case RSN_AKM_MFP_PSK:
+			wpa_auth |= WPA2_AUTH_PSK_SHA256;
+			break;
+		case RSN_AKM_MFP_1X:
+			wpa_auth |= WPA2_AUTH_1X_SHA256;
+			break;
+#endif /* MFP */
 		default:
 			WL_ERR(("No Key Mgmt Info\n"));
+		}
 	}
 
 	if ((len -= (WPA_IE_SUITE_COUNT_LEN + (WPA_SUITE_LEN * suite_count))) >= RSN_CAP_LEN) {
@@ -6223,6 +6249,25 @@ wl_validate_wpa2ie(struct net_device *dev, bcm_tlv_t *wpa2ie, s32 bssidx)
 		} else {
 			wme_bss_disable = 1;
 		}
+
+#ifdef MFP
+	if (rsn_cap[0] & RSN_CAP_MFPR) {
+		WL_DBG(("MFP Required \n"));
+		mfp = WL_MFP_REQUIRED;
+		/*
+		 * Our firmware has requirement that WPA2_AUTH_PSK/WPA2_AUTH_UNSPECIFIED
+		 * be set, if SHA256 OUI is to be included in the rsn ie.
+		 */
+		if (wpa_auth & WPA2_AUTH_PSK_SHA256) {
+			wpa_auth |= WPA2_AUTH_PSK;
+		} else if (wpa_auth & WPA2_AUTH_1X_SHA256) {
+			wpa_auth |= WPA2_AUTH_UNSPECIFIED;
+		}
+	} else if (rsn_cap[0] & RSN_CAP_MFPC) {
+		WL_DBG(("MFP Capable \n"));
+		mfp = WL_MFP_CAPABLE;
+	}
+#endif /* MFP */
 
 		/* set wme_bss_disable to sync RSN Capabilities */
 		err = wldev_iovar_setint_bsscfg(dev, "wme_bss_disable", wme_bss_disable, bssidx);
@@ -6246,6 +6291,19 @@ wl_validate_wpa2ie(struct net_device *dev, bcm_tlv_t *wpa2ie, s32 bssidx)
 		WL_ERR(("wsec error %d\n", err));
 		return BCME_ERROR;
 	}
+#ifdef MFP
+	if (mfp) {
+		/*
+		 * This needs to go after wsec otherwise the wsec command will
+		 * overwrite the values set by MFP
+		 */
+		if ((err = wldev_iovar_setint_bsscfg(dev, "mfp", mfp, bssidx)) < 0) {
+			WL_ERR(("MFP Setting failed. ret = %d \n", err));
+			return err;
+		}
+	}
+#endif /* MFP */
+
 	/* set upper-layer auth */
 	err = wldev_iovar_setint_bsscfg(dev, "wpa_auth", wpa_auth, bssidx);
 	if (err < 0) {
