@@ -1918,6 +1918,13 @@ void resume_console(void)
 	console_unlock();
 }
 
+void emergency_unlock_console(void)
+{
+	if (panic_timeout != 0)
+		resume_console();
+}
+EXPORT_SYMBOL(emergency_unlock_console);
+
 /**
  * console_cpu_notify - print deferred console messages after CPU hotplug
  * @self: notifier struct

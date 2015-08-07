@@ -52,6 +52,7 @@ struct persistent_ram_zone {
 	size_t old_log_size;
 };
 
+extern void emergency_unlock_console(void);
 struct persistent_ram_zone *persistent_ram_new(phys_addr_t start, size_t size,
 			u32 sig, struct persistent_ram_ecc_info *ecc_info);
 void persistent_ram_free(struct persistent_ram_zone *prz);
