@@ -1,0 +1,13 @@
+Revision: 56398f2b05f18c5a17fea386f7a8d4e74409e268
+Patch-set: 1
+File: drivers/staging/android/ion/ion_system_heap.c
+
+97
+Fri Aug 07 19:02:17 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 67111f42_03ab740e
+Bytes: 363
+Adding a parameter is going to break any out-of-tree users of ion_page_pool_free, and I don't generally like functions with bool parameters that will just be set to false by most callers, you have no idea what the false means when you look at the function call.
+
+Can you add a new ion_page_pool_free_immediate to be called when ION_PRIV_FLAG_SHRINKER_FREE is set?
+
