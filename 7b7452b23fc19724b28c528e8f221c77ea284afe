@@ -1,0 +1,18 @@
+Revision: 7b7452b23fc19724b28c528e8f221c77ea284afe
+Patch-set: 3
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+4663:1-4663:7
+Thu Aug 13 21:44:03 2015 +0000
+Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 243ac5f6_e089e2ad
+Bytes: 116
+Is it still not supported? If so, return -EOPNOTSUPP. If this is just a no-op, then don't call this function at all.
+
+6219:1-6219:6
+Thu Aug 13 21:44:03 2015 +0000
+Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 243ac5f6_200d8ac7
+Bytes: 50
+Please use: for(cnt = suite_count; cnt > 0; cnt--)
+
