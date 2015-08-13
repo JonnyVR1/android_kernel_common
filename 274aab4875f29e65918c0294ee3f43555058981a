@@ -1,0 +1,25 @@
+Revision: 274aab4875f29e65918c0294ee3f43555058981a
+Patch-set: 7
+File: kernel/trace/trace.c
+
+1152
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5efea270_072b4435
+Bytes: 34
+These defines are unused -- remove
+
+1416
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ef6069f_8e1e3bea
+Bytes: 26
+checkpatch error, i'll fix
+
+1503
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_e07ddddf
+Bytes: 40
+checkpatch warning here, i'll remove it.
+
