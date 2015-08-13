@@ -1503,7 +1503,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 {
 	int ret = BCME_OK;
 	int size; /* Full mem size */
-	int start = bus->dongle_ram_base; /* Start address */
+	uint32 start = bus->dongle_ram_base; /* Start address */
 	int read_size = 0; /* Read size of each iteration */
 	uint8 *databuf = NULL;
 	dhd_pub_t *dhd = bus->dhd;
@@ -1511,6 +1511,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 		DHD_ERROR(("%s : dhd->soc_ram is NULL\n", __FUNCTION__));
 		return -1;
 	}
+	DHD_OS_WAKE_LOCK(bus->dhd);
 	size = dhd->soc_ram_length = bus->ramsize;
 
 	/* Read mem content */
@@ -1519,6 +1520,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 		read_size = MIN(MEMBLOCK, size);
 		if ((ret = dhdpcie_bus_membytes(bus, FALSE, start, databuf, read_size))) {
 			DHD_ERROR(("%s: Error membytes %d\n", __FUNCTION__, ret));
+			DHD_OS_WAKE_UNLOCK(bus->dhd);
 			return BCME_ERROR;
 		}
 		DHD_TRACE(("."));
@@ -1529,6 +1531,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 		databuf += read_size;
 	}
 
+	DHD_OS_WAKE_UNLOCK(bus->dhd);
 
 	dhd_save_fwdump(bus->dhd, dhd->soc_ram, dhd->soc_ram_length);
 	dhd_schedule_memdump(bus->dhd, dhd->soc_ram, dhd->soc_ram_length);
