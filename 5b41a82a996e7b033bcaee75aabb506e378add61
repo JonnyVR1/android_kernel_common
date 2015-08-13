@@ -9,6 +9,15 @@ UUID: 7eca863a_0ee94b77
 Bytes: 65
 Could you have reentrancy issues? If so, you should use an atomic
 
+1488
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3e700ec3_0e529760
+Bytes: 454
+I know you said use a loop, but I don't agree a loop is suited here. We don't really want to "loop", we just want to recompute a value which is now usable value because we've extended. With this current patch, the only way we get to the retry label is if we successfully extend the mappings. 
+
+It's hard to put a loop in this code without redesigning the function. We only extend in specific cases, and when we do extend, only then do we need to "retry".
+
 1507
 Fri Jun 19 01:47:30 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
