@@ -32,12 +32,28 @@ UUID: 5e6dc2eb_c37c7c2f
 Bytes: 43
 should probably be called saved_cmdline_len
 
+1154:16-1154:33
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e6dc2eb_c37c7c2f
+UUID: 5e6dc2eb_34357007
+Bytes: 4
+Done
+
 1172:57-1172:65
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3e700ec3_8d88f1f9
 Bytes: 43
 use *map_cmdline_to_pid instead of unsigned
+
+1172:57-1172:65
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e700ec3_8d88f1f9
+UUID: 5e6dc2eb_f44e188a
+Bytes: 4
+Done
 
 1175
 Thu Jun 18 21:27:58 2015 +0000
@@ -46,12 +62,28 @@ UUID: 1e67ca0f_075cc0c1
 Bytes: 37
 return a meaningful value like ENOMEM
 
+1175
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1e67ca0f_075cc0c1
+UUID: 7e9c462a_67881d27
+Bytes: 4
+Done
+
 1178:50-1178:58
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e7adaa8_7de18b48
 Bytes: 4
 same
+
+1178:50-1178:58
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e7adaa8_7de18b48
+UUID: 1e67ca0f_552c9bce
+Bytes: 4
+Done
 
 1190:53-1190:59
 Thu Jun 18 21:27:58 2015 +0000
@@ -60,12 +92,28 @@ UUID: 5e6dc2eb_c30ebce7
 Bytes: 4
 same
 
+1190:53-1190:59
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e6dc2eb_c30ebce7
+UUID: 3e700ec3_6eef937f
+Bytes: 4
+Done
+
 1199:71-1199:79
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e7adaa8_5d05af81
 Bytes: 4
 same
+
+1199:71-1199:79
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e7adaa8_5d05af81
+UUID: 1e67ca0f_b51ad79c
+Bytes: 4
+Done
 
 1213
 Thu Jun 18 21:27:58 2015 +0000
@@ -74,12 +122,28 @@ UUID: 9e7adaa8_bd4163b9
 Bytes: 139
 same - make sure to return something somewhat meaningful - probably need an "err" variable that will have the error code you want to return
 
+1213
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e7adaa8_bd4163b9
+UUID: 3e700ec3_4eee4f81
+Bytes: 4
+Done
+
 1377:38-1377:41
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5e6dc2eb_8ed1cbf9
 Bytes: 37
 replace magic constant with a #define
+
+1377:38-1377:41
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e6dc2eb_8ed1cbf9
+UUID: 9e7adaa8_aea04bf1
+Bytes: 4
+Done
 
 1393:58-1393:68
 Thu Jun 18 21:27:58 2015 +0000
@@ -95,12 +159,36 @@ UUID: 1e67ca0f_6737bc72
 Bytes: 19
 *map_cmdline_to_pid
 
+1393:58-1393:68
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e700ec3_adfcd536
+UUID: 1e67ca0f_cd6269b8
+Bytes: 403
+No, these wont run in interrupt context, but we're holding a spin lock during these allocations. I used GFP_ATOMIC so we wouldn't get blocked while holding the spin lock. That's also why I used the unlikely macro so we could get out of the allocations faster and drop the lock. Maybe I should remove the unlikely as you mentioned below, I don't know the stats regarding how likely GFP_ATOMIC is to fail.
+
+1393:47-1393:55
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1e67ca0f_6737bc72
+UUID: 5e6dc2eb_b448a07c
+Bytes: 4
+Done
+
 1398:40-1398:48
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1e67ca0f_2731c47a
 Bytes: 4
 same
+
+1398:40-1398:48
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1e67ca0f_2731c47a
+UUID: 7e9c462a_c776d1b7
+Bytes: 4
+Done
 
 1405:5-1405:13
 Thu Jun 18 21:27:58 2015 +0000
@@ -109,12 +197,28 @@ UUID: 9e7adaa8_c8d6df6a
 Bytes: 125
 why are you using unlikely here and not above? try to stay consistent - and not sure that GFP_ATOMIC is that unlikely to fail
 
+1405:5-1405:13
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e7adaa8_c8d6df6a
+UUID: 9e7adaa8_2e82fb51
+Bytes: 4
+Done
+
 1408:43-1408:48
 Thu Jun 18 21:27:58 2015 +0000
 Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3e700ec3_4dd5f9b0
 Bytes: 39
 same - I'm going to stop here for these
+
+1408:43-1408:48
+Thu Aug 13 00:51:09 2015 +0000
+Author: Scott Bauer <1073601@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e700ec3_4dd5f9b0
+UUID: 3e700ec3_ee02c3c6
+Bytes: 4
+Done
 
 1453
 Thu Jun 18 21:27:58 2015 +0000
