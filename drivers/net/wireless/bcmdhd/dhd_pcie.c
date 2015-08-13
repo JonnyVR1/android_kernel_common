@@ -1511,6 +1511,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 		DHD_ERROR(("%s : dhd->soc_ram is NULL\n", __FUNCTION__));
 		return -1;
 	}
+	DHD_OS_WAKE_LOCK(bus->dhd);
 	size = dhd->soc_ram_length = bus->ramsize;
 
 	/* Read mem content */
@@ -1529,6 +1530,7 @@ dhdpcie_mem_dump(dhd_bus_t *bus)
 		databuf += read_size;
 	}
 
+	DHD_OS_WAKE_UNLOCK(bus->dhd);
 
 	dhd_save_fwdump(bus->dhd, dhd->soc_ram, dhd->soc_ram_length);
 	dhd_schedule_memdump(bus->dhd, dhd->soc_ram, dhd->soc_ram_length);
