@@ -9,10 +9,26 @@ UUID: 243ac5f6_e089e2ad
 Bytes: 116
 Is it still not supported? If so, return -EOPNOTSUPP. If this is just a no-op, then don't call this function at all.
 
+4663:1-4663:7
+Thu Aug 13 22:31:28 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_e089e2ad
+UUID: e4434d7f_413b7486
+Bytes: 142
+This is calling from cfg80211 interface, then we should return success without error here. Left rooms in case if we need to fill up some work.
+
 6219:1-6219:6
 Thu Aug 13 21:44:03 2015 +0000
 Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 243ac5f6_200d8ac7
 Bytes: 50
 Please use: for(cnt = suite_count; cnt > 0; cnt--)
+
+6219:1-6219:6
+Thu Aug 13 22:31:28 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_200d8ac7
+UUID: e4aeed64_894a1d79
+Bytes: 17
+Ok I will fix it.
 
