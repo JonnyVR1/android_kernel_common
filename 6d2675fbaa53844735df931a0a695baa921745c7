@@ -1,0 +1,11 @@
+Revision: 6d2675fbaa53844735df931a0a695baa921745c7
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/dhd_pcie.c
+
+1523:0-1523:21
+Fri Aug 14 05:35:37 2015 +0000
+Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8448d1a1_c1a94615
+Bytes: 34
+Please release the wake lock here.
+
