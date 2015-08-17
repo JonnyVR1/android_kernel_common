@@ -70,6 +70,13 @@ config SW_SYNC_USER
 	  Provides a user space API to the sw sync object.
 	  *WARNING* improper use of this can result in deadlocking kernel
 	  drivers from userspace.
+config CRITICAL_MEM_LOG
+       bool "For dumping critical memory stats when memory is very low in system"
+       depends on !NUMA
+       default n
+       help
+        Provides a proc command (proc/critical_memlogs)for dumping critical memory statistics
+        from  kernel which are stored when low memory killer is triggered.
 
 source "drivers/staging/android/ion/Kconfig"
 

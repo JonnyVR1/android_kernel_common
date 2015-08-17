@@ -40,6 +40,9 @@
 #include <linux/swap.h>
 #include <linux/rcupdate.h>
 #include <linux/notifier.h>
+#ifdef CONFIG_CRITICAL_MEM_LOG
+#include "critical_mem_log.h"
+#endif
 
 static uint32_t lowmem_debug_level = 1;
 static short lowmem_adj[6] = {
@@ -80,7 +83,10 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	int other_free = global_page_state(NR_FREE_PAGES) - totalreserve_pages;
 	int other_file = global_page_state(NR_FILE_PAGES) -
 						global_page_state(NR_SHMEM);
-
+#ifdef CONFIG_CRITICAL_MEM_LOG
+        /*store critical memory logs*/
+        record_critical_memstats();
+#endif
 	if (lowmem_adj_size < array_size)
 		array_size = lowmem_adj_size;
 	if (lowmem_minfree_size < array_size)
