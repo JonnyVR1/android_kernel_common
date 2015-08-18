@@ -9,3 +9,11 @@ UUID: 389d8670_d49e32b0
 Bytes: 34
 Original code never returned NULL.
 
+426:9-426:13
+Tue Aug 18 01:00:33 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389d8670_d49e32b0
+UUID: 98c2f255_1a6a9d98
+Bytes: 213
+This returning NULL is for case where dtsi format isn't correct which "/" is not found. So there's less possibility to do that. And returning NULL meaning don't overwrite passed-in memory area, so no affect found.
+
