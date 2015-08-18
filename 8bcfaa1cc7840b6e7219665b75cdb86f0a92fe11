@@ -1,0 +1,18 @@
+Revision: 8bcfaa1cc7840b6e7219665b75cdb86f0a92fe11
+Patch-set: 1
+File: drivers/usb/phy/class-dual-role.c
+
+158:0-158:1
+Tue Aug 18 18:55:04 2015 +0000
+Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b861a5_f54a7b2b
+Bytes: 16
+kfree(dual_role)
+
+323:0-323:13
+Tue Aug 18 18:55:04 2015 +0000
+Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b861a5_d541770e
+Bytes: 14
+kfree(dup_buf)
+
