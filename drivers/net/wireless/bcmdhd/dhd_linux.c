@@ -823,8 +823,10 @@ static int dhd_sar_callback(struct notifier_block *nfb, unsigned long action, vo
 	s32 txpower;
 	int ret;
 
-	if (dhd->pub.busstate == DHD_BUS_DOWN)
+	if (dhd->pub.busstate != DHD_BUS_DATA) {
+		DHD_ERROR(("%s bus not ready. status:%d\n", __FUNCTION__, dhd->pub.busstate));
 		return NOTIFY_DONE;
+	}
 
 	if (data) {
 		/* if data != NULL then we expect that the notifier passed
