@@ -1,5 +1,14 @@
 Revision: 8bcfaa1cc7840b6e7219665b75cdb86f0a92fe11
 Patch-set: 1
+File: /COMMIT_MSG
+
+17:0-18:52
+Mon Aug 24 20:07:57 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_fd20b2a6
+Bytes: 208
+These two fields must be removed before submitting upstream. As such, please place them at the bottom of the commit message to make this easier to manage rather than splitting the commit text into two pieces.
+
 File: Documentation/ABI/testing/sysfs-class-dual-role-usb
 
 29:10-29:18
@@ -8,6 +17,15 @@ Author: Thierry Strudel <1071633@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_cc8d043e
 Bytes: 15
 type: operating
+
+File: drivers/usb/phy/Kconfig
+
+227:3-227:4
+Mon Aug 24 20:07:57 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_710ceb47
+Bytes: 10
+lower case
 
 File: drivers/usb/phy/class-dual-role.c
 
@@ -31,6 +49,22 @@ Author: Thierry Strudel <1071633@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_6c0c1048
 Bytes: 25
 devres_free(dual_role); ?
+
+260:24-260:36
+Mon Aug 24 20:07:57 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_e2e3284e
+Bytes: 210
+what protects this, and similar indexes, from getting out of range? This code is high risk if the max and the arrays (which are in two different files) do not match; this needs to be simplified and centralized.
+
+288:10-288:35
+Mon Aug 24 20:07:57 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_5148c780
+Bytes: 289
+Corollary: What if ARRAY_SIZE(mode_text) != DUAL_ROLE_PROP_MODE_TOTAL?
+
+Drop use of the enums here, base totally on the ARRAY_SIZE? Compile time checks to make sure enum matches ARRAY_SIZE. Hint: #define _ARRAY_SIZE_ASSERT(_enum,_array) switch(0){case 0:case _enum==ARRAY_SIZE(_array):;} )
 
 323:0-323:13
 Tue Aug 18 18:55:04 2015 +0000
