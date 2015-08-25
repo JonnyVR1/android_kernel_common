@@ -1,0 +1,27 @@
+Revision: 23830168dbd5bd9f0631e32f30c437801108e94e
+Patch-set: 2
+File: drivers/usb/phy/class-dual-role.c
+
+299:0-304:15
+Tue Aug 25 14:55:47 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_f8b5166b
+Bytes: 172
+Just asking. Does any of the compilers warn about this being possibly confusing? checkpatch.pl does not complain if this block is braced or not, so it is not a style issue.
+
+346:25-346:26
+Tue Aug 25 14:55:47 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_c442bcc4
+Bytes: 264
+Where the BREAK_COMPILE_NE resides does not matter since a compile error is a compile error. But over here it sets a precedence that if a new one is added, then the coder will also add the corresponding check here. Here is a true enumeration of all the role types.
+
+File: include/linux/usb/class-dual-role.h
+
+10:0-14:2
+Tue Aug 25 14:55:47 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_d3ba7f27
+Bytes: 120
+How does one (set_property or get_property?) differentiate if one has an intval, a strval or an int64val in this object?
+
