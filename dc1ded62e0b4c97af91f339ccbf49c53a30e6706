@@ -1,0 +1,26 @@
+Revision: dc1ded62e0b4c97af91f339ccbf49c53a30e6706
+Patch-set: 3
+File: drivers/usb/phy/class-dual-role.c
+
+348:10-348:15
+Tue Aug 25 23:14:48 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_e016bfd7
+Bytes: 90
+If you add a default to the switch below to deal with out-of-range, no need to initialize.
+
+374:0-375:21
+Tue Aug 25 23:14:48 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_9ac09b96
+Bytes: 27
+ret = -ENOTSUP;
+goto error;
+
+383:3-385:13
+Tue Aug 25 23:14:48 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_6493c62e
+Bytes: 139
+This could move to the default: case in above switch statement. This will allow you to save an indent here, no need to check (total != -1).
+
