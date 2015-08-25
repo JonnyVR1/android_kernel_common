@@ -9,6 +9,14 @@ UUID: 4485f957_fd20b2a6
 Bytes: 208
 These two fields must be removed before submitting upstream. As such, please place them at the bottom of the commit message to make this easier to manage rather than splitting the commit text into two pieces.
 
+17:0-18:52
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_fd20b2a6
+UUID: c4700952_2f45981a
+Bytes: 4
+Done
+
 File: Documentation/ABI/testing/sysfs-class-dual-role-usb
 
 29:10-29:18
@@ -18,6 +26,14 @@ UUID: a47f9520_cc8d043e
 Bytes: 15
 type: operating
 
+29:10-29:18
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_cc8d043e
+UUID: e4750d3f_fcf18b8c
+Bytes: 4
+Done
+
 File: drivers/usb/phy/Kconfig
 
 227:3-227:4
@@ -26,6 +42,14 @@ Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 048f817d_710ceb47
 Bytes: 10
 lower case
+
+227:3-227:4
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_710ceb47
+UUID: c42ba915_ed4b2000
+Bytes: 4
+Done
 
 File: drivers/usb/phy/class-dual-role.c
 
@@ -43,6 +67,14 @@ UUID: 04b861a5_f54a7b2b
 Bytes: 16
 kfree(dual_role)
 
+158:0-158:1
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b861a5_f54a7b2b
+UUID: e4750d3f_5a2c6298
+Bytes: 4
+Done
+
 196
 Mon Aug 24 16:29:48 2015 +0000
 Author: Thierry Strudel <1071633@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,12 +82,28 @@ UUID: a47f9520_6c0c1048
 Bytes: 25
 devres_free(dual_role); ?
 
+196
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_6c0c1048
+UUID: a42a3512_25cff158
+Bytes: 73
+Actually missed defining bunch of functions... Have made relevant changes
+
 260:24-260:36
 Mon Aug 24 20:07:57 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 248c8586_e2e3284e
 Bytes: 210
 what protects this, and similar indexes, from getting out of range? This code is high risk if the max and the arrays (which are in two different files) do not match; this needs to be simplified and centralized.
+
+260:24-260:36
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_e2e3284e
+UUID: e4750d3f_7cc59b30
+Bytes: 4
+Done
 
 288:10-288:35
 Mon Aug 24 20:07:57 2015 +0000
@@ -66,10 +114,26 @@ Corollary: What if ARRAY_SIZE(mode_text) != DUAL_ROLE_PROP_MODE_TOTAL?
 
 Drop use of the enums here, base totally on the ARRAY_SIZE? Compile time checks to make sure enum matches ARRAY_SIZE. Hint: #define _ARRAY_SIZE_ASSERT(_enum,_array) switch(0){case 0:case _enum==ARRAY_SIZE(_array):;} )
 
+288:10-288:35
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_5148c780
+UUID: 048f817d_27de2552
+Bytes: 35
+Done !! Added checks in module_init
+
 323:0-323:13
 Tue Aug 18 18:55:04 2015 +0000
 Author: Pat Tjin <1021676@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04b861a5_d541770e
 Bytes: 14
 kfree(dup_buf)
+
+323:0-323:13
+Tue Aug 25 00:34:16 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b861a5_d541770e
+UUID: a42a3512_80aa7307
+Bytes: 4
+Done
 
