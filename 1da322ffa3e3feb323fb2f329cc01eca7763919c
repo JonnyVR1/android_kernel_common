@@ -1,0 +1,11 @@
+Revision: 1da322ffa3e3feb323fb2f329cc01eca7763919c
+Patch-set: 6
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+827:27-827:31
+Tue Aug 25 01:07:36 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_a72c554b
+Bytes: 30
+Generic code - not PCI related
+
