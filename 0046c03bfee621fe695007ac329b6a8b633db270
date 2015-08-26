@@ -42,6 +42,15 @@ On devices with software control of VCONN, userspace can disable the power suppl
 
 On devices without control over VCONN, this attribute is read-only.
 
+File: drivers/usb/phy/Makefile
+
+10:0-10:53
+Wed Aug 26 23:35:21 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_9bc08196
+Bytes: 189
+Ideally my code only relies on CONFIG_SYSFS to compile.. Do I a need a separate config to enable this ? Or should I just change this to obj-$(CONFIG_SYSFS) and remove the new config flag ??
+
 File: drivers/usb/phy/class-dual-role.c
 
 43:0-44:59
