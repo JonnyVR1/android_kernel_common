@@ -1,0 +1,11 @@
+Revision: c91e2d317307431283b96ce040e8aefd44b0b286
+Patch-set: 1
+File: include/trace/events/filemap.h
+
+87:13-87:16
+Wed Aug 26 20:23:01 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_b04ec48d
+Bytes: 86
+This one is a loff_t which will have its own set of problems. 64bit kernels, no issue.
+
