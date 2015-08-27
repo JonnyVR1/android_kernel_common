@@ -1,0 +1,20 @@
+Revision: 3d0e01aea51f5e3ed5d3f038663e08c6b34aab62
+Patch-set: 5
+File: drivers/usb/phy/Kconfig
+
+224:9-224:14
+Thu Aug 27 16:00:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_6db5e218
+Bytes: 44
+false default does not need to be specified.
+
+File: drivers/usb/phy/class-dual-role.c
+
+364:2-364:43
+Thu Aug 27 16:00:00 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 849451c2_2af69fcb
+Bytes: 142
+Never assume bool is bigger/smaller/endian the same as an int value? For clarity please use a bool to pull the value, then assign it to value.
+
