@@ -40,6 +40,9 @@
 #include <linux/swap.h>
 #include <linux/rcupdate.h>
 #include <linux/notifier.h>
+#ifdef CONFIG_CRITICAL_MEM_LOG
+#include "critical_mem_log.h"
+#endif
 
 static uint32_t lowmem_debug_level = 1;
 static short lowmem_adj[6] = {
@@ -112,6 +115,11 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 			     sc->nr_to_scan, sc->gfp_mask);
 		return 0;
 	}
+
+#ifdef CONFIG_CRITICAL_MEM_LOG
+        /*store critical memory logs*/
+     	record_critical_memstats();
+#endif
 
 	selected_oom_score_adj = min_score_adj;
 
