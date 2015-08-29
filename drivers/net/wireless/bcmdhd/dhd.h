@@ -426,6 +426,7 @@ typedef struct dhd_pub {
 	uint32 soc_ram_length;
 	uint32 memdump_enabled;
 	uint8 rand_mac_oui[DOT11_OUI_LEN];
+	spinlock_t g_cfg_lock;
 } dhd_pub_t;
 
 typedef struct {

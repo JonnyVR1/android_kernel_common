@@ -264,6 +264,8 @@ common_iface_combinations[] = {
 #endif
 
 #define CUSTOM_RETRY_MASK 0xff000000 /* Mask for retry counter of custom dwell time */
+
+spinlock_t * g_cfg_spinlock = NULL;
 /*
  * cfg80211_ops api/callback list
  */
@@ -1216,7 +1218,9 @@ s32 wl_set_tx_power(struct net_device *dev,
 	s32 err = 0;
 	s32 disable = 0;
 	s32 txpwrqdbm;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	/* Make sure radio is off or on as far as software is concerned */
 	disable = WL_RADIO_SW_DISABLE << 16;
@@ -1245,7 +1249,9 @@ s32 wl_get_tx_power(struct net_device *dev, s32 *dbm)
 {
 	s32 err = 0;
 	s32 txpwrdbm;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	err = wldev_iovar_getbuf_bsscfg(dev, "qtxpower",
 		NULL, 0, cfg->ioctl_buf, WLC_IOCTL_SMLEN, 0, &cfg->ioctl_buf_sync);
@@ -1786,7 +1792,9 @@ s32
 wl_cfg80211_notify_ifadd(int ifidx, char *name, uint8 *mac, uint8 bssidx)
 {
 	bool ifadd_expected = FALSE;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	/* P2P may send WLC_E_IF_ADD and/or WLC_E_IF_CHANGE during IF updating ("p2p_ifupd")
 	 * redirect the IF_ADD event to ifchange as it is not a real "new" interface
@@ -1824,8 +1832,12 @@ s32
 wl_cfg80211_notify_ifdel(int ifidx, char *name, uint8 *mac, uint8 bssidx)
 {
 	bool ifdel_expected = FALSE;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-	wl_if_event_info *if_event_info = &cfg->if_event_info;
+	struct bcm_cfg80211 *cfg;
+	wl_if_event_info *if_event_info;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+	if_event_info = &cfg->if_event_info;
 
 	if (wl_get_p2p_status(cfg, IF_DELETING)) {
 		ifdel_expected = TRUE;
@@ -1849,7 +1861,9 @@ wl_cfg80211_notify_ifdel(int ifidx, char *name, uint8 *mac, uint8 bssidx)
 s32
 wl_cfg80211_notify_ifchange(int ifidx, char *name, uint8 *mac, uint8 bssidx)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if (wl_get_p2p_status(cfg, IF_CHANGING)) {
 		wl_set_p2p_status(cfg, IF_CHANGED);
@@ -1978,7 +1992,9 @@ static void wl_scan_prep(struct wl_scan_params *params, struct cfg80211_scan_req
 	s32 i = 0, j = 0, offset;
 	char *ptr;
 	wlc_ssid_t ssid;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return;
 
 	memcpy(&params->bssid, &ether_bcast, ETHER_ADDR_LEN);
 	params->bss_type = DOT11_BSSTYPE_ANY;
@@ -2777,7 +2793,9 @@ exit:
 void
 wl_cfg80211_ibss_vsie_set_buffer(vndr_ie_setbuf_t *ibss_vsie, int ibss_vsie_len)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return;
 
 	if (cfg != NULL && ibss_vsie != NULL) {
 		if (cfg->ibss_vsie != NULL) {
@@ -2802,9 +2820,13 @@ wl_cfg80211_ibss_vsie_free(struct bcm_cfg80211 *cfg)
 s32
 wl_cfg80211_ibss_vsie_delete(struct net_device *dev)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	char *ioctl_buf = NULL;
 	s32 ret = BCME_OK;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 
 	if (cfg != NULL && cfg->ibss_vsie != NULL) {
 		ioctl_buf = kmalloc(WLC_IOCTL_MEDLEN, GFP_KERNEL);
@@ -3435,11 +3457,15 @@ static int wl_cfg80211_get_rsn_capa(bcm_tlv_t *wpa2ie, u8* capa)
 static s32
 wl_set_wpa_version(struct net_device *dev, struct cfg80211_connect_params *sme)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_security *sec;
 	s32 val = 0;
 	s32 err = 0;
 	s32 bssidx;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	if (wl_cfgp2p_find_idx(cfg, dev, &bssidx) != BCME_OK) {
 		WL_ERR(("Find p2p index from dev(%p) failed\n", dev));
 		return BCME_ERROR;
@@ -3472,11 +3498,15 @@ wl_set_wpa_version(struct net_device *dev, struct cfg80211_connect_params *sme)
 static s32
 wl_set_auth_type(struct net_device *dev, struct cfg80211_connect_params *sme)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_security *sec;
 	s32 val = 0;
 	s32 err = 0;
 	s32 bssidx;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	if (wl_cfgp2p_find_idx(cfg, dev, &bssidx) != BCME_OK) {
 		WL_ERR(("Find p2p index from dev(%p) failed\n", dev));
 		return BCME_ERROR;
@@ -3514,7 +3544,7 @@ wl_set_auth_type(struct net_device *dev, struct cfg80211_connect_params *sme)
 static s32
 wl_set_set_cipher(struct net_device *dev, struct cfg80211_connect_params *sme)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_security *sec;
 	s32 pval = 0;
 	s32 gval = 0;
@@ -3527,6 +3557,11 @@ wl_set_set_cipher(struct net_device *dev, struct cfg80211_connect_params *sme)
 #endif /* MFP */
 
 	s32 bssidx;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	if (wl_cfgp2p_find_idx(cfg, dev, &bssidx) != BCME_OK) {
 		WL_ERR(("Find p2p index from dev(%p) failed\n", dev));
 		return BCME_ERROR;
@@ -3639,11 +3674,15 @@ wl_set_set_cipher(struct net_device *dev, struct cfg80211_connect_params *sme)
 static s32
 wl_set_key_mgmt(struct net_device *dev, struct cfg80211_connect_params *sme)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_security *sec;
 	s32 val = 0;
 	s32 err = 0;
 	s32 bssidx;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	if (wl_cfgp2p_find_idx(cfg, dev, &bssidx) != BCME_OK) {
 		WL_ERR(("Find p2p index from dev(%p) failed\n", dev));
 		return BCME_ERROR;
@@ -3710,12 +3749,17 @@ static s32
 wl_set_set_sharedkey(struct net_device *dev,
 	struct cfg80211_connect_params *sme)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_security *sec;
 	struct wl_wsec_key key;
 	s32 val;
 	s32 err = 0;
 	s32 bssidx;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	if (wl_cfgp2p_find_idx(cfg, dev, &bssidx) != BCME_OK) {
 		WL_ERR(("Find p2p index from dev(%p) failed\n", dev));
 		return BCME_ERROR;
@@ -4934,8 +4978,13 @@ wl_update_pmklist(struct net_device *dev, struct wl_pmk_list *pmk_list,
 	s32 err)
 {
 	int i, j;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-	struct net_device *primary_dev = bcmcfg_to_prmry_ndev(cfg);
+	struct bcm_cfg80211 *cfg;
+	struct net_device *primary_dev;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
+	primary_dev = bcmcfg_to_prmry_ndev(cfg);
 
 	if (!pmk_list) {
 		printk("pmk_list is NULL\n");
@@ -5255,8 +5304,12 @@ static void
 wl_cfg80211_afx_handler(struct work_struct *work)
 {
 	struct afx_hdl *afx_instance;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	s32 ret = BCME_OK;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return;
+
 
 	afx_instance = container_of(work, struct afx_hdl, work);
 	if (afx_instance != NULL && cfg->afx_hdl->is_active) {
@@ -6410,7 +6463,10 @@ wl_cfg80211_bcn_validate_sec(
 	u32 dev_role,
 	s32 bssidx)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if (dev_role == NL80211_IFTYPE_P2P_GO && (ies->wpa2_ie)) {
 		/* For P2P GO, the sec type is WPA2-PSK */
@@ -6476,8 +6532,12 @@ static s32 wl_cfg80211_bcn_set_params(
 	struct net_device *dev,
 	u32 dev_role, s32 bssidx)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	s32 err = BCME_OK;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 
 	WL_DBG(("interval (%d) \ndtim_period (%d) \n",
 		info->beacon_interval, info->dtim_period));
@@ -6562,7 +6622,7 @@ wl_cfg80211_bcn_bringup_ap(
 	struct parsed_ies *ies,
 	u32 dev_role, s32 bssidx)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wl_join_params join_params;
 	bool is_bssup = false;
 	s32 infra = 1;
@@ -6575,6 +6635,10 @@ wl_cfg80211_bcn_bringup_ap(
 	s32 bss_maxassoc = MAX_GO_CLIENT_CNT;
 #endif
 	s32 err = BCME_OK;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	WL_DBG(("Enter dev_role: %d\n", dev_role));
 
@@ -6675,11 +6739,16 @@ wl_cfg80211_parse_ap_ies(
 	struct parsed_ies *ies)
 {
 	struct parsed_ies prb_ies;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-	dhd_pub_t *dhd = (dhd_pub_t *)(cfg->pub);
+	struct bcm_cfg80211 *cfg;
+	dhd_pub_t *dhd;
 	u8 *vndr = NULL;
 	u32 vndr_ie_len = 0;
 	s32 err = BCME_OK;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+	dhd = (dhd_pub_t *)(cfg->pub);
+
 
 	/* Parse Beacon IEs */
 	if (wl_cfg80211_parse_ies((u8 *)info->tail,
@@ -6720,11 +6789,16 @@ wl_cfg80211_set_ies(
 	struct cfg80211_beacon_data *info,
 	s32 bssidx)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-	dhd_pub_t *dhd = (dhd_pub_t *)(cfg->pub);
+	struct bcm_cfg80211 *cfg;
+	dhd_pub_t *dhd;
 	u8 *vndr = NULL;
 	u32 vndr_ie_len = 0;
 	s32 err = BCME_OK;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+	dhd = (dhd_pub_t *)(cfg->pub);
+
 
 	/* Set Beacon IEs to FW */
 	if ((err = wl_cfgp2p_set_management_ie(cfg, dev, bssidx,
@@ -6767,8 +6841,9 @@ static s32 wl_cfg80211_hostapd_sec(
 	s32 bssidx)
 {
 	bool update_bss = 0;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if (ies->wps_ie) {
 		if (cfg->ap_info->wps_ie &&
@@ -9978,7 +10053,9 @@ wl_cfg80211_netdev_notifier_call(struct notifier_block * nb,
 {
 	struct net_device *dev = ndev;
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	WL_DBG(("Enter \n"));
 
@@ -10721,7 +10798,9 @@ static void wl_deinit_priv(struct bcm_cfg80211 *cfg)
 #if defined(WL_ENABLE_P2P_IF)
 static s32 wl_cfg80211_attach_p2p(void)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	WL_TRACE(("Enter \n"));
 
@@ -10735,8 +10814,11 @@ static s32 wl_cfg80211_attach_p2p(void)
 
 static s32  wl_cfg80211_detach_p2p(void)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct wireless_dev *wdev;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	WL_DBG(("Enter \n"));
 	if (!cfg) {
@@ -10771,7 +10853,8 @@ s32 wl_cfg80211_attach_post(struct net_device *ndev)
 		WL_ERR(("ndev is invaild\n"));
 		return -ENODEV;
 	}
-	cfg = g_bcm_cfg;
+
+	cfg = wl_cfg80211_access_global_cfg();
 	if (unlikely(!cfg)) {
 		WL_ERR(("cfg is invaild\n"));
 		return -EINVAL;
@@ -10824,6 +10907,8 @@ s32 wl_cfg80211_attach(struct net_device *ndev, void *context)
 	struct bcm_cfg80211 *cfg;
 	s32 err = 0;
 	struct device *dev;
+	unsigned long flags;
+	dhd_pub_t *dhd;
 
 	WL_TRACE(("In\n"));
 	if (!ndev) {
@@ -10851,6 +10936,9 @@ s32 wl_cfg80211_attach(struct net_device *ndev, void *context)
 	ndev->ieee80211_ptr = wdev;
 	SET_NETDEV_DEV(ndev, wiphy_dev(wdev->wiphy));
 	wdev->netdev = ndev;
+	dhd =(dhd_pub_t *)(cfg->pub);
+
+	g_cfg_spinlock = &dhd->g_cfg_lock;
 	cfg->state_notifier = wl_notifier_change_state;
 	err = wl_alloc_netinfo(cfg, ndev, wdev, WL_MODE_BSS, PM_ENABLE);
 	if (err) {
@@ -10890,7 +10978,9 @@ s32 wl_cfg80211_attach(struct net_device *ndev, void *context)
 		goto cfg80211_attach_out;
 #endif
 
+	spin_lock_irqsave(g_cfg_spinlock, flags);
 	g_bcm_cfg = cfg;
+	spin_unlock_irqrestore(g_cfg_spinlock, flags);
 
 #if defined(WL_ENABLE_P2P_IF)
 	err = wl_cfg80211_attach_p2p();
@@ -10909,11 +10999,18 @@ cfg80211_attach_out:
 void wl_cfg80211_detach(void *para)
 {
 	struct bcm_cfg80211 *cfg;
+	unsigned long flags;
+	dhd_pub_t *dhd;
 
 	(void)para;
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
 
+	if (!cfg)
+		return;
 	WL_TRACE(("In\n"));
+	spin_lock_irqsave(g_cfg_spinlock, flags);
+	g_bcm_cfg = NULL;
+	spin_unlock_irqrestore(g_cfg_spinlock, flags);
 
 	wl_add_remove_pm_enable_work(cfg, FALSE, WL_HANDLER_DEL);
 
@@ -10941,12 +11038,13 @@ void wl_cfg80211_detach(void *para)
 #if defined(WL_ENABLE_P2P_IF)
 	wl_cfg80211_detach_p2p();
 #endif
+	dhd =(dhd_pub_t *)(cfg->pub);
 
 	wl_cfg80211_ibss_vsie_free(cfg);
 	wl_deinit_priv(cfg);
-	g_bcm_cfg = NULL;
 	wl_cfg80211_clear_parent_dev();
 	wl_free_wdev(cfg);
+
 	/* PLEASE do NOT call any function after wl_free_wdev, the driver's private
 	 * structure "cfg", which is the private part of wiphy, has been freed in
 	 * wl_free_wdev !!!!!!!!!!!
@@ -11026,13 +11124,15 @@ void
 wl_cfg80211_event(struct net_device *ndev, const wl_event_msg_t * e, void *data)
 {
 	u32 event_type = ntoh32(e->event_type);
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
 
 #if (WL_DBG_LEVEL > 0)
 	s8 *estr = (event_type <= sizeof(wl_dbg_estr) / WL_DBG_ESTR_MAX - 1) ?
 	    wl_dbg_estr[event_type] : (s8 *) "Unknown";
 	WL_DBG(("event_type (%d):" "WLC_E_" "%s\n", event_type, estr));
 #endif /* (WL_DBG_LEVEL > 0) */
+	if (!cfg)
+		return;
 
 	if (wl_get_p2p_status(cfg, IF_CHANGING) || wl_get_p2p_status(cfg, IF_ADDING)) {
 		WL_ERR(("during IF change, ignore event %d\n", event_type));
@@ -11252,7 +11352,9 @@ s32 wl_add_remove_eventmsg(struct net_device *ndev, u16 event, bool add)
 	s8 iovbuf[WL_EVENTING_MASK_LEN + 12];
 	s8 eventmask[WL_EVENTING_MASK_LEN];
 	s32 err = 0;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if (!ndev || !cfg)
 		return -ENODEV;
@@ -11687,7 +11789,9 @@ s32 wl_cfg80211_up(void *para)
 
 	(void)para;
 	WL_DBG(("In\n"));
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if ((err = wldev_ioctl(bcmcfg_to_prmry_ndev(cfg), WLC_GET_VERSION, &val,
 		sizeof(int), false) < 0)) {
@@ -11733,8 +11837,10 @@ s32 wl_cfg80211_up(void *para)
 /* Private Event to Supplicant with indication that chip hangs */
 int wl_cfg80211_hang(struct net_device *dev, u16 reason)
 {
-	struct bcm_cfg80211 *cfg;
-	cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 
 	WL_ERR(("In : chip crash eventing\n"));
 	wl_add_remove_pm_enable_work(cfg, FALSE, WL_HANDLER_DEL);
@@ -11752,7 +11858,9 @@ s32 wl_cfg80211_down(void *para)
 
 	(void)para;
 	WL_DBG(("In\n"));
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	mutex_lock(&cfg->usr_sync);
 	err = __wl_cfg80211_down(cfg);
 	mutex_unlock(&cfg->usr_sync);
@@ -11997,9 +12105,13 @@ static void wl_delay(u32 ms)
 
 s32 wl_cfg80211_get_p2p_dev_addr(struct net_device *net, struct ether_addr *p2pdev_addr)
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg;
 	struct ether_addr p2pif_addr;
 	struct ether_addr primary_mac;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	if (!cfg->p2p)
 		return -1;
 	if (!p2p_is_on(cfg)) {
@@ -12015,26 +12127,25 @@ s32 wl_cfg80211_get_p2p_dev_addr(struct net_device *net, struct ether_addr *p2pd
 }
 s32 wl_cfg80211_set_p2p_noa(struct net_device *net, char* buf, int len)
 {
-	struct bcm_cfg80211 *cfg;
-
-	cfg = g_bcm_cfg;
-
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	return wl_cfgp2p_set_p2p_noa(cfg, net, buf, len);
 }
 
 s32 wl_cfg80211_get_p2p_noa(struct net_device *net, char* buf, int len)
 {
-	struct bcm_cfg80211 *cfg;
-	cfg = g_bcm_cfg;
-
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	return wl_cfgp2p_get_p2p_noa(cfg, net, buf, len);
 }
 
 s32 wl_cfg80211_set_p2p_ps(struct net_device *net, char* buf, int len)
 {
-	struct bcm_cfg80211 *cfg;
-	cfg = g_bcm_cfg;
-
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	return wl_cfgp2p_set_p2p_ps(cfg, net, buf, len);
 }
 
@@ -12107,7 +12218,9 @@ wl_cfg80211_tdls_oper(struct wiphy *wiphy, struct net_device *dev,
 #ifdef WLTDLS
 	struct bcm_cfg80211 *cfg;
 	tdls_iovar_t info;
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	memset(&info, 0, sizeof(tdls_iovar_t));
 	if (peer)
 		memcpy(&info.ea, peer, ETHER_ADDR_LEN);
@@ -12158,7 +12271,10 @@ s32 wl_cfg80211_set_wps_p2p_ie(struct net_device *net, char *buf, int len,
 	s32 ret = 0;
 	s32 bssidx = 0;
 	s32 pktflag = 0;
-	cfg = g_bcm_cfg;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	if (wl_get_drv_status(cfg, AP_CREATING, net)) {
 		/* Vendor IEs should be set to FW
@@ -12220,7 +12336,10 @@ wl_cfg80211_set_auto_channel_scan_state(struct net_device *ndev)
 {
 	u32 val = 0;
 	s32 ret = BCME_ERROR;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	/* Disable mpc, to avoid automatic interface down. */
 	val = 0;
@@ -12295,7 +12414,10 @@ wl_cfg80211_get_chanspecs_2g(struct net_device *ndev, void *buf, s32 buflen)
 
 	memset(buf, 0, buflen);
 
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	list = (wl_uint32_list_t *)buf;
 	list->count = htod32(WL_NUMCHANSPECS);
 
@@ -12326,7 +12448,10 @@ wl_cfg80211_get_chanspecs_5g(struct net_device *ndev, void *buf, s32 buflen)
 
 	memset(buf, 0, buflen);
 
-	cfg = g_bcm_cfg;
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
 	list = (wl_uint32_list_t *)buf;
 	list->count = htod32(WL_NUMCHANSPECS);
 
@@ -12417,7 +12542,10 @@ wl_cfg80211_restore_auto_channel_scan_state(struct net_device *ndev)
 {
 	u32 val = 0;
 	s32 ret = BCME_ERROR;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	/* Clear scan stop driver status. */
 	wl_clr_drv_status(cfg, SCANNING, ndev);
@@ -12442,8 +12570,12 @@ wl_cfg80211_get_best_channels(struct net_device *dev, char* cmd, int total_len)
 	s32 ret = BCME_ERROR;
 	u8 *buf = NULL;
 	char *pos = cmd;
-	struct bcm_cfg80211 *cfg = NULL;
+	struct bcm_cfg80211 *cfg;
 	struct net_device *ndev = NULL;
+
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 
 	memset(cmd, 0, total_len);
 
@@ -12457,7 +12589,6 @@ wl_cfg80211_get_best_channels(struct net_device *dev, char* cmd, int total_len)
 	 * Always use primary interface, irrespective of interface on which
 	 * command came.
 	 */
-	cfg = g_bcm_cfg;
 	ndev = bcmcfg_to_prmry_ndev(cfg);
 
 	/*
@@ -12884,15 +13015,17 @@ exit:
 
 int wl_cfg80211_scan_stop(bcm_struct_cfgdev *cfgdev)
 {
-	struct bcm_cfg80211 *cfg = NULL;
+	struct bcm_cfg80211 *cfg;
 	struct net_device *ndev = NULL;
 	unsigned long flags;
 	int clear_flag = 0;
 	int ret = 0;
 
+	cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
 	WL_TRACE(("Enter\n"));
 
-	cfg = g_bcm_cfg;
 	if (!cfg)
 		return -EINVAL;
 
@@ -12918,19 +13051,30 @@ int wl_cfg80211_scan_stop(bcm_struct_cfgdev *cfgdev)
 
 bool wl_cfg80211_is_vsdb_mode(void)
 {
-	return (g_bcm_cfg && g_bcm_cfg->vsdb_mode);
+
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
+	return (cfg && cfg->vsdb_mode);
 }
 
 void* wl_cfg80211_get_dhdp()
 {
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return NULL;
 
 	return cfg->pub;
 }
 
 bool wl_cfg80211_is_p2p_active(void)
 {
-	return (g_bcm_cfg && g_bcm_cfg->p2p);
+	struct bcm_cfg80211 *cfg = wl_cfg80211_access_global_cfg();
+	if (!cfg)
+		return BCME_ERROR;
+
+	return (cfg && cfg->p2p);
 }
 
 static void wl_cfg80211_work_handler(struct work_struct * work)
@@ -13064,3 +13208,17 @@ wl_cfg80211_set_mac_acl(struct wiphy *wiphy, struct net_device *cfgdev,
 	return ret;
 }
 #endif /* WL_CFG80211_ACL */
+struct bcm_cfg80211 * wl_cfg80211_access_global_cfg (void )
+{
+	unsigned long flags;
+	struct bcm_cfg80211 *cfg;
+	spin_lock_irqsave(g_cfg_spinlock, flags);
+	cfg = g_bcm_cfg;
+	spin_unlock_irqrestore(g_cfg_spinlock, flags);
+	if(!cfg) {
+		WL_ERR(("%s : g_bcm_cfg is NULL!!\n", __FUNCTION__));
+		return NULL;
+	} else {
+		return cfg;
+	}
+}

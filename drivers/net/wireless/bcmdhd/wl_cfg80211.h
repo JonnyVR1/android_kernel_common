@@ -958,4 +958,6 @@ struct net_device *wl_cfg80211_get_remain_on_channel_ndev(struct bcm_cfg80211 *c
 
 extern int wl_cfg80211_get_ioctl_version(void);
 extern int wl_cfg80211_enable_roam_offload(struct net_device *dev, bool enable);
+extern struct bcm_cfg80211* wl_cfg80211_access_global_cfg (void);
+
 #endif				/* _wl_cfg80211_h_ */
