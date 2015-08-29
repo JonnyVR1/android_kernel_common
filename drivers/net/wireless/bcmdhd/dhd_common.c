@@ -1504,6 +1504,9 @@ int wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 	uint16 flags;
 	int evlen;
 	int hostidx;
+#ifdef WL_CFG80211
+	struct net_device *ndev;
+#endif /* WL_CFG80211*/
 
 	/* If it is a DNGL event process it first */
 	if (dngl_host_event(dhd_pub, pktdata) == BCME_OK) {
@@ -1607,7 +1610,8 @@ int wl_host_event(dhd_pub_t *dhd_pub, int *ifidx, void *pktdata,
 					event->addr.octet);
 			} else if (ifevent->opcode == WLC_E_IF_CHANGE) {
 #ifdef WL_CFG80211
-				wl_cfg80211_notify_ifchange(ifevent->ifidx,
+				ndev = dhd_linux_get_primary_netdev(dhd_pub);
+				wl_cfg80211_notify_ifchange(ndev, ifevent->ifidx,
 					event->ifname, event->addr.octet, ifevent->bssidx);
 #endif /* WL_CFG80211 */
 			}
