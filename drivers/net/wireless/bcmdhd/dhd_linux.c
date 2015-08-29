@@ -4126,7 +4126,7 @@ dhd_stop(struct net_device *net)
 
 #ifdef WL_CFG80211
 	if (ifidx == 0) {
-		wl_cfg80211_down(NULL);
+		wl_cfg80211_down(net);
 
 		/*
 		 * For CFG80211: Clean up all the left over virtual interfaces
@@ -4307,7 +4307,7 @@ dhd_open(struct net_device *net)
 #endif /* TOE */
 
 #if defined(WL_CFG80211)
-		if (unlikely(wl_cfg80211_up(NULL))) {
+		if (unlikely(wl_cfg80211_up(net))) {
 			DHD_ERROR(("%s: failed to bring up cfg80211\n", __FUNCTION__));
 			ret = -1;
 			goto exit;
@@ -4367,8 +4367,11 @@ int
 dhd_event_ifadd(dhd_info_t *dhdinfo, wl_event_data_if_t *ifevent, char *name, uint8 *mac)
 {
 
+	struct net_device *ndev;
+	ndev = dhd_linux_get_primary_netdev(&dhdinfo->pub);
+
 #ifdef WL_CFG80211
-	if (wl_cfg80211_notify_ifadd(ifevent->ifidx, name, mac, ifevent->bssidx) == BCME_OK)
+	if (wl_cfg80211_notify_ifadd(ndev, ifevent->ifidx, name, mac, ifevent->bssidx) == BCME_OK)
 		return BCME_OK;
 #endif
 
@@ -4396,8 +4399,11 @@ dhd_event_ifdel(dhd_info_t *dhdinfo, wl_event_data_if_t *ifevent, char *name, ui
 {
 	dhd_if_event_t *if_event;
 
+	struct net_device *ndev;
+	ndev = dhd_linux_get_primary_netdev(&dhdinfo->pub);
+
 #ifdef WL_CFG80211
-	if (wl_cfg80211_notify_ifdel(ifevent->ifidx, name, mac, ifevent->bssidx) == BCME_OK)
+	if (wl_cfg80211_notify_ifdel(ndev, ifevent->ifidx, name, mac, ifevent->bssidx) == BCME_OK)
 		return BCME_OK;
 #endif /* WL_CFG80211 */
 
@@ -4412,6 +4418,18 @@ dhd_event_ifdel(dhd_info_t *dhdinfo, wl_event_data_if_t *ifevent, char *name, ui
 	dhd_deferred_schedule_work(dhdinfo->dhd_deferred_wq, (void *)if_event, DHD_WQ_WORK_IF_DEL,
 		dhd_ifdel_event_handler, DHD_WORK_PRIORITY_LOW);
 
+	return BCME_OK;
+}
+
+int
+dhd_event_ifchange(dhd_info_t *dhdinfo, wl_event_data_if_t *ifevent, char *name, uint8 *mac)
+{
+
+#ifdef WL_CFG80211
+	struct net_device *ndev;
+	ndev = dhd_linux_get_primary_netdev(&dhdinfo->pub);
+	wl_cfg80211_notify_ifchange(ndev, ifevent->ifidx, name, mac, ifevent->bssidx);
+#endif /* WL_CFG80211 */
 	return BCME_OK;
 }
 
@@ -6749,6 +6767,7 @@ void dhd_detach(dhd_pub_t *dhdp)
 	dhd_info_t *dhd;
 	unsigned long flags;
 	int timer_valid = FALSE;
+	struct net_device *ndev;
 
 	if (!dhdp)
 		return;
@@ -6873,7 +6892,8 @@ void dhd_detach(dhd_pub_t *dhdp)
 	}
 #ifdef WL_CFG80211
 	if (dhd->dhd_state & DHD_ATTACH_STATE_CFG80211) {
-		wl_cfg80211_detach(NULL);
+		ndev = dhd_linux_get_primary_netdev(&dhd->pub);
+		wl_cfg80211_detach(ndev);
 		dhd_monitor_uninit();
 	}
 #endif
@@ -8627,11 +8647,13 @@ void dhd_get_customized_country_code(struct net_device *dev, char *country_iso_c
 void dhd_bus_country_set(struct net_device *dev, wl_country_t *cspec, bool notify)
 {
 	dhd_info_t *dhd = DHD_DEV_INFO(dev);
+	struct bcm_cfg80211 *cfg = wl_get_cfg(dev);
+
 	if (dhd && dhd->pub.up) {
 		memcpy(&dhd->pub.dhd_cspec, cspec, sizeof(wl_country_t));
 		dhd->pub.force_country_change = FALSE;
 #ifdef WL_CFG80211
-		wl_update_wiphybands(NULL, notify);
+		wl_update_wiphybands(cfg, notify);
 #endif
 	}
 }
@@ -8639,9 +8661,11 @@ void dhd_bus_country_set(struct net_device *dev, wl_country_t *cspec, bool notif
 void dhd_bus_band_set(struct net_device *dev, uint band)
 {
 	dhd_info_t *dhd = DHD_DEV_INFO(dev);
+	struct bcm_cfg80211 *cfg = wl_get_cfg(dev);
+
 	if (dhd && dhd->pub.up) {
 #ifdef WL_CFG80211
-		wl_update_wiphybands(NULL, true);
+		wl_update_wiphybands(cfg, true);
 #endif
 	}
 }
