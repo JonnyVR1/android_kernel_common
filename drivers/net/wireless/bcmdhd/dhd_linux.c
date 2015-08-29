@@ -4865,6 +4865,8 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	spin_lock_init(&dhd->txqlock);
 	spin_lock_init(&dhd->dhd_lock);
 	spin_lock_init(&dhd->rxf_lock);
+	spin_lock_init(&dhd->pub.g_cfg_lock);
+
 #if defined(RXFRAME_THREAD)
 	dhd->rxthread_enabled = TRUE;
 #endif /* defined(RXFRAME_THREAD) */

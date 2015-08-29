@@ -10824,6 +10824,8 @@ s32 wl_cfg80211_attach(struct net_device *ndev, void *context)
 	struct bcm_cfg80211 *cfg;
 	s32 err = 0;
 	struct device *dev;
+	unsigned long flags;
+	dhd_pub_t *dhd;
 
 	WL_TRACE(("In\n"));
 	if (!ndev) {
@@ -10889,8 +10891,10 @@ s32 wl_cfg80211_attach(struct net_device *ndev, void *context)
 	if (!cfg->btcoex_info)
 		goto cfg80211_attach_out;
 #endif
-
+	dhd =(dhd_pub_t *)(cfg->pub);
+	spin_lock_irqsave(&dhd->g_cfg_lock, flags);
 	g_bcm_cfg = cfg;
+	spin_unlock_irqrestore(&dhd->g_cfg_lock, flags);
 
 #if defined(WL_ENABLE_P2P_IF)
 	err = wl_cfg80211_attach_p2p();
@@ -10909,6 +10913,8 @@ cfg80211_attach_out:
 void wl_cfg80211_detach(void *para)
 {
 	struct bcm_cfg80211 *cfg;
+	unsigned long flags;
+	dhd_pub_t *dhd;
 
 	(void)para;
 	cfg = g_bcm_cfg;
@@ -10941,12 +10947,14 @@ void wl_cfg80211_detach(void *para)
 #if defined(WL_ENABLE_P2P_IF)
 	wl_cfg80211_detach_p2p();
 #endif
-
+	dhd =(dhd_pub_t *)(cfg->pub);
+	spin_lock_irqsave(&dhd->g_cfg_lock, flags);
 	wl_cfg80211_ibss_vsie_free(cfg);
 	wl_deinit_priv(cfg);
 	g_bcm_cfg = NULL;
 	wl_cfg80211_clear_parent_dev();
 	wl_free_wdev(cfg);
+	spin_unlock_irqrestore(&dhd->g_cfg_lock, flags);
 	/* PLEASE do NOT call any function after wl_free_wdev, the driver's private
 	 * structure "cfg", which is the private part of wiphy, has been freed in
 	 * wl_free_wdev !!!!!!!!!!!
