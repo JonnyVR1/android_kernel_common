@@ -1,0 +1,11 @@
+Revision: 755fa169f249421ebf3d708f3735799eab365f9f
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+10953:1-10953:15
+Mon Aug 31 18:25:57 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6424bead_8dafa160
+Bytes: 85
+This call will call del_timer_sync() and it is not good to call it in atomic context.
+
