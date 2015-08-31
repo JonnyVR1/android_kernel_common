@@ -480,6 +480,12 @@ char nv_bak_path[MOD_PARAM_PATHLEN];
 /* information string to keep firmware, chio, cheip version info visiable from log */
 char info_string[MOD_PARAM_INFOLEN];
 module_param_string(info_string, info_string, MOD_PARAM_INFOLEN, 0444);
+
+#ifdef LTE_COEX_SUPPORT
+char dynamic_5g_channels_filter[MOD_PARAM_INFOLEN];
+module_param_string(dynamic_5g_channels_filter, dynamic_5g_channels_filter, MOD_PARAM_INFOLEN, 0660);
+#endif /*LTE_COEX_SUPPORT*/
+
 int op_mode = 0;
 int disable_proptx = 0;
 module_param(op_mode, int, 0644);

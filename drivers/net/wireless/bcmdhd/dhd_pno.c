@@ -1732,6 +1732,24 @@ static void *dhd_get_gscan_batch_results(dhd_pub_t *dhd, uint32 *len)
 	return results;
 }
 
+#ifdef LTE_COEX_SUPPORT
+extern char dynamic_5g_channels_filter[MOD_PARAM_PATHLEN];
+static int ltecoex_check(u32 channel)
+{
+	char buf[6] = {0};
+
+	snprintf(buf, 6, "%c%d%c",',', channel,',');
+	if(NULL != strstr(dynamic_5g_channels_filter,buf))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+#endif /*LTE_COEX_SUPPORT*/
+
 void * dhd_pno_get_gscan(dhd_pub_t *dhd, dhd_pno_gscan_cmd_cfg_t type,
                           void *info, uint32 *len)
 {
@@ -1810,6 +1828,7 @@ void * dhd_pno_get_gscan(dhd_pub_t *dhd, dhd_pno_gscan_cmd_cfg_t type,
 						__FUNCTION__));
 					*len = 0;
 				} else {
+					int j;
 					mem_needed = sizeof(uint32) * nchan;
 					ptr = (uint32 *) kmalloc(mem_needed, GFP_KERNEL);
 					if (!ptr) {
@@ -1817,13 +1836,22 @@ void * dhd_pno_get_gscan(dhd_pub_t *dhd, dhd_pno_gscan_cmd_cfg_t type,
 							__FUNCTION__, mem_needed));
 						break;
 					}
-					for (i = 0; i < nchan; i++) {
-						ptr[i] = wf_channel2mhz(ch_list[i],
+					for (i = 0, j =0; i < nchan; i++) {
+						ptr[j] = wf_channel2mhz(ch_list[i],
 							(ch_list[i] <= CH_MAX_2G_CHANNEL?
 							WF_CHAN_FACTOR_2_4_G : WF_CHAN_FACTOR_5_G));
+#ifdef LTE_COEX_SUPPORT
+						if((ltecoex_check(ch_list[i])) &&
+							(dhd->op_mode &  DHD_FLAG_HOSTAP_MODE )) {
+							DHD_ERROR(("LTE coex, ignore channel: %d\n", ch_list[i]));
+							continue;
+						}
+#endif /*LTE_COEX_SUPPORT*/
+						j++
 					}
+					nchan = j + 1;
 					ret = ptr;
-					*len = mem_needed;
+					*len = mem_needed = sizeof(uint32) * nchan;
 				}
 			} else {
 				*len = 0;
