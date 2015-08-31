@@ -11286,6 +11286,24 @@ eventmsg_out:
 	return err;
 }
 
+#ifdef LTE_COEX_SUPPORT
+extern char dynamic_5g_channels_filter[MOD_PARAM_PATHLEN];
+static int ltecoex_check(u32 channel)
+{
+	char buf[6] = {0};
+
+	snprintf(buf, 6, "%c%d%c",',', channel,',');
+	if(NULL != strstr(dynamic_5g_channels_filter,buf))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+#endif /*LTE_COEX_SUPPORT*/
+
 static int wl_construct_reginfo(struct bcm_cfg80211 *cfg, s32 bw_cap)
 {
 	struct net_device *dev = bcmcfg_to_prmry_ndev(cfg);
@@ -11299,6 +11317,10 @@ static int wl_construct_reginfo(struct bcm_cfg80211 *cfg, s32 bw_cap)
 	bool ht40_allowed;
 	u8 *pbuf = NULL;
 	bool dfs_radar_disabled = FALSE;
+
+#ifdef LTE_COEX_SUPPORT
+	dhd_pub_t *dhd = (dhd_pub_t *)(cfg->pub);
+#endif /*LTE_COEX_SUPPORT*/
 
 #define LOCAL_BUF_LEN 1024
 	pbuf = kzalloc(LOCAL_BUF_LEN, GFP_KERNEL);
@@ -11334,6 +11356,13 @@ static int wl_construct_reginfo(struct bcm_cfg80211 *cfg, s32 bw_cap)
 			WL_DBG(("HT80/160/80p80 center channel : %d\n", channel));
 			continue;
 		}
+#ifdef LTE_COEX_SUPPORT
+		if((ltecoex_check(channel)) && (dhd_get_fw_mode(dhd->info) == DHD_FLAG_HOSTAP_MODE)) {
+			WL_DBG(("LTE coex, ignore channel: %d\n", channel));
+			continue;
+		}
+#endif /*LTE_COEX_SUPPORT*/
+
 		if (CHSPEC_IS2G(c) && (channel >= CH_MIN_2G_CHANNEL) &&
 			(channel <= CH_MAX_2G_CHANNEL)) {
 			band_chan_arr = __wl_2ghz_channels;
