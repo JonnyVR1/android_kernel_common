@@ -11334,6 +11334,7 @@ static int wl_construct_reginfo(struct bcm_cfg80211 *cfg, s32 bw_cap)
 			WL_DBG(("HT80/160/80p80 center channel : %d\n", channel));
 			continue;
 		}
+
 		if (CHSPEC_IS2G(c) && (channel >= CH_MIN_2G_CHANNEL) &&
 			(channel <= CH_MAX_2G_CHANNEL)) {
 			band_chan_arr = __wl_2ghz_channels;
