@@ -5257,18 +5257,17 @@ wl_cfg80211_cancel_remain_on_channel(struct wiphy *wiphy,
 static void
 wl_cfg80211_afx_handler(struct work_struct *work)
 {
-	struct afx_hdl *afx_instance;
-	struct bcm_cfg80211 *cfg = g_bcm_cfg;
-	s32 ret = BCME_OK;
+	struct afx_hdl *afx_hdl = container_of(work, struct afx_hdl, work);
+	struct bcm_cfg80211 *cfg = wl_get_cfg(afx_hdl->dev);
+	s32 ret;
 
-	afx_instance = container_of(work, struct afx_hdl, work);
-	if (afx_instance != NULL && cfg->afx_hdl->is_active) {
-		if (cfg->afx_hdl->is_listen && cfg->afx_hdl->my_listen_chan) {
-			ret = wl_cfgp2p_discover_listen(cfg, cfg->afx_hdl->my_listen_chan,
+	if (afx_hdl->is_active) {
+		if (afx_hdl->is_listen && afx_hdl->my_listen_chan) {
+			ret = wl_cfgp2p_discover_listen(cfg, afx_hdl->my_listen_chan,
 				(100 * (1 + (RANDOM32() % 3)))); /* 100ms ~ 300ms */
 		} else {
-			ret = wl_cfgp2p_act_frm_search(cfg, cfg->afx_hdl->dev,
-				cfg->afx_hdl->bssidx, cfg->afx_hdl->peer_listen_chan,
+			ret = wl_cfgp2p_act_frm_search(cfg, afx_hdl->dev,
+				afx_hdl->bssidx, afx_hdl->peer_listen_chan,
 				NULL);
 		}
 		if (unlikely(ret != BCME_OK)) {
