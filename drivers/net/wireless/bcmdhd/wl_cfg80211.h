@@ -859,7 +859,6 @@ wl_get_netinfo_by_netdev(struct bcm_cfg80211 *cfg, struct net_device *ndev)
 	 (!_sme->crypto.n_ciphers_pairwise) && \
 	 (!_sme->crypto.cipher_group))
 extern s32 wl_cfg80211_attach(struct net_device *ndev, void *context);
-extern s32 wl_cfg80211_attach_post(struct net_device *ndev);
 extern void wl_cfg80211_detach(void *para);
 
 extern void wl_cfg80211_event(struct net_device *ndev, const wl_event_msg_t *e,
