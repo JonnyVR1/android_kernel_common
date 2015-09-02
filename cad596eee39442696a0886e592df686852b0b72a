@@ -99,6 +99,16 @@ Line 6882-6887 are for case DHD_ATTACH_STATE_CFG80211.
 
 Once dhd_attach finished wl_cfg80211_attach then marked status to DHD_ATTACH_STATE_CFG80211. So I think Line 6843-6846 in not used for cfg80211 driver case.
 
+6883
+Wed Sep 02 22:38:23 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_b22a7e11
+UUID: 644d9e85_310c8b7b
+Bytes: 199
+Insun,
+
+I believe you want to fetch the cfg pointer in the beginning of this function, before you start freeing associated net devices, and then feed it, instead of netdev, into wl_cfg80211_detach().
+
 8638
 Wed Sep 02 18:21:06 2015 +0000
 Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
