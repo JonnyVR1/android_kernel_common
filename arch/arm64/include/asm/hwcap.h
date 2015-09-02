@@ -18,6 +18,7 @@
 
 #include <uapi/asm/hwcap.h>
 
+#define COMPAT_HWCAP_SWP	(1 << 0)
 #define COMPAT_HWCAP_HALF	(1 << 1)
 #define COMPAT_HWCAP_THUMB	(1 << 2)
 #define COMPAT_HWCAP_FAST_MULT	(1 << 4)

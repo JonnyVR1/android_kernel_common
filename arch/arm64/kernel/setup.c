@@ -266,6 +266,9 @@ static void __init setup_processor(void)
 		elf_hwcap |= HWCAP_CRC32;
 
 #ifdef CONFIG_COMPAT
+	if (IS_ENABLED(CONFIG_SWP_EMULATION))
+		compat_elf_hwcap |= COMPAT_HWCAP_SWP;
+
 	/*
 	 * ID_ISAR5_EL1 carries similar information as above, but pertaining to
 	 * the Aarch32 32-bit execution state.
