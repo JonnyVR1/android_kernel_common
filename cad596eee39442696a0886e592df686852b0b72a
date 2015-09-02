@@ -58,6 +58,14 @@ Bytes: 134
 I think you need to one more wrapper function dealing wl_cfg80211_notify_ifchange internally. right?
 If so, can we implement it later?
 
+1613:0-1615:56
+Wed Sep 02 22:40:54 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4072a51_a4419a2a
+UUID: 0484e2ca_78f43e01
+Bytes: 52
+I'd rather we deal with it now and not forget later.
+
 File: drivers/net/wireless/bcmdhd/dhd_linux.c
 
 6883
@@ -108,6 +116,14 @@ Bytes: 199
 Insun,
 
 I believe you want to fetch the cfg pointer in the beginning of this function, before you start freeing associated net devices, and then feed it, instead of netdev, into wl_cfg80211_detach().
+
+6883
+Wed Sep 02 22:40:54 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_f7413c00
+UUID: 644d9e85_511ee7a0
+Bytes: 124
+DHD_ATTACH_STATE_ADD_IF and DHD_ATTACH_STATE_CFG80211 are bits in dhd->dhd_state. It is possible for them both to be active.
 
 8638
 Wed Sep 02 18:21:06 2015 +0000
