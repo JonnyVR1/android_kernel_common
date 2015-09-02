@@ -1,0 +1,56 @@
+Revision: cad596eee39442696a0886e592df686852b0b72a
+Patch-set: 4
+File: /COMMIT_MSG
+
+7
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_da42f174
+Bytes: 88
+Maybe
+
+net: wireless: bcmdhd: avoid using global pointer to prevent memory corruption
+
+?
+
+11
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_650575d6
+Bytes: 294
+Can you please add a bit more verbose changelog. I also recommend splitting the change a bit so it is easier to review (and maybe identify the offending change if it turns out we introduce a regression).
+
+Any chance why we can't apply the CLs I posted and then get your stuff peace-meal on top?
+
+File: drivers/net/wireless/bcmdhd/dhd_common.c
+
+1613:0-1615:56
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84529221_d79d23d0
+Bytes: 132
+Would prefer if we plumbed the change event through dhd_linux as dhd_event_ifchange, similar to dhd_event_ifadd and dhd_event_ifdel.
+
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+6883
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4072a51_f0b240c9
+Bytes: 78
+Are you sure ndev is not freed by now?  We tried to free it a few lines above.
+
+8638
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84f1b2a4_8e93db1a
+Bytes: 59
+Please put an empty line between variables and code please.
+
+8651
+Wed Sep 02 18:21:06 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_6037a7c6
+Bytes: 10
+Same here.
+
