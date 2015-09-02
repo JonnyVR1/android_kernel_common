@@ -13,6 +13,14 @@ net: wireless: bcmdhd: avoid using global pointer to prevent memory corruption
 
 ?
 
+7
+Wed Sep 02 21:55:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_da42f174
+UUID: 6492fe15_c6049322
+Bytes: 19
+Yes, I will change.
+
 11
 Wed Sep 02 18:21:06 2015 +0000
 Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -21,6 +29,16 @@ Bytes: 294
 Can you please add a bit more verbose changelog. I also recommend splitting the change a bit so it is easier to review (and maybe identify the offending change if it turns out we introduce a regression).
 
 Any chance why we can't apply the CLs I posted and then get your stuff peace-meal on top?
+
+11
+Wed Sep 02 21:55:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_650575d6
+UUID: 644d9e85_ee272e48
+Bytes: 306
+@Dmitry. 
+I will consider split CLs but need time to review. 
+And your change is all imported to this latest updated CL. What I did is removing global pointer usage through whole code. I didn't do enough testing on changes, but yesterday's monkey testing 2 hours showed no problems. Can we go with changes?
 
 File: drivers/net/wireless/bcmdhd/dhd_common.c
 
