@@ -49,6 +49,15 @@ UUID: 84529221_d79d23d0
 Bytes: 132
 Would prefer if we plumbed the change event through dhd_linux as dhd_event_ifchange, similar to dhd_event_ifadd and dhd_event_ifdel.
 
+1613:0-1615:56
+Wed Sep 02 22:36:07 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_d79d23d0
+UUID: c4072a51_a4419a2a
+Bytes: 134
+I think you need to one more wrapper function dealing wl_cfg80211_notify_ifchange internally. right?
+If so, can we implement it later?
+
 File: drivers/net/wireless/bcmdhd/dhd_linux.c
 
 6883
@@ -73,6 +82,22 @@ Parent: 644d9e85_0e004a74
 UUID: a40a365b_b22a7e11
 Bytes: 65
 Lines 6843 - 6846 for the primary netdev, others are freed above.
+
+6883
+Wed Sep 02 22:36:07 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_b22a7e11
+UUID: 84529221_f7413c00
+Bytes: 387
+@Dmitry Torokhov. 
+Thanks for pointing out. 
+we're checking dhd_state status based on how much initialization done.
+
+Line 6843-6846 are for case DHD_ATTACH_STATE_ADD_IF. 
+and
+Line 6882-6887 are for case DHD_ATTACH_STATE_CFG80211.
+
+Once dhd_attach finished wl_cfg80211_attach then marked status to DHD_ATTACH_STATE_CFG80211. So I think Line 6843-6846 in not used for cfg80211 driver case.
 
 8638
 Wed Sep 02 18:21:06 2015 +0000
