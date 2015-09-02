@@ -66,6 +66,14 @@ UUID: 644d9e85_0e004a74
 Bytes: 6
 Where?
 
+6883
+Wed Sep 02 22:21:58 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_0e004a74
+UUID: a40a365b_b22a7e11
+Bytes: 65
+Lines 6843 - 6846 for the primary netdev, others are freed above.
+
 8638
 Wed Sep 02 18:21:06 2015 +0000
 Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
