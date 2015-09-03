@@ -9,3 +9,15 @@ UUID: 6492fe15_6992301b
 Bytes: 140
 If I understand dtor's suggestion, he wanted to pass to wl_cfg80211_notify_ifchange CFG and not net_device that can be freed at this moment.
 
+4431:1-4431:28
+Thu Sep 03 01:12:32 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_6992301b
+UUID: 64159e82_25064ee7
+Bytes: 145
+@Dmitry Shmidt. 
+From first comment of dtor's, I think he suggested API like others in dhd_linux.c. 
+
+@Dmitry Torokhov.
+Can you confirm this one?
+
