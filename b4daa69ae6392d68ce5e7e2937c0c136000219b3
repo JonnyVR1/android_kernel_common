@@ -60,6 +60,14 @@ UUID: 64159e82_4ebe07ec
 Bytes: 35
 Or we can just detach cfg80211 here
 
+6848:23-6848:24
+Thu Sep 03 20:51:38 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64159e82_4ebe07ec
+UUID: 04cce27b_f677c898
+Bytes: 99
+As we have discussed offline let's keep storing cfg and detach it only after unregistering netdevs.
+
 6895:2-6895:6
 Thu Sep 03 20:26:46 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
