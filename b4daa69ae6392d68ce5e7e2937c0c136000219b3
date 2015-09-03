@@ -21,3 +21,11 @@ From first comment of dtor's, I think he suggested API like others in dhd_linux.
 @Dmitry Torokhov.
 Can you confirm this one?
 
+4431:1-4431:28
+Thu Sep 03 02:53:48 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_6992301b
+UUID: 0484e2ca_6e61d495
+Bytes: 137
+@dimitrysh: can it? It seems that wl_host_event is ultimately being called from dhd_rx_frame(). I'd expect it not race with dhd_detach().
+
