@@ -1,0 +1,46 @@
+Revision: 9eb994a59bd0582bee3e2f3371b3acda27471277
+Patch-set: 3
+File: drivers/net/wireless/bcmdhd/dhd_pno.c
+
+1739:10-1739:11
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44141a88_44c42e2b
+Bytes: 10
+Use define
+
+1741:15-1741:16
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_d17e57ef
+Bytes: 6
+Define
+
+1741:20-1741:21
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44141a88_84a58683
+Bytes: 14
+Why not ",%d,"
+
+1742:19-1742:45
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_39423a2e
+Bytes: 58
+What about first or last frequency? It will be still ,N, ?
+
+1743:1-1743:2
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_993826ba
+Bytes: 7
+No need
+
+1746:1-1746:5
+Thu Sep 03 00:20:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_5162674d
+Bytes: 7
+No need
+
