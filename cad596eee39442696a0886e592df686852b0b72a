@@ -66,6 +66,14 @@ UUID: 0484e2ca_78f43e01
 Bytes: 52
 I'd rather we deal with it now and not forget later.
 
+1613:0-1615:56
+Thu Sep 03 00:00:04 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_78f43e01
+UUID: 84529221_7a21b336
+Bytes: 24
+Ok. I will implement it.
+
 File: drivers/net/wireless/bcmdhd/dhd_linux.c
 
 6883
