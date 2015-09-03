@@ -52,6 +52,14 @@ UUID: 64159e82_ab74cd10
 Bytes: 29
 cfg = = wl_get_cfg(ifp->net);
 
+6848:23-6848:24
+Thu Sep 03 20:30:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64159e82_ab74cd10
+UUID: 64159e82_4ebe07ec
+Bytes: 35
+Or we can just detach cfg80211 here
+
 6895:2-6895:6
 Thu Sep 03 20:26:46 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
