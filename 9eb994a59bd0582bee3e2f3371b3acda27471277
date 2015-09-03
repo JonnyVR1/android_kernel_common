@@ -9,6 +9,14 @@ UUID: 44141a88_44c42e2b
 Bytes: 10
 Use define
 
+1739:10-1739:11
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_44c42e2b
+UUID: 0484e2ca_6e7f94a7
+Bytes: 17
+OK. using define.
+
 1741:15-1741:16
 Thu Sep 03 00:20:27 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,12 +31,37 @@ UUID: 44141a88_84a58683
 Bytes: 14
 Why not ",%d,"
 
+1741:20-1741:21
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_84a58683
+UUID: 04cce27b_c2168213
+Bytes: 17
+Yes, change made.
+
+1741:15-1741:16
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_d17e57ef
+UUID: 8497f201_0a76f860
+Bytes: 17
+Yes, using define
+
 1742:19-1742:45
 Thu Sep 03 00:20:27 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_39423a2e
 Bytes: 58
 What about first or last frequency? It will be still ,N, ?
+
+1742:19-1742:45
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_39423a2e
+UUID: 644d9e85_0474abc6
+Bytes: 34
+@Xinrui.
+Can you check this thing?
 
 1743:1-1743:2
 Thu Sep 03 00:20:27 2015 +0000
@@ -37,10 +70,26 @@ UUID: e486eed4_993826ba
 Bytes: 7
 No need
 
+1743:1-1743:2
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_993826ba
+UUID: e486eed4_993ee654
+Bytes: 10
+Ok. fixed.
+
 1746:1-1746:5
 Thu Sep 03 00:20:27 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 644d9e85_5162674d
 Bytes: 7
 No need
+
+1746:1-1746:5
+Thu Sep 03 00:49:59 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_5162674d
+UUID: 644d9e85_c46d73fa
+Bytes: 9
+Ok fixed.
 
