@@ -98,6 +98,15 @@ UUID: 8497f201_e01ba879
 Bytes: 22
 Just if (!cfg) return;
 
+11456:0-11459:2
+Thu Sep 03 20:58:19 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_760018c8
+Bytes: 303
+Ugh, this conditional locking is bad. And you are breaking it with passing non-NULL cfg from outside. You need to split this one into __wl_update_wiphybands() that does bulk of the work and turn wl_update_wiphybands() into a wrapper that does locking.
+
+Please look if we have similar patterns elsewhere.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 862:31-862:37
@@ -106,4 +115,13 @@ Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44141a88_ed4edd58
 Bytes: 24
 struct bcm_cfg80211 *cfg
+
+File: drivers/net/wireless/bcmdhd/wl_cfgp2p.c
+
+2612
+Thu Sep 03 20:58:19 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_4017fc0f
+Bytes: 196
+I'd prefer if we normally passed net_device into wl_cfg80211_* fucntions instead of mix of cfg and netdev. The only exception is wl_cfg80211_detach() since by then we do not have netdev available.
 
