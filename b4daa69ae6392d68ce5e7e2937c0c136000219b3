@@ -1,0 +1,11 @@
+Revision: b4daa69ae6392d68ce5e7e2937c0c136000219b3
+Patch-set: 5
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+4431:1-4431:28
+Thu Sep 03 00:46:22 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6492fe15_6992301b
+Bytes: 140
+If I understand dtor's suggestion, he wanted to pass to wl_cfg80211_notify_ifchange CFG and not net_device that can be freed at this moment.
+
