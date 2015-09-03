@@ -29,3 +29,65 @@ UUID: 0484e2ca_6e61d495
 Bytes: 137
 @dimitrysh: can it? It seems that wl_host_event is ultimately being called from dhd_rx_frame(). I'd expect it not race with dhd_detach().
 
+4431:1-4431:28
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_6e61d495
+UUID: 8497f201_a00e003e
+Bytes: 45
+Sorry, I meant to write it in different place
+
+6770:1-6770:7
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 240f267a_8942bd73
+Bytes: 73
+-       struct net_device *ndev;
++       struct bcm_cfg80211 *cfg = NULL;
+
+6848:23-6848:24
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64159e82_ab74cd10
+Bytes: 29
+cfg = = wl_get_cfg(ifp->net);
+
+6895:2-6895:6
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 240f267a_e93ff1e9
+Bytes: 6
+remove
+
+6896:21-6896:25
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_0f9e0323
+Bytes: 3
+cfg
+
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+10910:24-10910:30
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 240f267a_0937ed18
+Bytes: 26
+(struct bcm_cfg80211 *cfg)
+
+10912:1-10912:7
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_e01ba879
+Bytes: 22
+Just if (!cfg) return;
+
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
+
+862:31-862:37
+Thu Sep 03 20:26:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44141a88_ed4edd58
+Bytes: 24
+struct bcm_cfg80211 *cfg
+
