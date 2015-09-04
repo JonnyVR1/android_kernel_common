@@ -80,6 +80,14 @@ UUID: 6492fe15_900ebd3e
 Bytes: 119
 @Dmitry, but locking used only in case of cfg == NULL, and now we are not calling __wl_update_wiphybands() in this case
 
+11447:0-11453:2
+Fri Sep 04 18:59:37 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_900ebd3e
+UUID: e486eed4_e37e58ef
+Bytes: 70
+Yes, agreed to Dmtiry Shmidt. Mutex was used only when cfg==NULL case.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
