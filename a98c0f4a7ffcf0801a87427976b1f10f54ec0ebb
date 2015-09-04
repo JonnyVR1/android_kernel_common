@@ -53,6 +53,15 @@ UUID: 240f267a_374b20a1
 Bytes: 234
 But we never pass cfg==NULL to wl_update_wiphybands() anymore. Please restore locking, I assume it was there on purpose. If locking is not needed please submit a separate CL describing why it is not needed, as a followup for this one.
 
+11447:0-11453:2
+Fri Sep 04 17:27:20 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 240f267a_374b20a1
+UUID: e486eed4_a3fdb0aa
+Bytes: 235
+@Dmitry Torokhov
+If we want to set mutex here, usr_sync is not appropriate. usr_sync is normally used for user action for scan. I'm trying to find existing another one for use, but I think we should create new one if definitely needed.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
