@@ -1,0 +1,20 @@
+Revision: a98c0f4a7ffcf0801a87427976b1f10f54ec0ebb
+Patch-set: 6
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+11447:0-11453:2
+Fri Sep 04 00:35:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44141a88_13139668
+Bytes: 200
+No, please use locking here always. The user in thins file that previously called wl_update_wiphybands() with cfg != NULL (and thus did not use locking) should be calling __wl_update_wiphybands() now.
+
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
+
+914
+Fri Sep 04 00:35:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84529221_51481526
+Bytes: 43
+I do not think you need to export this one.
+
