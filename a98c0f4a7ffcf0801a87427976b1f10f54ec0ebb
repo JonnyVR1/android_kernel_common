@@ -45,6 +45,14 @@ UUID: 44141a88_fefa01aa
 Bytes: 171
 Yes, your saying correct. If in case cfg==NULL passing, then there's nothing that we can do update through wiphybands. I think tt's better to see with further test result.
 
+11447:0-11453:2
+Fri Sep 04 06:46:02 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_fefa01aa
+UUID: 240f267a_374b20a1
+Bytes: 234
+But we never pass cfg==NULL to wl_update_wiphybands() anymore. Please restore locking, I assume it was there on purpose. If locking is not needed please submit a separate CL describing why it is not needed, as a followup for this one.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
