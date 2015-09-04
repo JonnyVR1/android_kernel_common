@@ -119,6 +119,15 @@ The "non underscore" function should be used by external callers.
 
 Hope this helps.
 
+11447:0-11453:2
+Fri Sep 04 22:09:22 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_b9bc2342
+UUID: 8497f201_497404c8
+Bytes: 122
+@Dmitry Torokhov. 
+Thanks for plentiful explain. I just added new mutex wiphy_sync for this purpose. I tested it works OK.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
