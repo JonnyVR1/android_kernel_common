@@ -54,3 +54,11 @@ UUID: 6492fe15_15185faf
 Bytes: 18
 Yes agreed. Fixed.
 
+914
+Fri Sep 04 05:11:44 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_15185faf
+UUID: 84529221_b41cd700
+Bytes: 112
+No it is not. You still have __wl_update_wiphybands() as a global function. It should be static to wl_cfg80211.c
+
