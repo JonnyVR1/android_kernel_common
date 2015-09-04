@@ -27,6 +27,16 @@ In the original code, it reassign cfg pointer to global one if passed value was 
 
 I think we can skip to call __wl_update_wiphybands when cfg==NULL, then setting mutex is not needed.
 
+11447:0-11453:2
+Fri Sep 04 05:08:41 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_133276bf
+UUID: 44141a88_7ed0d131
+Bytes: 268
+If you did that without adjusting caller in this file to use non-locking version then it is not a surprise: you'd try to take this mutex recursively and woudl deadlock.
+
+I am not sure about dropping call to __wl_update_wiphybands(), I'd rather did it in a separate CL.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
