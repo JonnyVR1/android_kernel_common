@@ -9,6 +9,24 @@ UUID: 44141a88_13139668
 Bytes: 200
 No, please use locking here always. The user in thins file that previously called wl_update_wiphybands() with cfg != NULL (and thus did not use locking) should be calling __wl_update_wiphybands() now.
 
+11447:0-11453:2
+Fri Sep 04 01:36:18 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_13139668
+UUID: 44141a88_133276bf
+Bytes: 424
+Once I tried to set locking always, but it failed to power up WiFi. because failed getting usr_sync lock. 
+
+In the original code, it reassign cfg pointer to global one if passed value was NULL. and set mutex for some reason. 
+
+	if (cfg == NULL) {
+		cfg = g_bcm_cfg;
+		mutex_lock(&cfg->usr_sync);
+		rollback_lock = true;
+	}
+
+I think we can skip to call __wl_update_wiphybands when cfg==NULL, then setting mutex is not needed.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
@@ -17,4 +35,12 @@ Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84529221_51481526
 Bytes: 43
 I do not think you need to export this one.
+
+914
+Fri Sep 04 01:36:18 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_51481526
+UUID: 6492fe15_15185faf
+Bytes: 18
+Yes agreed. Fixed.
 
