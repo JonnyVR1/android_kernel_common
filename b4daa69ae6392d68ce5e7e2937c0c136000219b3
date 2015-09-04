@@ -37,6 +37,14 @@ UUID: 8497f201_a00e003e
 Bytes: 45
 Sorry, I meant to write it in different place
 
+4431:1-4431:28
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_a00e003e
+UUID: 8497f201_c19eae58
+Bytes: 15
+Ok. understood.
+
 6770:1-6770:7
 Thu Sep 03 20:26:46 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,6 +52,14 @@ UUID: 240f267a_8942bd73
 Bytes: 73
 -       struct net_device *ndev;
 +       struct bcm_cfg80211 *cfg = NULL;
+
+6770:1-6770:7
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 240f267a_8942bd73
+UUID: 644d9e85_9d810e38
+Bytes: 12
+Yes changed.
 
 6848:23-6848:24
 Thu Sep 03 20:26:46 2015 +0000
@@ -68,6 +84,14 @@ UUID: 04cce27b_f677c898
 Bytes: 99
 As we have discussed offline let's keep storing cfg and detach it only after unregistering netdevs.
 
+6848:23-6848:24
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cce27b_f677c898
+UUID: 644d9e85_7d86524f
+Bytes: 38
+Changed. please confirm latest update.
+
 6895:2-6895:6
 Thu Sep 03 20:26:46 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -75,12 +99,28 @@ UUID: 240f267a_e93ff1e9
 Bytes: 6
 remove
 
+6895:2-6895:6
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 240f267a_e93ff1e9
+UUID: e486eed4_f255c85e
+Bytes: 12
+yes. removed
+
 6896:21-6896:25
 Thu Sep 03 20:26:46 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_0f9e0323
 Bytes: 3
 cfg
+
+6896:21-6896:25
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_0f9e0323
+UUID: 8497f201_418a9e0f
+Bytes: 12
+yes. changed
 
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
 
@@ -107,6 +147,15 @@ Ugh, this conditional locking is bad. And you are breaking it with passing non-N
 
 Please look if we have similar patterns elsewhere.
 
+11456:0-11459:2
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cce27b_760018c8
+UUID: 644d9e85_1d751e0c
+Bytes: 108
+Yes. agreed. this code exist some reason for long time. 
+removed and changed follow your way. Please confirm
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 862:31-862:37
@@ -124,4 +173,12 @@ Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8497f201_4017fc0f
 Bytes: 196
 I'd prefer if we normally passed net_device into wl_cfg80211_* fucntions instead of mix of cfg and netdev. The only exception is wl_cfg80211_detach() since by then we do not have netdev available.
+
+2612
+Fri Sep 04 00:00:46 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_4017fc0f
+UUID: 64159e82_d9f92347
+Bytes: 133
+I would think so, but I'm not sure for p2p case. CFG80211 interface may call this function with diffrent wdev(p2p0). I'm checking it.
 
