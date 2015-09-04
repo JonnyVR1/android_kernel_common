@@ -1,0 +1,27 @@
+Revision: 50c828e3bdb8dda0aa3b2e7a5f7fab0287993dcc
+Patch-set: 10
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+4425
+Fri Sep 04 22:21:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_3fdca000
+Bytes: 37
+Ah, yes, I forgot to remove this one.
+
+File: drivers/net/wireless/bcmdhd/dhd_linux_platdev.c
+
+530
+Fri Sep 04 22:21:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84529221_cabfa796
+Bytes: 56
+This seems unrelated change, please move to separate CL.
+
+580
+Fri Sep 04 22:21:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6492fe15_eb107016
+Bytes: 56
+This seems unrelated change, please move to separate CL.
+
