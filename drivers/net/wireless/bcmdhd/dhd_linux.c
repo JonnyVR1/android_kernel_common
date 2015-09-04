@@ -3253,10 +3253,16 @@ dhd_watchdog_thread(void *data)
 
 			if (dhd->pub.dongle_reset == FALSE) {
 				DHD_TIMER(("%s:\n", __FUNCTION__));
-
-				/* Call the bus module watchdog */
-				dhd_bus_watchdog(&dhd->pub);
-
+				/* Hold Mutex to avoid race condition between watchdog thread
+				 * and dhd_bus_devreset function
+				 */
+				MUTEX_LOCK_START_STOP_SET(&dhd->pub);
+				/* Call the bus module watchdog only if pub.up is TRUE */
+#ifdef OEM_ANDROID
+				if (dhd->pub.up)
+#endif
+					dhd_bus_watchdog(&dhd->pub);
+				MUTEX_UNLOCK_START_STOP_SET(&dhd->pub);
 
 				DHD_GENERAL_LOCK(&dhd->pub, flags);
 				/* Count the tick for reference */
@@ -4935,6 +4941,7 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	dhd->timer.data = (ulong)dhd;
 	dhd->timer.function = dhd_watchdog;
 	dhd->default_wd_interval = dhd_watchdog_ms;
+	MUTEX_LOCK_START_STOP_SET_INIT(&dhd->pub);
 
 	if (dhd_watchdog_prio >= 0) {
 		/* Initialize watchdog thread */
