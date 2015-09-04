@@ -1,0 +1,7 @@
+Code-Review+2: Dmitry Shmidt <dimitrysh@google.com>
+Verified+1: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-by: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-at: Fri, 04 Sep 2015 21:20:01 +0000
+Reviewed-on: https://android-review.googlesource.com/169725
+Project: kernel/common
+Branch: refs/heads/android-3.18
