@@ -671,6 +671,11 @@ void ion_unmap_kernel(struct ion_client *client, struct ion_handle *handle)
 	struct ion_buffer *buffer;
 
 	mutex_lock(&client->lock);
+	if (!ion_handle_validate(client, handle)) {
+		pr_err("%s: invalid handle passed to unmap_kernel.\n", __func__);
+		mutex_unlock(&client->lock);
+		return ;
+	}
 	buffer = handle->buffer;
 	mutex_lock(&buffer->lock);
 	ion_handle_kmap_put(handle);
