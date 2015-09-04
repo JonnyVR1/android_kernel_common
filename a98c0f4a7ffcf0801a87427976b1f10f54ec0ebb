@@ -88,6 +88,37 @@ UUID: e486eed4_e37e58ef
 Bytes: 70
 Yes, agreed to Dmtiry Shmidt. Mutex was used only when cfg==NULL case.
 
+11447:0-11453:2
+Fri Sep 04 19:03:36 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_900ebd3e
+UUID: 44141a88_b9bc2342
+Bytes: 1105
+@Dmitry Shmidt:
+
+We are not calling wl_update_wiphybands() with NULL cfg anymore, that was the whole point of this change - to always supply valid cfg pointer instead of relying on the global one.
+
+The old locking logic was: if wl_update_wiphybands() is called with cfg == NULL assume external caller and lock the usr_sync mutex and do the work. If cfg != NULL assume internal caller and assume that mutex is already taken.
+
+@Insun: What I am asking is splitting wl_update_wiphybands() into 2: __wl_update_wiphybands() that does the work itself and does not do any locking. It should be used by the internal to wl_cfg80211.c callers (__wl_cfg80211_up) that have already taken usr_sync mutex.
+
+wl_update_wiphybands() should unconditionally take the lock and call __wl_update_wiphybands() to perform the work:
+
+s32 wl_update_wiphybands(struct bcm_cfg80211 *cfg, bool notify)
+{
+    s32 err;
+
+    mutex_lock(&cfg->usr_sync);
+    err = __wl_update_wiphybands(cfg, notify);
+    mutex_unlock(&cfg->usr_sync);
+
+    return err;
+}
+
+The "non underscore" function should be used by external callers.
+
+Hope this helps.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
