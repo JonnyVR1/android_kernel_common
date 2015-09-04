@@ -72,6 +72,14 @@ We *were* using usr_sync mutex here. If it is not needed/incorrect, please remov
 
 Moreover, looking at the driver wl_update_wiphybands() is called from dhd_bus_country_set() and dhd_bus_band_set() and I do not see anything that would prevent these 2 from being called simultaneously from different threads. So a mutex is needed there.
 
+11447:0-11453:2
+Fri Sep 04 18:25:56 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cce27b_e9428674
+UUID: 6492fe15_900ebd3e
+Bytes: 119
+@Dmitry, but locking used only in case of cfg == NULL, and now we are not calling __wl_update_wiphybands() in this case
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
