@@ -37,6 +37,14 @@ If you did that without adjusting caller in this file to use non-locking version
 
 I am not sure about dropping call to __wl_update_wiphybands(), I'd rather did it in a separate CL.
 
+11447:0-11453:2
+Fri Sep 04 05:42:31 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44141a88_7ed0d131
+UUID: 44141a88_fefa01aa
+Bytes: 171
+Yes, your saying correct. If in case cfg==NULL passing, then there's nothing that we can do update through wiphybands. I think tt's better to see with further test result.
+
 File: drivers/net/wireless/bcmdhd/wl_cfg80211.h
 
 914
@@ -61,4 +69,12 @@ Parent: 6492fe15_15185faf
 UUID: 84529221_b41cd700
 Bytes: 112
 No it is not. You still have __wl_update_wiphybands() as a global function. It should be static to wl_cfg80211.c
+
+914
+Fri Sep 04 05:42:31 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_b41cd700
+UUID: 644d9e85_b8c3b8be
+Bytes: 25
+Oh..Ok. moved to .c file.
 
