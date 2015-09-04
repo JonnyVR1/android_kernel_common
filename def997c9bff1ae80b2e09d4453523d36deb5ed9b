@@ -1,0 +1,11 @@
+Revision: def997c9bff1ae80b2e09d4453523d36deb5ed9b
+Patch-set: 11
+File: drivers/net/wireless/bcmdhd/dhd_linux.c
+
+837:0-842:0
+Fri Sep 04 22:21:07 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_acf6f697
+Bytes: 58
+This seems unrelated change, please move to a separate CL.
+
