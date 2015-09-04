@@ -2431,7 +2431,12 @@ dhd_bus_devreset(dhd_pub_t *dhdp, uint8 flag)
 		if (flag == TRUE) {
 			 /* Turn off WLAN */
 			DHD_ERROR(("%s: == Power OFF ==\n", __FUNCTION__));
+			/* Hold Mutex to avoid race condition between watchdog thread
+			 * and dhd_bus_devreset function
+			 */
+			MUTEX_LOCK_START_STOP_SET(dhdp);
 			bus->dhd->up = FALSE;
+			MUTEX_UNLOCK_START_STOP_SET(dhdp);
 			if (bus->dhd->busstate != DHD_BUS_DOWN) {
 				if (bus->intr) {
 					dhdpcie_bus_intr_disable(bus);

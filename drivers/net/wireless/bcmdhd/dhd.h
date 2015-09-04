@@ -521,6 +521,28 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(dhd_workitem_context_t, dhd_get_dhd_workitem_
 #ifdef PNO_SUPPORT
 int dhd_pno_clean(dhd_pub_t *dhd);
 #endif /* PNO_SUPPORT */
+
+inline static void MUTEX_LOCK_START_STOP_SET_INIT(dhd_pub_t * dhdp)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && defined(OEM_ANDROID)
+	mutex_init(&dhdp->wl_start_stop_lock);
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) */
+}
+
+inline static void MUTEX_LOCK_START_STOP_SET(dhd_pub_t * dhdp)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && defined(OEM_ANDROID)
+	mutex_lock(&dhdp->wl_start_stop_lock);
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) */
+}
+
+inline static void MUTEX_UNLOCK_START_STOP_SET(dhd_pub_t * dhdp)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && defined(OEM_ANDROID)
+	mutex_unlock(&dhdp->wl_start_stop_lock);
+#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) */
+}
+
 /*
  *  Wake locks are an Android power management concept. They are used by applications and services
  *  to request CPU resources.
