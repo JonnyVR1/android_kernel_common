@@ -28,3 +28,11 @@ UUID: 24c9e69c_67719ad6
 Bytes: 63
 Then this is a wrong design - you need to get rid of loop then.
 
+11034:3-11034:21
+Wed Sep 09 21:52:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_67719ad6
+UUID: 24c9e69c_0dfd65a8
+Bytes: 125
+If we are calling wl_wakeup_event() per one event insertion in the queue - then it makes sense but then why we need the loop?
+
