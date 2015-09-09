@@ -17,3 +17,11 @@ UUID: 04c1426c_00388ab7
 Bytes: 154
 i need to do this as soon as we get the result from FW, so as to reduce as much o the time between the FW put the relative time and us getting the host ts
 
+2718:2-2718:24
+Wed Sep 09 00:09:43 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_00388ab7
+UUID: e4c34e74_bf369fb0
+Bytes: 108
+Indeed, so why not to do this at line #2709? Why to do this in the loop - next "batch" will have later time.
+
