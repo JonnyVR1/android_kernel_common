@@ -33,3 +33,11 @@ UUID: 24c9e69c_39caa72e
 Bytes: 43
 because line 2712 is a fresh "get" from FW.
 
+2718:2-2718:24
+Wed Sep 09 00:13:38 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_39caa72e
+UUID: c4ef2afe_46190b81
+Bytes: 114
+You are pulling data in chunks till PFN_COMPLETE, right? So it makes sense to set same time to all results, right?
+
