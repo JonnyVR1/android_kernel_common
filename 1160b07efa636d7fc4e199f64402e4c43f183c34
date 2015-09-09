@@ -9,3 +9,14 @@ UUID: 24c9e69c_67c07a65
 Bytes: 135
 This doesn't look right - we take 1 wakelock count per semaphore UP and one down - taking one down in internal loop doesn't seem right.
 
+11034:3-11034:21
+Wed Sep 09 17:48:37 2015 +0000
+Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_67c07a65
+UUID: 64cf5e9f_249efc22
+Bytes: 399
+@Dmitry Shmidt. 
+We set wakelock for every enqueued event. So I think it's right to set unlock for every deque event and not counting on semaphore.  Previous mechanism was setting unlock one time after all deque multiple event processing done.
+
+What we found that sometimes mismatch count was seen between wl_wakup_event(wake lock) and wl_event_handler(wake unlock). Then leave wake lock count high.
+
