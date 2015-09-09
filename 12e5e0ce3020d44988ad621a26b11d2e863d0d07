@@ -1,0 +1,13 @@
+Revision: 12e5e0ce3020d44988ad621a26b11d2e863d0d07
+Patch-set: 8
+File: drivers/net/wireless/bcmdhd/wl_cfgp2p.c
+
+2671:0-2674:12
+Wed Sep 09 18:46:45 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04c1426c_6ec4d798
+Bytes: 256
+This function should have been called "wl_cfgp2p_check_was_enabled_at_some_point_in_past_but_we_have_no_idea_what_the_actual_state_is_when_we_use_its_result".
+
+Once you release the the spinlock another thread is free to change value of p2p_supported field.
+
