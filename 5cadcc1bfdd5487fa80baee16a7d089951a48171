@@ -1,0 +1,11 @@
+Revision: 5cadcc1bfdd5487fa80baee16a7d089951a48171
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_pno.c
+
+2718:2-2718:24
+Wed Sep 09 00:01:20 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24c9e69c_59f8c383
+Bytes: 51
+Don't you need to do this before entering the loop?
+
