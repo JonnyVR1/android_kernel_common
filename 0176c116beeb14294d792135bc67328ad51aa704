@@ -1,0 +1,25 @@
+Revision: 0176c116beeb14294d792135bc67328ad51aa704
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1371
+Wed Sep 09 18:53:00 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 244c8613_9e05f989
+Bytes: 37
+Can dhd->busstate become "down" here?
+
+1380
+Wed Sep 09 18:53:00 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 244c8613_be0a3597
+Bytes: 16
+What about here?
+
+1394
+Wed Sep 09 18:53:00 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64cf5e9f_af0b0564
+Bytes: 16
+return -ENOMEM ?
+
