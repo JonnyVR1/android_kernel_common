@@ -20,3 +20,11 @@ We set wakelock for every enqueued event. So I think it's right to set unlock fo
 
 What we found that sometimes mismatch count was seen between wl_wakup_event(wake lock) and wl_event_handler(wake unlock). Then leave wake lock count high.
 
+11034:3-11034:21
+Wed Sep 09 17:54:38 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64cf5e9f_249efc22
+UUID: 24c9e69c_67719ad6
+Bytes: 63
+Then this is a wrong design - you need to get rid of loop then.
+
