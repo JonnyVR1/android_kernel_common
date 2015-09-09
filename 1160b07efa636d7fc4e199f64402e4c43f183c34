@@ -1,0 +1,11 @@
+Revision: 1160b07efa636d7fc4e199f64402e4c43f183c34
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+11034:3-11034:21
+Wed Sep 09 17:09:51 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24c9e69c_67c07a65
+Bytes: 135
+This doesn't look right - we take 1 wakelock count per semaphore UP and one down - taking one down in internal loop doesn't seem right.
+
