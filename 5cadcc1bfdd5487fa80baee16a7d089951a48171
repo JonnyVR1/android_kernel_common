@@ -25,3 +25,11 @@ UUID: e4c34e74_bf369fb0
 Bytes: 108
 Indeed, so why not to do this at line #2709? Why to do this in the loop - next "batch" will have later time.
 
+2718:2-2718:24
+Wed Sep 09 00:11:31 2015 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c34e74_bf369fb0
+UUID: 24c9e69c_39caa72e
+Bytes: 43
+because line 2712 is a fresh "get" from FW.
+
