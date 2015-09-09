@@ -9,3 +9,11 @@ UUID: 24c9e69c_59f8c383
 Bytes: 51
 Don't you need to do this before entering the loop?
 
+2718:2-2718:24
+Wed Sep 09 00:07:32 2015 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_59f8c383
+UUID: 04c1426c_00388ab7
+Bytes: 154
+i need to do this as soon as we get the result from FW, so as to reduce as much o the time between the FW put the relative time and us getting the host ts
+
