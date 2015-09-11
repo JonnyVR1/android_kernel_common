@@ -13,3 +13,11 @@ I'd rather we made buf_use a bitmap and used test_set_bit() instead of spinlock 
 
 By the way, what is the point of this static buf? Why aren't we using standard kernel facilities? Ideally this all should go away I think.
 
+1165:0-1165:40
+Fri Sep 11 19:11:29 2015 +0000
+Author: Ashwin Bhat <1049528@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84a1b20e_8e9ebb9e
+UUID: c402caba_3b2c2376
+Bytes: 453
+We need the static buf to have guaranteed memory for crucial operations. This patch was made a while back. The spinlock here is held for very brief time, i dont want to change the design at this late stage. we are also looping quickly through the 16 such buffers, test_bit will be atomic per instructions, i think here the code wants the full check as protected and since the looping is extremely brief i dont think spinlock is much of an issue here....
+
