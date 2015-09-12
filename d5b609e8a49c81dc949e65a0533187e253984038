@@ -21,3 +21,11 @@ UUID: c402caba_3b2c2376
 Bytes: 453
 We need the static buf to have guaranteed memory for crucial operations. This patch was made a while back. The spinlock here is held for very brief time, i dont want to change the design at this late stage. we are also looping quickly through the 16 such buffers, test_bit will be atomic per instructions, i think here the code wants the full check as protected and since the looping is extremely brief i dont think spinlock is much of an issue here....
 
+1165:0-1165:40
+Sat Sep 12 00:04:13 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c402caba_3b2c2376
+UUID: 6473de94_38cd2546
+Bytes: 130
+Ah I see, you want 2 contiguous pages for ioctl data and you are not using scatter-gather... OK, I guess it is fine at this point.
+
