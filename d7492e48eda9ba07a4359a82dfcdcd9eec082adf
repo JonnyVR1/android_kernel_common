@@ -1,0 +1,16 @@
+Revision: d7492e48eda9ba07a4359a82dfcdcd9eec082adf
+Patch-set: 1
+File: net/wireless/scan.c
+
+430:0-431:55
+Mon Sep 14 20:35:59 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 648afea0_976b5ce4
+Bytes: 208
+I'd rather see this as:
+
+if (a->channel != b->channel)
+    return a->channel->center_freq <= b->channel->center_freq ? -1 : 1;
+
+If channels are different there is no need yo compare capabilities, or BSS, etc.
+
