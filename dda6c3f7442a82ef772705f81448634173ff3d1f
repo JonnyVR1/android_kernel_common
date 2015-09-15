@@ -1,0 +1,11 @@
+Revision: dda6c3f7442a82ef772705f81448634173ff3d1f
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+1531:5-1531:9
+Tue Sep 15 18:08:46 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8478d270_f307471e
+Bytes: 69
+It means that prot_ring_attach() failed... How we can be here at all?
+
