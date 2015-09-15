@@ -26,3 +26,11 @@ UUID: e467cecb_0232abd6
 Bytes: 23
 But how can we recover?
 
+1531:5-1531:9
+Tue Sep 15 23:39:07 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e467cecb_0232abd6
+UUID: 8478d270_0cb90003
+Bytes: 81
+I mean, ok you will protect this function, but ringstate is used in other places.
+
