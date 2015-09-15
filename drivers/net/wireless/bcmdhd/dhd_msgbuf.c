@@ -1528,6 +1528,10 @@ dhd_prot_update_txflowring(dhd_pub_t *dhd, uint16 flow_id, void *msgring_info)
 	uint16 r_index = 0;
 	msgbuf_ring_t *ring = (msgbuf_ring_t *)msgring_info;
 
+	if (ring->ringstate == NULL) {
+		return;
+	}
+
 	/* Update read pointer */
 	if (DMA_INDX_ENAB(dhd->dma_d2h_ring_upd_support)) {
 		r_index = dhd_get_dmaed_index(dhd, H2D_DMA_READINDX, ring->idx);
