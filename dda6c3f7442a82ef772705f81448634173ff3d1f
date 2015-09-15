@@ -9,3 +9,12 @@ UUID: 8478d270_f307471e
 Bytes: 69
 It means that prot_ring_attach() failed... How we can be here at all?
 
+1531:5-1531:9
+Tue Sep 15 23:03:44 2015 +0000
+Author: Xinrui Sun <1076109@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8478d270_f307471e
+UUID: c45e4afd_4a8af5a1
+Bytes: 260
+In prot_ring_attach(), ring->ringstate allocate is the last process for creating ring pointer.
+If ring->ringstate is NULL, it means this ring pointer was not created successfully, so we will not update this txflowring at this time when update txflowring queue.
+
