@@ -1536,6 +1536,10 @@ dhd_prot_update_txflowring(dhd_pub_t *dhd, uint16 flow_id, void *msgring_info)
 	uint16 r_index = 0;
 	msgbuf_ring_t *ring = (msgbuf_ring_t *)msgring_info;
 
+	if (ring->ringstate == NULL) {
+		return;
+	}
+
 	/* Update read pointer */
 	if (DMA_INDX_ENAB(dhd->dma_d2h_ring_upd_support)) {
 		r_index = dhd_get_dmaed_index(dhd, H2D_DMA_READINDX, ring->idx);
@@ -3347,7 +3351,7 @@ dhd_prot_flow_ring_create(dhd_pub_t *dhd, flow_ring_node_t *flow_ring_node)
 	dhd_prot_t *prot = dhd->prot;
 	uint16 hdrlen = sizeof(tx_flowring_create_request_t);
 	uint16 msglen = hdrlen;
-	unsigned long flags;
+	unsigned long flags, ring_flags;
 	char eabuf[ETHER_ADDR_STR_LEN];
 	uint16 alloced = 0;
 
@@ -3366,15 +3370,18 @@ dhd_prot_flow_ring_create(dhd_pub_t *dhd, flow_ring_node_t *flow_ring_node)
 
 
 	DHD_GENERAL_LOCK(dhd, flags);
+	DHD_FLOWRING_LOCK(flow_ring_node->lock, ring_flags);
 	/* Request for ring buffer space */
 	flow_create_rqst = (tx_flowring_create_request_t *)dhd_alloc_ring_space(dhd,
 		prot->h2dring_ctrl_subn, DHD_FLOWRING_DEFAULT_NITEMS_POSTED_H2D, &alloced);
 
 	if (flow_create_rqst == NULL) {
 		DHD_ERROR(("%s: No space in control ring for Flow create req\n", __FUNCTION__));
+		DHD_FLOWRING_UNLOCK(flow_ring_node->lock, ring_flags);
 		DHD_GENERAL_UNLOCK(dhd, flags);
 		return BCME_NOMEM;
 	}
+	DHD_FLOWRING_UNLOCK(flow_ring_node->lock, ring_flags);
 	msgbuf_flow_info->inited = TRUE;
 
 	/* Common msg buf hdr */

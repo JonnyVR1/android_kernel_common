@@ -1658,16 +1658,13 @@ dhd_bus_schedule_queue(struct dhd_bus  *bus, uint16 flow_id, bool txs)
 	flow_ring_node = DHD_FLOW_RING(bus->dhd, flow_id);
 
 	{
-		unsigned long flags;
 		void *txp = NULL;
 		flow_queue_t *queue;
 
 		queue = &flow_ring_node->queue; /* queue associated with flow ring */
 
-		DHD_FLOWRING_LOCK(flow_ring_node->lock, flags);
 
 		if (flow_ring_node->status != FLOW_RING_STATUS_OPEN) {
-				DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 				return BCME_NOTREADY;
 		}
 
@@ -1683,7 +1680,6 @@ dhd_bus_schedule_queue(struct dhd_bus  *bus, uint16 flow_id, bool txs)
 				dhd_prot_txdata_write_flush(bus->dhd, flow_id, FALSE);
 				/* reinsert at head */
 				dhd_flow_queue_reinsert(bus->dhd, queue, txp);
-				DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 
 				/* If we are able to requeue back, return success */
 				return BCME_OK;
@@ -1692,7 +1688,6 @@ dhd_bus_schedule_queue(struct dhd_bus  *bus, uint16 flow_id, bool txs)
 
 		dhd_prot_txdata_write_flush(bus->dhd, flow_id, FALSE);
 
-		DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 	}
 
 	return ret;
@@ -1751,7 +1746,9 @@ dhd_bus_txdata(struct dhd_bus *bus, void *txp, uint8 ifidx)
 			}
 			return BCME_OK;
 		}
+		DHD_FLOWRING_LOCK(flow_ring_node->lock, flags);
 		ret = dhd_bus_schedule_queue(bus, flowid, FALSE);
+		DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 
 		/* If we have anything pending, try to push into q */
 		if (txp_pend) {
@@ -3487,13 +3484,16 @@ dhd_update_txflowrings(dhd_pub_t *dhd)
 	dll_t *item, *next;
 	flow_ring_node_t *flow_ring_node;
 	struct dhd_bus *bus = dhd->bus;
+	unsigned long flags;
 
 	for (item = dll_head_p(&bus->const_flowring);
 	         !dll_end(&bus->const_flowring, item); item = next) {
 		next = dll_next_p(item);
 
 		flow_ring_node = dhd_constlist_to_flowring(item);
+		DHD_FLOWRING_LOCK(flow_ring_node->lock, flags);
 		dhd_prot_update_txflowring(dhd, flow_ring_node->flowid, flow_ring_node->prot_info);
+		DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 	}
 }
 
@@ -4267,10 +4267,10 @@ void dhd_bus_clean_flow_ring(dhd_bus_t *bus, void *node)
 
 	dll_delete(&flow_ring_node->list);
 
-	DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 
 	/* Call Flow ring clean up */
 	dhd_prot_clean_flow_ring(bus->dhd, flow_ring_node->prot_info);
+	DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 	dhd_flowid_free(bus->dhd, flow_ring_node->flow_info.ifindex,
 					flow_ring_node->flowid);
 
@@ -4316,9 +4316,9 @@ dhd_bus_flow_ring_create_response(dhd_bus_t *bus, uint16 flowid, int32 status)
 
 	DHD_FLOWRING_LOCK(flow_ring_node->lock, flags);
 	flow_ring_node->status = FLOW_RING_STATUS_OPEN;
-	DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 
 	dhd_bus_schedule_queue(bus, flowid, FALSE);
+	DHD_FLOWRING_UNLOCK(flow_ring_node->lock, flags);
 
 	return;
 }
