@@ -10,3 +10,11 @@ Bytes: 70
 @Dmitry 
 Where did you set this "wl_chip" ? I can't find it in angler.
 
+694:34-694:41
+Wed Sep 16 22:05:27 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a456b6eb_b5da0853
+UUID: a456b6eb_35e7f81a
+Bytes: 115
+wl_chip should be set in DT entry, this is why I propose to use by default bcm4358, so you will not need to add it.
+
