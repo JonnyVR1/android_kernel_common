@@ -34,3 +34,11 @@ UUID: 8478d270_0cb90003
 Bytes: 81
 I mean, ok you will protect this function, but ringstate is used in other places.
 
+1531:5-1531:9
+Wed Sep 16 14:01:45 2015 +0000
+Author: Xinrui Sun <1076109@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8478d270_0cb90003
+UUID: 0465c2c3_0b072259
+Bytes: 35
+Got it. I will check more about it.
+
