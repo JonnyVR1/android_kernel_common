@@ -11,6 +11,14 @@ Bytes: 105
 Need confirm here.
 Then changing all 4356's table to 4358's. Then it will work 4358 as default.
 
+645:18-645:54
+Wed Sep 16 22:12:20 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 843d32a1_b83756c7
+UUID: 246d66b4_d907d31e
+Bytes: 39
+Yes, this is the place of default chip.
+
 694:34-694:41
 Wed Sep 16 22:03:06 2015 +0000
 Author: Insun Song <1072843@85c56323-6fa9-3386-8a01-6480fb634889>
