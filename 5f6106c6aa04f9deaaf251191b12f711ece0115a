@@ -1,0 +1,11 @@
+Revision: 5f6106c6aa04f9deaaf251191b12f711ece0115a
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/dhd_pcie.c
+
+2443
+Wed Sep 16 18:27:30 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44725a92_e37cc7f7
+Bytes: 151
+Can we add a comment that the lock here is not to protect ->up flag but rather to ensure that dhd_bus_watchdog does not touch hardware past this point.
+
