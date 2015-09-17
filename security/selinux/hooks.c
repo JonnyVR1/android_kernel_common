@@ -2822,9 +2822,6 @@ static int selinux_inode_setattr(struct dentry *dentry, struct iattr *iattr)
 			ATTR_ATIME_SET | ATTR_MTIME_SET | ATTR_TIMES_SET))
 		return dentry_has_perm(cred, dentry, FILE__SETATTR);
 
-	if (selinux_policycap_openperm && (ia_valid & ATTR_SIZE))
-		av |= FILE__OPEN;
-
 	return dentry_has_perm(cred, dentry, av);
 }
 
@@ -3063,6 +3060,17 @@ static void selinux_inode_getsecid(const struct inode *inode, u32 *secid)
 {
 	struct inode_security_struct *isec = inode->i_security;
 	*secid = isec->sid;
+}
+
+static int selinux_inode_truncate(struct dentry *dentry, u32 flags)
+{
+	const struct cred *cred = current_cred();
+	__u32 av = FILE__WRITE;
+
+	if (selinux_policycap_openperm && (flags & SECURITY_TRUNCATE))
+		av |= FILE__OPEN;
+
+	return dentry_has_perm(cred, dentry, av);
 }
 
 /* file security operations */
@@ -5739,6 +5747,7 @@ static struct security_operations selinux_ops = {
 	.inode_setsecurity =		selinux_inode_setsecurity,
 	.inode_listsecurity =		selinux_inode_listsecurity,
 	.inode_getsecid =		selinux_inode_getsecid,
+	.inode_truncate =		selinux_inode_truncate,
 
 	.file_permission =		selinux_file_permission,
 	.file_alloc_security =		selinux_file_alloc_security,
