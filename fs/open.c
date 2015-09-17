@@ -103,6 +103,8 @@ long vfs_truncate(struct path *path, loff_t length)
 	if (!error)
 		error = security_path_truncate(path);
 	if (!error)
+		error = security_inode_truncate(path->dentry, SECURITY_TRUNCATE);
+	if (!error)
 		error = do_truncate(path->dentry, length, 0, NULL);
 
 put_write_and_out:
@@ -186,6 +188,8 @@ static long do_sys_ftruncate(unsigned int fd, loff_t length, int small)
 	error = locks_verify_truncate(inode, f.file, length);
 	if (!error)
 		error = security_path_truncate(&f.file->f_path);
+	if (!error)
+		error = security_inode_truncate(dentry, SECURITY_FTRUNCATE);
 	if (!error)
 		error = do_truncate(dentry, length, ATTR_MTIME|ATTR_CTIME, f.file);
 	sb_end_write(inode->i_sb);
