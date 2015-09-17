@@ -60,6 +60,10 @@ struct mm_struct;
 #define SECURITY_CAP_NOAUDIT 0
 #define SECURITY_CAP_AUDIT 1
 
+/* flags for security_inode_truncate */
+#define SECURITY_TRUNCATE 1
+#define SECURITY_FTRUNCATE 2
+
 struct ctl_table;
 struct audit_krule;
 struct user_namespace;
@@ -549,6 +553,11 @@ static inline void security_free_mnt_opts(struct security_mnt_opts *opts)
  *	@inode contains a pointer to the inode.
  *	@secid contains a pointer to the location where result will be saved.
  *	In case of failure, @secid will be set to zero.
+ * @inode_truncate:
+ *	Check permissions before allowing file truncation.
+ *	@dentry contains the dentry structure for the file.
+ *	@flags Can be SECURITY_TRUNCATE or SECURITY_FTRUNCATE
+ *	Return 0 if permission is granted.
  *
  * Security hooks for file operations
  *
@@ -1503,6 +1512,7 @@ struct security_operations {
 	int (*inode_setsecurity) (struct inode *inode, const char *name, const void *value, size_t size, int flags);
 	int (*inode_listsecurity) (struct inode *inode, char *buffer, size_t buffer_size);
 	void (*inode_getsecid) (const struct inode *inode, u32 *secid);
+	int (*inode_truncate)	(struct dentry *dentry, u32 flags);
 
 	int (*file_permission) (struct file *file, int mask);
 	int (*file_alloc_security) (struct file *file);
@@ -1776,6 +1786,7 @@ int security_inode_getsecurity(const struct inode *inode, const char *name, void
 int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags);
 int security_inode_listsecurity(struct inode *inode, char *buffer, size_t buffer_size);
 void security_inode_getsecid(const struct inode *inode, u32 *secid);
+int security_inode_truncate(struct dentry *dentry, u32 flags);
 int security_file_permission(struct file *file, int mask);
 int security_file_alloc(struct file *file);
 void security_file_free(struct file *file);
@@ -2220,6 +2231,12 @@ static inline int security_inode_listsecurity(struct inode *inode, char *buffer,
 static inline void security_inode_getsecid(const struct inode *inode, u32 *secid)
 {
 	*secid = 0;
+}
+
+static inline int security_inode_truncate(struct dentry *dentry,
+					  u32 flags)
+{
+	return 0;
 }
 
 static inline int security_file_permission(struct file *file, int mask)
