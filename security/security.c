@@ -673,6 +673,13 @@ void security_inode_getsecid(const struct inode *inode, u32 *secid)
 	security_ops->inode_getsecid(inode, secid);
 }
 
+int security_inode_truncate(struct dentry *dentry, u32 flags)
+{
+	if (unlikely(IS_PRIVATE(dentry->d_inode)))
+		return 0;
+	return security_ops->inode_truncate(dentry, flags);
+}
+
 int security_file_permission(struct file *file, int mask)
 {
 	int ret;
