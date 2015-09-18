@@ -1,0 +1,18 @@
+Revision: 5200d9b90a342c6d82e8eebd17b52feac47ffdc5
+Patch-set: 9
+File: /COMMIT_MSG
+
+11:65-11:67
+Fri Sep 18 17:08:07 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 89d46b2f_1640dcfa
+Bytes: 36
+extraneous comma (my fault, I think)
+
+16:61-17:5
+Fri Sep 18 17:08:07 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a9bdafe7_d7e25c96
+Bytes: 11
+double word
+
