@@ -17,3 +17,13 @@ UUID: 69dad736_4387dada
 Bytes: 75
 What do you suggest? Your CONFIG_SECURITY_PATH idea seems straight forward.
 
+106
+Fri Sep 18 13:28:15 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 69dad736_4387dada
+UUID: c97ca3f3_e830b383
+Bytes: 889
+Well, it would be a big conceptual change for SELinux, as those hooks were only added for the pathname-based security modules (AppArmor, TOMOYO) and everywhere else we are using inode-based hooks that occur deeper in the kernel (and less likely to be bypassed by other callers of the vfs helper functions). I could also see objections due to the fact that no other hook tries to make this distinction between pathname-based system call and fd-based system call, so there would be a lack of parallelism in the hooks unless similar arguments were added to them all.
+Adding a new lookup permission check at the tail of pathname resolution would be more consistent with SELinux design and would address all pathname-based system calls, but that is obviously a performance critical path.
+Wait...can't we just check for ATTR_FILE in selinux_inode_setattr() and not set FILE__OPEN if that is set?
+
