@@ -1,0 +1,18 @@
+Revision: b4382cbe9f5f202e66d1cd8614ec680b43cd1c94
+Patch-set: 8
+File: /COMMIT_MSG
+
+10
+Fri Sep 18 16:42:32 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 89d46b2f_963aac94
+Bytes: 233
+The other two cases where do_truncate is called with a filp (and therefore ATTR_FILE is set), for coredump files and for open(O_TRUNC), already apply an open check during file open and therefore do not need this check to be repeated.
+
+13
+Fri Sep 18 16:42:32 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a9a4cfcb_1f40e3fa
+Bytes: 84
+Commit 95dbf739313f ("SELinux: check OPEN on truncate calls") fixed a major issue...
+
