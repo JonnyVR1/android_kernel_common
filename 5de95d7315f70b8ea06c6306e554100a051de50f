@@ -27,3 +27,11 @@ Well, it would be a big conceptual change for SELinux, as those hooks were only 
 Adding a new lookup permission check at the tail of pathname resolution would be more consistent with SELinux design and would address all pathname-based system calls, but that is obviously a performance critical path.
 Wait...can't we just check for ATTR_FILE in selinux_inode_setattr() and not set FILE__OPEN if that is set?
 
+106
+Fri Sep 18 15:39:35 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c97ca3f3_e830b383
+UUID: 29bd3fca_1c2539ef
+Bytes: 11
+Checking...
+
