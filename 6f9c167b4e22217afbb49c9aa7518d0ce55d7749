@@ -1,0 +1,11 @@
+Revision: 6f9c167b4e22217afbb49c9aa7518d0ce55d7749
+Patch-set: 7
+File: security/selinux/hooks.c
+
+2826
+Fri Sep 18 16:00:22 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6971f71a_65b0665e
+Bytes: 71
+Just add this as an additional condition for the previous if statement.
+
