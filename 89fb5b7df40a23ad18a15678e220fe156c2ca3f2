@@ -36,3 +36,15 @@ UUID: e30dfa2c_5a62713b
 Bytes: 145
 commit: 00028aa37098 (netfilter: xt_socket: use IP early demux), and equivalent Android code changes, in xt_socket does guarantee that by design.
 
+1608:3-1609:21
+Thu Sep 24 22:18:53 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e30dfa2c_5a62713b
+UUID: 6e4d7d85_f4f266d1
+Bytes: 284
+This does not help if we did not increase sk refcount and it was not time wait socket. Callers of qtaguid_find_sk() are dropping sk reference unconditionally if sk is not null.
+
+I believe we already have proper fix in other branch:
+
+https://android-review.googlesource.com/#/c/169725/
+
