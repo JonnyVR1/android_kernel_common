@@ -9,3 +9,13 @@ UUID: 6e4d7d85_74de76f9
 Bytes: 84
 You are already using GENERAL_LOCK. What data are you protecting with FLOWRING_LOCK?
 
+3373:1-3373:18
+Thu Sep 24 23:02:48 2015 +0000
+Author: Xinrui Sun <1075088@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e4d7d85_74de76f9
+UUID: 0e5fa128_d9143f0b
+Bytes: 149
+@Dmitry,
+We use it for flow ring buffer creating and using.
+In the case, we found flow ring buffer create was not finished when using by irq service.
+
