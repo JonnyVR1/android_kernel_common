@@ -1,0 +1,11 @@
+Revision: 891dec860faee530335bfb10205cab1b0f2c7b63
+Patch-set: 3
+File: net/ipv4/route.c
+
+519
+Thu Sep 24 22:51:19 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_1faab376
+Bytes: 235
+This handling is a bit different than all other parameters and it would be better if we maintained consistency: caller supplies default values and if we have 'sk' then __build_flow_key() uses values from sk, otherwise applies defaults.
+
