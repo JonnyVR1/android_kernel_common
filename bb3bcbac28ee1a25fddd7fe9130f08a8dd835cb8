@@ -1,0 +1,11 @@
+Revision: bb3bcbac28ee1a25fddd7fe9130f08a8dd835cb8
+Patch-set: 2
+File: drivers/net/wireless/bcmdhd/dhd_msgbuf.c
+
+3373:1-3373:18
+Thu Sep 24 22:49:00 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_74de76f9
+Bytes: 84
+You are already using GENERAL_LOCK. What data are you protecting with FLOWRING_LOCK?
+
