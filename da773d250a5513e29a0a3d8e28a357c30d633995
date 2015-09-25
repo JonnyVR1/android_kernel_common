@@ -1,0 +1,11 @@
+Revision: da773d250a5513e29a0a3d8e28a357c30d633995
+Patch-set: 1
+File: net/ipv6/ip6_vti.c
+
+559:40-559:51
+Fri Sep 25 01:37:43 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce666912_786d21cf
+Bytes: 144
+Would we have a socket object at this point (e.g., in skb->sk)? If so, it's probably more correct to get the UID by calling sock_i_uid(skb->sk).
+
