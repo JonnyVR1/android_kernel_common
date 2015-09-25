@@ -9,3 +9,14 @@ UUID: 2e2e2591_1faab376
 Bytes: 235
 This handling is a bit different than all other parameters and it would be better if we maintained consistency: caller supplies default values and if we have 'sk' then __build_flow_key() uses values from sk, otherwise applies defaults.
 
+519:28-519:43
+Fri Sep 25 01:43:56 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e7bbdad_753f689f
+Bytes: 271
+FWIW the android-3.10 kernel, which is where this code originally came from, uses "0" here. (Which is the same, since GLOBAL_ROOT_UID is 0.)
+
+I'd just cherry-pick that commit here:
+
+https://android.googlesource.com/kernel/common/+/455b09d66a9ccfc572497ae88375ae343ff9ae66
+
