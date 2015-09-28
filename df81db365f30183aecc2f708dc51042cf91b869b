@@ -1,0 +1,22 @@
+Revision: df81db365f30183aecc2f708dc51042cf91b869b
+Patch-set: 2
+File: drivers/md/dm-verity.c
+
+463:0-465:20
+Mon Sep 28 21:24:31 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_57da4ea9
+Bytes: 167
+This is usually frowned upon...although I see it scattered all over in /drivers/md
+
+https://www.kernel.org/doc/Documentation/CodingStyle
+
+See below for an alternative.
+
+474:9-474:38
+Mon Sep 28 21:24:31 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_976566a9
+Bytes: 89
+int (*verity_bv_block_func) (dm_verity *v, struct dm_verity_io *io, u8 *data, size_t len)
+
