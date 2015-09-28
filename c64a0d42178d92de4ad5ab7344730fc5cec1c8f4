@@ -1,0 +1,11 @@
+Revision: c64a0d42178d92de4ad5ab7344730fc5cec1c8f4
+Patch-set: 1
+File: drivers/md/dm-verity.c
+
+978:3-978:19
+Mon Sep 28 20:53:58 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_2217967f
+Bytes: 12
+always zero?
+
