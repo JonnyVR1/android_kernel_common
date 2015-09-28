@@ -1,0 +1,18 @@
+Revision: bbe64aef04496207dde85941029f31b562b425aa
+Patch-set: 1
+File: drivers/md/dm-verity.c
+
+425
+Mon Sep 28 17:55:55 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_9730c71e
+Bytes: 27
+nit, whitespace-only change
+
+790:0-790:15
+Mon Sep 28 17:55:55 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_c0cb1332
+Bytes: 26
+should go on previous line
+
