@@ -1,0 +1,11 @@
+Revision: 4b27b40dfdf3c021c0da5804f6002df3d109355d
+Patch-set: 1
+File: Documentation/device-mapper/verity.txt
+
+86
+Mon Sep 28 16:59:24 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_40ce2399
+Bytes: 110
+I was under the impression that the mmc controller already did this. Have you verified that this is necessary?
+
