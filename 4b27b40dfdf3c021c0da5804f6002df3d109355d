@@ -9,3 +9,11 @@ UUID: ee86cdd4_40ce2399
 Bytes: 110
 I was under the impression that the mmc controller already did this. Have you verified that this is necessary?
 
+86
+Tue Sep 29 09:37:38 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee86cdd4_40ce2399
+UUID: 0eb5e1d9_3d13dbd6
+Bytes: 263
+Yes, it's necessary. This refers to blocks that contain data, but are not used by the file system. We do not clear the entire partition when writing the file system and blocks that dm-verity expects to contain zeros may actually contain non-zero data as a result.
+
