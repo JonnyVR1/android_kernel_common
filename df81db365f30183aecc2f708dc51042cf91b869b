@@ -13,10 +13,26 @@ https://www.kernel.org/doc/Documentation/CodingStyle
 
 See below for an alternative.
 
+463:0-465:20
+Tue Sep 29 12:50:05 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_57da4ea9
+UUID: ceae6993_e1cb7c31
+Bytes: 52
+Good point. The typedef is not really needed anyway.
+
 474:9-474:38
 Mon Sep 28 21:24:31 2015 +0000
 Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee616dea_976566a9
 Bytes: 89
 int (*verity_bv_block_func) (dm_verity *v, struct dm_verity_io *io, u8 *data, size_t len)
+
+474:9-474:38
+Tue Sep 29 12:50:05 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_976566a9
+UUID: 6ec3bd5a_b8bb7545
+Bytes: 4
+Done
 
