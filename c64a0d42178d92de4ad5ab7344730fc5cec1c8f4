@@ -9,3 +9,11 @@ UUID: ae5bf53d_2217967f
 Bytes: 12
 always zero?
 
+978:3-978:19
+Tue Sep 29 10:04:53 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae5bf53d_2217967f
+UUID: 6ec3bd5a_58e7c1a6
+Bytes: 90
+Correct, in this version r is always zero. Should I move this line to the next CL instead?
+
