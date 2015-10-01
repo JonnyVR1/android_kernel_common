@@ -1,0 +1,7 @@
+Code-Review+2: Rom Lemarchand <romlem@android.com>
+Verified+1: Daniel Rosenberg <drosen@google.com>
+Submitted-by: Daniel Rosenberg <drosen@google.com>
+Submitted-at: Thu, 01 Oct 2015 19:46:43 +0000
+Reviewed-on: https://android-review.googlesource.com/173848
+Project: kernel/common
+Branch: refs/heads/android-3.14
