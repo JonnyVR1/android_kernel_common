@@ -556,6 +556,9 @@ void __init prepare_namespace(void)
 	wait_for_device_probe();
 
 	md_run_setup();
+	if (IS_ENABLED(CONFIG_ROOTDEV_VERITY) &&
+	    !dm_run_setup(saved_root_name))
+		strcpy(saved_root_name, "/dev/dm-0");
 
 	if (saved_root_name[0]) {
 		root_device_name = saved_root_name;
