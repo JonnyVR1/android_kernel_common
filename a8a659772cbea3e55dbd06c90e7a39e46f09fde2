@@ -1,0 +1,11 @@
+Revision: a8a659772cbea3e55dbd06c90e7a39e46f09fde2
+Patch-set: 1
+File: kernel/mutex.c
+
+349
+Thu Oct 15 15:40:09 2015 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99c5aa26_ce3fc3ee
+Bytes: 37
+Add an ifdef ARM or ARM64 around this
+
