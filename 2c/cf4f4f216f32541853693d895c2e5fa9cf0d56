@@ -1,0 +1,7 @@
+Code-Review+2: Dmitry Shmidt <dimitrysh@google.com>
+Verified+1: Badhri Jagan Sridharan <badhri@google.com>
+Submitted-by: Badhri Jagan Sridharan <badhri@google.com>
+Submitted-at: Thu, 15 Oct 2015 20:53:20 +0000
+Reviewed-on: https://android-review.googlesource.com/176923
+Project: kernel/common
+Branch: refs/heads/android-3.18
