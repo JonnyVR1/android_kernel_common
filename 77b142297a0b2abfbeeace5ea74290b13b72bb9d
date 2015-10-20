@@ -1,0 +1,43 @@
+Revision: 77b142297a0b2abfbeeace5ea74290b13b72bb9d
+Patch-set: 5
+File: security/selinux/avc.c
+
+751
+Tue Oct 20 17:42:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19e61a29_d5780e84
+Bytes: 94
+This can stay static; you just need to move avc_xperms_audit() after this function is defined.
+
+File: security/selinux/hooks.c
+
+3107
+Tue Oct 20 17:42:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59fdf2e7_7f384b95
+Bytes: 37
+struct selinux_audit_data sad = {0,};
+
+3112
+Tue Oct 20 17:42:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ef22fe_53ce76b9
+Bytes: 38
+COMMON_AUDIT_DATA_INIT(&ad, IOCTL_OP);
+
+3114
+Tue Oct 20 17:42:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19e61a29_b56d8ac4
+Bytes: 29
+ad.selinux_audit_data = &sad;
+
+File: security/selinux/include/avc.h
+
+88
+Tue Oct 20 17:42:52 2015 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9975aa40_b1f9faed
+Bytes: 11
+Not needed.
+
