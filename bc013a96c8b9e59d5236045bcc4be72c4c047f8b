@@ -1,0 +1,85 @@
+Revision: bc013a96c8b9e59d5236045bcc4be72c4c047f8b
+Patch-set: 1
+File: init/do_mounts.c
+
+561:27-561:36
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f75ee3_468594d1
+Bytes: 71
+Not /dev/block/dm-0? Would this conflict with dm devices created later?
+
+File: init/do_mounts_android_verity.c
+
+46:34-46:38
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99476aec_3e1b8986
+Bytes: 6
+const?
+
+144:4-144:8
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_38fde9cb
+Bytes: 6
+const?
+
+170:36-170:40
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59fc12c5_64d64ad8
+Bytes: 6
+const?
+
+344:37-344:57
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_ffe67bc6
+Bytes: 44
+>VERITY_METADATA_SIZE - header size perhaps?
+
+384:3-384:7
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f75ee3_a3431a0a
+Bytes: 167
+If we are in EIO mode, we shouldn't mount the device if something fails, because the user won't be warned. For A/B, we should probably try the other partition instead.
+
+385:41-385:48
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d93d624e_40a8ee4d
+Bytes: 9
+*disabled
+
+408:31-408:33
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_385ac911
+Bytes: 17
+VERITY_TABLE_ARGS
+
+433:58-433:65
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_612416c4
+Bytes: 9
+*disabled
+
+555:49-555:53
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_24a8724d
+Bytes: 6
+const?
+
+File: init/do_mounts_verity.c
+
+24:24-24:28
+Tue Oct 20 14:37:24 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_983f55a1
+Bytes: 6
+const?
+
