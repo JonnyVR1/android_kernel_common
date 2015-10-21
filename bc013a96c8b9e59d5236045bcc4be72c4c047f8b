@@ -9,6 +9,45 @@ UUID: 39f75ee3_468594d1
 Bytes: 71
 Not /dev/block/dm-0? Would this conflict with dm devices created later?
 
+561:27-561:36
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f75ee3_468594d1
+UUID: b9f26ee4_d1a7f728
+Bytes: 1747
+name_to_dev_t does not seem to recognize /dev/block/dm-0.. 
+/dev/dm-0 follows the convention of "root=" kernel commandline parameter.
+
+From the kernel commandline documentation:
+'root=...'
+              This argument tells the kernel what device is to be used as
+              the root filesystem while booting.  The default of this
+              setting is determined at compile time, and usually is the
+              value of the root device of the system that the kernel was
+              built on.  To override this value, and select the second
+              floppy drive as the root device, one would use
+              'root=/dev/fd1'.
+
+              The root device can be specified symbolically or numerically.
+              A symbolic specification has the form /dev/XXYN, where XX
+              designates the device type (e.g., 'hd' for ST-506 compatible
+              hard disk, with Y in 'a'-'d'; 'sd' for SCSI compatible disk,
+              with Y in 'a'-'e'), Y the driver letter or number, and N the
+              number (in decimal) of the partition on this device.
+
+              Note that this has nothing to do with the designation of these
+              devices on your filesystem.  The '/dev/' part is purely
+              conventional.
+
+              The more awkward and less portable numeric specification of
+              the above possible root devices in major/minor format is also
+              accepted.  (For example, /dev/sda3 is major 8, minor 3, so you
+              could use 'root=0x803' as an alternative.)
+
+
+
+Each of the dm-devices are created with their own indices. dm-<number> . number field signifies the order in which they were created. How do you think this conflicts with the dm devices created later ?
+
 File: init/do_mounts_android_verity.c
 
 46:34-46:38
@@ -18,12 +57,28 @@ UUID: 99476aec_3e1b8986
 Bytes: 6
 const?
 
+46:34-46:38
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99476aec_3e1b8986
+UUID: b9ec2e3d_4b9e682f
+Bytes: 51
+Seems to conflict with __setup macro's definition..
+
 144:4-144:8
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d91642dc_38fde9cb
 Bytes: 6
 const?
+
+144:4-144:8
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_38fde9cb
+UUID: d90802ae_e313499f
+Bytes: 4
+Done
 
 170:36-170:40
 Tue Oct 20 14:37:24 2015 +0000
@@ -32,12 +87,28 @@ UUID: 59fc12c5_64d64ad8
 Bytes: 6
 const?
 
+170:36-170:40
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59fc12c5_64d64ad8
+UUID: 39de7e5b_57389f94
+Bytes: 243
+neither name_to_dev_t nor create_dev(They are already defined) seems to have const flag in their definition. Compiler warnings pop up due to that. Will it make sense if I cast dev_name back to (char *) when I call into dev_name and create_dev.
+
 344:37-344:57
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 595172a7_ffe67bc6
 Bytes: 44
 >VERITY_METADATA_SIZE - header size perhaps?
+
+344:37-344:57
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595172a7_ffe67bc6
+UUID: b9ec2e3d_fc22a073
+Bytes: 4
+Done
 
 384:3-384:7
 Tue Oct 20 14:37:24 2015 +0000
@@ -46,12 +117,29 @@ UUID: 39f75ee3_a3431a0a
 Bytes: 167
 If we are in EIO mode, we shouldn't mount the device if something fails, because the user won't be warned. For A/B, we should probably try the other partition instead.
 
+384:3-384:7
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f75ee3_a3431a0a
+UUID: 99f3ea1a_13f3fe9d
+Bytes: 203
+When and how do we go into EIO mode ?
+I was under the notion that the default setting is RESTART. While in RESTART mode if verity fails, we reboot -> display warning to the user -> mount in LOGGING mode.
+
 385:41-385:48
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d93d624e_40a8ee4d
 Bytes: 9
 *disabled
+
+385:41-385:48
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d93d624e_40a8ee4d
+UUID: 99f3ea1a_336f1aea
+Bytes: 4
+Done
 
 408:31-408:33
 Tue Oct 20 14:37:24 2015 +0000
@@ -60,6 +148,14 @@ UUID: d91642dc_385ac911
 Bytes: 17
 VERITY_TABLE_ARGS
 
+408:31-408:33
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_385ac911
+UUID: 791716fc_5bee3be3
+Bytes: 4
+Done
+
 433:58-433:65
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,12 +163,28 @@ UUID: f936a66e_612416c4
 Bytes: 9
 *disabled
 
+433:58-433:65
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_612416c4
+UUID: b9f26ee4_4e3a46ff
+Bytes: 4
+Done
+
 555:49-555:53
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 595892e5_24a8724d
 Bytes: 6
 const?
+
+555:49-555:53
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595892e5_24a8724d
+UUID: f91146d4_d7c47f2b
+Bytes: 4
+Done
 
 File: init/do_mounts_verity.c
 
@@ -82,4 +194,12 @@ Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d91642dc_983f55a1
 Bytes: 6
 const?
+
+24:24-24:28
+Wed Oct 21 03:07:10 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_983f55a1
+UUID: 99f3ea1a_f3af72b8
+Bytes: 4
+Done
 
