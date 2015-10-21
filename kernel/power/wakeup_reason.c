@@ -136,6 +136,7 @@ int check_wakeup_reason(int irq)
 	spin_unlock(&resume_reason_lock);
 	return ret;
 }
+EXPORT_SYMBOL_GPL(check_wakeup_reason);
 
 void log_suspend_abort_reason(const char *fmt, ...)
 {
