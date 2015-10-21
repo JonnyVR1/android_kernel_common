@@ -48,6 +48,14 @@ From the kernel commandline documentation:
 
 Each of the dm-devices are created with their own indices. dm-<number> . number field signifies the order in which they were created. How do you think this conflicts with the dm devices created later ?
 
+561:27-561:36
+Wed Oct 21 09:35:52 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_d1a7f728
+UUID: 561ea15a_141a94b3
+Bytes: 74
+Ok. I was just curious about the device naming. I think it should be fine.
+
 File: init/do_mounts_android_verity.c
 
 46:34-46:38
@@ -125,6 +133,14 @@ UUID: 99f3ea1a_13f3fe9d
 Bytes: 203
 When and how do we go into EIO mode ?
 I was under the notion that the default setting is RESTART. While in RESTART mode if verity fails, we reboot -> display warning to the user -> mount in LOGGING mode.
+
+384:3-384:7
+Wed Oct 21 09:35:52 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_13f3fe9d
+UUID: b988aea5_3f56e73d
+Bytes: 147
+We should default to EIO if there's no androidboot.veritymode specified on the command line. Some devices may choose not to implement verity modes.
 
 385:41-385:48
 Tue Oct 20 14:37:24 2015 +0000
