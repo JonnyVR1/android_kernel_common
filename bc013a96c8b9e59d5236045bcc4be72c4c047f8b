@@ -142,6 +142,23 @@ UUID: b988aea5_3f56e73d
 Bytes: 147
 We should default to EIO if there's no androidboot.veritymode specified on the command line. Some devices may choose not to implement verity modes.
 
+384:3-384:7
+Wed Oct 21 22:58:45 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b988aea5_3f56e73d
+UUID: f935c6bb_6f69a5e1
+Bytes: 742
+I see.. thanks.
+
+For A/B though, I still have one more question.
+At present, the new bootloader only passes the root device that it thinks the system should boot from. This kernel module is unaware of other alternate options. We have to go back to the bootloader to inform that the root partition failed to mount(and hence unusable). So we may forced to perform kernel_restart even if we are in EIO mode.
+
+So, I could think of two ways here:
+Either androidboot.veritymode should be mandated..
+(or) we have to perform kernel_restart with an exclusive reason to indicate that mounting root partition through verity failed and the bootloader would take appropriate action depending on the current state of the system.
+
+Let me know your thoughts.
+
 385:41-385:48
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
