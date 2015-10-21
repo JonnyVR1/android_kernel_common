@@ -9,3 +9,17 @@ UUID: b988aea5_dff25b98
 Bytes: 132
 In fs_mgr_setup_verity, we also mark the underlying device as read-only after dm-verity has been set up. Should we do the same here?
 
+429:19-429:33
+Wed Oct 21 22:58:45 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b988aea5_dff25b98
+UUID: 194a9a42_d8a7c528
+Bytes: 451
+I think we are doing that as well !!
+
+fs_mgr seems to call into fs_mgr_set_blk_ro which makes a BLKROSET ioctl.. drivers/md/md.c seems to service this by calling into set_disk_ro.
+
+In our kernel module, do_mounts_verity.c directly calls set_disk_ro(line 53). Verity_args.ro argument is hardcoded to 1. So, we always mark this read only as long as we are mounting the blkdevice through dm.
+
+Let me know if this is not suffice or If am missing something
+
