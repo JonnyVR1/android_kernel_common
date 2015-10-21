@@ -1301,6 +1301,28 @@ source "usr/Kconfig"
 
 endif
 
+config ROOTDEV_VERITY
+        bool
+
+config ROOTDEV_ANDROID_VERITY
+	bool "Enable verity support for rootfs"
+	depends on DM_VERITY
+	depends on X509_CERTIFICATE_PARSER
+	depends on SYSTEM_TRUSTED_KEYRING
+	depends on PUBLIC_KEY_ALGO_RSA
+	depends on KEYS
+	depends on ASYMMETRIC_KEY_TYPE
+	depends on ASYMMETRIC_PUBLIC_KEY_SUBTYPE
+	select ROOTDEV_VERITY
+	help
+	  Reads the verity metadata from the root partition and
+	  verifies the signature of the metadata contents signed
+	  using PKCS1.5 signing algorithm. Upon verification
+	  success, the module sets up verity dm device before
+	  mounting root for Android.
+
+	  If unsure, say N.
+
 config CC_OPTIMIZE_FOR_SIZE
 	bool "Optimize for size"
 	help
