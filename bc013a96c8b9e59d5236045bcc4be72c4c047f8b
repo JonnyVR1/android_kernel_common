@@ -159,6 +159,14 @@ Either androidboot.veritymode should be mandated..
 
 Let me know your thoughts.
 
+384:3-384:7
+Thu Oct 22 09:18:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f935c6bb_6f69a5e1
+UUID: 79739694_7567a89d
+Bytes: 146
+Right, if the plan is the use this code only with A/B, leaving out EIO mode should be fine. We should mandate androidboot.veritymode in that case.
+
 385:41-385:48
 Tue Oct 20 14:37:24 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
