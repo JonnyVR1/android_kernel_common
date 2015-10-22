@@ -286,6 +286,7 @@ static struct virtqueue *_find_vq(struct virtio_device *vdev,
 {
 	struct trusty_vring *tvr;
 	struct trusty_vdev *tvdev = vdev_to_tvdev(vdev);
+	phys_addr_t pa;
 
 	if (!name)
 		return ERR_PTR(-EINVAL);
@@ -305,8 +306,15 @@ static struct virtqueue *_find_vq(struct virtio_device *vdev,
 		return ERR_PTR(-ENOMEM);
 	}
 
+	pa = virt_to_phys(tvr->vaddr);
 	/* save vring address to shared structure */
-	tvr->vr_descr->da = (u32)virt_to_phys(tvr->vaddr);
+	tvr->vr_descr->da = (u32)pa;
+#if CONFIG_PHYS_ADDR_T_64BIT
+	/* da field is only 32 bit wide. Use previously unused 'reserved' field
+	 * to store top 32 bits of 64-bit address
+	 */
+	tvr->vr_descr->reserved = (u32)(pa >> 32);
+#endif
 
 	dev_info(&vdev->dev, "vring%d: va(pa)  %p(%llx) qsz %d notifyid %d\n",
 		 id, tvr->vaddr, (u64)tvr->paddr, tvr->elem_num, tvr->notifyid);
