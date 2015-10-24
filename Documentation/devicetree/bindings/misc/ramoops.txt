@@ -1,0 +1,30 @@
+Ramoops oops/panic logger
+=========================
+
+See Documentation/ramoops.txt.  The bindings here are modelled after the ramoops
+kernel module parameters.
+
+
+Required properties:
+
+- compatible: must be "ramoops"
+
+- memory-region: phandle to a region of memory that is preserved between reboots
+
+
+Optional properties:
+
+- ecc-size: enables ECC support and specifies ECC buffer size in bytes
+
+- record-size: size in bytes of each dump done on oops/panic
+
+- console-size: size in bytes of kernel console log
+
+- ftrace-size: size in bytes of ftrace log
+
+- pmsg-size: size in bytes of user space message log
+
+- unbuffered: if present, use pgprot_noncached to map reserved region
+  (defaults to pgprot_writecombine)
+
+- no-dump-oops: if present, only dump panics (defaults to panics and oops)

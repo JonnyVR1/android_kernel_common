@@ -34,6 +34,8 @@
 #include <linux/slab.h>
 #include <linux/compiler.h>
 #include <linux/pstore_ram.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
 
 #define RAMOOPS_KERNMSG_HDR "===="
 #define MIN_MEM_SIZE 4096UL
@@ -442,6 +444,99 @@ void notrace ramoops_console_write_buf(const char *buf, size_t size)
 	persistent_ram_write(cxt->cprz, buf, size);
 }
 
+static inline int ramoops_parse_dt_size(struct platform_device *pdev,
+		const char *propname, unsigned long *val)
+{
+	u64 val64 = 0;
+	int ret;
+
+	ret = of_property_read_u64(pdev->dev.of_node, propname, &val64);
+	if (ret != 0 && ret != -EINVAL) {
+		dev_err(&pdev->dev, "failed to parse property %s: %d\n",
+				propname, ret);
+		return ret;
+	}
+
+	if (val64 > ULONG_MAX) {
+		dev_err(&pdev->dev, "invalid %s %llu\n", propname, val64);
+		return -EOVERFLOW;
+	}
+
+	*val = val64;
+	return 0;
+}
+
+static int ramoops_parse_dt(struct platform_device *pdev)
+{
+	struct ramoops_platform_data *pdata;
+	struct device_node *of_node = pdev->dev.of_node;
+	struct device_node *mem_region;
+	struct resource res;
+	u32 ecc_size;
+	int ret;
+
+	dev_dbg(&pdev->dev, "using Device Tree\n");
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	mem_region = of_parse_phandle(of_node, "memory-region", 0);
+	if (!mem_region) {
+		dev_err(&pdev->dev, "no memory-region phandle\n");
+		ret = -ENODEV;
+		goto err;
+	}
+
+	ret = of_address_to_resource(mem_region, 0, &res);
+	of_node_put(mem_region);
+	if (ret) {
+		dev_err(&pdev->dev, "failed to translate memory-region to resource: %d\n",
+				ret);
+		goto err;
+	}
+
+	pdata->mem_size = resource_size(&res);
+	pdata->mem_address = res.start;
+	pdata->mem_type = of_property_read_bool(of_node, "unbuffered");
+	pdata->dump_oops = of_property_read_bool(of_node, "dump-oops");
+
+	ret = ramoops_parse_dt_size(pdev, "record-size", &pdata->record_size);
+	if (ret < 0)
+		goto err;
+
+	ret = ramoops_parse_dt_size(pdev, "console-size", &pdata->console_size);
+	if (ret < 0)
+		goto err;
+
+	ret = ramoops_parse_dt_size(pdev, "ftrace-size", &pdata->ftrace_size);
+	if (ret < 0)
+		goto err;
+
+	ret = ramoops_parse_dt_size(pdev, "pmsg-size", &pdata->pmsg_size);
+	if (ret < 0)
+		goto err;
+
+	ret = of_property_read_u32(of_node, "ecc-size", &ecc_size);
+	if (ret == 0) {
+		if (ecc_size > INT_MAX) {
+			dev_err(&pdev->dev, "invalid ecc-size %u\n", ecc_size);
+			ret = -EOVERFLOW;
+			goto err;
+		}
+		pdata->ecc_info.ecc_size = ecc_size;
+	} else if (ret != -EINVAL) {
+		goto err;
+	}
+
+	platform_set_drvdata(pdev, pdata);
+	return 0;
+
+err:
+	devm_kfree(&pdev->dev, pdata);
+	return ret;
+}
+
 static int ramoops_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -450,6 +545,13 @@ static int ramoops_probe(struct platform_device *pdev)
 	size_t dump_mem_sz;
 	phys_addr_t paddr;
 	int err = -EINVAL;
+
+	if (dev->of_node && !pdata) {
+		err = ramoops_parse_dt(pdev);
+		if (err)
+			goto fail_out;
+		pdata = platform_get_drvdata(pdev);
+	}
 
 	/* Only a single ramoops area allowed at a time, so fail extra
 	 * probes.
@@ -557,6 +659,8 @@ fail_init_fprz:
 fail_init_cprz:
 	ramoops_free_przs(cxt);
 fail_out:
+	if (pdev->dev.platform_data != dummy_data)
+		devm_kfree(&pdev->dev, pdev->dev.platform_data);
 	return err;
 }
 
@@ -581,12 +685,18 @@ static int __exit ramoops_remove(struct platform_device *pdev)
 	return -EBUSY;
 }
 
+static const struct of_device_id dt_match[] = {
+	{ .compatible = "ramoops" },
+	{}
+};
+
 static struct platform_driver ramoops_driver = {
 	.probe		= ramoops_probe,
 	.remove		= __exit_p(ramoops_remove),
 	.driver		= {
-		.name	= "ramoops",
-		.owner	= THIS_MODULE,
+		.name		= "ramoops",
+		.of_match_table	= dt_match,
+		.owner		= THIS_MODULE,
 	},
 };
 
