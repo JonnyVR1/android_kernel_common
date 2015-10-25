@@ -1,0 +1,13 @@
+Revision: bc39419599c36578a2c9bbdc295ef359a26c4593
+Patch-set: 1
+File: fs/mount.h
+
+66:24-66:39
+Sun Oct 25 19:23:52 2015 +0000
+Author: Nikola Veljkovic <1040193@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69a3588_211cae79
+Bytes: 155
+This introduces a possible error (missing ->mnt_ns makes it always mounted).
+
+Please, cherry-pick 260a459d2e39761fbd39803497205ce1690bc7b1 to all branches.
+
