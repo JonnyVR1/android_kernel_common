@@ -12,3 +12,14 @@ I think changes from gf_write64 to writel are not necessary. They reverted patch
 f4e131d goldfish: pipe: fix warnings for 32bit builds
 a99698f goldfish: clean up the pipe driver 64bit ifdefs
 
+File: drivers/platform/goldfish/pdev_bus.c
+
+136
+Mon Oct 26 17:43:01 2015 +0000
+Author: Jin Qian <1051712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6d8bd3b_ae2407c6
+Bytes: 105
+this change also reverted f2dbdf6 from android-3.18
+
+f2dbdf6 goldfish: bus: fix warnings for 32bit builds
+
