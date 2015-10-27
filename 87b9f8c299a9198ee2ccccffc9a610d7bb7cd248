@@ -16,6 +16,22 @@ Is there a reason not to leave root= alone (e.g., have the cmdline populate it a
 
 I'd prefer not as a magic root= value is harder to debug than having a known one and an explicit parameter that sets up what it points at.
 
+File: init/do_mounts.h
+
+80:0-80:4
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6b795e1_c2b3d321
+Bytes: 40
+init __init dm_run_setup(char *rootdev);
+
+84:7-84:11
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36e4cdf6_136b576b
+Bytes: 176
+q: a 'static' defined as __init section is probably meaningless, but it does clearly state to the developers that whatever code it produces could disappear later? Just curious.
+
 File: init/do_mounts_android_verity.c
 
 53:9-53:18
@@ -41,6 +57,17 @@ UUID: 96c81977_9cd6add6
 Bytes: 133
 nit: This would give me less of the heebie jeebies if it didn't rely on type +1 behavior. E.g.,
    desc = (void *)pks + sizeof(*pks);
+
+104:30-104:33
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96c81977_9cd6add6
+UUID: 76fd65bf_c5a4dae1
+Bytes: 376
+void * pointer math is defined as illegal in the C specification. You must use u8 *. There can be debate over all styles of pointer math ... :-(
+
+6.2.5-19: The void type comprises an empty set of values; it is an incomplete type that cannot be completed.
+Since void is an incomplete type, it is not an object type. Therefore it is not a valid operand to an addition operation.
 
 176:28-176:34
 Tue Oct 27 16:27:02 2015 +0000
@@ -139,6 +166,20 @@ any reason to have an else here and not just:
     goto err;
 ?
 
+502:44-502:47
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36f76de3_63b4020b
+Bytes: 227
+this string should go into the init section ;-}
+
+can be defined locally within this block:
+
+while (i < VERITY_TABLE_ARGS) {
+    static const char delim[] __initconst = " ";
+
+    verity_table_args[i] = strsep(&table_ptr, delim);
+
 526:16-526:28
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -153,6 +194,16 @@ UUID: 76880537_b00b7666
 Bytes: 62
 out of curiosity, why is vmalloc() being used everywhere here?
 
+547:16-547:23
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76880537_b00b7666
+UUID: d6ae1193_989b0a3f
+Bytes: 366
+Does not draw from the precious physically contiguous pool of pages from the slab allocator or dma resources. The main advantages of using vmalloc show up when accessing more than a page size though ...
+
+Also, vmalloc does not incite a kernel panic when starved for memory (but typically you have a fallback plan, like using a smaller buffer, or less functionality).
+
 File: init/do_mounts_android_verity.h
 
 1:8-1:20
@@ -161,6 +212,22 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76880537_f0ec1eeb
 Bytes: 12
 boilerplate?
+
+56:28-56:29
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56e941ce_066ddbed
+Bytes: 225
+Beware of holes in structures? __packed to be sure?
+
+metadata_start 'starts' on a u32 boundary as it stands, can the structure be refactored so that metadata_start and verity_table pointer are guaranteed on a 64-bit boundary?
+
+78:0-78:14
+Tue Oct 27 20:01:28 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6d8bd3b_ded9f455
+Bytes: 28
+starts on a 32-bit boundary.
 
 File: init/do_mounts_verity.h
 
