@@ -1,6 +1,90 @@
 Revision: 87b9f8c299a9198ee2ccccffc9a610d7bb7cd248
 Patch-set: 2
+File: init/do_mounts.c
+
+561:9-561:24
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6a6fdc1_b20b7e66
+Bytes: 480
+This means that the verity_table cannot contain layered dm targets. E.g.
+dm-0=dm-bootcache
+dm-1=dm-verity
+
+Is there a reason not to leave root= alone (e.g., have the cmdline populate it as root=/dev/dm-0) and add a new commandline flag to pass in anything needed?  If not, it would make sense to have the new root be set by dm_run_setup().
+
+
+I'd prefer not as a magic root= value is harder to debug than having a known one and an explicit parameter that sets up what it points at.
+
 File: init/do_mounts_android_verity.c
+
+53:9-53:18
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6f27de4_52879214
+Bytes: 218
+with this here, why replace root=?
+
+Also, going down this route makes this patch very specialized.  IMO, it'd be better to break it up into a dm="" style patch then add a new table-type for DM for android-style verity.
+
+70:44-70:61
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c81977_bcd369e5
+Bytes: 152
+this looks like similar code to kernel/module_signing.c.  Is there a chance (later) to share code so this doesn't block the on-flash size of the kernel?
+
+104:30-104:33
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c81977_9cd6add6
+Bytes: 133
+nit: This would give me less of the heebie jeebies if it didn't rely on type +1 behavior. E.g.,
+   desc = (void *)pks + sizeof(*pks);
+
+176:28-176:34
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36bdadca_d6c3a2bd
+Bytes: 126
+does pr_init_info annotate with the calling func or file? If not, it'd be good to note that this is verity_create_dev waiting.
+
+183:2-183:24
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69cf575_54416221
+Bytes: 67
+why is this code cargoculted from  do_mounts.c:prepare_namespace()?
+
+189:15-189:20
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c22158_d7a9de52
+Bytes: 19
+debugging leftoves?
+
+208:0-208:68
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 968d7947_f4ec10eb
+Bytes: 117
+Whoa - cool.  Is this safe during early boot? I had assumed you'd  have to just grab the sectors with a bio directly.
+
+325:5-325:16
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6f27de4_12910a4c
+Bytes: 526
+so if the phone is unlocked, it'll just passthrough? And the kernel parameters are bootloader specific, right?
+
+In this scenario there are two trusted parties:
+- signed data on disk
+- kernel command line
+where the latter has the priority since the disabled bit on disk isn't a signed bit.
+
+Is this the intention?  If so, why does the kernel have to do all the signing and not leave it in one trusted place -- the bootloader/handoff?
+
+If it's because of legacy secure bootloaders, we still expect good signals on locked status?
 
 429:19-429:33
 Wed Oct 21 11:37:42 2015 +0000
@@ -22,4 +106,82 @@ fs_mgr seems to call into fs_mgr_set_blk_ro which makes a BLKROSET ioctl.. drive
 In our kernel module, do_mounts_verity.c directly calls set_disk_ro(line 53). Verity_args.ro argument is hardcoded to 1. So, we always mark this read only as long as we are mounting the blkdevice through dm.
 
 Let me know if this is not suffice or If am missing something
+
+457:0-457:63
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69cf575_943aeaac
+Bytes: 70
+Is there another way to do this without duplicate device waiting, etc?
+
+458:15-458:21
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76880537_900e7a77
+Bytes: 67
+It's not the rootdev though is it? It's the metadata device, right?
+
+468:23-468:26
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c81977_7c9b913f
+Bytes: 133
+nit: it'd be nice to pass around the struct being used and not assume global access just from style perspective. (Here and elsewhere)
+
+479:2-479:6
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6a6fdc1_92575a3b
+Bytes: 108
+any reason to have an else here and not just:
+    if (verity...)
+      goto err_vrity_table;
+    goto err;
+?
+
+526:16-526:28
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c22158_576f8eba
+Bytes: 87
+would be good to check that this doesn't wrap (though the result will be checked by dm)
+
+547:16-547:23
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76880537_b00b7666
+Bytes: 62
+out of curiosity, why is vmalloc() being used everywhere here?
+
+File: init/do_mounts_android_verity.h
+
+1:8-1:20
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76880537_f0ec1eeb
+Bytes: 12
+boilerplate?
+
+File: init/do_mounts_verity.h
+
+1:19-1:31
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 169a6978_d5d0eeda
+Bytes: 11
+boilerplate
+
+7:8-7:20
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69cf575_b437eec5
+Bytes: 31
+is this standard anywhere else?
+
+45:5-45:17
+Tue Oct 27 16:27:02 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c81977_bc9c4936
+Bytes: 196
+If you only ever setup one target, you don't need a lot of the work here.  Of course, if you only setup one target, then this patch set will definitely not be compatible with usage in chrome os :/
 
