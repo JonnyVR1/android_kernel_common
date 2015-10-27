@@ -213,6 +213,15 @@ UUID: 76880537_f0ec1eeb
 Bytes: 12
 boilerplate?
 
+55:7-55:19
+Tue Oct 27 20:32:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 964739ec_9e9f3d5c
+Bytes: 49
+;-}
+
+/* Yes, this is freed before exiting init */
+
 56:28-56:29
 Tue Oct 27 20:01:28 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -244,6 +253,27 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f69cf575_b437eec5
 Bytes: 31
 is this standard anywhere else?
+
+24:17-24:24
+Tue Oct 27 20:32:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 964739ec_3ed4e91a
+Bytes: 6
+__init
+
+26:30-26:31
+Tue Oct 27 20:32:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f636b56e_61417670
+Bytes: 10
+__init (?)
+
+27:9-27:27
+Tue Oct 27 20:32:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16342965_e2102669
+Bytes: 17
+missing closing )
 
 45:5-45:17
 Tue Oct 27 16:27:02 2015 +0000
