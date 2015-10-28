@@ -1,0 +1,47 @@
+Revision: 179945d9a168c9af1a65b98e3b550611ac243778
+Patch-set: 2
+File: /COMMIT_MSG
+
+21:25-21:37
+Wed Oct 28 21:25:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7621e584_286ec37b
+Bytes: 13
+compatibility
+
+File: security/selinux/ss/avtab.c
+
+358:2-358:18
+Wed Oct 28 21:25:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76c565cc_eb9f655a
+Bytes: 138
+nit: pr_info replace printk(KERN_INFO
+
+Only a nit, because all the code in this tree is using printk and not the recommended replacements.
+
+388:1-388:13
+Wed Oct 28 21:25:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6d35d95_cd00bd50
+Bytes: 114
+Yuck, selinux needs a rewrite to support bool?
+
+conditional.h is using a variable name that is a reserved keyword.
+
+517:4-518:49
+Wed Oct 28 21:25:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56ab01f0_8f17d9cd
+Bytes: 217
+At least my view in gerrit is truncated and I can not see how these end, these lines are longer than 80 characters.
+
+Does <tab> <space> <space> <space> <space> preserve readability/beauty and result in <80 characters?
+
+618:3-618:58
+Wed Oct 28 21:25:38 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c4e1d1_ea2be34c
+Bytes: 104
+More gerrit side-by-side view truncation because >80 characters? I need to file a bug against gerrit ...
+
