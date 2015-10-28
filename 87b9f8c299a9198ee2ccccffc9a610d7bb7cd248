@@ -26,6 +26,21 @@ I came to know that the policy in Android is to take the best effort to boot the
 
 sure I can change it to root=/dev/dm-0 and make my verity module take a command line parameter for indicating the actual block device. If dm-setup fails, I can replace the saved root name with block device name.
 
+561:9-561:24
+Wed Oct 28 14:58:16 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76fd65bf_cbfd0922
+UUID: b6051dc5_173e54f1
+Bytes: 1805
+Ah yeah. This is an area where I vehemently philosophically disagree  :)
+
+That aside(!), I have three main reasons I raise this comment:
+- magic: anytime a value set by the developer is changed behind the scenes based on some policy logic, it can be fragile and hard to debug.  Making each piece explicit can save hours down the line and avoids surprising anyone.
+- development purposes: If I have a system where I can change the kernel commandline, it's nice to be able to repoint it to the non-verity root even if the dm-verity target is still configured and just unused.  It means I can iterate on testing something related to verity without needing to rehash/sign on each iteration (e.g., error reporting handling in userland).
+- layered dm targets:  On some chrome os devices, we layer two dm targets. When we do that, we setup both dm-0 and dm-1 and we need to tell the kernel to use /dev/dm-1.  Your code could always just use the "last configured target", but there are cases where we could setup a dm-crypt target during boot too using a system-backed key that we don't boot from and in that case, we'd have to know not to make it the last target (for example).
+
+I'm not going to die on this hill :), but this is the background. I *think* only the first one relates to what android needs -- a way to forcibly keep booting even if device mapper fails.  In that case, a strcpy in the setup-fail path might be less surprising.  Alternatively, you could leave root=[underlying-block-device] and add two cmdline params: dm-root=[dm-minor-number] and dm-root-passthrough=1 (or whatever0.  Then if there is no dm-root, it just boots the real root and if there is a large number of dm targets brought up it picks the dm-[minor].  (Or any number of other combos of params and settings - just a strawman :)
+
 File: init/do_mounts.h
 
 80:0-80:4
