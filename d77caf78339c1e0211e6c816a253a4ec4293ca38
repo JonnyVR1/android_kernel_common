@@ -1,0 +1,11 @@
+Revision: d77caf78339c1e0211e6c816a253a4ec4293ca38
+Patch-set: 1
+File: kernel/trace/trace_output.c
+
+930:23-930:24
+Wed Oct 28 19:18:21 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7621e584_25526ea3
+Bytes: 370
+Not my area of expertise and "->full" can do the trick as well but I was wondering if we should be using trace_seq_has_overflowed() instead to check the overflow as suggested by upstream commits 19a7fe206232 "tracing: Add trace_seq_has_overflowed() and trace_handle_return()" and 183742f08c55 "tracing: Do not use return values of trace_seq_printf() in syscall tracing".
+
