@@ -16,6 +16,16 @@ Is there a reason not to leave root= alone (e.g., have the cmdline populate it a
 
 I'd prefer not as a magic root= value is harder to debug than having a known one and an explicit parameter that sets up what it points at.
 
+561:9-561:24
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6a6fdc1_b20b7e66
+UUID: 76fd65bf_cbfd0922
+Bytes: 688
+I came to know that the policy in Android is to take the best effort to boot the device to UI(Provided that we already have warned the user). With that in mind, I was thinking that the root= can carry the actual device name and if the dm-setup succeeds we would replace the saved_root_name with /dev/dm-0/ as at least in Android the dm-verity device for the root partition is the first dm-device to be set up. I was not aware of the fact that it's not the case for chrome-os.
+
+sure I can change it to root=/dev/dm-0 and make my verity module take a command line parameter for indicating the actual block device. If dm-setup fails, I can replace the saved root name with block device name.
+
 File: init/do_mounts.h
 
 80:0-80:4
@@ -43,12 +53,28 @@ with this here, why replace root=?
 
 Also, going down this route makes this patch very specialized.  IMO, it'd be better to break it up into a dm="" style patch then add a new table-type for DM for android-style verity.
 
+53:9-53:18
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6f27de4_52879214
+UUID: b68efd7e_0f01c586
+Bytes: 95
+I saw one major blocker for adding a custom target.  I have described it in the "Reply" section
+
 70:44-70:61
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96c81977_bcd369e5
 Bytes: 152
 this looks like similar code to kernel/module_signing.c.  Is there a chance (later) to share code so this doesn't block the on-flash size of the kernel?
+
+70:44-70:61
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96c81977_bcd369e5
+UUID: b640bdd4_48fed3c8
+Bytes: 323
+I can.. But, I thought that would be the last step, when we are very close to merging this upstream, as It might be hard to merge patches involving module_signing if I refactored the module_sgining code. Until this gets merged upstream, the version here always has the risk of diverging from the one used in module_signing.
 
 104:30-104:33
 Tue Oct 27 16:27:02 2015 +0000
@@ -97,6 +123,14 @@ UUID: 968d7947_f4ec10eb
 Bytes: 117
 Whoa - cool.  Is this safe during early boot? I had assumed you'd  have to just grab the sectors with a bio directly.
 
+208:0-208:68
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 968d7947_f4ec10eb
+UUID: 56fce1c4_8df849e8
+Bytes: 129
+sys_open, sys_read, sys_lseek are used in init/do_mounts_rd.c which is called during init as well. Do you see some problem here ?
+
 325:5-325:16
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -112,6 +146,18 @@ where the latter has the priority since the disabled bit on disk isn't a signed 
 Is this the intention?  If so, why does the kernel have to do all the signing and not leave it in one trusted place -- the bootloader/handoff?
 
 If it's because of legacy secure bootloaders, we still expect good signals on locked status?
+
+325:5-325:16
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6f27de4_12910a4c
+UUID: 7642c5df_863850b6
+Bytes: 817
+The locked status is obtained from androidboot.veritystate. This is something that is mandated in the bootloader requirements and this kernel module is not the primary consumer of that. So we are trusting this signal anyways. http://source.android.com/devices/tech/security/verifiedboot/verified-boot.html has more details.
+
+Verity cannot be disabled on real world user devices.  Real world user devices are always in the locked state. If its unlocked we don't ensure the integrity of the device. If the magic_number is set to anything other than "VERITY_METADATA_MAGIC_NUMBER" in a user build, we know that verity images can no longer be trusted.
+
+The signed metadata is placed in the same partition as the data blocks, so that we dont have any dependency between creating the verity partition images and the kernel.
 
 429:19-429:33
 Wed Oct 21 11:37:42 2015 +0000
@@ -147,6 +193,14 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76880537_900e7a77
 Bytes: 67
 It's not the rootdev though is it? It's the metadata device, right?
+
+458:15-458:21
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76880537_900e7a77
+UUID: f636b56e_67bae648
+Bytes: 215
+It is the rootdev. In Android, we have all the three verity pieces in the same partition. The data blocks, verity hash tree and the signed metadata which is used to setup the partition are all in the same partition.
 
 468:23-468:26
 Tue Oct 27 16:27:02 2015 +0000
@@ -254,6 +308,16 @@ UUID: f69cf575_b437eec5
 Bytes: 31
 is this standard anywhere else?
 
+7:8-7:20
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f69cf575_b437eec5
+UUID: f636b56e_87b7ea5d
+Bytes: 232
+This is inspired from the discussion that is happening upstream.
+http://www.serverphorums.com/read.php?12,963491
+The patches mentioned in the email thread have not been merged yet. Using them directly made me hit compilation issues.
+
 24:17-24:24
 Tue Oct 27 20:32:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -281,4 +345,12 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96c81977_bc9c4936
 Bytes: 196
 If you only ever setup one target, you don't need a lot of the work here.  Of course, if you only setup one target, then this patch set will definitely not be compatible with usage in chrome os :/
+
+45:5-45:17
+Wed Oct 28 09:31:47 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96c81977_bc9c4936
+UUID: 964739ec_6425febf
+Bytes: 68
+Happy to help to find a middle ground between chrome-os and Android.
 
