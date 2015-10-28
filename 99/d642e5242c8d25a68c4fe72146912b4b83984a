@@ -1,0 +1,7 @@
+Code-Review+2: Rom Lemarchand <romlem@android.com>
+Verified+1: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-by: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-at: Wed, 28 Oct 2015 03:36:26 +0000
+Reviewed-on: https://android-review.googlesource.com/178916
+Project: kernel/common
+Branch: refs/heads/experimental/android-4.1
