@@ -1,0 +1,11 @@
+Revision: 4de54777e9a49f409d071a81dd4779ca0b88266b
+Patch-set: 1
+File: /COMMIT_MSG
+
+16
+Wed Oct 28 20:55:53 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96cad9dc_8ce7ebc3
+Bytes: 145
+Drop these, they will mess up your change-id.  You'll also need to replace the change-id in the commit message with the one gerrit auto-assigned.
+
