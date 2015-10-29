@@ -1,0 +1,20 @@
+Revision: 59d1e8c03aae059d3891d6890fb2bfab3672067b
+Patch-set: 4
+File: /COMMIT_MSG
+
+7:39-7:40
+Thu Oct 29 14:30:41 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76c565cc_343f1e80
+Bytes: 110
+Since this is a cherry pick, please add:
+
+(cherry picked from commit fa1aa143ac4a682c7f5fd52a3cf05f5a6fe44a0a)
+
+39:0-40:52
+Thu Oct 29 14:30:41 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96cad9dc_35071a9f
+Bytes: 129
+nit: These two fields are non-compliant for upstream, and are in 'insert' here and should be placed at the bottom of the footers.
+
