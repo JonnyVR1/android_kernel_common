@@ -1,0 +1,27 @@
+Revision: f46b160ad9c0376a66d896f03acdf0376b07e2a4
+Patch-set: 4
+File: /COMMIT_MSG
+
+7:49-7:50
+Thu Oct 29 14:37:56 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7621e584_8ebb3f1e
+Bytes: 72
+Add:
+
+(cherry pick from commit 671a2781ff01abf4fdc8904881fc3abd3a8279af)
+
+12:0-13:52
+Thu Oct 29 14:37:56 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96cad9dc_15cdbeba
+Bytes: 256
+These footers need to be at the bottom of the set as they are non-compliant for linux submissions. Also, Gerrit used to have a bug where the Change-Id: had to be the last line, it is now defacto requested to still remain at the bottom for ease of research.
+
+16:0-16:24
+Thu Oct 29 14:37:56 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56ab01f0_c05d2e0f
+Bytes: 195
+This _breaks_ the footer and is non-compliant, you can place this after the subject line to indicate the change, but it is generally advised to _keep_ the subject line as-is for ease of research.
+
