@@ -1,0 +1,29 @@
+Revision: ffd7f1a7a38c4a5731fabb617443f9ee5f14b0c5
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:47-7:48
+Thu Oct 29 17:59:10 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56ab01f0_3bdd4342
+Bytes: 72
+Add:
+
+(cherry pick from commit 83d4a806ae46397f606de7376b831524bd3a21e5)
+
+13:0-14:52
+Thu Oct 29 17:59:10 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c4e1d1_f90c5bc3
+Bytes: 33
+bottom of footer as non compliant
+
+17:0-17:26
+Thu Oct 29 17:59:10 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36a68d28_007e1434
+Bytes: 150
+This footer is scary and perfect for Halloween.
+
+It is probably a good idea to remove from footer, move to the top, but alas this was PM's comment ...
+
