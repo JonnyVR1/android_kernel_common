@@ -1,0 +1,20 @@
+Revision: 8b772b00956a59881fdd57ce517ceedde6eaaa24
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:39-7:40
+Thu Oct 29 17:59:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36a68d28_c05c0cdc
+Bytes: 74
+Add:
+
+(cherry picked from commit fa1aa143ac4a682c7f5fd52a3cf05f5a6fe44a0a)
+
+39:0-40:52
+Thu Oct 29 17:59:32 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76c565cc_5f0473e5
+Bytes: 55
+non-compliant insert of footer content, move to bottom.
+
