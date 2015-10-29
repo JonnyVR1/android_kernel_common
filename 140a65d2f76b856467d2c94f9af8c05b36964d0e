@@ -1,0 +1,20 @@
+Revision: 140a65d2f76b856467d2c94f9af8c05b36964d0e
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:49-7:50
+Thu Oct 29 17:59:25 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c4e1d1_39d0b352
+Bytes: 72
+Add:
+
+(cherry pick from commit 671a2781ff01abf4fdc8904881fc3abd3a8279af)
+
+12:0-13:52
+Thu Oct 29 17:59:25 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56ab01f0_db007f50
+Bytes: 87
+move to bottom of footer, this is an insert and is non-compliant content on kernel.org.
+
