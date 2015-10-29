@@ -25,3 +25,11 @@ UUID: 769c85d8_7cb3453a
 Bytes: 150
 Eeek, why was subject line changed? Why is this non-compliant footer here, this should be as part of the 'notes' section right after the subject line?
 
+17:0-17:26
+Thu Oct 29 17:06:12 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 769c85d8_7cb3453a
+UUID: 7621e584_f92b9fb3
+Bytes: 196
+This was added by the kernel maintainer before submission to upstream (4.3). He changed the subject line from "avc: remove..." to "selinux: remove" I can delete it but it's in the upstream commit.
+
