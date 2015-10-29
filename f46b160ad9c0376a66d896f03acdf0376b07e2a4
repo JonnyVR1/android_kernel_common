@@ -25,3 +25,12 @@ UUID: 56ab01f0_c05d2e0f
 Bytes: 195
 This _breaks_ the footer and is non-compliant, you can place this after the subject line to indicate the change, but it is generally advised to _keep_ the subject line as-is for ease of research.
 
+16:0-16:24
+Thu Oct 29 17:29:08 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56ab01f0_c05d2e0f
+UUID: 7621e584_19d79bd4
+Bytes: 188
+This was also added by the maintainer to the upstream commit. Changed my original
+"security: lsm_audit: add ioctl specific auditing" to "security: add ioctl specific auditing to lsm_audit"
+
