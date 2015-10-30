@@ -40,6 +40,11 @@ int inet_diag_dump_one_icsk(struct inet_hashinfo *hashinfo,
 			    struct sk_buff *in_skb, const struct nlmsghdr *nlh,
 			    const struct inet_diag_req_v2 *req);
 
+struct sock *inet_diag_find_one_icsk(struct net *net,
+				     struct inet_hashinfo *hashinfo,
+				     struct sk_buff *in_skb,
+				     const struct inet_diag_req_v2 *req);
+
 int inet_diag_bc_sk(const struct nlattr *_bc, struct sock *sk);
 
 extern int  inet_diag_register(const struct inet_diag_handler *handler);
