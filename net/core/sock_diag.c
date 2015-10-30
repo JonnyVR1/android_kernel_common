@@ -149,7 +149,7 @@ void sock_diag_unregister(const struct sock_diag_handler *hnld)
 }
 EXPORT_SYMBOL_GPL(sock_diag_unregister);
 
-static int __sock_diag_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
+static int __sock_diag_cmd(struct sk_buff *skb, struct nlmsghdr *nlh)
 {
 	int err;
 	struct sock_diag_req *req = nlmsg_data(nlh);
@@ -167,10 +167,16 @@ static int __sock_diag_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 
 	mutex_lock(&sock_diag_table_mutex);
 	hndl = sock_diag_handlers[req->sdiag_family];
-	if (hndl == NULL)
+	if (hndl == NULL) {
 		err = -ENOENT;
-	else
+	} else if (nlh->nlmsg_type == SOCK_DIAG_BY_FAMILY) {
 		err = hndl->dump(skb, nlh);
+	} else if (nlh->nlmsg_type == SOCK_DESTROY) {
+		err = hndl->destroy ? hndl->destroy(skb, nlh) : -EINVAL;
+		netlink_ack(skb, nlh, err);
+        } else {
+		BUG();
+	}
 	mutex_unlock(&sock_diag_table_mutex);
 
 	return err;
@@ -196,7 +202,8 @@ static int sock_diag_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 
 		return ret;
 	case SOCK_DIAG_BY_FAMILY:
-		return __sock_diag_rcv_msg(skb, nlh);
+	case SOCK_DESTROY:
+		return __sock_diag_cmd(skb, nlh);
 	default:
 		return -EINVAL;
 	}
