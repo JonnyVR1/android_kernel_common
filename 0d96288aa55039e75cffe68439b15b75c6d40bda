@@ -1,0 +1,11 @@
+Revision: 0d96288aa55039e75cffe68439b15b75c6d40bda
+Patch-set: 2
+File: net/core/fib_rules.c
+
+36:34-36:36
+Sun Nov 01 18:45:50 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 161fca56_7b7d30ff
+Bytes: 139
+Do not change "r->fr_net" in this hunk, hold_net() do not exist anymore. See upstream commit efd7ef1c1929 "net: Kill hold_net release_net".
+
