@@ -1,0 +1,7 @@
+Code-Review+2: Daniel Rosenberg <drosen@google.com>
+Verified+1: Daniel Rosenberg <drosen@google.com>
+Submitted-by: Daniel Rosenberg <drosen@google.com>
+Submitted-at: Mon, 02 Nov 2015 22:02:16 +0000
+Reviewed-on: https://android-review.googlesource.com/175929
+Project: kernel/common
+Branch: refs/heads/android-3.18
