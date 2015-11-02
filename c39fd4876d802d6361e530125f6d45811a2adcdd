@@ -1,0 +1,18 @@
+Revision: c39fd4876d802d6361e530125f6d45811a2adcdd
+Patch-set: 1
+File: net/ipv4/tcp.c
+
+3244
+Mon Nov 02 18:36:30 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5625c29e_8b643dcb
+Bytes: 187
+Use of goto here is unwarranted: we do not try to perform error unwinding here. Can we do:
+
+    if (!sock_owned_by_user(sk) {
+         sk->sk_err = ETIMEDOUT;
+         ...
+    }
+
+instead?
+
