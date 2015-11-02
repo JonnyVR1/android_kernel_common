@@ -18,3 +18,11 @@ UUID: 760e462a_3115a019
 Bytes: 26
 This adds a "naked" printk
 
+10144
+Mon Nov 02 21:19:57 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760e462a_3115a019
+UUID: 161fca56_54224195
+Bytes: 59
+I mentioned this as well, but author wanted print this way.
+
