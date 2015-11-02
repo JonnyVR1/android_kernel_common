@@ -1,0 +1,20 @@
+Revision: a0f2d8d940850e36856bb4d53b1a2ed1c35ab42a
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+10141
+Mon Nov 02 21:08:54 2015 +0000
+Author: Kevin Cernekee <1067059@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 562a227b_83ef6c6f
+Bytes: 115
+nit: missing space before :
+
+"count" can be declared inside the "then" clause instead of at the top of the function
+
+10144
+Mon Nov 02 21:08:54 2015 +0000
+Author: Kevin Cernekee <1067059@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 760e462a_3115a019
+Bytes: 26
+This adds a "naked" printk
+
