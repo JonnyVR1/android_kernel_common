@@ -3240,10 +3240,15 @@ restart:
 
 			local_bh_disable();
 			bh_lock_sock(sk);
+			if (sock_owned_by_user(sk))
+				goto unlock_sk;
+
 			sk->sk_err = ETIMEDOUT;
 			sk->sk_error_report(sk);
 
 			tcp_done(sk);
+
+unlock_sk:
 			bh_unlock_sock(sk);
 			local_bh_enable();
 			sock_put(sk);
