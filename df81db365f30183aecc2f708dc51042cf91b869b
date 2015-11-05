@@ -36,3 +36,10 @@ UUID: 6ec3bd5a_b8bb7545
 Bytes: 4
 Done
 
+781:16-781:23
+Thu Nov 05 00:40:07 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8df777d_22bceeea
+Bytes: 109
+why use vzalloc here instead of kzalloc?  Is there a specific fear that kzalloc is going to fail to allocate?
+
