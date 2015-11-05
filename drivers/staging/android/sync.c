@@ -183,6 +183,13 @@ static void fence_check_cb_func(struct fence *f, struct fence_cb *cb)
 	check = container_of(cb, struct sync_fence_cb, cb);
 	fence = check->fence;
 
+	if (f->status < 0) {
+		fence->error = f->status;
+		atomic_set(&fence->status, -1);
+		wake_up_all(&fence->wq);
+		return;
+	}
+
 	if (atomic_dec_and_test(&fence->status))
 		wake_up_all(&fence->wq);
 }
@@ -331,7 +338,7 @@ int sync_fence_wait_async(struct sync_fence *fence,
 	unsigned long flags;
 
 	if (err < 0)
-		return err;
+		return fence->error;
 
 	if (!err)
 		return 1;
@@ -346,7 +353,7 @@ int sync_fence_wait_async(struct sync_fence *fence,
 	spin_unlock_irqrestore(&fence->wq.lock, flags);
 
 	if (err < 0)
-		return err;
+		return fence->error;
 
 	return !err;
 }
@@ -398,9 +405,10 @@ int sync_fence_wait(struct sync_fence *fence, long timeout)
 	}
 
 	ret = atomic_read(&fence->status);
-	if (ret) {
-		pr_info("fence error %ld on [%p]\n", ret, fence);
+	if (ret < 0) {
+		pr_info("fence error %d on [%p]\n", fence->error, fence);
 		sync_dump();
+		return fence->error;
 	}
 	return ret;
 }
@@ -450,6 +458,12 @@ static bool android_fence_signaled(struct fence *fence)
 	ret = parent->ops->has_signaled(pt);
 	if (ret < 0)
 		fence->status = ret;
+
+	if (!ret && sync_pt_parent(pt)->destroyed) {
+		fence->status = -ENOENT;
+		return true;
+	}
+
 	return ret;
 }
 
@@ -732,4 +746,3 @@ static const struct file_operations sync_fence_fops = {
 	.unlocked_ioctl = sync_fence_ioctl,
 	.compat_ioctl = sync_fence_ioctl,
 };
-

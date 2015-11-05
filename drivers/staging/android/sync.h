@@ -147,6 +147,7 @@ struct sync_fence_cb {
  * @pt_list_head:	list of sync_pts in the fence.  immutable once fence
  *			  is created
  * @status:		0: signaled, >0:active, <0: error
+ * @error:		0: normal, <0: error value
  *
  * @wq:			wait queue for fence signaling
  * @sync_fence_list:	membership in global fence list
@@ -162,6 +163,7 @@ struct sync_fence {
 
 	wait_queue_head_t	wq;
 	atomic_t		status;
+	int			error;
 
 	struct sync_fence_cb	cbs[];
 };
