@@ -1,0 +1,24 @@
+Revision: bc3362afa0a1b2018c1c412c47fa56ee14bd3aa2
+Patch-set: 1
+File: Documentation/device-mapper/verity.txt
+
+82:0-82:19
+Thu Nov 05 00:40:07 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d320d6e0_88bc77ee
+Bytes: 128
+Bikeshed: I'd be tempted to simplify this to just:
+    fec_device
+since its non-existence means it is undefined and not enabled.
+
+File: drivers/md/dm-verity.c
+
+634:6-634:7
+Thu Nov 05 00:40:07 2015 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5314e687_84bc66ee
+Bytes: 103
+style nit: Kernel/file style encourages merging these ints where possible.
+
+(here and other places too)
+
