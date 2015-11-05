@@ -43,3 +43,11 @@ UUID: f8df777d_22bceeea
 Bytes: 109
 why use vzalloc here instead of kzalloc?  Is there a specific fear that kzalloc is going to fail to allocate?
 
+781:16-781:23
+Thu Nov 05 01:27:43 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8df777d_22bceeea
+UUID: b69d1e72_b7fff01b
+Bytes: 172
+It's because the buffer can be relatively large, up to 1 MiB using the default error correction parameters. I could try kzalloc and fall back to vzalloc if it fails though.
+
