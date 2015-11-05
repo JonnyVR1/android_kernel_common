@@ -147,6 +147,7 @@ struct sync_fence_cb {
  * @pt_list_head:	list of sync_pts in the fence.  immutable once fence
  *			  is created
  * @status:		0: signaled, >0:active, <0: error
+ * @error:		0: normal, <0: error value
  *
  * @wq:			wait queue for fence signaling
  * @sync_fence_list:	membership in global fence list
@@ -162,6 +163,7 @@ struct sync_fence {
 
 	wait_queue_head_t	wq;
 	atomic_t		status;
+	int			error;
 
 	struct sync_fence_cb	cbs[];
 };
@@ -334,6 +336,16 @@ int sync_fence_cancel_async(struct sync_fence *fence,
  * if @timeout < 0
  */
 int sync_fence_wait(struct sync_fence *fence, long timeout);
+
+/**
+ * sync_fence_get_status() - return status for a given fence
+ * @fence:	fence to return status for
+ *
+ * Returns the status for a given fence, where status may be
+ * 1: signaled, 0: active, <0: error value.  This function should be
+ * used instead of reading fence->status directly.
+ */
+int sync_fence_get_status(struct sync_fence *fence);
 
 #ifdef CONFIG_DEBUG_FS
 
