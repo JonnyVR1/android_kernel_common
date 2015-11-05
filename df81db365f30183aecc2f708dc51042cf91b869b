@@ -51,3 +51,11 @@ UUID: b69d1e72_b7fff01b
 Bytes: 172
 It's because the buffer can be relatively large, up to 1 MiB using the default error correction parameters. I could try kzalloc and fall back to vzalloc if it fails though.
 
+781:16-781:23
+Thu Nov 05 16:06:20 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b69d1e72_b7fff01b
+UUID: 568ea242_5de34758
+Bytes: 239
+As this is part of initialization, I would accept the slowness of vzalloc dealing with a large allocation of scattered blocks, rather than have this possibly consume a precious contiguous block of very high ranking away from other systems.
+
