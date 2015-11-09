@@ -1,0 +1,11 @@
+Revision: e067dd89b6dc89ee47a5e95e3f3c607c02ea7079
+Patch-set: 1
+File: drivers/staging/android/sync.h
+
+165:0-166:13
+Mon Nov 09 18:18:09 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b66efe78_8c53871e
+Bytes: 209
+Is there a reason these need to be two separate variables?  Unless there's something subtle I'm missing here, it seems simpler to just set status = -errno instead of using a -1 flag with a separate error code.
+
