@@ -71,3 +71,11 @@ I explained how preallocating the buffers for each IO operation would be wastefu
 
 Any thoughts on this? I think the worker thread approach sounds reasonable, but I also don't think it's a huge problem if we fail to correct an error when the device is out of memory.
 
+781:16-781:23
+Mon Nov 09 22:33:46 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6b19e59_518c7457
+UUID: 16c50ace_a4ec82eb
+Bytes: 174
+does mempool mean kmem_cache? It seems wasteful to be hording memory on a device that is low on it for functionality that may never be used during the lifetime of the device.
+
