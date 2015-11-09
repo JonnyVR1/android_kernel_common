@@ -1,0 +1,13 @@
+Revision: 633ae503890a4fb4ee58e206ef70e57b6177fcd6
+Patch-set: 2
+File: net/ipv4/tcp.c
+
+3553:0-3555:17
+Mon Nov 09 17:17:08 2015 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36712e54_73339838
+Bytes: 163
+1. Do we have to use "goto" here?
+2. Maybe it would be better to check the flag after disabling bottom halves?
+3. Can we please not use C++ comments in the kernel?
+
