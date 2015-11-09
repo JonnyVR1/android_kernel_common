@@ -79,3 +79,11 @@ UUID: 16c50ace_a4ec82eb
 Bytes: 174
 does mempool mean kmem_cache? It seems wasteful to be hording memory on a device that is low on it for functionality that may never be used during the lifetime of the device.
 
+781:16-781:23
+Mon Nov 09 22:52:14 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16c50ace_a4ec82eb
+UUID: 76d4867d_4784aeee
+Bytes: 53
+They mean the mempool interface in <linux/mempool.h>.
+
