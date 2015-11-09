@@ -59,3 +59,15 @@ UUID: 568ea242_5de34758
 Bytes: 239
 As this is part of initialization, I would accept the slowness of vzalloc dealing with a large allocation of scattered blocks, rather than have this possibly consume a precious contiguous block of very high ranking away from other systems.
 
+781:16-781:23
+Mon Nov 09 22:02:20 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 568ea242_5de34758
+UUID: b6b19e59_518c7457
+Bytes: 616
+Upstream had some concerns about this. They recommend against allocating memory during IO, because that might lead to failures in face of low memory.
+
+I explained how preallocating the buffers for each IO operation would be wasteful considering the buffers can be large and they are only needed if there are errors. The recommendation was to punt error correcting work to a worker thread and use a mempool to allocate memory there.
+
+Any thoughts on this? I think the worker thread approach sounds reasonable, but I also don't think it's a huge problem if we fail to correct an error when the device is out of memory.
+
