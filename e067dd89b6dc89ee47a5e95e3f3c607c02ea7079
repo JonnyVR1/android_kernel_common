@@ -9,3 +9,15 @@ UUID: b66efe78_8c53871e
 Bytes: 209
 Is there a reason these need to be two separate variables?  Unless there's something subtle I'm missing here, it seems simpler to just set status = -errno instead of using a -1 flag with a separate error code.
 
+165:0-166:13
+Mon Nov 09 18:40:46 2015 +0000
+Author: Tom Cherry <1064128@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b66efe78_8c53871e
+UUID: d66b7268_2dfff983
+Bytes: 438
+That was the original thought, but it's possible for a sync fence with multiple sync pts to have subsequent sync pts signaled, which would call atomic_dec_and_test() on status in fence_check_fb_func() and that would corrupt the error value in status.
+
+An alternative approach may be to free the other sync points of a sync fence that hits an error condition, although that would be slightly more invasive.
+
+Let me know your opinions here.
+
