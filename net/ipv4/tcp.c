@@ -3550,14 +3550,17 @@ restart:
 
 			lock_sock(sk);
 			// TODO:
-			// Check for SOCK_DEAD again, it could have changed.
 			// Add a write barrier, see tcp_reset().
+			if (sock_flag(sk, SOCK_DEAD))
+				goto release;
+
 			local_bh_disable();
 			sk->sk_err = ETIMEDOUT;
 			sk->sk_error_report(sk);
 
 			tcp_done(sk);
 			local_bh_enable();
+release:
 			release_sock(sk);
 			sock_put(sk);
 
