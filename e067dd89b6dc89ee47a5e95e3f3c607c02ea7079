@@ -1,5 +1,14 @@
 Revision: e067dd89b6dc89ee47a5e95e3f3c607c02ea7079
 Patch-set: 1
+File: drivers/staging/android/sync.c
+
+187
+Mon Nov 09 19:19:36 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 365a0ede_4b649925
+Bytes: 24
+smp_mb__before_atomic();
+
 File: drivers/staging/android/sync.h
 
 165:0-166:13
