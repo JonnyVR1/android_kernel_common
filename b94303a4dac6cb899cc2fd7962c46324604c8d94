@@ -1,0 +1,22 @@
+Revision: b94303a4dac6cb899cc2fd7962c46324604c8d94
+Patch-set: 2
+File: drivers/staging/android/sync.c
+
+426:9-426:12
+Tue Nov 10 02:22:21 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6a6b626_11330c39
+Bytes: 12
+fence->error
+
+File: drivers/staging/android/sync.h
+
+345:3-345:25
+Tue Nov 10 02:22:21 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7689e6a7_62bd38da
+Bytes: 100
+Bikeshedding time!
+
+1 = signaled, 0 = active is a bit weird since it's the reverse of fence->status.
+
