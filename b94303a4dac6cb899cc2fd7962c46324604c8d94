@@ -38,3 +38,11 @@ Right, but in the original implementation before the dma-buf fences went in, the
 
 I don't have a strong opinion though if you think we should keep the status consistent with how fence->status is now.
 
+345:3-345:25
+Tue Nov 10 18:16:54 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 369daed4_70808e64
+UUID: 7689e6a7_e29a2893
+Bytes: 120
+No strong opinions here either, as long as there's some rationale for the (very slightly) surprising behavior it's fine.
+
