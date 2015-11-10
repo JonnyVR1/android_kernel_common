@@ -11,3 +11,11 @@ Bytes: 163
 2. Maybe it would be better to check the flag after disabling bottom halves?
 3. Can we please not use C++ comments in the kernel?
 
+3553:0-3555:17
+Tue Nov 10 02:01:48 2015 +0000
+Author: Erik Kline <1000451@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36712e54_73339838
+UUID: d6829250_b581eab4
+Bytes: 56
+I think this is just deleting one existing comment line.
+
