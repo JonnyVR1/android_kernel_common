@@ -19,3 +19,13 @@ UUID: d6829250_b581eab4
 Bytes: 56
 I think this is just deleting one existing comment line.
 
+3553:0-3555:17
+Tue Nov 10 02:17:34 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36712e54_73339838
+UUID: b6851e5b_b1b340c1
+Bytes: 240
+Removed the goto and moved the check after local_bh_disable.
+
+I deleted the C++ style comment by addressing the TODO, but I will note that you had the opportunity of pushing back on them when you reviewed the change that introduced them :-)
+
