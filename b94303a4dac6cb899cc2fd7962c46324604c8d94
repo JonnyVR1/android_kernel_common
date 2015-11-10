@@ -9,6 +9,14 @@ UUID: f6a6b626_11330c39
 Bytes: 12
 fence->error
 
+426:9-426:12
+Tue Nov 10 02:56:59 2015 +0000
+Author: Tom Cherry <1064128@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6a6b626_11330c39
+UUID: 369daed4_d0706277
+Bytes: 26
+Done; hasty mistake there.
+
 File: drivers/staging/android/sync.h
 
 345:3-345:25
@@ -19,4 +27,14 @@ Bytes: 100
 Bikeshedding time!
 
 1 = signaled, 0 = active is a bit weird since it's the reverse of fence->status.
+
+345:3-345:25
+Tue Nov 10 02:56:59 2015 +0000
+Author: Tom Cherry <1064128@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7689e6a7_62bd38da
+UUID: 369daed4_70808e64
+Bytes: 316
+Right, but in the original implementation before the dma-buf fences went in, these are the states that fence->status took.  I figure it's better to keep that consistent than reverse the status now?
+
+I don't have a strong opinion though if you think we should keep the status consistent with how fence->status is now.
 
