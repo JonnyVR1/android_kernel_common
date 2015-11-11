@@ -89,6 +89,14 @@ bh_unlock_sock               bh_lock_sock(ok)
 release_sock(wait)           bh_unlock_sock
 release_sock(ok)             --
 
+3553:3-3553:15
+Wed Nov 11 06:35:58 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b06130b_9c3a45c0
+UUID: f61b1659_86d6cce6
+Bytes: 171
+Yes, we might occasionally hit that WARN_ON in tcp_close (and another one in inet_csk_listen_stop). But those messages are harmless, and should be very rare in actual use.
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
