@@ -13,3 +13,23 @@ like this:
 if (!sock_owned_by_user(sk))
     tcp_done(sk);
 
+3559:4-3559:12
+Wed Nov 11 03:26:19 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bfc0b2b_1e22ade4
+UUID: 16218a86_84a4067b
+Bytes: 998
+That doesn't make sense. Here sock_owned_by_user(sk) is guaranteed to be true, because we have called lock_sock.
+
+lock_sock basically does the following:
+  - Wait until sock_owned_by_user(sk) is false
+  - Lock the socket
+  - Set sock_owned_by_user to 1
+  - Unlock the socket
+
+I don't think the race you describe can happen. tcp_close calls inet_put port via tcp_set_state, which is only called with the userspace socket lock held. So there are two cases:
+
+Case #1: tcp_nuke_addr calls lock_sock first. In this case tcp_done() will do "tcp_set_state(sk, TCP_CLOSE)". Then when tcp_nuke_addr calls release_sock, tcp_close will run. But now sk->sk_state == TCP_CLOSE, so tcp_close will do "goto adjudge_to_death" and not call inet_put_port.
+
+Case #2: tcp_close calls lock_sock first. In this case tcp_close will call sock_orphan, which sets SOCK_DEAD. Then it calls sock_release. Now tcp_nuke_addr can run. But because SOCK_DEAD is true, tcp_nuke addr will just skip the socket without doing anything.
+
