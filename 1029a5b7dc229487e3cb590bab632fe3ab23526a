@@ -66,6 +66,29 @@ UUID: 1b06130b_bc3d01bc
 Bytes: 110
 ... err, I mean "By that time, sk->sk_state is set to TCP_CLOSE, and *tcp_close* will not call tcp_set_state."
 
+3553:3-3553:15
+Wed Nov 11 05:56:08 2015 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b06130b_bc3d01bc
+UUID: 1b06130b_9c3a45c0
+Bytes: 626
+Yes, you're right. I did not see the lock_sock in line 3551. 
+There's no race condition now.
+
+But I think some boring warn message will be printed out
+from time to time by WARN_ON(sock_owned_by_user(sk))：
+
+CPU0                         CPU1
+tcp_nuke_addr()              tcp_close()
+--                           lock_sock
+lock_sock(wait)              release_sock
+lock_sock(ok)                --
+bh_lock_sock(ok)             bh_lock_sock(wait)
+bh_unlock_sock               bh_lock_sock(ok)
+--                           WARN_ON(sock_owned_by_user(sk))
+release_sock(wait)           bh_unlock_sock
+release_sock(ok)             --
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
