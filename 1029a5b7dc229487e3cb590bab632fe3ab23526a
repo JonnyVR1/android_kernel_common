@@ -2,6 +2,14 @@ Revision: 1029a5b7dc229487e3cb590bab632fe3ab23526a
 Patch-set: 4
 File: net/ipv4/tcp.c
 
+3553:3-3553:15
+Wed Nov 11 04:02:35 2015 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bf75749_bd5e1f51
+Bytes: 111
+Here you change the lock_sock() to bh_lock_sock() in 
+tcp_nuke_addr, so check sock_owned_by_user(sk) is needed.
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
