@@ -1,0 +1,32 @@
+Revision: 2283991c4775f294294acb86eef792b0ee19e170
+Patch-set: 2
+File: fs/pstore/ram.c
+
+447:7-447:13
+Wed Nov 11 22:48:40 2015 +0000
+Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6da7ea7_a8f3ae5a
+Bytes: 17
+Why force inline?
+
+454:25-454:31
+Wed Nov 11 22:48:40 2015 +0000
+Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369daed4_c2f410f6
+Bytes: 28
+Why is EINVAL being ignored?
+
+543
+Wed Nov 11 22:48:40 2015 +0000
+Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6da7ea7_48867283
+Bytes: 103
+I wonder if this should use platform_get_drvdata instead, since the accessors are used in the new code.
+
+663
+Wed Nov 11 22:48:40 2015 +0000
+Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_f986f382
+Bytes: 52
+Probably want to set platform_data to NULL here too.
+
