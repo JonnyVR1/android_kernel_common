@@ -26,6 +26,26 @@ You can confirm this by adding:
 
 after bh_lock_sock().
 
+3553:3-3553:15
+Wed Nov 11 05:14:27 2015 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bfc0b2b_be5e1951
+UUID: f61b1659_06dadc41
+Bytes: 587
+Hello Lorenzo,
+If we lack a judgement of sock_owned_by_user here, race condition
+will still exist like this:
+CPU0                            CPU1
+   tcp_nuke_addr {                tcp_close {
+     --                             lock_sock
+     bh_lock_sock                   --
+     tcp_set_state {                tcp_set_state {
+       inet_put_port                    inet_put_port
+       --                               icsk_bind_hash->num_owners--
+       --                               icsk_bind_hash = NULL
+       // access NULL pointer here  }
+       icsk_bind_hash->num_owners--
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
