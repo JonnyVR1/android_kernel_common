@@ -58,6 +58,14 @@ If tcp_close executes lock_sock first, then tcp_nuke_addr will block on the lock
 
 If tcp_nuke_addr executes lock_sock first, then tcp_close will block on lock_sock until tcp_nuke_addr calls release_sock. By that time, sk->sk_state is set to TCP_CLOSE, and lock_sock will not call tcp_set_state.
 
+3553:3-3553:15
+Wed Nov 11 05:32:53 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bfc0b2b_3ee0c9bb
+UUID: 1b06130b_bc3d01bc
+Bytes: 110
+... err, I mean "By that time, sk->sk_state is set to TCP_CLOSE, and *tcp_close* will not call tcp_set_state."
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
