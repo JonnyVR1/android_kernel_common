@@ -1,0 +1,11 @@
+Revision: 964ac940af34143cba097c208b7727d4b3b6bfc1
+Patch-set: 1
+File: fs/pstore/ram.c
+
+445:58-445:63
+Wed Nov 11 19:04:10 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_199cd7da
+Bytes: 49
+This is only safe on 64-bit platforms.  Will fix.
+
