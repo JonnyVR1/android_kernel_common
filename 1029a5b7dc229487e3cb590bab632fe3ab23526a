@@ -10,6 +10,22 @@ Bytes: 111
 Here you change the lock_sock() to bh_lock_sock() in 
 tcp_nuke_addr, so check sock_owned_by_user(sk) is needed.
 
+3553:3-3553:15
+Wed Nov 11 04:51:44 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3bf75749_bd5e1f51
+UUID: 5bfc0b2b_be5e1951
+Bytes: 320
+No, sock_owned_by_user guaranteed to be true until we call release_sock. bh_lock_sock does not affect the result of sock_owned_by_user(); all it does is:
+
+    #define bh_lock_sock(__sk)      spin_lock(&((__sk)->sk_lock.slock))
+
+You can confirm this by adding:
+
+    BUG_ON(!sock_owned_by_user(sk));
+
+after bh_lock_sock().
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
