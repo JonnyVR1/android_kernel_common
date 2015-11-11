@@ -49,6 +49,14 @@ UUID: 56cb02e2_97240b8d
 Bytes: 111
 Actually, since val points inside a kzalloc()ed buffer, we can just return without explicitly setting *val = 0.
 
+454:25-454:31
+Wed Nov 11 23:05:37 2015 +0000
+Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56cb02e2_97240b8d
+UUID: 16c50ace_eb1ac2f9
+Bytes: 78
+This function doesn't know that, though. I think it's fine to leave it robust.
+
 543
 Wed Nov 11 22:48:40 2015 +0000
 Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
