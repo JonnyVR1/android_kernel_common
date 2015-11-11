@@ -41,6 +41,14 @@ if (ret == -EINVAL) {
 
 which has the same effect but explicitly fast-exits?
 
+454:25-454:31
+Wed Nov 11 23:03:37 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b25eb9e_79d8a3a3
+UUID: 56cb02e2_97240b8d
+Bytes: 111
+Actually, since val points inside a kzalloc()ed buffer, we can just return without explicitly setting *val = 0.
+
 543
 Wed Nov 11 22:48:40 2015 +0000
 Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
