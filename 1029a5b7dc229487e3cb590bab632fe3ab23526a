@@ -1,0 +1,15 @@
+Revision: 1029a5b7dc229487e3cb590bab632fe3ab23526a
+Patch-set: 4
+File: net/ipv4/tcp.c
+
+3559:4-3559:12
+Wed Nov 11 03:04:02 2015 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5bfc0b2b_1e22ade4
+Bytes: 187
+I think here miss a judgement of sock_owned_by_user, or it will
+still race with inet_put_port() in tcp_close(). So code should be
+like this:
+if (!sock_owned_by_user(sk))
+    tcp_done(sk);
+
