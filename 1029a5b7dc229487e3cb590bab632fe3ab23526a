@@ -46,6 +46,18 @@ CPU0                            CPU1
        // access NULL pointer here  }
        icsk_bind_hash->num_owners--
 
+3553:3-3553:15
+Wed Nov 11 05:30:49 2015 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f61b1659_06dadc41
+UUID: 5bfc0b2b_3ee0c9bb
+Bytes: 533
+No, that can't happen. The reason is the lock_sock statement in line 3551.
+
+If tcp_close executes lock_sock first, then tcp_nuke_addr will block on the lock_sock in line 3551 until tcp_close calls release_sock. Once tcp_close calls release_sock, the SOCK_DEAD flag will be set, and tcp_nuke_addr will not call tcp_done.
+
+If tcp_nuke_addr executes lock_sock first, then tcp_close will block on lock_sock until tcp_nuke_addr calls release_sock. By that time, sk->sk_state is set to TCP_CLOSE, and lock_sock will not call tcp_set_state.
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
