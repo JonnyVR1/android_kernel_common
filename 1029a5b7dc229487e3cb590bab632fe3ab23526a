@@ -105,6 +105,17 @@ UUID: dbe8fb67_a25b9e60
 Bytes: 47
 Yes, this happened in a very small probability.
 
+3556:4-3557:27
+Thu Nov 12 02:07:35 2015 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf20354_60b0f21f
+Bytes: 159
+Hello Lorenzo,
+Refer to tcp_reset, I think smp_wmb() should be put after set sk->sk_err, like this:
+sk->sk_err = ETIMEDOUT;
+smp_wmb();
+sk->sk_error_report(sk);
+
 3559:4-3559:12
 Wed Nov 11 03:04:02 2015 +0000
 Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
