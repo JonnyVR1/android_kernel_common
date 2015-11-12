@@ -9,3 +9,11 @@ UUID: 5b2a4b7b_d43094e5
 Bytes: 25
 Do we want to free pdata?
 
+550:3-550:7
+Thu Nov 12 22:07:08 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b2a4b7b_d43094e5
+UUID: bb3987d2_0059300b
+Bytes: 67
+On probe failure, devres allocations are automatically rolled back.
+
