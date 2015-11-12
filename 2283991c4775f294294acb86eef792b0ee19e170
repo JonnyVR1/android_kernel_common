@@ -64,10 +64,28 @@ UUID: b6da7ea7_48867283
 Bytes: 103
 I wonder if this should use platform_get_drvdata instead, since the accessors are used in the new code.
 
+543
+Thu Nov 12 21:52:39 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6da7ea7_48867283
+UUID: bb3987d2_c03d68bb
+Bytes: 4
+Done
+
 663
 Wed Nov 11 22:48:40 2015 +0000
 Author: Kees Cook <1082649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5b25eb9e_f986f382
 Bytes: 52
 Probably want to set platform_data to NULL here too.
+
+663
+Thu Nov 12 21:52:39 2015 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b25eb9e_f986f382
+UUID: 16c50ace_bf7480db
+Bytes: 242
+Addressed by moving where the platform_set_drvdata() happens.  On failure the drvdata is never changed, so there's nothing to roll back.
+
+I also removed the devm_kfree() since devres allocations are automatically rolled back on probe failure.
 
