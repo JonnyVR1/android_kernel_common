@@ -1,0 +1,11 @@
+Revision: d2d4cd092585d69d1b21675598bd8d8cdc519412
+Patch-set: 3
+File: fs/pstore/ram.c
+
+550:3-550:7
+Thu Nov 12 22:02:57 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b2a4b7b_d43094e5
+Bytes: 25
+Do we want to free pdata?
+
