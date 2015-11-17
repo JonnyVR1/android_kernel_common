@@ -1,0 +1,42 @@
+Revision: ec82ba65ca5da191075eb3246ca90fd6497b9627
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:61
+Tue Nov 17 23:17:35 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_c7824ee4
+Bytes: 281
+ANDROID: exec_domains: ....
+
+(new commit standard in compliance with Chrome commits, ANDROID: header indicates that you will likely not see this upstream).
+
+UPSTREAM: From ToT kernel.org
+BACKPORT: (same, but conflicts resolved)
+FROMLIST: (same, but precedes acceptance into kernel)
+
+9:16-9:23
+Tue Nov 17 23:17:35 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_4722bee5
+Bytes: 7
+Android
+
+9:43-9:52
+Tue Nov 17 23:17:35 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_7f3c28a4
+Bytes: 8
+separate
+
+File: kernel/exec_domain.c
+
+78:0-78:5
+Tue Nov 17 23:17:35 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_84ae4a57
+Bytes: 98
+#if 0 && defined(CONFIG_MODULES)
+
+(just a nit, git history will always tell us what happened here)
+
