@@ -39,6 +39,8 @@ enum {
 	FLAT_BINDER_FLAG_ACCEPTS_FDS = 0x100,
 };
 
+#define PAD_AMT 3 //sizeof(uint32_t) - 1
+
 #ifdef BINDER_IPC_32BIT
 typedef __u32 binder_size_t;
 typedef __u32 binder_uintptr_t;

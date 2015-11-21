@@ -369,6 +369,7 @@ struct binder_transaction {
 	long	priority;
 	long	saved_priority;
 	kuid_t	sender_euid;
+	u32	sender_secid;
 };
 
 static void
@@ -1483,6 +1484,7 @@ static void binder_transaction(struct binder_proc *proc,
 	t->code = tr->code;
 	t->flags = tr->flags;
 	t->priority = task_nice(current);
+	security_task_getsecid(proc->tsk, &t->sender_secid);
 
 	trace_binder_transaction(reply, t, target_node);
 
@@ -2154,6 +2156,10 @@ static int binder_thread_read(struct binder_proc *proc,
 
 	int ret = 0;
 	int wait_for_proc_work;
+	char *secctx = NULL;
+	char *secctx_padded = NULL;
+	u32 secctx_sz = 0;
+	uint32_t padlen = 0;
 
 	if (*consumed == 0) {
 		if (put_user(BR_NOOP, (uint32_t __user *)ptr))
@@ -2399,6 +2405,21 @@ retry:
 		tr.flags = t->flags;
 		tr.sender_euid = from_kuid(current_user_ns(), t->sender_euid);
 
+		/* If using security contexts, pass along as additional credential. */
+		if (t->sender_secid != 0) {
+			ret = security_secid_to_secctx(t->sender_secid, &secctx, &secctx_sz);
+			if (ret)
+				return ret;
+			padlen = (secctx_sz + PAD_AMT) & ~PAD_AMT;
+			secctx_padded = kzalloc(padlen, GFP_KERNEL);
+			if (!secctx_padded) {
+				security_release_secctx(secctx, secctx_sz);
+				return -ENOMEM;
+			}
+			memcpy(secctx_padded, secctx, secctx_sz);
+			security_release_secctx(secctx, secctx_sz);
+		}
+
 		if (t->from) {
 			struct task_struct *sender = t->from->proc->tsk;
 
@@ -2423,6 +2444,15 @@ retry:
 		if (copy_to_user(ptr, &tr, sizeof(tr)))
 			return -EFAULT;
 		ptr += sizeof(tr);
+		if (cmd == BR_TRANSACTION) {
+			if (put_user_preempt_disabled(secctx_sz, (uint32_t __user *) ptr))
+				return -EFAULT;
+			ptr += sizeof(uint32_t);
+			if (padlen && copy_to_user_preempt_disabled(ptr, secctx_padded, padlen))
+				return -EFAULT;
+			ptr += padlen;
+			kfree(secctx_padded);
+		}
 
 		trace_binder_transaction_received(t);
 		binder_stat_br(proc, thread, cmd);
