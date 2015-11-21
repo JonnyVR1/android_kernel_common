@@ -1,0 +1,20 @@
+Revision: ffc6f05cbacfb845f336add00cd7ca8798fb1b1c
+Patch-set: 2
+File: drivers/android/binder.c
+
+2447:6-2447:27
+Sat Nov 21 01:38:45 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b167790_6bbbf532
+Bytes: 63
+could send w/BR_REPLY too, but I don't have a use for that yet.
+
+File: include/uapi/linux/android/binder.h
+
+42:1-42:17
+Sat Nov 21 01:38:45 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b1b2bb8_4fad65aa
+Bytes: 107
+intention is to use this in servicemanager/binder.c and Parcel.cpp instead of the current hard-coding of 3.
+
