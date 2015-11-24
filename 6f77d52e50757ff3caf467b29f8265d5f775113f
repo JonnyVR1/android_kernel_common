@@ -9,3 +9,11 @@ UUID: 5b1b2bb8_83e29153
 Bytes: 187
 On a N9 that has been up for more than a minute, this will most likely fail if the buffer is >32KB as that rank will have been exhausted. Does the memory need to be physically contiguous?
 
+1394:21-1394:48
+Tue Nov 24 18:57:00 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b1b2bb8_83e29153
+UUID: 7bb2aff7_3a767de5
+Bytes: 228
+It doesn't have to be physically contiguous, but the buffer is at most 4 KiB and the allocation is performed while dm-verity device is being created, so I thought it's probably fine. Do you think I should switch to vzalloc here?
+
