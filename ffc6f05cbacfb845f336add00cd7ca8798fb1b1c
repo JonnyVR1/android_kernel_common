@@ -1,5 +1,14 @@
 Revision: ffc6f05cbacfb845f336add00cd7ca8798fb1b1c
 Patch-set: 2
+File: /COMMIT_MSG
+
+9
+Tue Nov 24 01:09:13 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b153384_fe85e1ed
+Bytes: 59
+Describe the bug. The bug number is useless outside Google.
+
 File: drivers/android/binder.c
 
 2447:6-2447:27
@@ -8,6 +17,13 @@ Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3b167790_6bbbf532
 Bytes: 63
 could send w/BR_REPLY too, but I don't have a use for that yet.
+
+2455
+Tue Nov 24 01:09:13 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b153384_9e614d18
+Bytes: 51
+This is inconsistent with the rest of the protocol.
 
 File: include/uapi/linux/android/binder.h
 
