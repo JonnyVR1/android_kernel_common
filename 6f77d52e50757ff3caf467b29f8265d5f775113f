@@ -1,0 +1,11 @@
+Revision: 6f77d52e50757ff3caf467b29f8265d5f775113f
+Patch-set: 3
+File: drivers/md/dm-verity.c
+
+1394:21-1394:48
+Tue Nov 24 18:09:19 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b1b2bb8_83e29153
+Bytes: 187
+On a N9 that has been up for more than a minute, this will most likely fail if the buffer is >32KB as that rank will have been exhausted. Does the memory need to be physically contiguous?
+
