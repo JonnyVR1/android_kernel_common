@@ -19,6 +19,13 @@ Will provide more context w/next patch.
 
 File: drivers/android/binder.c
 
+2414
+Tue Nov 24 01:43:13 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b167790_bfc087ff
+Bytes: 28
+why are you allocating this?
+
 2447:6-2447:27
 Sat Nov 21 01:38:45 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,6 +47,14 @@ Parent: 1b153384_9e614d18
 UUID: db271bf3_e4139640
 Bytes: 495
 Yes.  As described in the bug, I came up with two approaches.  The first would be to add a field to br_transaction_data and pass the u32 sid along with it, but this is an opaque value with meaning only to the kernel and so would also require opening up an API to query this value.  It seemed simpler and more straightforward to just pass the string along with the transaction. I'd appreciate alternative suggestions if you have them, including perhaps a way to make this approach more palatable.
+
+2455
+Tue Nov 24 01:43:13 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db271bf3_e4139640
+UUID: 5b1b2bb8_8d4ac256
+Bytes: 396
+That is not what I mean. The size of each command is encoded in the opcode. You changed the size of BR_TRANSACTION so that it no longer matches the size encoded in the opcode. If you want to pass more data in BR_TRANSACTION than BR_REPLY, then the opcode could be defined using a struct that contains that new data, but since you are a passing a variable length structure, that does not fit well.
 
 File: include/uapi/linux/android/binder.h
 
