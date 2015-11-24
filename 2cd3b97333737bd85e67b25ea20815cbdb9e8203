@@ -9,3 +9,11 @@ UUID: 3b167790_9a7839d4
 Bytes: 212
 Concern for upstream and other users, as I expect we will accept this on Android. What about a DM_VERITY_FEC option that forces this and DM_VERITY, the additional fec code to be gated in #ifdef CONFIG_VERITY_FEC?
 
+401:0-402:25
+Tue Nov 24 17:23:08 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b167790_9a7839d4
+UUID: fb921f65_6eadafaa
+Bytes: 305
+Good idea. I believe upstream people are not huge fans of ifdefs sprinkled in the code, so I'll see if I can move the FEC code to a separate conditionally compiled .c file or if it's cleaner to just add IS_ENABLED(CONFIG_DM_VERITY_FEC) to verity_fec_is_enabled and let the compiler optimize the code away.
+
