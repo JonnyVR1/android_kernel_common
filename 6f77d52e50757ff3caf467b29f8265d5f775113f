@@ -17,3 +17,11 @@ UUID: 7bb2aff7_3a767de5
 Bytes: 228
 It doesn't have to be physically contiguous, but the buffer is at most 4 KiB and the allocation is performed while dm-verity device is being created, so I thought it's probably fine. Do you think I should switch to vzalloc here?
 
+1394:21-1394:48
+Tue Nov 24 20:34:08 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bb2aff7_3a767de5
+UUID: 1b153384_4bec36ea
+Bytes: 340
+I seem to remember this discussion before ;-/ I must be getting old. If it does not get larger than 4Kb, then no need to change. I was looking at data_dev_block_bits being an unsigned char, which _could_ get rather large though. I would feel more comfortable if I could see something limiting the range of this value? in verity_ctr perhaps?
+
