@@ -1,0 +1,11 @@
+Revision: 2cd3b97333737bd85e67b25ea20815cbdb9e8203
+Patch-set: 5
+File: drivers/md/Kconfig
+
+401:0-402:25
+Tue Nov 24 17:14:23 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b167790_9a7839d4
+Bytes: 212
+Concern for upstream and other users, as I expect we will accept this on Android. What about a DM_VERITY_FEC option that forces this and DM_VERITY, the additional fec code to be gated in #ifdef CONFIG_VERITY_FEC?
+
