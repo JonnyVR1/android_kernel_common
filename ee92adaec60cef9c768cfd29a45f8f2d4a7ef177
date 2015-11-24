@@ -9,3 +9,11 @@ UUID: 1b153384_39cdd33a
 Bytes: 253
 This appears to be a regression, logspam about corruption? I missed the discussion about why this was changed (between 062a6b5efee1a4e97fae2569517d35af9ed99148 as committed to 3.10 and the version upstreamed in 65ff5b7ddf0541f2b6e5cc59c47bfbf6cbcd91b8)?
 
+233:1-233:6
+Tue Nov 24 19:08:31 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b153384_39cdd33a
+UUID: 9b7da3ef_cba76928
+Bytes: 180
+I don't remember why this was changed in the upstream patch, but most likely it was because the function already stops logging corruption errors after DM_VERITY_MAX_CORRUPTED_ERRS.
+
