@@ -42,6 +42,14 @@ UUID: db271bf3_34c67dbf
 Bytes: 53
 why does memcpy and copy_to_user need aligned chunks?
 
+2414
+Wed Nov 25 23:06:27 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db271bf3_34c67dbf
+UUID: 9b2123e5_dd0d7dbe
+Bytes: 234
+in Parcel.cpp, Parcel::read() pads all reads from the bwr.read_buffer with pad_size(), as does bio_alloc() and bio_get() in servicemanager/binder.c, although those latter two are for the br_transaction data rather than the bwr buffer.
+
 2447:6-2447:27
 Sat Nov 21 01:38:45 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -119,6 +127,16 @@ Parent: fbf69f9c_544fbd12
 UUID: 1b153384_2b545aa7
 Bytes: 175
 You can look at other drivers for how to define a variable size IOC command (e.g. include/uapi/linux/hiddev.h), but it is probably best to add a separate return type for this.
+
+2455
+Wed Nov 25 23:06:27 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b153384_2b545aa7
+UUID: 1b153384_5f886c09
+Bytes: 443
+Thanks for the pointer, the  HIDIO[CG|CS]USAGES ioctls correspond, I think, to my suggestion of using a MAX_LEN.
+
+I may be misunderstanding how we'd use a new return type, but the purpose of this patch would be to introduce an access control hook for binder transactions themselves, and so that information would need to be transferred as part of the BR_TRANSACTION payload and processed before the whole BR_TRANSACTION handling code finished.
 
 File: include/uapi/linux/android/binder.h
 
