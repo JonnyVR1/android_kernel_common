@@ -50,6 +50,14 @@ UUID: 9b2123e5_dd0d7dbe
 Bytes: 234
 in Parcel.cpp, Parcel::read() pads all reads from the bwr.read_buffer with pad_size(), as does bio_alloc() and bio_get() in servicemanager/binder.c, although those latter two are for the br_transaction data rather than the bwr buffer.
 
+2414
+Wed Nov 25 23:35:17 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b2123e5_dd0d7dbe
+UUID: 3b167790_62ecafea
+Bytes: 138
+That does not mean you need to copy an aligned chunk. You can copy the data you have, and then align the pointer (or fill the pad region).
+
 2447:6-2447:27
 Sat Nov 21 01:38:45 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -137,6 +145,14 @@ Bytes: 443
 Thanks for the pointer, the  HIDIO[CG|CS]USAGES ioctls correspond, I think, to my suggestion of using a MAX_LEN.
 
 I may be misunderstanding how we'd use a new return type, but the purpose of this patch would be to introduce an access control hook for binder transactions themselves, and so that information would need to be transferred as part of the BR_TRANSACTION payload and processed before the whole BR_TRANSACTION handling code finished.
+
+2455
+Wed Nov 25 23:35:17 2015 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b153384_5f886c09
+UUID: fbb05f0b_5aa2f46a
+Bytes: 258
+Look at HIDIOCGNAME and HIDIOCGPHYS for examples of variable sized data. It is possible to have a variable sized transaction struct but it may be better to pass extra data with a separate return code so the encoded length is simply the string length or size.
 
 File: include/uapi/linux/android/binder.h
 
