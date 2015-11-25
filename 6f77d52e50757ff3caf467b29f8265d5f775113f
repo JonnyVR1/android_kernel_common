@@ -25,3 +25,11 @@ UUID: 1b153384_4bec36ea
 Bytes: 340
 I seem to remember this discussion before ;-/ I must be getting old. If it does not get larger than 4Kb, then no need to change. I was looking at data_dev_block_bits being an unsigned char, which _could_ get rather large though. I would feel more comfortable if I could see something limiting the range of this value? in verity_ctr perhaps?
 
+1394:21-1394:48
+Wed Nov 25 09:26:31 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b153384_4bec36ea
+UUID: 3bc4b760_b8dc5534
+Bytes: 65
+The block size is limited to PAGE_SIZE in verity_ctr (line 1722).
+
