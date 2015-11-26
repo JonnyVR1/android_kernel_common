@@ -58,6 +58,14 @@ UUID: 3b167790_62ecafea
 Bytes: 138
 That does not mean you need to copy an aligned chunk. You can copy the data you have, and then align the pointer (or fill the pad region).
 
+2414
+Thu Nov 26 00:50:38 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b167790_62ecafea
+UUID: bbc4277e_a2655f24
+Bytes: 470
+Yes, that was the alternative I mentioned above (forgo the kzalloc and instead do copy_to_user() directly with secctx, followed by padding # of *ptr=0 statements).  Just to be clear: the issue here is one of efficiency, right? Were we to do it this way, we'd cut out a kzalloc and memcpy at the expense of only a couple of assignment and increment operations.  But in either case we need to update the ptr to account for the extra bytes that will be burned by userspace.
+
 2447:6-2447:27
 Sat Nov 21 01:38:45 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -153,6 +161,16 @@ Parent: 1b153384_5f886c09
 UUID: fbb05f0b_5aa2f46a
 Bytes: 258
 Look at HIDIOCGNAME and HIDIOCGPHYS for examples of variable sized data. It is possible to have a variable sized transaction struct but it may be better to pass extra data with a separate return code so the encoded length is simply the string length or size.
+
+2455
+Thu Nov 26 00:50:38 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fbb05f0b_5aa2f46a
+UUID: bbc4277e_022e4b81
+Bytes: 754
+I noticed HIDIOCGNAME & HIDIOCGPHYS as well, but if we were to use those, we would then have to start using the _IOC_[TYPE|NR|SIZE]  macros in userspace to decode these values to get at their constituent parts, whereas now they are simply used as constants.  I guess this is the fundamental issue; if the size field is supposed to matter, then we should be using it in userspace rather than treating these values as arbitrarily generated constants. 
+
+Using a separate, new return value also breaks the current userspace usage pattern because we would be generating a binder protocol return code which has no meaning on its own, or put another way, how should executeCommand() respond when it receives BR_STRING_LEN not immediately after a BR_TRANSACTION?
 
 File: include/uapi/linux/android/binder.h
 
