@@ -74,6 +74,14 @@ UUID: bb2a67bd_a1922939
 Bytes: 214
 It is not just an efficiency issue. You also added new error return path here that is different from everything else in this function. The only direct return paths here is if user space passed a bad buffer pointer.
 
+2414
+Thu Nov 26 01:21:44 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bb2a67bd_a1922939
+UUID: 5b1b2bb8_1da55920
+Bytes: 106
+Got it.  Thank you for pointing that out; will switch in the next patch, again pending further discussion.
+
 2447:6-2447:27
 Sat Nov 21 01:38:45 2015 +0000
 Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -187,6 +195,14 @@ Parent: bbc4277e_022e4b81
 UUID: 1b153384_df861c83
 Bytes: 159
 I think someone from the framework team should look at what they prefer. (you could return the string before BR_TRANSACTION if that makes the decoding simpler)
+
+2455
+Thu Nov 26 01:21:44 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b153384_df861c83
+UUID: 1b153384_1fd6f473
+Bytes: 131
+SGTM.  I'll set something up w/ctate@ and also begin an enquiry w/paul moore when we return next week.  Thanks again for the input.
 
 File: include/uapi/linux/android/binder.h
 
