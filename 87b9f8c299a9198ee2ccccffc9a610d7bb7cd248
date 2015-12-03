@@ -41,6 +41,14 @@ That aside(!), I have three main reasons I raise this comment:
 
 I'm not going to die on this hill :), but this is the background. I *think* only the first one relates to what android needs -- a way to forcibly keep booting even if device mapper fails.  In that case, a strcpy in the setup-fail path might be less surprising.  Alternatively, you could leave root=[underlying-block-device] and add two cmdline params: dm-root=[dm-minor-number] and dm-root-passthrough=1 (or whatever0.  Then if there is no dm-root, it just boots the real root and if there is a large number of dm targets brought up it picks the dm-[minor].  (Or any number of other combos of params and settings - just a strawman :)
 
+561:9-561:24
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6051dc5_173e54f1
+UUID: bb1267d6_4f95a1fe
+Bytes: 250
+I opted for the dm_root and dm_root_passthrough approach.. As you suggested the dm_root will point to the minor number of the dm-setup target and dm_root_passthrough flag will allow mounting the root block device even if the dm-setup fails for root..
+
 File: init/do_mounts.h
 
 80:0-80:4
@@ -50,12 +58,28 @@ UUID: f6b795e1_c2b3d321
 Bytes: 40
 init __init dm_run_setup(char *rootdev);
 
+80:0-80:4
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6b795e1_c2b3d321
+UUID: 9bf043de_76d60847
+Bytes: 4
+Done
+
 84:7-84:11
 Tue Oct 27 20:01:28 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 36e4cdf6_136b576b
 Bytes: 176
 q: a 'static' defined as __init section is probably meaningless, but it does clearly state to the developers that whatever code it produces could disappear later? Just curious.
+
+84:7-84:11
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36e4cdf6_136b576b
+UUID: bbe987fc_17669cfc
+Bytes: 17
+changed to __init
 
 File: init/do_mounts_android_verity.c
 
@@ -117,6 +141,14 @@ UUID: 36bdadca_d6c3a2bd
 Bytes: 126
 does pr_init_info annotate with the calling func or file? If not, it'd be good to note that this is verity_create_dev waiting.
 
+176:28-176:34
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36bdadca_d6c3a2bd
+UUID: 9bb8433f_d04dfc17
+Bytes: 4
+Done
+
 183:2-183:24
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -124,12 +156,28 @@ UUID: f69cf575_54416221
 Bytes: 67
 why is this code cargoculted from  do_mounts.c:prepare_namespace()?
 
+183:2-183:24
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f69cf575_54416221
+UUID: 3b18372c_78ea1dca
+Bytes: 142
+I was trying to be safe here as I wasn't sure whether root dev initialization had dependency on any of the async tasks.. Is this unnecessary ?
+
 189:15-189:20
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56c22158_d7a9de52
 Bytes: 19
 debugging leftoves?
+
+189:15-189:20
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56c22158_d7a9de52
+UUID: 1b17f3fd_b72202e6
+Bytes: 126
+This dmesg is to help debugging the case where root device fails to show up .. I have rephrased it to make it more meaningful.
 
 208:0-208:68
 Tue Oct 27 16:27:02 2015 +0000
@@ -145,6 +193,18 @@ Parent: 968d7947_f4ec10eb
 UUID: 56fce1c4_8df849e8
 Bytes: 129
 sys_open, sys_read, sys_lseek are used in init/do_mounts_rd.c which is called during init as well. Do you see some problem here ?
+
+208:0-208:68
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56fce1c4_8df849e8
+UUID: bbb18759_1a8321bc
+Bytes: 366
+init/init_task.c:       { INIT_THREAD_INFO(init_task) };
+which sets the addr_limit to KERNEL_DS.
+This is most likely the reason why init code is able make calls to "sys_*" functions.
+
+init/do_mounts_rd.c does make direct calls to sys_open, sys_lseek, sys_read... I can switch to the __bread approach, if sys_lseek/sys_read approach is something that is frowned upon.
 
 325:5-325:16
 Tue Oct 27 16:27:02 2015 +0000
@@ -202,6 +262,14 @@ UUID: f69cf575_943aeaac
 Bytes: 70
 Is there another way to do this without duplicate device waiting, etc?
 
+457:0-457:63
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f69cf575_943aeaac
+UUID: bbb18759_7a906dff
+Bytes: 302
+In prepare_namespace we wait for the root device(dm-0).. Here we wait for the actual block device. I tried removing the wait and moving the code around such that we wait only for the actual block device.. But, name_to_dev_t seems to return 0:0 if we remove the wait for the device mapper (dm-0) device.
+
 458:15-458:21
 Tue Oct 27 16:27:02 2015 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -235,6 +303,14 @@ any reason to have an else here and not just:
     goto err;
 ?
 
+479:2-479:6
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6a6fdc1_92575a3b
+UUID: 5b1deb19_fc10e12c
+Bytes: 8
+fixed !!
+
 502:44-502:47
 Tue Oct 27 20:01:28 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -248,6 +324,14 @@ while (i < VERITY_TABLE_ARGS) {
     static const char delim[] __initconst = " ";
 
     verity_table_args[i] = strsep(&table_ptr, delim);
+
+502:44-502:47
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36f76de3_63b4020b
+UUID: 1bac5306_72d6d074
+Bytes: 4
+Done
 
 526:16-526:28
 Tue Oct 27 16:27:02 2015 +0000
@@ -282,6 +366,14 @@ UUID: 76880537_f0ec1eeb
 Bytes: 12
 boilerplate?
 
+1:8-1:20
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76880537_f0ec1eeb
+UUID: fba69f26_6b3a61a4
+Bytes: 99
+Was using this in one of the previous patch set.. Have removed this and other unused ones as well..
+
 55:7-55:19
 Tue Oct 27 20:32:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -290,6 +382,14 @@ Bytes: 49
 ;-}
 
 /* Yes, this is freed before exiting init */
+
+55:7-55:19
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 964739ec_9e9f3d5c
+UUID: 9bb8433f_d034dc8b
+Bytes: 4
+Done
 
 56:28-56:29
 Tue Oct 27 20:01:28 2015 +0000
@@ -300,12 +400,28 @@ Beware of holes in structures? __packed to be sure?
 
 metadata_start 'starts' on a u32 boundary as it stands, can the structure be refactored so that metadata_start and verity_table pointer are guaranteed on a 64-bit boundary?
 
+56:28-56:29
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56e941ce_066ddbed
+UUID: 9b0923b2_2e815369
+Bytes: 39
+done.. I have realigned the structure..
+
 78:0-78:14
 Tue Oct 27 20:01:28 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6d8bd3b_ded9f455
 Bytes: 28
 starts on a 32-bit boundary.
+
+78:0-78:14
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6d8bd3b_ded9f455
+UUID: 3b18372c_b5f3200d
+Bytes: 89
+I have marked this as TODO.. I am currently working on the userspace change to fix this..
 
 File: init/do_mounts_verity.h
 
@@ -315,6 +431,14 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 169a6978_d5d0eeda
 Bytes: 11
 boilerplate
+
+1:19-1:31
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6978_d5d0eeda
+UUID: dbae3bf9_a1c588b3
+Bytes: 40
+Sorry.. Not sure what are you intending.
 
 7:8-7:20
 Tue Oct 27 16:27:02 2015 +0000
@@ -340,6 +464,14 @@ UUID: 964739ec_3ed4e91a
 Bytes: 6
 __init
 
+24:17-24:24
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 964739ec_3ed4e91a
+UUID: 9bb8433f_856970ce
+Bytes: 4
+Done
+
 26:30-26:31
 Tue Oct 27 20:32:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -347,12 +479,28 @@ UUID: f636b56e_61417670
 Bytes: 10
 __init (?)
 
+26:30-26:31
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f636b56e_61417670
+UUID: 5ba24b12_187cca98
+Bytes: 4
+Done
+
 27:9-27:27
 Tue Oct 27 20:32:32 2015 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16342965_e2102669
 Bytes: 17
 missing closing )
+
+27:9-27:27
+Thu Dec 03 02:43:27 2015 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16342965_e2102669
+UUID: bbb18759_46131076
+Bytes: 4
+Done
 
 45:5-45:17
 Tue Oct 27 16:27:02 2015 +0000
