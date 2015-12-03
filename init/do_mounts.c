@@ -36,6 +36,8 @@
 #include "do_mounts.h"
 
 int __initdata rd_doload;	/* 1 = load RAM disk, 0 = don't load */
+static int dm_root __initdata = INT_MIN;
+static bool dm_root_passthrough __initdata;
 
 int root_mountflags = MS_RDONLY | MS_SILENT;
 static char * __initdata root_device_name;
@@ -69,6 +71,23 @@ static int __init readwrite(char *str)
 
 __setup("ro", readonly);
 __setup("rw", readwrite);
+
+static int __init dm_root_verity(char *str)
+{
+	if (kstrtoint(str, 10, &dm_root))
+		return 0;
+	return 1;
+}
+__setup("dm_root=", dm_root_verity);
+
+static int __init dm_root_passthrough_verity(char *str)
+{
+	if (*str)
+		return 0;
+	dm_root_passthrough = true;
+	return 1;
+}
+__setup("dm_root_passthrough", dm_root_passthrough_verity);
 
 #ifdef CONFIG_BLOCK
 struct uuidcmp {
@@ -556,6 +575,12 @@ void __init prepare_namespace(void)
 	wait_for_device_probe();
 
 	md_run_setup();
+	if (dm_root != INT_MIN) {
+		if (!dm_run_setup(saved_root_name) || !dm_root_passthrough) {
+			scnprintf(saved_root_name, sizeof(saved_root_name),
+			"%s%d", "/dev/dm-", dm_root);
+		}
+	}
 
 	if (saved_root_name[0]) {
 		root_device_name = saved_root_name;
