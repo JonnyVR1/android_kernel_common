@@ -1,0 +1,11 @@
+Revision: f3061b9d608ce2314f24088281131ebadafa3985
+Patch-set: 7
+File: drivers/usb/phy/class-dual-role.c
+
+89:44-89:45
+Mon Dec 07 10:21:23 2015 +0000
+Author: August Yao <1089333@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 00f7809a_8bbe2d7d
+Bytes: 8
+No Colon
+
