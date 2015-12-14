@@ -1,0 +1,11 @@
+Revision: 40c94390a550264365ff274e1ea7c76668e5fb48
+Patch-set: 1
+File: net/ipv6/ip6_vti.c
+
+602:40-602:51
+Mon Dec 14 20:31:29 2015 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85a542c9_7fd48f3a
+Bytes: 23
+why not current_uid() ?
+
