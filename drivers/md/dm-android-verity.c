@@ -1,0 +1,647 @@
+/*
+ * Copyright (C) 2015 Google, Inc.
+ *
+ * This software is licensed under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation, and
+ * may be copied, distributed, and modified under those terms.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
+
+#include <linux/buffer_head.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/device-mapper.h>
+#include <linux/errno.h>
+#include <linux/fs.h>
+#include <linux/fcntl.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/key.h>
+#include <linux/module.h>
+#include <linux/mount.h>
+#include <linux/namei.h>
+#include <linux/reboot.h>
+#include <linux/string.h>
+#include <linux/vmalloc.h>
+
+#include <asm/setup.h>
+#include <crypto/hash.h>
+#include <crypto/public_key.h>
+#include <crypto/sha.h>
+#include <keys/asymmetric-type.h>
+#include <keys/system_keyring.h>
+
+#include "dm-verity.h"
+#include "dm-android-verity.h"
+
+static int table_extract_mpi_array(struct public_key_signature *pks,
+				const void *data, size_t len)
+{
+	MPI mpi = mpi_read_raw_data(data, len);
+
+	if (!mpi) {
+		DMERR("Error while allocating mpi array\n");
+		return -ENOMEM;
+	}
+
+	pks->mpi[0] = mpi;
+	pks->nr_mpi = 1;
+	return 0;
+}
+
+static struct public_key_signature *table_make_digest(
+						enum pkey_hash_algo hash,
+						const void *table,
+						unsigned long table_len)
+{
+	struct public_key_signature *pks;
+	struct crypto_shash *tfm;
+	struct shash_desc *desc;
+	size_t digest_size, desc_size;
+	int ret;
+
+	/* Allocate the hashing algorithm we're going to need and find out how
+	 * big the hash operational data will be.
+	 */
+	tfm = crypto_alloc_shash(pkey_hash_algo[hash], 0, 0);
+	if (IS_ERR(tfm))
+		return (PTR_ERR(tfm) == -ENOENT) ? ERR_PTR(-ENOPKG) :
+			ERR_CAST(tfm);
+
+	desc_size = crypto_shash_descsize(tfm) + sizeof(*desc);
+	digest_size = crypto_shash_digestsize(tfm);
+
+	/* We allocate the hash operational data storage on the end of out
+	 * context data and the digest output buffer on the end of that.
+	 */
+	ret = -ENOMEM;
+	pks = kzalloc(digest_size + sizeof(*pks) + desc_size, GFP_KERNEL);
+	if (!pks)
+		goto error_no_pks;
+
+	pks->pkey_hash_algo = hash;
+	pks->digest = (u8 *)pks + sizeof(*pks) + desc_size;
+	pks->digest_size = digest_size;
+
+	desc = (struct shash_desc *)(pks + 1);
+	desc->tfm = tfm;
+	desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+
+	ret = crypto_shash_init(desc);
+	if (ret < 0)
+		goto error;
+
+	ret = crypto_shash_finup(desc, table, table_len, pks->digest);
+	if (ret < 0)
+		goto error;
+
+	crypto_free_shash(tfm);
+	return pks;
+
+error:
+	kfree(pks);
+error_no_pks:
+	crypto_free_shash(tfm);
+	return ERR_PTR(ret);
+}
+
+static int read_block_dev(struct bio_read *payload, struct block_device *bdev,
+		sector_t offset, int length)
+{
+	struct bio *bio;
+	int err = 0, i;
+
+	payload->number_of_pages = length / PAGE_SIZE;
+
+	bio = bio_alloc(GFP_KERNEL, payload->number_of_pages);
+	if (!bio) {
+		DMERR("Error while allocating bio\n");
+		return -ENOMEM;
+	}
+
+	bio->bi_bdev = bdev;
+	bio->bi_sector = offset;
+
+	payload->page_io = kzalloc(sizeof(struct page *) *
+		payload->number_of_pages, GFP_KERNEL);
+	if (!payload->page_io) {
+		DMERR("page_io array alloc failed\n");
+		err = -ENOMEM;
+		goto free_bio;
+	}
+
+	for (i = 0; i < payload->number_of_pages; i++) {
+		payload->page_io[i] = alloc_page(GFP_KERNEL);
+		if (!payload->page_io[i]) {
+			DMERR("alloc_page failed\n");
+			i--;
+			while (i >= 0)
+				__free_page(payload->page_io[i--]);
+			err = -ENOMEM;
+			goto free_page_io;
+		}
+		if (!bio_add_page(bio, payload->page_io[i], PAGE_SIZE, 0)) {
+			DMERR("bio_add_page error\n");
+			while (i >= 0)
+				__free_page(payload->page_io[i--]);
+			err = -EIO;
+			goto free_page_io;
+		}
+	}
+
+	if (submit_bio_wait(READ, bio)) {
+		DMERR("bio read failed\n");
+		err = -EIO;
+		goto free_pages;
+	}
+	goto free_bio;
+
+free_pages:
+	payload->number_of_pages--;
+	while (payload->number_of_pages >= 0)
+		__free_page(payload->page_io[payload->number_of_pages--]);
+free_page_io:
+	kfree(payload->page_io);
+free_bio:
+	bio_put(bio);
+	return err;
+}
+
+
+static int find_metadata_offset(struct block_device *bdev,
+				u64 *metadata_offset)
+{
+	u64 device_size;
+	struct bio_read payload;
+	int i, copy_length, offset, copied, err;
+	struct fec_header fec;
+
+	device_size = i_size_read(bdev->bd_inode);
+
+	/* fec metadata size is a power of 2 and PAGE_SIZE
+	 * is a power of 2 as well.
+	 */
+	if (FEC_BLOCK_SIZE > PAGE_SIZE)
+		BUG_ON(FEC_BLOCK_SIZE % PAGE_SIZE != 0);
+	/* 512 byte sector alignment */
+	BUG_ON((device_size - FEC_BLOCK_SIZE) % SECTOR_SIZE != 0);
+
+	err = read_block_dev(&payload, bdev, (device_size -
+		FEC_BLOCK_SIZE) / SECTOR_SIZE, FEC_BLOCK_SIZE);
+	if (err) {
+		DMERR("Error while reading verity metadata\n");
+		return err;
+	}
+
+	if (sizeof(struct fec_header) < PAGE_SIZE)
+		memcpy(&fec, page_address(payload.page_io[0]),
+			sizeof(struct fec_header));
+	else {
+		copy_length = sizeof(struct fec_header);
+		offset = 0;
+		i = 0;
+		while (copy_length > 0) {
+			memcpy(((char *)&fec) + offset,
+				page_address(payload.page_io[i]),
+				copy_length >= PAGE_SIZE ?
+				PAGE_SIZE : copy_length);
+			i++;
+			copied = (copy_length >= PAGE_SIZE ?
+				PAGE_SIZE : copy_length);
+			copy_length -= copied;
+			offset += copied;
+		}
+	}
+	for (i = 0; i < payload.number_of_pages; i++)
+		__free_page(payload.page_io[i]);
+	kfree(payload.page_io);
+
+	if (le32_to_cpu(fec.magic) == FEC_MAGIC)
+		*metadata_offset = le32_to_cpu(fec.inp_size) -
+					VERITY_METADATA_SIZE;
+	else
+		*metadata_offset = device_size - VERITY_METADATA_SIZE;
+
+	return 0;
+}
+
+static struct android_metadata *extract_metadata(dev_t dev)
+{
+	struct block_device *bdev;
+	struct android_metadata_header *header;
+	struct android_metadata *uninitialized_var(metadata);
+	int i, table_length, copy_length, offset;
+	u64 metadata_offset;
+	struct bio_read payload;
+	int err = 0;
+
+	bdev = blkdev_get_by_dev(dev, FMODE_READ, NULL);
+
+	if (IS_ERR(bdev)) {
+		DMERR("bdev get error\n");
+		return (struct android_metadata *)bdev;
+	}
+
+	err = find_metadata_offset(bdev, &metadata_offset);
+	if (err) {
+		DMERR("medata offset find failed\n");
+		metadata = ERR_PTR(err);
+		goto blkdev_release;
+	}
+
+	/* Verity metadata size is a power of 2 and PAGE_SIZE
+	 * is a power of 2 as well.
+	 * PAGE_SIZE is also a multiple of 512 bytes.
+	*/
+	if (VERITY_METADATA_SIZE > PAGE_SIZE)
+		BUG_ON(VERITY_METADATA_SIZE % PAGE_SIZE != 0);
+	/* 512 byte sector alignment */
+	BUG_ON(metadata_offset % SECTOR_SIZE != 0);
+
+	err = read_block_dev(&payload, bdev, metadata_offset / SECTOR_SIZE,
+		VERITY_METADATA_SIZE);
+	if (err) {
+		DMERR("Error while reading verity metadata\n");
+		metadata = ERR_PTR(err);
+		goto blkdev_release;
+	}
+
+	header = kzalloc(sizeof(struct android_metadata_header), GFP_KERNEL);
+	if (!header) {
+		DMERR("kzalloc failed for header\n");
+		err = -ENOMEM;
+		goto free_payload;
+	}
+
+	memcpy(header, page_address(payload.page_io[0]),
+		sizeof(struct android_metadata_header));
+
+	DMINFO("bio magic_number:%u protocol_version:%d table_length:%u\n",
+		le32_to_cpu(header->magic_number),
+		le32_to_cpu(header->protocol_version),
+		le32_to_cpu(header->table_length));
+
+	metadata = kzalloc(sizeof(struct android_metadata), GFP_KERNEL);
+	if (!metadata) {
+		DMERR("kzalloc for metadata failed\n");
+		err = -ENOMEM;
+		goto free_header;
+	}
+
+	metadata->header = header;
+	metadata->verity_table = kmalloc(header->table_length + 1, GFP_KERNEL);
+
+	if (!metadata->verity_table) {
+		DMERR("kzalloc verity_table failed\n");
+		err = -ENOMEM;
+		goto free_metadata;
+	}
+
+	table_length = header->table_length;
+
+	if (table_length == 0 ||
+		table_length > (VERITY_METADATA_SIZE -
+			sizeof(struct android_metadata_header)))
+		goto free_metadata;
+
+	if (sizeof(struct android_metadata_header) +
+			header->table_length <= PAGE_SIZE) {
+		memcpy(metadata->verity_table, page_address(payload.page_io[0])
+			+ sizeof(struct android_metadata_header),
+			table_length);
+	} else {
+		copy_length = PAGE_SIZE -
+			sizeof(struct android_metadata_header);
+		memcpy(metadata->verity_table, page_address(payload.page_io[0])
+			+ sizeof(struct android_metadata_header),
+			copy_length);
+		table_length -= copy_length;
+		offset = copy_length;
+		i = 1;
+		while (table_length != 0) {
+			if (table_length > PAGE_SIZE) {
+				memcpy(metadata->verity_table + offset,
+					page_address(payload.page_io[i]),
+					PAGE_SIZE);
+				offset += PAGE_SIZE;
+				table_length -= PAGE_SIZE;
+			} else {
+				memcpy(metadata->verity_table + offset,
+					page_address(payload.page_io[i]),
+					table_length);
+				table_length = 0;
+			}
+			i++;
+		}
+	}
+	metadata->verity_table[table_length] = '\0';
+
+	goto free_payload;
+
+free_metadata:
+	kfree(metadata);
+free_header:
+	kfree(header);
+	metadata = ERR_PTR(err);
+free_payload:
+	for (i = 0; i < payload.number_of_pages; i++)
+		__free_page(payload.page_io[i]);
+	kfree(payload.page_io);
+
+	DMINFO("verity_table: %s\n", metadata->verity_table);
+blkdev_release:
+	blkdev_put(bdev, FMODE_READ);
+	return metadata;
+}
+
+static bool is_unlocked(void)
+{
+	char *verifiedboot;
+	static const char bootstate[] =
+			"androidboot.verifiedbootstate=";
+	static const char unlocked[]  = "orange";
+
+	verifiedboot = strnstr(saved_command_line, bootstate,
+			COMMAND_LINE_SIZE);
+	if (verifiedboot == NULL)
+		return false;
+
+	verifiedboot = verifiedboot + sizeof(bootstate) - 1;
+
+	return !strncmp(verifiedboot, unlocked, sizeof(unlocked) - 1);
+}
+
+static int verity_mode(void)
+{
+	char *veritymode;
+	static const char veritymodeprop[]  =
+				"androidboot.veritymode=";
+	static const char enforcing[] = "enforcing";
+	static const char logging[] = "logging";
+
+	veritymode = strnstr(saved_command_line, veritymodeprop,
+		COMMAND_LINE_SIZE);
+	if (veritymode == NULL)
+		return DM_VERITY_MODE_EIO;
+
+	veritymode = veritymode + sizeof(veritymodeprop) - 1;
+
+	if (!strncmp(veritymode, enforcing, sizeof(enforcing) - 1))
+		return DM_VERITY_MODE_RESTART;
+
+	if (!strncmp(veritymode, logging, sizeof(logging) - 1))
+		return DM_VERITY_MODE_LOGGING;
+
+	return DM_VERITY_MODE_EIO;
+}
+
+
+static int verify_header(struct android_metadata_header *header)
+{
+	int retval = -EFAULT;
+
+	if (is_unlocked() && le32_to_cpu(header->magic_number) ==
+		VERITY_METADATA_MAGIC_DISABLE) {
+		retval = VERITY_STATE_DISABLE;
+		return retval;
+	}
+
+	if (le32_to_cpu(header->magic_number) !=
+		VERITY_METADATA_MAGIC_NUMBER) {
+		DMERR("Incorrect magic number\n");
+		return retval;
+	}
+
+	if (le32_to_cpu(header->protocol_version) != 0) {
+		DMERR("Incorrect magic number\n");
+		return retval;
+	}
+
+	return 0;
+}
+
+static int verify_verity_signature(char *key_id,
+		struct android_metadata *metadata)
+{
+	key_ref_t key_ref;
+	struct key *key;
+	struct public_key_signature *pks;
+	int retval = -EINVAL;
+
+	key_ref = keyring_search(make_key_ref(system_trusted_keyring, 1),
+		&key_type_asymmetric, key_id);
+
+	if (IS_ERR(key_ref)) {
+		DMERR("keyring: key not found");
+		return -ENOKEY;
+	}
+
+	key = key_ref_to_ptr(key_ref);
+
+	pks = table_make_digest(PKEY_HASH_SHA256,
+			(const void *)metadata->verity_table,
+			le32_to_cpu(metadata->header->table_length));
+
+	if (IS_ERR(pks)) {
+		DMERR("hashing failed\n");
+		goto error_no_pks;
+	}
+
+	retval = table_extract_mpi_array(pks, &metadata->header->signature[0],
+				RSANUMBYTES);
+	if (retval < 0) {
+		DMERR("Error extracting mpi %d\n", retval);
+		goto error;
+	}
+
+	retval = verify_signature(key, pks);
+	mpi_free(pks->rsa.s);
+error:
+	kfree(pks);
+error_no_pks:
+	key_put(key);
+
+	return retval;
+}
+
+static int find_bits(u64 number)
+{
+	int i = 0;
+	while (number > 0) {
+		number = number >> 1;
+		i++;
+	}
+	return i;
+}
+
+static void handle_error(void)
+{
+	int mode = verity_mode();
+	if (mode == DM_VERITY_MODE_RESTART) {
+		DMERR("triggering restart");
+		kernel_restart("dm-verity device corrupted");
+	} else {
+		DMERR("Mounting root with verity disabled");
+	}
+}
+
+static int android_verity_ctr(struct dm_target *ti, unsigned argc, char **argv)
+{
+	dev_t uninitialized_var(dev);
+	struct android_metadata *uninitialized_var(metadata);
+	int err = 0, i;
+	char *key_id, *table_ptr, *verity_table_args[VERITY_TABLE_ARGS + 1],
+	dummy, mode[2];
+	u64 data_sectors, data_block_size;
+	unsigned int major, minor;
+
+	msleep(10000);
+
+	if (argc != 2) {
+		DMERR("Incorrect number of arguments.\n");
+		handle_error();
+		return -EINVAL;
+	}
+
+	/* should come as one of the arguments for the verity target */
+	key_id = argv[0];
+	strreplace(argv[0], '#', ' ');
+
+	if (sscanf(argv[1], "%u:%u%c", &major, &minor, &dummy) == 2) {
+		dev = MKDEV(major, minor);
+		if (MAJOR(dev) != major || MINOR(dev) != minor) {
+			DMERR("Incorrect bdev major minor number\n");
+			handle_error();
+			return -EOVERFLOW;
+		}
+	}
+
+	DMINFO("key:%s dev:%s\n", argv[0], argv[1]);
+
+	metadata = extract_metadata(dev);
+
+	if (IS_ERR(metadata)) {
+		DMERR("Error while extracting extract metadata.\n");
+		handle_error();
+		return -EINVAL;
+	}
+
+	err = verify_header(metadata->header);
+
+	if (err) {
+		DMERR("Verity header handle error\n");
+		handle_error();
+		goto free_metadata;
+	}
+
+	err = verify_verity_signature(key_id, metadata);
+
+	if (err) {
+		DMERR("Signature verification failed\n");
+		handle_error();
+		goto free_metadata;
+	} else
+		DMINFO("Signature verification success\n");
+
+	table_ptr = metadata->verity_table;
+
+	for (i = 0; i < VERITY_TABLE_ARGS; i++) {
+		verity_table_args[i] = strsep(&table_ptr, " ");
+		if (verity_table_args[i] == NULL)
+			break;
+	}
+
+	if (i != VERITY_TABLE_ARGS) {
+		DMERR("Verity table not in the expected format\n");
+		err = -EINVAL;
+		handle_error();
+		goto free_metadata;
+	}
+
+	if (kstrtoull(verity_table_args[5], 10, &data_sectors)) {
+		DMERR("Verity table not in the expected format\n");
+		handle_error();
+		err = -EINVAL;
+		goto free_metadata;
+	}
+
+	if (kstrtoull(verity_table_args[3], 10, &data_block_size)) {
+		DMERR("Verity table not in the expected format\n");
+		handle_error();
+		err = -EINVAL;
+		goto free_metadata;
+	}
+
+	if ((find_bits(data_sectors) + find_bits(data_block_size /
+		SECTOR_SIZE)) <= 64)
+		data_sectors = data_sectors * data_block_size / SECTOR_SIZE;
+	else {
+		DMERR("data_sectors to high\n");
+		handle_error();
+		err = -EOVERFLOW;
+		goto free_metadata;
+	}
+	DMINFO("Data sectors %llu\n", data_sectors);
+
+	/* update target length */
+	ti->len = data_sectors;
+
+	/*substitute data_dev and hash_dev*/
+	verity_table_args[1] = argv[1];
+	verity_table_args[2] = argv[1];
+
+	if (scnprintf(mode, 2, "%d", verity_mode()) != 1) {
+		DMERR("Incorrect verity mode\n");
+		handle_error();
+		err = -EINVAL;
+		goto free_metadata;
+	}
+
+	verity_table_args[VERITY_TABLE_ARGS] = mode;
+
+	err = verity_ctr(ti, VERITY_TABLE_ARGS + 1, verity_table_args);
+
+free_metadata:
+	kfree(metadata->header);
+	kfree(metadata->verity_table);
+	kfree(metadata);
+	return err;
+}
+
+static struct target_type android_verity_target = {
+	.name			= "android-verity",
+	.version		= {1, 0, 0},
+	.module			= THIS_MODULE,
+	.ctr			= android_verity_ctr,
+	.dtr			= verity_dtr,
+	.map			= verity_map,
+	.status			= verity_status,
+	.ioctl			= verity_ioctl,
+	.merge			= verity_merge,
+	.iterate_devices	= verity_iterate_devices,
+	.io_hints       = verity_io_hints,
+};
+
+static int __init dm_android_verity_init(void)
+{
+	int r;
+
+	r = dm_register_target(&android_verity_target);
+	if (r < 0)
+		DMERR("register failed %d", r);
+
+	return r;
+}
+
+static void __exit dm_android_verity_exit(void)
+{
+	dm_unregister_target(&android_verity_target);
+}
+
+module_init(dm_android_verity_init);
+module_exit(dm_android_verity_exit);
