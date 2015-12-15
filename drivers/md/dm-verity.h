@@ -54,7 +54,6 @@ struct dm_verity {
 	unsigned corrupted_errs;/* Number of errors for corrupted blocks */
 
 	mempool_t *vec_mempool;	/* mempool of bio vector */
-
 	struct workqueue_struct *verify_wq;
 
 	/* starting blocks for each tree level. 0 is the lowest level. */
@@ -130,4 +129,23 @@ extern int verity_hash(struct dm_verity *v, struct shash_desc *desc,
 extern int verity_hash_for_block(struct dm_verity *v, struct dm_verity_io *io,
 				 sector_t block, u8 *digest, bool *is_zero);
 
+/*struct dm_verity_prefetch_work {
+	struct work_struct work;
+	struct dm_verity *v;
+	sector_t block;
+	unsigned n_blocks;
+};*/
+
+extern void verity_status(struct dm_target *ti, status_type_t type,
+			unsigned status_flags, char *result, unsigned maxlen);
+extern int verity_ioctl(struct dm_target *ti, unsigned cmd,
+			unsigned long arg);
+extern int verity_merge(struct dm_target *ti, struct bvec_merge_data *bvm,
+			struct bio_vec *biovec, int max_size);
+extern int verity_iterate_devices(struct dm_target *ti,
+				iterate_devices_callout_fn fn, void *data);
+extern void verity_io_hints(struct dm_target *ti, struct queue_limits *limits);
+extern void verity_dtr(struct dm_target *ti);
+extern int verity_ctr(struct dm_target *ti, unsigned argc, char **argv);
+extern int verity_map(struct dm_target *ti, struct bio *bio);
 #endif /* DM_VERITY_H */
