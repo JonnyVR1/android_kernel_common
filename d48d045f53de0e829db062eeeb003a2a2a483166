@@ -1,0 +1,180 @@
+Revision: d48d045f53de0e829db062eeeb003a2a2a483166
+Patch-set: 1
+File: drivers/md/Makefile
+
+54:0-54:54
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5532654_deb91594
+Bytes: 122
+What would you say about including this as an optional module in dm-verity, similarly to how dm-verity-fec is implemented?
+
+File: drivers/md/dm-android-verity.c
+
+73:10-73:53
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4568aa02_5851a10a
+Bytes: 22
+Why is this necessary?
+
+142:3-144:39
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85a702bf_52c9722c
+Bytes: 284
+Instead of freeing the pages you already allocated, it would simplify the  code quite a bit to just jump to free_pages and testing if the page was allocated before freeing it. Something like this, perhaps:
+
+  for (n = 0; n < npages; n++)
+    if (pages[n])
+      __free_page(pages[n]);
+
+189:0-189:32
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5532654_beff011a
+Bytes: 157
+FEC_BLOCK_SIZE is never larger than the verity block size, which is limited to PAGE_SIZE in verity_ctr. If you want, you can just include this in the BUG_ON.
+
+201:0-201:43
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85b2a2f4_7a14751c
+Bytes: 142
+It's safe to assume that the size of struct fec_header is always at most PAGE_SIZE and just use BUG_ON. This would somewhat simplify the code.
+
+261:0-261:38
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65acceb5_41f21493
+Bytes: 218
+In this function it's safe to assume that you only need to read one page from the beginning of the metadata. This would make the function (and others) quite a bit simpler since you only need to deal with a single page.
+
+397:0-398:32
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e59a7e77_b548caaf
+Bytes: 95
+We want to remove logging mode, so let's leave this out. Always use either restart or EIO mode.
+
+406:15-406:21
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5532654_7e7a899d
+Bytes: 7
+EINVAL?
+
+420:46-420:47
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65acceb5_a1aaf893
+Bytes: 24
+VERITY_METADATA_VERSION?
+
+421:19-421:31
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85b2a2f4_fa3c05bd
+Bytes: 20
+Unsupported version?
+
+452:7-452:19
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25673634_b7660230
+Bytes: 181
+You could have just one error (or out) label if you initialize pks to NULL. It's safe to call kfree(NULL). The same can be applied elsewhere in this file too to simplify exit paths.
+
+489:0-489:46
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25673634_37a67286
+Bytes: 75
+In EIO mode, we should not allow mounting the partition if something fails.
+
+500:1-500:4
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 056cf246_e6b620fc
+Bytes: 54
+sector_t for data_sectors and u32 for data_block_size.
+
+503:0-503:15
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 056cf246_83d39e52
+Bytes: 27
+What's the purpose of this?
+
+529:21-529:39
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e59a7e77_353dba0d
+Bytes: 123
+Redundant? Also, consistent error message format would be useful in case we need to parse logs later to collect statistics.
+
+580:1-581:22
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5599e74_3da65b86
+Bytes: 665
+This is not really the best way to check for overflow, and note that whether ti->len is 64 bits depends on CONFIG_LBDAF.
+
+You should follow dm-verity's example when verifying these values:
+
+https://android.googlesource.com/kernel/common/+/android-3.10/drivers/md/dm-verity-target.c#919
+https://android.googlesource.com/kernel/common/+/android-3.10/drivers/md/dm-verity-target.c#939
+
+As a side note, if you had to test for overflow for arbitrary values, you could simply use something like this:
+
+  static inline bool test_mult_overflow(sector_t a, u32 b)
+  {
+    sector_t r = (sector_t)~0ULL;
+    sector_div(r, b);
+    return a > r:
+  }
+
+But that's not needed here.
+
+582:17-582:61
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5532654_be28a164
+Bytes: 125
+Note that you need to use do_div to divide 64-bit values in kernel. It's not necessary here though, see the previous comment.
+
+598:1-598:52
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c55c9a66_dc5121e1
+Bytes: 437
+The current dm-verity has different feature arguments.
+
+In restart mode you should add three arguments (2 restart_on_corruption ignore_zero_blocks) and in EIO mode two (1 ignore_zero_blocks).
+
+In addition, we need to parse error correction metadata if CONFIG_DM_VERITY_FEC is set and format relevant arguments to dm-verity. See the example here:
+https://android.googlesource.com/platform/system/core/+/master/fs_mgr/fs_mgr_verity.cpp#229
+
+621:10-621:20
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e59a7e77_f552525b
+Bytes: 134
+How does this work if dm-verity is compiled as a module? I realize we are not doing that at the moment, but very well might in future.
+
+File: drivers/md/dm-android-verity.h
+
+9:8-9:19
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4568aa02_58fc015f
+Bytes: 18
+1 << SECTOR_SHIFT?
+
+26:31-26:64
+Tue Dec 15 16:58:32 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65acceb5_e1a000ba
+Bytes: 50
+<verity_metadata_32K> <fec_data> <fec_metadata_4K>
+
