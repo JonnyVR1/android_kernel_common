@@ -9,3 +9,13 @@ UUID: a565e697_28392bab
 Bytes: 46
 This was not merged into 3.10, should I worry?
 
+1005:16-1005:17
+Wed Dec 16 15:48:30 2015 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a565e697_28392bab
+UUID: e59a7e77_b55d2ac7
+Bytes: 333
+No, we don't use this anywhere. I seem to have missed this when backporting upstream changes to 3.10, or it was folded in later.
+
+Anyway, the version number appears to be bumped rather arbitrarily. It was changed now, but not when the previous new features were added. All changes are still backwards compatible, so shouldn't matter.
+
