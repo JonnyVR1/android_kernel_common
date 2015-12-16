@@ -1,0 +1,11 @@
+Revision: b552c24a3f9c7cf0f4a27331c99f93489bdd2b50
+Patch-set: 2
+File: drivers/md/dm-verity-target.c
+
+1005:16-1005:17
+Wed Dec 16 15:42:07 2015 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a565e697_28392bab
+Bytes: 46
+This was not merged into 3.10, should I worry?
+
