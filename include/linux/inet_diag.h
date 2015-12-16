@@ -25,6 +25,9 @@ struct inet_diag_handler {
 						  struct inet_diag_msg *r,
 						  void *info);
 	__u16                   idiag_type;
+
+	int			(*destroy)(struct sk_buff *in_skb,
+					   struct inet_diag_req_v2 *req);
 };
 
 struct inet_connection_sock;
