@@ -1,0 +1,18 @@
+Revision: 92a048bdaa013a1d4172ed7a055e7e9a4e8684aa
+Patch-set: 1
+File: mm/swapfile.c
+
+604:0-604:14
+Thu Dec 17 09:19:06 2015 +0000
+Author: Martijn Coenen <1013030@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05f952fe_7b569f52
+Bytes: 128
+this won't build with CONFIG_SWAP=y because the declaration in the header is not static; removing static inline should fix this.
+
+657:1-657:23
+Thu Dec 17 09:19:06 2015 +0000
+Author: Martijn Coenen <1013030@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45398ab3_cdbe29d0
+Bytes: 24
+spin_unlock(&swap_lock);
+
