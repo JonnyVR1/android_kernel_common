@@ -23,6 +23,15 @@ extern char *strrchr(const char *, int c);
 extern char *strchr(const char *, int c);
 
 #define __HAVE_ARCH_MEMCPY
+//extern void *memcpy(void *, const void *, __kernel_size_t);
+
+static __inline __attribute__ ((__always_inline__)) __attribute__ ((__gnu_inline__)) __attribute__ ((__artificial__))
+void* memcpy (void *__restrict __dest, const void *__restrict __src, size_t __len)
+
+{
+  return __builtin___memcpy_chk(__dest, __src, __len, __builtin_object_size (__dest, 0));
+}
+
 extern void *memcpy(void *, const void *, __kernel_size_t);
 
 #define __HAVE_ARCH_MEMMOVE
