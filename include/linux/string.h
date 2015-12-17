@@ -154,4 +154,9 @@ static inline const char *kbasename(const char *path)
 	return tail ? tail + 1 : path;
 }
 
+/*
+ * Include _FORTIFY_SOURCE versions of routines
+ */
+#include <linux/fortify_string.h>
+
 #endif /* _LINUX_STRING_H_ */
