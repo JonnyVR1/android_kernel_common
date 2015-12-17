@@ -12,6 +12,11 @@ extern char *strndup_user(const char __user *, long);
 extern void *memdup_user(const void __user *, size_t);
 
 /*
+ * Include _FORTIFY_SOURCE versions of routines
+ */
+#include <linux/fortify_string.h>
+
+/*
  * Include machine specific inline routines
  */
 #include <asm/string.h>
