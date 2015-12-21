@@ -9,3 +9,11 @@ UUID: 85a542c9_7fd48f3a
 Bytes: 23
 why not current_uid() ?
 
+602:40-602:51
+Mon Dec 21 20:17:36 2015 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85a542c9_7fd48f3a
+UUID: 2a1f0357_d7d2de2a
+Bytes: 278
+I'm not really familiar with current_uid() and from its usage it looks like it can be used but my first instinct was to follow the ip6_update_pmtu() calls as updated/made in AOSP commit d403cf4e784c "net: core: Support UID-based routing.", hence I end up going with INVALID_UID.
+
