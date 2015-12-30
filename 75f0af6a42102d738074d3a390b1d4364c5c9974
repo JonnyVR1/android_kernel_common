@@ -1,0 +1,18 @@
+Revision: 75f0af6a42102d738074d3a390b1d4364c5c9974
+Patch-set: 2
+File: /COMMIT_MSG
+
+7
+Wed Dec 30 03:28:07 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0af79f9a_9a8791c9
+Bytes: 8
+UPSTREAM
+
+16
+Wed Dec 30 03:28:07 2015 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a1bbbb8_d53d6667
+Bytes: 41
+(cherry picked from commit <hash number>)
+
