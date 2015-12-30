@@ -1,0 +1,11 @@
+Revision: 6274e25e99278eaf022633fe171752a5061b0066
+Patch-set: 3
+File: arch/arm64/Kconfig
+
+111:6-111:35
+Wed Dec 30 21:29:26 2015 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a0b8f60_5e9eb9db
+Bytes: 209
+this situation actually shouldn't happen, since 32-bit mode isn't supported w/64K pages.  Not sure if it's worth changing, though (although I did change it in the 3.10 kernel while changing the VA_BITS value).
+
