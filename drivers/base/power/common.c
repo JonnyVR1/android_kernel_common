@@ -14,6 +14,8 @@
 #include <linux/acpi.h>
 #include <linux/pm_domain.h>
 
+#include "power.h"
+
 /**
  * dev_pm_get_subsys_data - Create or refcount power.subsys_data for device.
  * @dev: Device to handle.
