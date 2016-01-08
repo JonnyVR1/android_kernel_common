@@ -1,0 +1,36 @@
+Revision: 8a47e8d8a7826c33a7a36b946db5121dc3ff1e35
+Patch-set: 1
+File: fs/fuse/file.c
+
+1114:1-1114:29
+Fri Jan 08 18:39:38 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a74377b_3587f082
+Bytes: 157
+Why is this promoted to BUG_ON()?  Panicking the kernel should only be done as a last resort, especially for what appears to be a parameter validation error.
+
+File: fs/fuse/stacked_io.c
+
+1
+Fri Jan 08 18:39:38 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea65ebc4_fa53a917
+Bytes: 60
+Please run checkpatch.pl for formatting issues in this file.
+
+38:1-38:7
+Fri Jan 08 18:39:38 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a74377b_55846c7b
+Bytes: 43
+Again, BUG_ON() should not be used lightly.
+
+File: include/uapi/linux/fuse.h
+
+240:0-240:33
+Fri Jan 08 18:39:38 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a901bcb_be62f9e7
+Bytes: 207
+This is not something I feel comfortable accepting without upstream review.  This forks the FUSE ABI, and there's a very real chance that upstream will later add their own FUSE flag which collides with this.
+
