@@ -9,6 +9,14 @@ UUID: a5532654_deb91594
 Bytes: 122
 What would you say about including this as an optional module in dm-verity, similarly to how dm-verity-fec is implemented?
 
+54:0-54:54
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5532654_deb91594
+UUID: 2a52a3ad_56fbd492
+Bytes: 4
+Done
+
 File: drivers/md/dm-android-verity.c
 
 73:10-73:53
@@ -17,6 +25,14 @@ Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4568aa02_5851a10a
 Bytes: 22
 Why is this necessary?
+
+73:10-73:53
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4568aa02_5851a10a
+UUID: 2a52a3ad_529519f0
+Bytes: 48
+Yes seems to be an overkill.. Will remove this..
 
 142:3-144:39
 Tue Dec 15 16:58:32 2015 +0000
@@ -29,12 +45,28 @@ Instead of freeing the pages you already allocated, it would simplify the  code 
     if (pages[n])
       __free_page(pages[n]);
 
+142:3-144:39
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85a702bf_52c9722c
+UUID: ea1debf7_8f238581
+Bytes: 4
+Done
+
 189:0-189:32
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5532654_beff011a
 Bytes: 157
 FEC_BLOCK_SIZE is never larger than the verity block size, which is limited to PAGE_SIZE in verity_ctr. If you want, you can just include this in the BUG_ON.
+
+189:0-189:32
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5532654_beff011a
+UUID: 4a4357e2_d7c284ab
+Bytes: 4
+Done
 
 201:0-201:43
 Tue Dec 15 16:58:32 2015 +0000
@@ -43,12 +75,28 @@ UUID: 85b2a2f4_7a14751c
 Bytes: 142
 It's safe to assume that the size of struct fec_header is always at most PAGE_SIZE and just use BUG_ON. This would somewhat simplify the code.
 
+201:0-201:43
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b2a2f4_7a14751c
+UUID: 8a1aaf01_06176428
+Bytes: 4
+Done
+
 261:0-261:38
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 65acceb5_41f21493
 Bytes: 218
 In this function it's safe to assume that you only need to read one page from the beginning of the metadata. This would make the function (and others) quite a bit simpler since you only need to deal with a single page.
+
+261:0-261:38
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65acceb5_41f21493
+UUID: 8a1aaf01_31fe6084
+Bytes: 227
+I do see that it is really rare for the verity_table to be larger than PAGE_SIZE. But, Is the current code too redundant ?? If yes, I will remove the code that handles the case where the verity_table size exceeds the PAGE_SIZE.
 
 397:0-398:32
 Tue Dec 15 16:58:32 2015 +0000
@@ -57,12 +105,28 @@ UUID: e59a7e77_b548caaf
 Bytes: 95
 We want to remove logging mode, so let's leave this out. Always use either restart or EIO mode.
 
+397:0-398:32
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e59a7e77_b548caaf
+UUID: 6a481bfe_ad6f6990
+Bytes: 4
+Done
+
 406:15-406:21
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5532654_7e7a899d
 Bytes: 7
 EINVAL?
+
+406:15-406:21
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5532654_7e7a899d
+UUID: 4a4357e2_1231dade
+Bytes: 4
+Done
 
 420:46-420:47
 Tue Dec 15 16:58:32 2015 +0000
@@ -71,12 +135,28 @@ UUID: 65acceb5_a1aaf893
 Bytes: 24
 VERITY_METADATA_VERSION?
 
+420:46-420:47
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65acceb5_a1aaf893
+UUID: 8a1aaf01_d1c6041f
+Bytes: 4
+Done
+
 421:19-421:31
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85b2a2f4_fa3c05bd
 Bytes: 20
 Unsupported version?
+
+421:19-421:31
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b2a2f4_fa3c05bd
+UUID: 6a481bfe_cdac35c6
+Bytes: 4
+Done
 
 452:7-452:19
 Tue Dec 15 16:58:32 2015 +0000
@@ -85,12 +165,28 @@ UUID: 25673634_b7660230
 Bytes: 181
 You could have just one error (or out) label if you initialize pks to NULL. It's safe to call kfree(NULL). The same can be applied elsewhere in this file too to simplify exit paths.
 
+452:7-452:19
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25673634_b7660230
+UUID: aa3e9347_affa05da
+Bytes: 4
+Done
+
 489:0-489:46
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25673634_37a67286
 Bytes: 75
 In EIO mode, we should not allow mounting the partition if something fails.
+
+489:0-489:46
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25673634_37a67286
+UUID: 8a41cfd9_74812ee5
+Bytes: 161
+Should be sufficient enough if I just reword this... init would not see /dev/dm-0 if we failed to mount here and hence it would fail to mount the root partition.
 
 500:1-500:4
 Tue Dec 15 16:58:32 2015 +0000
@@ -99,6 +195,14 @@ UUID: 056cf246_e6b620fc
 Bytes: 54
 sector_t for data_sectors and u32 for data_block_size.
 
+500:1-500:4
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 056cf246_e6b620fc
+UUID: aa3e9347_8f6dc147
+Bytes: 4
+Done
+
 503:0-503:15
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -106,12 +210,28 @@ UUID: 056cf246_83d39e52
 Bytes: 27
 What's the purpose of this?
 
+503:0-503:15
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 056cf246_83d39e52
+UUID: 8a41cfd9_348ba607
+Bytes: 52
+Sorry.. Had this for debugging... Will remove this..
+
 529:21-529:39
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e59a7e77_353dba0d
 Bytes: 123
 Redundant? Also, consistent error message format would be useful in case we need to parse logs later to collect statistics.
+
+529:21-529:39
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e59a7e77_353dba0d
+UUID: 4a4357e2_92864a3c
+Bytes: 4
+Done
 
 580:1-581:22
 Tue Dec 15 16:58:32 2015 +0000
@@ -136,12 +256,28 @@ As a side note, if you had to test for overflow for arbitrary values, you could 
 
 But that's not needed here.
 
+580:1-581:22
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5599e74_3da65b86
+UUID: 4a4357e2_c66f3390
+Bytes: 284
+Shouldn't I be check for overflow and leave the actual validation of the block size and number of sectors to the dm-verity-target code ? If yes, I am planning to use the test_mult_overflow routine that you pointed out and leave the actual data validation to the dm-verity-target code.
+
 582:17-582:61
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5532654_be28a164
 Bytes: 125
 Note that you need to use do_div to divide 64-bit values in kernel. It's not necessary here though, see the previous comment.
+
+582:17-582:61
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5532654_be28a164
+UUID: ca202730_d3312c96
+Bytes: 31
+Changed data_block_size to u32.
 
 598:1-598:52
 Tue Dec 15 16:58:32 2015 +0000
@@ -155,12 +291,36 @@ In restart mode you should add three arguments (2 restart_on_corruption ignore_z
 In addition, we need to parse error correction metadata if CONFIG_DM_VERITY_FEC is set and format relevant arguments to dm-verity. See the example here:
 https://android.googlesource.com/platform/system/core/+/master/fs_mgr/fs_mgr_verity.cpp#229
 
+598:1-598:52
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c55c9a66_dc5121e1
+UUID: aa1773d7_82e59b37
+Bytes: 551
+When CONFIG_DM_VERITY_FEC is enabled, For parsing the error correction metadata, I am planning to follow *** static int parse_ecc_header(fec_handle *f, uint64_t offset) *** function.
+
+The following seems to be the arguments that I require.
+1. ecc_dev := same as the system partition's block device
+2. ecc.start := header.inp_size
+3. ecc.blocks := fec_div_round_up(header.inp_size, FEC_BLOCKSIZE)
+4. ecc.roots := header.roots
+
+Is this correct ? There seems to be a bunch of data validation in parse_ecc_header function. Should I be doing that as well ?
+
 621:10-621:20
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e59a7e77_f552525b
 Bytes: 134
 How does this work if dm-verity is compiled as a module? I realize we are not doing that at the moment, but very well might in future.
+
+621:10-621:20
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e59a7e77_f552525b
+UUID: 8a1aaf01_037751b5
+Bytes: 148
+Sorry I am not sure whether I understand the problem.. Why do you think that invoking verity_dtr might be problematic if CONFIG_MODULES is enabled ?
 
 File: drivers/md/dm-android-verity.h
 
@@ -171,10 +331,26 @@ UUID: 4568aa02_58fc015f
 Bytes: 18
 1 << SECTOR_SHIFT?
 
+9:8-9:19
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4568aa02_58fc015f
+UUID: ea1debf7_f0a3fdc9
+Bytes: 69
+Done... Removed SECTOR_SIZE and substituted it with 1 << SECTOR_SHIFT
+
 26:31-26:64
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 65acceb5_e1a000ba
 Bytes: 50
 <verity_metadata_32K> <fec_data> <fec_metadata_4K>
+
+26:31-26:64
+Fri Jan 08 00:23:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65acceb5_e1a000ba
+UUID: ea1debf7_b086e53b
+Bytes: 4
+Done
 
