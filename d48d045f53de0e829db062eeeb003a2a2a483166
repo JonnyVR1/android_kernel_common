@@ -295,6 +295,16 @@ UUID: ca202730_d3312c96
 Bytes: 31
 Changed data_block_size to u32.
 
+582:17-582:61
+Fri Jan 08 14:46:09 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca202730_d3312c96
+UUID: 6a31fb81_3c171933
+Bytes: 289
+Is this enough? I'm sure the compiler optimizes this into a shift, but what if it doesn't? data_sectors * data_block_size results in sector_t, which then leads to a 64-bit division. How about being explicit that you want a shift instead?
+
+  data_sectors *= data_block_size << SECTOR_SHIFT;
+
 598:1-598:52
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
