@@ -98,6 +98,14 @@ UUID: 8a1aaf01_31fe6084
 Bytes: 227
 I do see that it is really rare for the verity_table to be larger than PAGE_SIZE. But, Is the current code too redundant ?? If yes, I will remove the code that handles the case where the verity_table size exceeds the PAGE_SIZE.
 
+261:0-261:38
+Fri Jan 08 14:31:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a1aaf01_31fe6084
+UUID: 6aa2db12_31956a04
+Bytes: 201
+I still think it's safe to assume that verity metadata block fits into PAGE_SIZE, but if you feel it's prudent to prepare for the alternative despite the more complicated code path, I'm fine with that.
+
 397:0-398:32
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -264,6 +272,14 @@ UUID: 4a4357e2_c66f3390
 Bytes: 284
 Shouldn't I be check for overflow and leave the actual validation of the block size and number of sectors to the dm-verity-target code ? If yes, I am planning to use the test_mult_overflow routine that you pointed out and leave the actual data validation to the dm-verity-target code.
 
+580:1-581:22
+Fri Jan 08 14:31:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a4357e2_c66f3390
+UUID: 0a54ffaf_89c13d0a
+Bytes: 142
+Yes, checking for overflow is sufficient here. Just note that dividing 64-bit numbers should be done with do_div (or sector_div for sector_t).
+
 582:17-582:61
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -307,6 +323,14 @@ The following seems to be the arguments that I require.
 
 Is this correct ? There seems to be a bunch of data validation in parse_ecc_header function. Should I be doing that as well ?
 
+598:1-598:52
+Fri Jan 08 14:31:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1773d7_82e59b37
+UUID: 0a54ffaf_a9c6791d
+Bytes: 301
+That looks correct. You should do at least the basic validation to make sure you are looking at an actual FEC header, and note that there's a back-up header at the other end of the same block in case this one doesn't look valid. Validating the hash of the actual FEC data is not necessary here though.
+
 621:10-621:20
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -321,6 +345,14 @@ Parent: e59a7e77_f552525b
 UUID: 8a1aaf01_037751b5
 Bytes: 148
 Sorry I am not sure whether I understand the problem.. Why do you think that invoking verity_dtr might be problematic if CONFIG_MODULES is enabled ?
+
+621:10-621:20
+Fri Jan 08 14:31:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a1aaf01_037751b5
+UUID: ca6e677a_af9bdd59
+Bytes: 146
+Nevermind, you exported all the verity functions. Of course, now that you compile this as part of dm-verity itself, exporting is no longer needed.
 
 File: drivers/md/dm-android-verity.h
 
