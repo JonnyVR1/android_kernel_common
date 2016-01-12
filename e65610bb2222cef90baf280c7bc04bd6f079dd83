@@ -1,0 +1,20 @@
+Revision: e65610bb2222cef90baf280c7bc04bd6f079dd83
+Patch-set: 1
+File: include/linux/fortify_string.h
+
+22
+Tue Jan 12 23:23:56 2016 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 678e9643_519896ed
+Bytes: 84
+This doesn't look right to me, but I don't understand this code enough to say why...
+
+File: lib/memcpy_chk.c
+
+16:35-16:43
+Tue Jan 12 23:23:56 2016 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 678e9643_d14e4644
+Bytes: 13
+nit: unneeded
+
