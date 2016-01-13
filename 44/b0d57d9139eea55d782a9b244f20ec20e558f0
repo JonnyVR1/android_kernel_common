@@ -1,0 +1,7 @@
+Code-Review+2: Mohamad Ayyash <mkayyash@google.com>
+Verified+1: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-by: Dmitry Shmidt <dimitrysh@google.com>
+Submitted-at: Wed, 13 Jan 2016 21:43:49 +0000
+Reviewed-on: https://android-review.googlesource.com/196296
+Project: kernel/common
+Branch: refs/heads/android-3.18
