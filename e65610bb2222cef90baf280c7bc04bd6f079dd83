@@ -1,6 +1,22 @@
 Revision: e65610bb2222cef90baf280c7bc04bd6f079dd83
 Patch-set: 1
+File: Makefile
+
+646:0-649:5
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 274e5eac_26d11727
+Bytes: 117
+No need, use CONFIG_FORTIFY_SOURCE directly in source. The KBUILD_FLAGS are for compiler flags, not manifest defines.
+
 File: include/linux/fortify_string.h
+
+20:12-20:27
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_80fa975f
+Bytes: 22
+COFNIG_FORTIFY_SOURCE?
 
 22
 Tue Jan 12 23:23:56 2016 +0000
@@ -8,6 +24,45 @@ Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 678e9643_519896ed
 Bytes: 84
 This doesn't look right to me, but I don't understand this code enough to say why...
+
+22:8-22:26
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 678e9643_02187a5f
+Bytes: 155
+This is defined in asm/string.h. You need to include it here to get it right. You also include this file _before_ the include for asm/string.h in string.h.
+
+24:20-24:30
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_20f0e385
+Bytes: 466
+Although pedantically correct, this is _not_ the definition or prototype of memcpy in the kernel context, and given the short path from this wrapper to a function call, unlikely it will result in more optimal code with the assumption of no aliasing between this and the other pointer.
+
+But this does leave us with another issue, maybe we _should_ check, and in memcpy_chk(), if the pointers alias (overlap) (here using BUILD_BUG_ON(), runtime check in memcpy_chk())?
+
+27:54-27:87
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_a0dcf30a
+Bytes: 387
+I thought this would not evaluate if performed in an inline? __dest here is evaluated as void *? Please check to make sure the code expected is generated? You may need to make this memcpy a #define with all the complications it induces (memcpy macro in-effect calling memcpy_chk, calling memcpy architecture specific subroutine; then having memcpy architecture specific prototype below).
+
+29:0-29:6
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e759a674_64c31364
+Bytes: 83
+I believe memcpy_chk should be inlined above (before memcpy is overridden) instead?
+
+File: lib/Makefile
+
+16:14-16:26
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07623a24_ad87d181
+Bytes: 44
+lib-$(CONFIG_FORTIFY_SOURCE) += memcpy_chk.o
 
 File: lib/memcpy_chk.c
 
@@ -46,4 +101,32 @@ Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 678e9643_d14e4644
 Bytes: 13
 nit: unneeded
+
+16:35-16:43
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 678e9643_d14e4644
+UUID: 87562a44_ccdb2b3f
+Bytes: 371
+Not impressed with a panic, this will just make mtbf a struggle. I'd prefer (read: this is an opinion) a truncated copy and a _strong_ _short_ log message. This should preserve functionality, and would be one of two possible decisions made to mitigate the issue when the source is fixed.
+
+worry: Of course, if the memcpy is copying a string, there may be some acrobatics?
+
+17:0-17:5
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 678e9643_82f9ca36
+Bytes: 346
+For memcpy, do we want to also perform alias checking? Probably too costly ...
+
+This whole thing is a major cache hit hot spot, it feels like it should be an inline in order to regain some lost performance. You can reference a global ro string for the messaging so no repetition there, as it stands, this _one_ inline check is not that expensive.
+
+File: security/Kconfig
+
+123:23-123:38
+Wed Jan 13 16:07:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 27673e34_c97201b9
+Bytes: 22
+CONFIG_FORTIFY_SOURCE?
 
