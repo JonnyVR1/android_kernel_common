@@ -1,0 +1,63 @@
+Revision: 1a6c24fb390750f1e464b7cae127cbebff26b377
+Patch-set: 4
+File: drivers/md/Kconfig
+
+427:7-427:24
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07b15a0d_bb4467f9
+Bytes: 154
+not requesting any change, but DM_VERITY_META or something similar, could be used in the future to make this a generic -- load-metadata-from-disk wrapper!
+
+File: drivers/md/dm-android-verity.c
+
+518:11-518:29
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47a7d2d1_fd930784
+Bytes: 90
+nit: please include a header which explains what the target constructor needs as its argv!
+
+532:13-532:14
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87be2ae1_d7f49cf1
+Bytes: 759
+does anything in the current format block the ability to add a hash (or int or ..) to the argument format?
+
+I ask because there is no version index in the android_verity_metadata which means that a formerly vulnerable system image could be reinstalled on a device with old signed metadata unless the signing key is changed.
+
+One way to solve that is for the kernel to supply the expected version (or version_minimum) for the signed metadata.  Another way could be to just have the hash of the metadata (basically fixed pin between kernel cmdline and rootfs).
+
+I know that it is currently the state of things, so I just want to make sure there could be the option of extending this code and/or the android metadata such that it can be gain rollback protection.
+
+681:0-681:51
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07b15a0d_3b4057e8
+Bytes: 45
+nice being able to reuse the other functions!
+
+File: drivers/md/dm-android-verity.h
+
+1:8-1:26
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e7c1a66d_1ae11d18
+Bytes: 16
+nit: boilerplate
+
+11:27-11:30
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e7c1a66d_dab3a527
+Bytes: 47
+can this be build-time computed with sizeof()s?
+
+16:8-16:28
+Thu Jan 14 17:05:38 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a7bb2ef1_b8beb91c
+Bytes: 149
+nit: is this already available via the crypto defines?  I think it's fine to call it out as a field length, but it could conflict/be confusing later.
+
