@@ -305,6 +305,15 @@ Is this enough? I'm sure the compiler optimizes this into a shift, but what if i
 
   data_sectors *= data_block_size << SECTOR_SHIFT;
 
+582:17-582:61
+Thu Jan 14 21:14:47 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a31fb81_3c171933
+UUID: 4a74377b_9849d915
+Bytes: 61
+you meant
+data_sectors *= data_block_size >> SECTOR_SHIFT; ??
+
 598:1-598:52
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
