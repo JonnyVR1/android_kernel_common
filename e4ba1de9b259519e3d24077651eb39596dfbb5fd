@@ -1,0 +1,27 @@
+Revision: e4ba1de9b259519e3d24077651eb39596dfbb5fd
+Base-for-patch-set: 2
+File: arch/arm/include/asm/mmu.h
+
+11:1-11:22
+Fri Jan 15 17:34:30 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_8d75a7d7
+Bytes: 109
+incoming conflict (was not a conflict in N10 kernel though, so it has an upstream patch not represented here)
+
+File: arch/arm/kernel/signal.c
+
+51:1-54:84
+Fri Jan 15 17:34:30 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2752dead_a2a9ba4d
+Bytes: 25
+incoming conflict context
+
+450:1-450:26
+Fri Jan 15 17:34:30 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2752dead_82911e1a
+Bytes: 121
+upstream has a more expansive set of checks here, modified comment below to remove associated references to those checks.
+
