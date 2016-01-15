@@ -1,0 +1,11 @@
+Revision: 4545e1012b0bbad3d1bd02a49656d6b3a357d66e
+Patch-set: 1
+File: arch/arm/kernel/fiq.c
+
+155:0-155:1
+Fri Jan 15 17:16:49 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07495aa4_2ded6fab
+Bytes: 77
+conflict was here, and above because init_FIQ() takes an argument in upstream
+
