@@ -1,0 +1,11 @@
+Revision: 3d179bf704068dcc2fd607f56d227f5b2bc5115c
+Patch-set: 1
+File: arch/arm/mm/Kconfig
+
+453:1-453:26
+Fri Jan 15 17:18:09 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c75ca266_8a13c93c
+Bytes: 77
+simple conflicts were in several of these, as the other parts were different.
+
