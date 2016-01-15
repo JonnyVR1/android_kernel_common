@@ -1,0 +1,20 @@
+Revision: d681c8a5a28c3a126b8e1e39c1104d19256666da
+Base-for-patch-set: 2
+File: arch/arm/kernel/ptrace.c
+
+924:0-925:50
+Fri Jan 15 17:31:04 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e759a674_17fc0088
+Bytes: 66
+Conflicted as this was moved into a helper function at the bottom.
+
+File: arch/arm/kernel/signal.c
+
+672:0-676:47
+Fri Jan 15 17:31:04 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07495aa4_cdc32b10
+Bytes: 30
+Incoming conflict context only
+
