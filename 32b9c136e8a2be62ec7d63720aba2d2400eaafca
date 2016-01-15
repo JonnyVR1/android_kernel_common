@@ -1,0 +1,18 @@
+Revision: 32b9c136e8a2be62ec7d63720aba2d2400eaafca
+Base-for-patch-set: 2
+File: arch/arm/kernel/signal.c
+
+627:0-627:19
+Fri Jan 15 17:28:39 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 274e5eac_54ee8219
+Bytes: 17
+incoming conflict
+
+645:0-658:3
+Fri Jan 15 17:28:39 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87562a44_85310198
+Bytes: 18
+incoming conflict.
+
