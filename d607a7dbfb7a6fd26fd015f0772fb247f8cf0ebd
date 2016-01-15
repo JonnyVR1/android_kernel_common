@@ -1,0 +1,11 @@
+Revision: d607a7dbfb7a6fd26fd015f0772fb247f8cf0ebd
+Patch-set: 1
+File: arch/arm/mm/mmu.c
+
+1163:1-1163:29
+Fri Jan 15 17:15:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07495aa4_ede267bd
+Bytes: 21
+This was the conflict
+
