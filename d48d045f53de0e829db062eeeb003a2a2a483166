@@ -314,6 +314,14 @@ Bytes: 61
 you meant
 data_sectors *= data_block_size >> SECTOR_SHIFT; ??
 
+582:17-582:61
+Mon Jan 18 09:32:55 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a74377b_9849d915
+UUID: 07931a6b_b1aa988b
+Bytes: 26
+Oops. Yes, that's correct.
+
 598:1-598:52
 Tue Dec 15 16:58:32 2015 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
