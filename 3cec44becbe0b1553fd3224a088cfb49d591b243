@@ -1,0 +1,18 @@
+Revision: 3cec44becbe0b1553fd3224a088cfb49d591b243
+Patch-set: 5
+File: drivers/md/dm-android-verity.c
+
+170:8-170:29
+Tue Jan 19 08:06:35 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6777760f_694a0105
+Bytes: 138
+Is this correct? do_div needs a 32-bit value as the second parameter and returns the remainder, and x % y would result in 64-bit division.
+
+218:40-218:41
+Tue Jan 19 08:06:35 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771fe1c_2a7b9ba0
+Bytes: 69
+Considering device_size is u64, does this compile in a 32-bit kernel?
+
