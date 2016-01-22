@@ -9,10 +9,26 @@ UUID: 6777760f_694a0105
 Bytes: 138
 Is this correct? do_div needs a 32-bit value as the second parameter and returns the remainder, and x % y would result in 64-bit division.
 
+170:8-170:29
+Fri Jan 22 22:27:38 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6777760f_694a0105
+UUID: 54aa2254_4b3bb9a7
+Bytes: 170
+Yeah.. That's wrong... Thanks for catching that.. I backported https://www.redhat.com/archives/dm-devel/2013-August/msg00120.html.. I am going to use this function here..
+
 218:40-218:41
 Tue Jan 19 08:06:35 2016 +0000
 Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771fe1c_2a7b9ba0
 Bytes: 69
 Considering device_size is u64, does this compile in a 32-bit kernel?
+
+218:40-218:41
+Fri Jan 22 22:27:38 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771fe1c_2a7b9ba0
+UUID: f4bb169e_70ca28a2
+Bytes: 55
+It does seem to compile.. I did not notice any issues..
 
