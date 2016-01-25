@@ -34,3 +34,11 @@ UUID: 54edc2c8_2d8d8db1
 Bytes: 301
 My point is that if someone locks a device that previously had dm-verity disabled, the device should still boot with dm-verity enabled. Right now, the code fails to find verity metadata and bails out. We wouldn't disable dm-verity on a locked device no matter which of the two metadata magics we read.
 
+441:0-445:2
+Mon Jan 25 18:33:31 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54edc2c8_2d8d8db1
+UUID: 54c14218_419c02e0
+Bytes: 78
+Anh... I see what you are saying.. will make the necessary changes.. Thanks !!
+
