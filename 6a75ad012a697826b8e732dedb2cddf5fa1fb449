@@ -1,0 +1,20 @@
+Revision: 6a75ad012a697826b8e732dedb2cddf5fa1fb449
+Patch-set: 6
+File: drivers/md/dm-android-verity.c
+
+170:5-170:13
+Mon Jan 25 15:56:47 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74f2c6a8_eeb37f4e
+Bytes: 14
+nit: remainder
+
+441:0-445:2
+Mon Jan 25 15:56:47 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1410aa94_a33a3abd
+Bytes: 238
+What happens if someone unlocks a device, disables verity, and locks it again?
+
+Should we accept VERITY_METADATA_MAGIC_DISABLE as a valid magic too, but just not disable verity in this case? This is how libfec / fs_mgr work at the moment.
+
