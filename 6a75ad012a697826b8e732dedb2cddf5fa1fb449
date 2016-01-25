@@ -26,3 +26,11 @@ UUID: d4be1290_fde34f31
 Bytes: 288
 As you may know, VERITY_METADATA_MAGIC_DISABLE bit on the the partition is not a part of the signed metadata.. i.e. Anyone can disable it... Isn't the bootloader supposed to be flashing the red screen when VERITY is disabled ? How will the bootloader get to know that verity is disabled ?
 
+441:0-445:2
+Mon Jan 25 18:25:04 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4be1290_fde34f31
+UUID: 54edc2c8_2d8d8db1
+Bytes: 301
+My point is that if someone locks a device that previously had dm-verity disabled, the device should still boot with dm-verity enabled. Right now, the code fails to find verity metadata and bails out. We wouldn't disable dm-verity on a locked device no matter which of the two metadata magics we read.
+
