@@ -18,3 +18,11 @@ What happens if someone unlocks a device, disables verity, and locks it again?
 
 Should we accept VERITY_METADATA_MAGIC_DISABLE as a valid magic too, but just not disable verity in this case? This is how libfec / fs_mgr work at the moment.
 
+441:0-445:2
+Mon Jan 25 18:16:42 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1410aa94_a33a3abd
+UUID: d4be1290_fde34f31
+Bytes: 288
+As you may know, VERITY_METADATA_MAGIC_DISABLE bit on the the partition is not a part of the signed metadata.. i.e. Anyone can disable it... Isn't the bootloader supposed to be flashing the red screen when VERITY is disabled ? How will the bootloader get to know that verity is disabled ?
+
