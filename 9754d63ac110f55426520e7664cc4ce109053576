@@ -9,3 +9,11 @@ UUID: d41292d7_c92871c6
 Bytes: 35
 No comment about TCPF_NEW_SYN_RECV?
 
+322:22-322:35
+Tue Jan 26 06:10:58 2016 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d41292d7_c92871c6
+UUID: 14f8aad1_e37592d2
+Bytes: 44
+Added a comment to use sock_gen_put instead.
+
