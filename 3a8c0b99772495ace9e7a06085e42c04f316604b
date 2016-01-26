@@ -1,0 +1,11 @@
+Revision: 3a8c0b99772495ace9e7a06085e42c04f316604b
+Patch-set: 1
+File: drivers/net/wireless/bcmdhd/wl_cfg80211.c
+
+10002:30-10002:34
+Tue Jan 26 17:58:31 2016 +0000
+Author: Alexander Levitskiy <1014961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54c4e260_7e73857b
+Bytes: 80
+You've removed this declaration for 3.11, is there a conditional for data below?
+
