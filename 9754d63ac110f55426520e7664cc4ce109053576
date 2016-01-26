@@ -1,0 +1,11 @@
+Revision: 9754d63ac110f55426520e7664cc4ce109053576
+Patch-set: 4
+File: net/ipv4/inet_diag.c
+
+322:22-322:35
+Tue Jan 26 04:50:47 2016 +0000
+Author: Pierre Imai <1093208@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d41292d7_c92871c6
+Bytes: 35
+No comment about TCPF_NEW_SYN_RECV?
+
