@@ -19,6 +19,14 @@ Hmmm, you had some certification tests, what did you call the derated speed afte
 
 I have used EOL instead of aged, I understandably get emotional responses when I use that word ;-}
 
+77:63-77:67
+Thu Jan 28 20:59:19 2016 +0000
+Author: Mohamad Ayyash <1037321@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5418622c_75a18861
+UUID: 14f98afe_7b397fa8
+Bytes: 20
+How about throttled?
+
 File: drivers/mmc/card/block.c
 
 132:0-133:78
