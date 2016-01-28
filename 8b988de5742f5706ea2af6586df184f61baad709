@@ -18,6 +18,24 @@ UUID: 34176efe_54b56c91
 Bytes: 239
 [250, 100000] is a fairly arbitrary range.  It seems more sensible to allow the entire range of unsigned int (if a bit overkill).  0 can be used as a flag to disable ratelimiting, since it's meaningless to limit your throughput to nothing.
 
+132:0-133:78
+Thu Jan 28 20:51:57 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34176efe_54b56c91
+UUID: 741d661a_b9bf9bca
+Bytes: 1033
+The values were not arbitrary. I need to add comments regarding the selection into the code.
+
+Our devices become completely unusable at 250KB/s, determined experimentally over our dogfood population, any rates lower than this and you might as well walk away from the device. The 32GB SLC eMMC on the N9 can reach this performance level after a year of heavy use, >80% full, and if more than a day has gone by between fstrims.
+
+Any value above 12800 will have no affect given the granularity of jiffies at 100Hz (128KB maximum transfer size per command). Performance group was experimenting with 1KHz, so I viewed 128000 as the maximum useful in all categories of devices, then dropped down to 100000 to round it out.
+
+I could make the MAX_RATELIMIT a mathematical calculations based on maximum transfer size and HZ granularity.
+
+I could also use a higher resolution timer, but for a valid range of 250KB/s to 5MB/s 100Hz works.
+
+I got nervous about 0 for off, since off really is mathematically ∞ or the highest value one can pick.
+
 325:0-325:30
 Thu Jan 28 20:19:57 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,4 +61,14 @@ Parent: 54ef8232_7dddf78f
 UUID: 34fe8ee6_3c24118b
 Bytes: 23
 max_{read,write}_speed?
+
+2460:30-2460:45
+Thu Jan 28 20:51:57 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34fe8ee6_3c24118b
+UUID: d40c52f0_d95a5334
+Bytes: 215
+I'll buy that one.
+
+Might even consider actual_read_speed/actual_write_speed (1 hour or more running average) and uptime_read_speed/uptime_write_speed instrumentation for the future, the names all clearly spell out!
 
