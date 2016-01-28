@@ -1,5 +1,14 @@
 Revision: 8b988de5742f5706ea2af6586df184f61baad709
 Patch-set: 1
+File: drivers/mmc/card/Kconfig
+
+77:63-77:67
+Thu Jan 28 20:50:58 2016 +0000
+Author: Mohamad Ayyash <1037321@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f40956de_7dce9388
+Bytes: 30
+maybe "slow" is a better term?
+
 File: drivers/mmc/card/block.c
 
 132:0-133:78
