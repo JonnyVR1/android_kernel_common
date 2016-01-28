@@ -2,6 +2,13 @@ Revision: 8b988de5742f5706ea2af6586df184f61baad709
 Patch-set: 1
 File: drivers/mmc/card/block.c
 
+132:0-133:78
+Thu Jan 28 20:33:34 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34176efe_54b56c91
+Bytes: 239
+[250, 100000] is a fairly arbitrary range.  It seems more sensible to allow the entire range of unsigned int (if a bit overkill).  0 can be used as a flag to disable ratelimiting, since it's meaningless to limit your throughput to nothing.
+
 325:0-325:30
 Thu Jan 28 20:19:57 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,4 +26,12 @@ wondering out loud. Is ratelimit the best word to describe this? "ratelimit" is 
 read_rate_limit?
 read_max_speed?
 read_max_rate?
+
+2460:30-2460:45
+Thu Jan 28 20:33:34 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54ef8232_7dddf78f
+UUID: 34fe8ee6_3c24118b
+Bytes: 23
+max_{read,write}_speed?
 
