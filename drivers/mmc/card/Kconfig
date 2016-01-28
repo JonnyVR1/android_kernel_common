@@ -77,3 +77,60 @@ config MMC_TEST
 
 	  This driver is only of interest to those developing or
 	  testing a host driver. Most people should say N here.
+
+config MMC_SIMULATE_MAX_SPEED
+	bool "Turn on maximum speed control per block device"
+	depends on MMC_BLOCK
+	help
+	  Say Y here to enable MMC device speed limiting. Used to test and
+	  simulate the behavior of the system when confronted with a slow MMC.
+
+	  Enables max_read_speed, max_write_speed and cache_size attributes to
+	  control the write or read maximum KB/second speed behaviors.
+
+	  If unsure, say N here.
+
+config MMC_SIMULATE_MAX_READ_SPEED
+	int "KB/second read speed limit per block device"
+	depends on MMC_BLOCK
+	depends on MMC_SIMULATE_MAX_SPEED
+	default 0
+	help
+	  Number of KB/second reads allowed to the block device. Used to
+	  test and simulate the behavior of the system when confronted with
+	  a slow MMC. Set this value if it is required that the simulation
+	  starts at boot time.
+
+	  Value can be overridden at runtime with the max_read_speed attribute.
+
+	  If unsure, say 0 here (no speed limit)
+
+config MMC_SIMULATE_MAX_WRITE_SPEED
+	int "KB/second write speed limit per block device"
+	depends on MMC_BLOCK
+	depends on MMC_SIMULATE_MAX_SPEED
+	default 0
+	help
+	  Number of KB/second writes allowed to the block device. Used to
+	  test and simulate the behavior of the system when confronted with
+	  a slow MMC. Set this value if it is required that the simulation
+	  starts at boot time.
+
+	  Value can be overridden at runtime with the max_write_speed attribute.
+
+	  If unsure, say 0 here (no speed limit)
+
+config MMC_SIMULATE_MAX_SPEED_CACHE_SIZE
+	int "MB of memory or SLC cache"
+	depends on MMC_BLOCK
+	depends on MMC_SIMULATE_MAX_SPEED
+	default 4
+	help
+	  Number of MB of high speed memory or SLC cache expected on the
+	  eMMC device. Used to help simulate the write-back behavior more
+	  accurately. Set this value if it is required that the simulation
+	  starts at boot time.
+
+	  Value can be overridden at runtime with the cache_size attribute.
+
+	  If unsure, say 4 here
