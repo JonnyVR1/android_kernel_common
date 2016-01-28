@@ -1,0 +1,22 @@
+Revision: 8b988de5742f5706ea2af6586df184f61baad709
+Patch-set: 1
+File: drivers/mmc/card/block.c
+
+325:0-325:30
+Thu Jan 28 20:19:57 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 14f98afe_9bfc4b5f
+Bytes: 79
+We print none (for MAX_RATELIMIT), we should allow parsing of none as an alias.
+
+2460:30-2460:45
+Thu Jan 28 20:19:57 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54ef8232_7dddf78f
+Bytes: 216
+wondering out loud. Is ratelimit the best word to describe this? "ratelimit" is not an english word (rate limit). "wr_" and "rd_" prefix may even be viewed as cryptic.
+
+read_rate_limit?
+read_max_speed?
+read_max_rate?
+
