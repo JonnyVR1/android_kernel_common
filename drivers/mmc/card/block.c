@@ -125,6 +125,31 @@ struct mmc_blk_data {
 	struct device_attribute force_ro;
 	struct device_attribute power_ro_lock;
 	int	area_type;
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+/*
+ * helper macros and expectations:
+ *  size    - unsigned long number of bytes
+ *  jiffies - unsigned long HZ timestamp
+ *  speed   - unsigned KB/s transfer rate
+ */
+#define size_and_speed_to_jiffies(size, speed) \
+		((size) * HZ / (speed) / 1024UL)
+#define jiffies_and_speed_to_size(jiffies, speed) \
+		(((speed) * (jiffies) * 1024UL) / HZ)
+#define jiffies_and_size_to_speed(jiffies, size) \
+		((size) * HZ / (jiffies) / 1024UL)
+
+/* Limits to report warning */
+/* jiffies_and_size_to_speed(10*HZ, queue_max_hw_sectors(q) * 512UL) ~ 25 */
+#define MIN_SPEED(q) 250 /* 10 times faster than a floppy disk */
+#define MAX_SPEED(q) jiffies_and_size_to_speed(1, queue_max_sectors(q) * 512UL)
+
+#define speed_valid(speed) ((speed) > 0)
+
+	struct device_attribute max_write_speed;
+	struct device_attribute max_read_speed;
+	struct device_attribute cache_size;
+#endif
 };
 
 static DEFINE_MUTEX(open_lock);
@@ -287,6 +312,144 @@ out:
 	mmc_blk_put(md);
 	return ret;
 }
+
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+static const char off[] = "off\n";
+
+static int max_speed_show(int speed, char *buf)
+{
+	if (speed)
+		return scnprintf(buf, PAGE_SIZE, "%uKB/s\n", speed);
+	else
+		return scnprintf(buf, PAGE_SIZE, off);
+}
+
+static int max_speed_store(const char *buf, struct request_queue *q)
+{
+	long set = 0;
+	unsigned limit;
+
+	if (!strncasecmp(off, buf, sizeof(off) - 2))
+		return set;
+	if (kstrtol(buf, 0, &set) || (set < 0) || (set > INT_MAX))
+		return -EINVAL;
+	if (set == 0)
+		return set;
+	limit = MAX_SPEED(q);
+	if (set > limit)
+		pr_warn("max speed %ld ineffective above %u\n", set, limit);
+	limit = MIN_SPEED(q);
+	if (set < limit)
+		pr_warn("max speed %ld painful below %u\n", set, limit);
+	return set;
+}
+
+static ssize_t max_write_speed_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int ret = max_speed_show(atomic_read(&md->queue.max_write_speed), buf);
+
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t max_write_speed_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int set = max_speed_store(buf, md->queue.queue);
+
+	if (set < 0) {
+		mmc_blk_put(md);
+		return set;
+	}
+
+	atomic_set(&md->queue.max_write_speed, set);
+	mmc_blk_put(md);
+	return count;
+}
+
+static ssize_t max_read_speed_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int ret = max_speed_show(atomic_read(&md->queue.max_read_speed), buf);
+
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t max_read_speed_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int set = max_speed_store(buf, md->queue.queue);
+
+	if (set < 0) {
+		mmc_blk_put(md);
+		return set;
+	}
+
+	atomic_set(&md->queue.max_read_speed, set);
+	mmc_blk_put(md);
+	return count;
+}
+
+static ssize_t cache_size_show(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	struct mmc_queue *mq = &md->queue;
+	int cache_size = atomic_read(&mq->cache_size);
+	int ret;
+
+	if (!cache_size)
+		ret = scnprintf(buf, PAGE_SIZE, off);
+	else {
+		int speed = atomic_read(&mq->max_write_speed);
+
+		if (!speed_valid(speed))
+			ret = scnprintf(buf, PAGE_SIZE, "%uMB\n", cache_size);
+		else { /* We accept race between cache_set and cache_used */
+			unsigned long size = jiffies_and_speed_to_size(
+				jiffies - mq->cache_set, speed);
+			long used = atomic_long_read(&mq->cache_used);
+
+			if (size >= used)
+				size = 0;
+			else
+				size = (used - size) * 100 / cache_size
+					/ 1024UL / 1024UL;
+
+			ret = scnprintf(buf, PAGE_SIZE, "%uMB %lu%% used\n",
+				cache_size, size);
+		}
+	}
+
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t cache_size_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	struct mmc_blk_data *md;
+	long set = 0;
+
+	if (strncasecmp(off, buf, sizeof(off) - 2)
+	 && (kstrtol(buf, 0, &set) || (set < 0) || (set > INT_MAX)))
+		return -EINVAL;
+
+	md = mmc_blk_get(dev_to_disk(dev));
+	atomic_set(&md->queue.cache_size, set);
+	mmc_blk_put(md);
+	return count;
+}
+#endif
 
 static int mmc_blk_open(struct block_device *bdev, fmode_t mode)
 {
@@ -1166,6 +1329,31 @@ static int mmc_blk_issue_flush(struct mmc_queue *mq, struct request *req)
 	if (ret)
 		ret = -EIO;
 
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+	if (atomic_read(&mq->cache_size)) {
+		int speed = atomic_read(&mq->max_write_speed);
+
+		if (speed_valid(speed)) {
+			unsigned long size = jiffies_and_speed_to_size(
+				jiffies - mq->cache_set, speed);
+			long used = atomic_long_read(&mq->cache_used);
+
+			if (size >= used)
+				used = 0;
+			else
+				used = size;
+			atomic_long_set(&mq->cache_used, used);
+			mq->cache_set = jiffies;
+			if (used) {
+				unsigned long msecs = jiffies_to_msecs(
+					size_and_speed_to_jiffies(
+						used, speed));
+				if (msecs)
+					msleep(msecs);
+			}
+		}
+	}
+#endif
 	blk_end_request_all(req, ret);
 
 	return ret ? 0 : 1;
@@ -1842,12 +2030,52 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 	struct mmc_async_req *areq;
 	const u8 packed_nr = 2;
 	u8 reqs = 0;
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+	unsigned long waitfor = jiffies;
+#endif
 
 	if (!rqc && !mq->mqrq_prev->req)
 		return 0;
 
-	if (rqc)
+	if (rqc) {
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+		int max_speed = (rq_data_dir(rqc) == READ)
+			? atomic_read(&mq->max_read_speed)
+			: atomic_read(&mq->max_write_speed);
+		if (speed_valid(max_speed)) {
+			unsigned long bytes = blk_rq_bytes(rqc);
+
+			if (rq_data_dir(rqc) != READ) {
+				int cache_size = atomic_read(&mq->cache_size);
+
+				if (cache_size) {
+					unsigned long size;
+					long used;
+
+					/* correct for cache write-back */
+					size = jiffies_and_speed_to_size(
+						jiffies - mq->cache_set,
+						max_speed);
+					used = atomic_long_read(
+							&mq->cache_used);
+					if (size >= used)
+						used = 0;
+					else
+						used -= size;
+					used += bytes;
+					atomic_long_set(&mq->cache_used, used);
+					mq->cache_set = jiffies;
+					bytes = 0;
+					size = cache_size * 1024L * 1024L;
+					if (used > size)
+						bytes = used - size;
+				}
+			}
+			waitfor += size_and_speed_to_jiffies(bytes, max_speed);
+		}
+#endif
 		reqs = mmc_blk_prep_packed_list(mq, rqc);
+	}
 
 	do {
 		if (rqc) {
@@ -1892,6 +2120,14 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			 */
 			mmc_blk_reset_success(md, type);
 
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+			if (time_is_after_jiffies(waitfor)) {
+				unsigned long msecs = jiffies_to_msecs(
+					waitfor - jiffies);
+				if (msecs)
+					msleep(msecs);
+			}
+#endif
 			if (mmc_packed_cmd(mq_rq->cmd_type)) {
 				ret = mmc_blk_end_packed_req(mq_rq);
 				break;
@@ -2305,6 +2541,14 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
 					card->ext_csd.boot_ro_lockable)
 				device_remove_file(disk_to_dev(md->disk),
 					&md->power_ro_lock);
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+			device_remove_file(disk_to_dev(md->disk),
+						&md->max_write_speed);
+			device_remove_file(disk_to_dev(md->disk),
+						&md->max_read_speed);
+			device_remove_file(disk_to_dev(md->disk),
+						&md->cache_size);
+#endif
 
 			del_gendisk(md->disk);
 		}
@@ -2340,6 +2584,40 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 	ret = device_create_file(disk_to_dev(md->disk), &md->force_ro);
 	if (ret)
 		goto force_ro_fail;
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+	atomic_set(&md->queue.max_write_speed,
+			CONFIG_MMC_BLOCK_MAX_WRITE_SPEED);
+	md->max_write_speed.show = max_write_speed_show;
+	md->max_write_speed.store = max_write_speed_store;
+	sysfs_attr_init(&md->max_write_speed.attr);
+	md->max_write_speed.attr.name = "max_write_speed";
+	md->max_write_speed.attr.mode = S_IRUGO | S_IWUSR;
+	ret = device_create_file(disk_to_dev(md->disk), &md->max_write_speed);
+	if (ret)
+		goto max_write_speed_fail;
+	atomic_set(&md->queue.max_read_speed,
+			CONFIG_MMC_BLOCK_MAX_READ_SPEED);
+	md->max_read_speed.show = max_read_speed_show;
+	md->max_read_speed.store = max_read_speed_store;
+	sysfs_attr_init(&md->max_read_speed.attr);
+	md->max_read_speed.attr.name = "max_read_speed";
+	md->max_read_speed.attr.mode = S_IRUGO | S_IWUSR;
+	ret = device_create_file(disk_to_dev(md->disk), &md->max_read_speed);
+	if (ret)
+		goto max_read_speed_fail;
+	atomic_set(&md->queue.cache_size,
+			CONFIG_MMC_BLOCK_MAX_SPEED_CACHE_SIZE);
+	atomic_long_set(&md->queue.cache_used, 0);
+	md->queue.cache_set = jiffies;
+	md->cache_size.show = cache_size_show;
+	md->cache_size.store = cache_size_store;
+	sysfs_attr_init(&md->cache_size.attr);
+	md->cache_size.attr.name = "cache_size";
+	md->cache_size.attr.mode = S_IRUGO | S_IWUSR;
+	ret = device_create_file(disk_to_dev(md->disk), &md->cache_size);
+	if (ret)
+		goto cache_size_fail;
+#endif
 
 	if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
 	     card->ext_csd.boot_ro_lockable) {
@@ -2364,6 +2642,14 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 	return ret;
 
 power_ro_lock_fail:
+#ifdef CONFIG_MMC_BLOCK_MAX_SPEED
+	device_remove_file(disk_to_dev(md->disk), &md->cache_size);
+cache_size_fail:
+	device_remove_file(disk_to_dev(md->disk), &md->max_read_speed);
+max_read_speed_fail:
+	device_remove_file(disk_to_dev(md->disk), &md->max_write_speed);
+max_write_speed_fail:
+#endif
 	device_remove_file(disk_to_dev(md->disk), &md->force_ro);
 force_ro_fail:
 	del_gendisk(md->disk);
