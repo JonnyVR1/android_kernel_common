@@ -54,6 +54,18 @@ I could also use a higher resolution timer, but for a valid range of 250KB/s to 
 
 I got nervous about 0 for off, since off really is mathematically ∞ or the highest value one can pick.
 
+132:0-133:78
+Thu Jan 28 21:19:22 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 741d661a_b9bf9bca
+UUID: 54ef8232_fd774716
+Bytes: 596
+250 KB/s is unusable for our use case, but I'm hoping you're planning on sending this upstream?  Other people may want to crank this even lower for some reason.
+
+In general I don't like second-guessing the user for things like this ... if they choose to shoot themselves in the foot with an unreasonably low limit then that's their call.  (OTOH I suggested 0 as an flag, because that lets the user do anything short of literally making their device unusable.)
+
+For the upper limit, calculate it at compile-time based on CONFIG_HZ and warn if the user writes a value so high that it has no effect.
+
 325:0-325:30
 Thu Jan 28 20:19:57 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
