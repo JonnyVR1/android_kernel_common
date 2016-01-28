@@ -1,0 +1,73 @@
+Revision: c770b2def9e451ae12e35e261f881f815366cbc7
+Patch-set: 10
+File: drivers/md/Kconfig
+
+428
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4b5d6da_70948d29
+Bytes: 80
+Does it make sense to make this a module at all? Shouldn't this be boolean only?
+
+File: drivers/md/Makefile
+
+64
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4b5d6da_5076a9df
+Bytes: 78
+This does not work if it's a module. This only works if you make it a boolean.
+
+File: drivers/md/dm-android-verity.c
+
+233:15-233:32
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4a43ebb_a1fa4196
+Bytes: 4
+*fec
+
+241:12-241:29
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74f48602_5eb475ee
+Bytes: 4
+*fec
+
+242:10-242:27
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 542ce22d_492fb1c6
+Bytes: 4
+*fec
+
+244:10-244:27
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4a43ebb_81f53daa
+Bytes: 4
+*fec
+
+310:25-310:55
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 542ce22d_8935c916
+Bytes: 52
+*header
+
+I'm going to stop leaving comments on these
+
+405
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54ef8232_bdeadfcb
+Bytes: 84
+You have to check DT as well, not just the command line. Same for the next function.
+
+434
+Thu Jan 28 19:20:26 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34fe8ee6_5cb47dee
+Bytes: 75
+These 2 functions look very similar... Can you factor the common parts out?
+
