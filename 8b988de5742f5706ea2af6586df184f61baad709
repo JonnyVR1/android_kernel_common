@@ -73,6 +73,17 @@ UUID: 14f98afe_9bfc4b5f
 Bytes: 79
 We print none (for MAX_RATELIMIT), we should allow parsing of none as an alias.
 
+1995:1-2000:6
+Thu Jan 28 21:28:09 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 741d661a_9979ffa8
+Bytes: 419
+This is fine for simulating read degraded behavior.
+
+However writes are often write-back via a Cache and as a result the reads are not blocked from being submitted as they are in this algorithm.
+
+I need to 'simulate' cache (need a config parameter and additional attribute) fill and draining behaviors, delays when full only. And need to sniff FUA/SYNC requests where we would in-fact block until cache is 100% drained.
+
 2460:30-2460:45
 Thu Jan 28 20:19:57 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
