@@ -57,6 +57,10 @@ struct mmc_queue {
 	struct mmc_queue_req	mqrq[2];
 	struct mmc_queue_req	*mqrq_cur;
 	struct mmc_queue_req	*mqrq_prev;
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+	unsigned wr_ratelimit;
+	unsigned rd_ratelimit;
+#endif
 };
 
 extern int mmc_init_queue(struct mmc_queue *, struct mmc_card *, spinlock_t *,

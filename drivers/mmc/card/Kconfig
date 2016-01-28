@@ -68,3 +68,45 @@ config MMC_TEST
 
 	  This driver is only of interest to those developing or
 	  testing a host driver. Most people should say N here.
+
+config MMC_BLOCK_RATELIMIT
+	bool "Turn on ratelimit control per block device"
+	depends on MMC_BLOCK
+	help
+	  Say Y here to enable MMC device ratelimiting. Used to test and
+	  simulate the behavior of the system when confronted with an aged MMC.
+
+	  Enables wr_ratelimit and rd_ratelimit attributes to control the
+	  write or read maximum KB/second speed.
+
+	  If unsure, say N here.
+
+config MMC_BLOCK_WR_RATELIMIT
+	int "KB/second write ratelimit per block device"
+	depends on MMC_BLOCK
+	depends on MMC_BLOCK_RATELIMIT
+	range 250 100000
+	default 100000
+	help
+	  Number of KB/second writes allowed to the block device. Used to
+	  test and simulate the behavior of the system when confronted with
+	  an aged MMC.
+
+	  Value can be overridden at runtime with the wr_ratelimit attribute.
+
+	  If unsure, say 100000 here.
+
+config MMC_BLOCK_RD_RATELIMIT
+	int "KB/second read ratelimit per block device"
+	depends on MMC_BLOCK
+	depends on MMC_BLOCK_RATELIMIT
+	range 250 100000
+	default 100000
+	help
+	  Number of KB/second reads allowed to the block device. Used to
+	  test and simulate the behavior of the system when confronted with
+	  an aged MMC.
+
+	  Value can be overridden at runtime with the rd_ratelimit attribute.
+
+	  If unsure, say 100000 here.

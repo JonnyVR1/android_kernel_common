@@ -125,6 +125,13 @@ struct mmc_blk_data {
 	struct device_attribute force_ro;
 	struct device_attribute power_ro_lock;
 	int	area_type;
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+	struct device_attribute wr_ratelimit;
+	struct device_attribute rd_ratelimit;
+/* 100000 is valid, but will be viewed as OFF */
+#define MAX_RATELIMIT 100000
+#define mmc_block_ratelimit_valid(set) ((set >= 250) && (set < MAX_RATELIMIT))
+#endif
 };
 
 static DEFINE_MUTEX(open_lock);
@@ -287,6 +294,88 @@ out:
 	mmc_blk_put(md);
 	return ret;
 }
+
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+static inline int ratelimit_show(int ratelimit, char *buf)
+{
+	if (mmc_block_ratelimit_valid(ratelimit))
+		return scnprintf(buf, PAGE_SIZE, "%uKB/s", ratelimit);
+	else
+		return scnprintf(buf, PAGE_SIZE, "none");
+}
+
+static ssize_t wr_ratelimit_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int ret = ratelimit_show(md->queue.wr_ratelimit, buf);
+
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t wr_ratelimit_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	int ret;
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	unsigned long set;
+
+	if (kstrtoul(buf, 0, &set)) {
+		ret = -EINVAL;
+		goto out;
+	}
+	if (set >= MAX_RATELIMIT)
+		set = MAX_RATELIMIT;
+	else if (!mmc_block_ratelimit_valid(set)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	md->queue.wr_ratelimit = set;
+	ret = count;
+out:
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t rd_ratelimit_show(struct device *dev,
+				 struct device_attribute *attr, char *buf)
+{
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	int ret = ratelimit_show(md->queue.rd_ratelimit, buf);
+
+	mmc_blk_put(md);
+	return ret;
+}
+
+static ssize_t rd_ratelimit_store(struct device *dev,
+				  struct device_attribute *attr,
+				  const char *buf, size_t count)
+{
+	int ret;
+	struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
+	unsigned long set;
+
+	if (kstrtoul(buf, 0, &set)) {
+		ret = -EINVAL;
+		goto out;
+	}
+	if (set >= MAX_RATELIMIT)
+		set = MAX_RATELIMIT;
+	else if (!mmc_block_ratelimit_valid(set)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	md->queue.rd_ratelimit = set;
+	ret = count;
+out:
+	mmc_blk_put(md);
+	return ret;
+}
+#endif
 
 static int mmc_blk_open(struct block_device *bdev, fmode_t mode)
 {
@@ -1842,12 +1931,23 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 	struct mmc_async_req *areq;
 	const u8 packed_nr = 2;
 	u8 reqs = 0;
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+	unsigned long waitfor = jiffies;
+	unsigned long msecs;
+#endif
 
 	if (!rqc && !mq->mqrq_prev->req)
 		return 0;
 
-	if (rqc)
+	if (rqc) {
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+		int ratelimit = (rq_data_dir(rqc) == READ)
+			? mq->rd_ratelimit : mq->wr_ratelimit;
+		if (mmc_block_ratelimit_valid(ratelimit))
+			waitfor += blk_rq_bytes(rqc) * HZ / ratelimit / 1024;
+#endif
 		reqs = mmc_blk_prep_packed_list(mq, rqc);
+	}
 
 	do {
 		if (rqc) {
@@ -1892,6 +1992,12 @@ static int mmc_blk_issue_rw_rq(struct mmc_queue *mq, struct request *rqc)
 			 */
 			mmc_blk_reset_success(md, type);
 
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+			msecs = time_is_after_jiffies(waitfor)
+				? jiffies_to_msecs(waitfor - jiffies) : 0;
+			if (msecs)
+				msleep(msecs);
+#endif
 			if (mmc_packed_cmd(mq_rq->cmd_type)) {
 				ret = mmc_blk_end_packed_req(mq_rq);
 				break;
@@ -2305,6 +2411,12 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
 					card->ext_csd.boot_ro_lockable)
 				device_remove_file(disk_to_dev(md->disk),
 					&md->power_ro_lock);
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+			device_remove_file(disk_to_dev(md->disk),
+						&md->wr_ratelimit);
+			device_remove_file(disk_to_dev(md->disk),
+						&md->rd_ratelimit);
+#endif
 
 			del_gendisk(md->disk);
 		}
@@ -2340,6 +2452,26 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 	ret = device_create_file(disk_to_dev(md->disk), &md->force_ro);
 	if (ret)
 		goto force_ro_fail;
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+	md->queue.wr_ratelimit = CONFIG_MMC_BLOCK_WR_RATELIMIT;
+	md->wr_ratelimit.show = wr_ratelimit_show;
+	md->wr_ratelimit.store = wr_ratelimit_store;
+	sysfs_attr_init(&md->wr_ratelimit.attr);
+	md->wr_ratelimit.attr.name = "wr_ratelimit";
+	md->wr_ratelimit.attr.mode = S_IRUGO | S_IWUSR;
+	ret = device_create_file(disk_to_dev(md->disk), &md->wr_ratelimit);
+	if (ret)
+		goto wr_ratelimit_fail;
+	md->queue.rd_ratelimit = CONFIG_MMC_BLOCK_RD_RATELIMIT;
+	md->rd_ratelimit.show = rd_ratelimit_show;
+	md->rd_ratelimit.store = rd_ratelimit_store;
+	sysfs_attr_init(&md->rd_ratelimit.attr);
+	md->rd_ratelimit.attr.name = "rd_ratelimit";
+	md->rd_ratelimit.attr.mode = S_IRUGO | S_IWUSR;
+	ret = device_create_file(disk_to_dev(md->disk), &md->rd_ratelimit);
+	if (ret)
+		goto rd_ratelimit_fail;
+#endif
 
 	if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
 	     card->ext_csd.boot_ro_lockable) {
@@ -2364,6 +2496,12 @@ static int mmc_add_disk(struct mmc_blk_data *md)
 	return ret;
 
 power_ro_lock_fail:
+#ifdef CONFIG_MMC_BLOCK_RATELIMIT
+	device_remove_file(disk_to_dev(md->disk), &md->rd_ratelimit);
+rd_ratelimit_fail:
+	device_remove_file(disk_to_dev(md->disk), &md->wr_ratelimit);
+wr_ratelimit_fail:
+#endif
 	device_remove_file(disk_to_dev(md->disk), &md->force_ro);
 force_ro_fail:
 	del_gendisk(md->disk);
