@@ -9,6 +9,14 @@ UUID: f4b5d6da_70948d29
 Bytes: 80
 Does it make sense to make this a module at all? Shouldn't this be boolean only?
 
+428
+Fri Jan 29 10:54:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4b5d6da_70948d29
+UUID: 5125d4a7_4d41b992
+Bytes: 40
+Yes, this should be boolean. Good catch.
+
 File: drivers/md/Makefile
 
 64
