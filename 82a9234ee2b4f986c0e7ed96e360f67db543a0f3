@@ -1,0 +1,31 @@
+Revision: 82a9234ee2b4f986c0e7ed96e360f67db543a0f3
+Patch-set: 2
+File: drivers/mmc/card/block.c
+
+2588:0-2619:23
+Mon Feb 01 15:31:02 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d468d2a0_588014e3
+Bytes: 282
+clumsy, but if I rewrite it in scaled manner (initialization loop), impact above.
+
+rewrite required if I push this upstream. rewrite detrimental for continuing maintenance if I do not.
+
+Could have attribute filled out in structure and just copy though instead of all these steps ...
+
+File: drivers/mmc/card/queue.h
+
+65:1-65:14
+Mon Feb 01 15:31:02 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9462dabe_a6de7891
+Bytes: 128
+atomic is here to allow sysfs attribute to show percentage used, with accepted race against the single-threaded mmc0blk handler.
+
+66:21-66:24
+Mon Feb 01 15:31:02 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5422228b_1497620b
+Bytes: 42
+might be better to call this cache_jiffies
+
