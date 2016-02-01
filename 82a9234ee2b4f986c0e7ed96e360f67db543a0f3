@@ -2,6 +2,22 @@ Revision: 82a9234ee2b4f986c0e7ed96e360f67db543a0f3
 Patch-set: 2
 File: drivers/mmc/card/block.c
 
+1333:1-1333:3
+Mon Feb 01 22:41:48 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f465d6c4_1a11329f
+Bytes: 70
+else if
+
+If there are errors, let us not add insult (delay) to injury.
+
+1344:4-1344:15
+Mon Feb 01 22:41:48 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f465d6c4_7a006e4a
+Bytes: 12
+used -= size
+
 2588:0-2619:23
 Mon Feb 01 15:31:02 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
