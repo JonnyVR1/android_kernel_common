@@ -35,6 +35,7 @@
 #include <asm/tls.h>
 #include <asm/system_misc.h>
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 static const char *handler[]= {
 	"prefetch abort",
 	"data abort",
@@ -42,6 +43,9 @@ static const char *handler[]= {
 	"interrupt",
 	"undefined instruction",
 };
+=======
+static const char *handler[]= { "prefetch abort", "data abort", "address exception", "interrupt" };
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 
 void *vectors_page;
 

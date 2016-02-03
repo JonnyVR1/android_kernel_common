@@ -608,6 +608,7 @@ const char *arch_vma_name(struct vm_area_struct *vma)
 		 "[sigpage]" : NULL;
 }
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 static struct page *signal_page;
 extern struct page *get_signal_page(void);
 
@@ -632,6 +633,31 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 	ret = install_special_mapping(mm, addr, PAGE_SIZE,
 		VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
 		&signal_page);
+=======
+extern struct page *get_signal_page(void);
+
+int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+{
+	struct mm_struct *mm = current->mm;
+	struct page *page;
+	unsigned long addr;
+	int ret;
+
+	page = get_signal_page();
+	if (!page)
+		return -ENOMEM;
+
+	down_write(&mm->mmap_sem);
+	addr = get_unmapped_area(NULL, 0, PAGE_SIZE, 0, 0);
+	if (IS_ERR_VALUE(addr)) {
+		ret = addr;
+		goto up_fail;
+	}
+
+	ret = install_special_mapping(mm, addr, PAGE_SIZE,
+		VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
+		&page);
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 
 	if (ret == 0)
 		mm->context.sigpage = addr;

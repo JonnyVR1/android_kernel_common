@@ -277,8 +277,13 @@ retry:
 			 * Clear FAULT_FLAG_ALLOW_RETRY to avoid any risk of
 			 * starvation.
 			 */
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 			mm_flags &= ~FAULT_FLAG_ALLOW_RETRY;
 			mm_flags |= FAULT_FLAG_TRIED;
+=======
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+			flags |= FAULT_FLAG_TRIED;
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 			goto retry;
 		}
 	}

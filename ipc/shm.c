@@ -176,6 +176,15 @@ static void shm_rcu_free(struct rcu_head *head)
 	ipc_rcu_free(head);
 }
 
+static void shm_rcu_free(struct rcu_head *head)
+{
+	struct ipc_rcu *p = container_of(head, struct ipc_rcu, rcu);
+	struct shmid_kernel *shp = ipc_rcu_to_struct(p);
+
+	security_shm_free(shp);
+	ipc_rcu_free(head);
+}
+
 static inline void shm_rmid(struct ipc_namespace *ns, struct shmid_kernel *s)
 {
 	ipc_rmid(&shm_ids(ns), &s->shm_perm);
@@ -218,8 +227,14 @@ static void shm_destroy(struct ipc_namespace *ns, struct shmid_kernel *shp)
 	if (!is_file_hugepages(shm_file))
 		shmem_lock(shm_file, 0, shp->mlock_user);
 	else if (shp->mlock_user)
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 		user_shm_unlock(file_inode(shm_file)->i_size, shp->mlock_user);
 	fput(shm_file);
+=======
+		user_shm_unlock(file_inode(shp->shm_file)->i_size,
+						shp->mlock_user);
+	fput (shp->shm_file);
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 	ipc_rcu_putref(shp, shm_rcu_free);
 }
 

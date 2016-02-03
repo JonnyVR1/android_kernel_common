@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 /*
  * zsmalloc memory allocator
  *
@@ -1071,3 +1072,5 @@ module_exit(zs_exit);
 
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
+=======
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)

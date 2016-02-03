@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 /*
  * Compressed RAM block device
  *
@@ -122,3 +123,5 @@ extern void zram_meta_free(struct zram_meta *meta);
 extern void zram_init_device(struct zram *zram, struct zram_meta *meta);
 
 #endif
+=======
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)

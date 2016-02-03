@@ -401,6 +401,10 @@ setup_return(struct pt_regs *regs, struct ksignal *ksig,
 #ifdef CONFIG_MMU
 		if (cpsr & MODE32_BIT) {
 			struct mm_struct *mm = current->mm;
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
+=======
+
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 			/*
 			 * 32-bit code can use the signal return page
 			 * except when the MPU has protected the vectors
@@ -408,9 +412,13 @@ setup_return(struct pt_regs *regs, struct ksignal *ksig,
 			 */
 			retcode = mm->context.sigpage + signal_return_offset +
 				  (idx << 2) + thumb;
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 		} else
 #endif
 		{
+=======
+		} else {
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 			/*
 			 * Ensure that the instruction cache sees
 			 * the return code written onto the stack.
@@ -612,6 +620,7 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
 	return 0;
 }
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 struct page *get_signal_page(void)
 {
 	unsigned long ptr;
@@ -640,4 +649,37 @@ struct page *get_signal_page(void)
 	flush_icache_range(ptr, ptr + sizeof(sigreturn_codes));
 
 	return page;
+=======
+static struct page *signal_page;
+
+struct page *get_signal_page(void)
+{
+	if (!signal_page) {
+		unsigned long ptr;
+		unsigned offset;
+		void *addr;
+
+		signal_page = alloc_pages(GFP_KERNEL, 0);
+
+		if (!signal_page)
+			return NULL;
+
+		addr = page_address(signal_page);
+
+		/* Give the signal return code some randomness */
+		offset = 0x200 + (get_random_int() & 0x7fc);
+		signal_return_offset = offset;
+
+		/*
+		 * Copy signal return handlers into the vector page, and
+		 * set sigreturn to be a pointer to these.
+		 */
+		memcpy(addr + offset, sigreturn_codes, sizeof(sigreturn_codes));
+
+		ptr = (unsigned long)addr + offset;
+		flush_icache_range(ptr, ptr + sizeof(sigreturn_codes));
+	}
+
+	return signal_page;
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 }

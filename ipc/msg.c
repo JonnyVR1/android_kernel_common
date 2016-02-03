@@ -218,6 +218,13 @@ static int newque(struct ipc_namespace *ns, struct ipc_params *params)
 		return id;
 	}
 
+	/* ipc_addid() locks msq upon success. */
+	id = ipc_addid(&msg_ids(ns), &msq->q_perm, ns->msg_ctlmni);
+	if (id < 0) {
+		ipc_rcu_putref(msq, msg_rcu_free);
+		return id;
+	}
+
 	ipc_unlock_object(&msq->q_perm);
 	rcu_read_unlock();
 
@@ -727,9 +734,13 @@ long do_msgsnd(int msqid, long mtype, void __user *mtext,
 		rcu_read_unlock();
 		schedule();
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 		rcu_read_lock();
 		ipc_lock_object(&msq->q_perm);
 
+=======
+		ipc_lock_by_ptr(&msq->q_perm);
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 		ipc_rcu_putref(msq, ipc_rcu_free);
 		if (msq->q_perm.deleted) {
 			err = -EIDRM;

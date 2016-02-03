@@ -51,9 +51,20 @@ static unsigned long mmap_rnd(void)
 {
 	unsigned long rnd = 0;
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 	if (current->flags & PF_RANDOMIZE)
 		rnd = (long)get_random_int() & STACK_RND_MASK;
 
+=======
+	if (current->flags & PF_RANDOMIZE) {
+#ifdef CONFIG_COMPAT
+		if (test_thread_flag(TIF_32BIT))
+			rnd = (unsigned long)get_random_int() & ((1 << mmap_rnd_compat_bits) - 1);
+		else
+#endif
+			rnd = (unsigned long)get_random_int() & ((1 << mmap_rnd_bits) - 1);
+	}
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 	return rnd << PAGE_SHIFT;
 }
 

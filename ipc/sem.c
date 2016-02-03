@@ -196,6 +196,7 @@ void __init sem_init (void)
 				IPC_SEM_IDS, sysvipc_sem_proc_show);
 }
 
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 /**
  * unmerge_queues - unmerge queues, if possible.
  * @sma: semaphore array
@@ -286,6 +287,15 @@ static void sem_wait_array(struct sem_array *sma)
 		spin_unlock_wait(&sem->lock);
 	}
 	ipc_smp_acquire__after_spin_is_unlocked();
+=======
+static void sem_rcu_free(struct rcu_head *head)
+{
+	struct ipc_rcu *p = container_of(head, struct ipc_rcu, rcu);
+	struct sem_array *sma = ipc_rcu_to_struct(p);
+
+	security_sem_free(sma);
+	ipc_rcu_free(head);
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 }
 
 /*
@@ -523,6 +533,7 @@ static int newary(struct ipc_namespace *ns, struct ipc_params *params)
 		ipc_rcu_putref(sma, ipc_rcu_free);
 		return retval;
 	}
+<<<<<<< HEAD   (96ee6b Merge branch 'linux-3.10.y' into android-3.10.y)
 
 	id = ipc_addid(&sem_ids(ns), &sma->sem_perm, ns->sc_semmni);
 	if (id < 0) {
@@ -530,6 +541,8 @@ static int newary(struct ipc_namespace *ns, struct ipc_params *params)
 		return id;
 	}
 	ns->used_sems += nsems;
+=======
+>>>>>>> BRANCH (15d65f net: diag: support v4mapped sockets in inet_diag_find_one_ic)
 
 	sma->sem_base = (struct sem *) &sma[1];
 
@@ -545,6 +558,14 @@ static int newary(struct ipc_namespace *ns, struct ipc_params *params)
 	INIT_LIST_HEAD(&sma->list_id);
 	sma->sem_nsems = nsems;
 	sma->sem_ctime = get_seconds();
+
+	id = ipc_addid(&sem_ids(ns), &sma->sem_perm, ns->sc_semmni);
+	if (id < 0) {
+		ipc_rcu_putref(sma, sem_rcu_free);
+		return id;
+	}
+	ns->used_sems += nsems;
+
 	sem_unlock(sma, -1);
 	rcu_read_unlock();
 
