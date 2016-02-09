@@ -96,6 +96,14 @@ UUID: 1dd0d03a_154a14fd
 Bytes: 187
 so if your phone is unlocked, a new magic is what disabled dm-verity? (Is the kernel still signed at this point or would it be assumed the kernel could be replaced on an unlocked device?)
 
+466:5-466:16
+Tue Feb 09 20:18:26 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dd0d03a_154a14fd
+UUID: 7da46cba_335b12d2
+Bytes: 105
+The user can run any kernel when the device is unlocked, there's no signature verification at that point.
+
 509:3-509:14
 Tue Feb 09 19:51:51 2016 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -110,6 +118,14 @@ UUID: 9dc4c07e_f969d78b
 Bytes: 217
 Will this result in a reboot loop for devices? On other systems, we've corrupted bits to cause it to fail over to recovery-equivalent modes so users know what's going on.  Not a blocking question but one worth noting.
 
+537:2-537:16
+Tue Feb 09 20:18:26 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9dc4c07e_f969d78b
+UUID: bd9a6476_b5db6a63
+Bytes: 187
+This assumes the bootloader will tell us to start dm-verity in a non-restart mode next time to avoid boot loops. It also assumes we somehow inform the bootloader about the restart reason.
+
 File: drivers/md/dm-android-verity.h
 
 26:34-26:49
@@ -118,4 +134,12 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3dacb4b4_be79f90c
 Bytes: 74
 after the data is rearranged, can this be computed in terms of a sizeof()?
+
+26:34-26:49
+Tue Feb 09 20:18:26 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3dacb4b4_be79f90c
+UUID: bd9a6476_f5bc1200
+Bytes: 116
+The actual header is nowhere near this large, but this is how much space is allocated for it. Room to grow, I guess.
 
