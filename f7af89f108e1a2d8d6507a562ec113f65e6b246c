@@ -1,0 +1,121 @@
+Revision: f7af89f108e1a2d8d6507a562ec113f65e6b246c
+Patch-set: 12
+File: drivers/md/dm-android-verity.c
+
+43:30-43:32
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3dacb4b4_9e7e3df1
+Bytes: 59
+why 20? could a define be used instead of a magic constant?
+
+131
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3dacb4b4_a1a558cc
+Bytes: 94
+I wish I could say that I'm surprised that there isn't already a helper function to do this :/
+
+137:29-137:35
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1dd0d03a_55940cba
+Bytes: 199
+There's a helper (and it avoids a div and a mod):
+    payload->number_of_pages = DIV_ROUND_UP(length, PAGE_SIZE);
+(It's only less good if you need int64 or you think length+PAGE_SIZE could overflow.)
+
+171:5-171:20
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1da7f0d2_9d54039e
+Bytes: 167
+total nit:
+
+    if (!submit_bio_wait(READ, bio))
+      /* success! */
+      goto free_bio;
+    DMERR("bio read failed\n");
+    err = -EIO;
+    
+    free_pages:
+    ...
+
+307:14-307:17
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5dbec8e3_779710c1
+Bytes: 87
+DMERR("blkdev_get_by_dev failed");
+
+Also, none of the DMERR should have \n should they?
+
+308:17-308:33
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ddc9d89d_5659b262
+Bytes: 108
+can you use ERR_CAST for this then let the void auto cast or does that not work?
+
+    return ERR_CAST(bdev);
+
+353:42-353:54
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bdc1846e_fa82e981
+Bytes: 63
+The range change below needs to occur prior to this allocation.
+
+363:5-363:17
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bdc1846e_7a97f9c0
+Bytes: 13
+move this up!
+
+363:18-363:20
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7dbb8cf2_78aca1fe
+Bytes: 340
+<= 0 since table_length is defined as a signed int above. 
+
+Even if le32 is unsigned, when it is cast, it will go negative if too high. That would mean the above allocation could be 0'd, then the table length would pass this test looking negative and the check below would also pass as the header+length would wrap to less than a page_size!
+
+364:18-364:38
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fdb5bcf8_bcd46136
+Bytes: 44
+Does this include an extra byte for the NUL?
+
+466:5-466:16
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1dd0d03a_154a14fd
+Bytes: 187
+so if your phone is unlocked, a new magic is what disabled dm-verity? (Is the kernel still signed at this point or would it be assumed the kernel could be replaced on an unlocked device?)
+
+509:3-509:14
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7dbb8cf2_18a3650d
+Bytes: 129
+even though this has been bounds checked earlier, it makes me nervous to re-read the disk-supplied value without re-setting it :/
+
+537:2-537:16
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9dc4c07e_f969d78b
+Bytes: 217
+Will this result in a reboot loop for devices? On other systems, we've corrupted bits to cause it to fail over to recovery-equivalent modes so users know what's going on.  Not a blocking question but one worth noting.
+
+File: drivers/md/dm-android-verity.h
+
+26:34-26:49
+Tue Feb 09 19:51:51 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3dacb4b4_be79f90c
+Bytes: 74
+after the data is rearranged, can this be computed in terms of a sizeof()?
+
