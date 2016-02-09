@@ -1,0 +1,11 @@
+Revision: fcd8a89ce596ed1a6f3dfe12d53bac46f072316c
+Patch-set: 5
+File: init/do_mounts_dm.c
+
+409:1-409:18
+Tue Feb 09 19:05:20 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7dbb8cf2_f869d18b
+Bytes: 109
+this should be one line up under add_target_fail.  dm_table_create_fail can occur before the lock is grabbed.
+
