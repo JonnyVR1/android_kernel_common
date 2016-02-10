@@ -410,6 +410,33 @@ static int acc_hid_raw_request(struct hid_device *hid, unsigned char reportnum,
 	return 0;
 }
 
+static int acc_hid_power(struct hid_device *hid, int lvl)
+{
+	return 0;
+}
+
+static void acc_hid_request(struct hid_device *hid, struct hid_report *rep,
+		int reqtype)
+{
+}
+
+static int acc_hid_wait(struct hid_device *hid)
+{
+	return 0;
+}
+
+static int acc_hid_output_report(struct hid_device *hid, __u8 *buf,
+		size_t count)
+{
+	return 0;
+}
+
+static int acc_hid_idle(struct hid_device *hid, int report, int idle,
+		int reqtype)
+{
+	return 0;
+}
+
 static struct hid_ll_driver acc_hid_ll_driver = {
 	.parse = acc_hid_parse,
 	.start = acc_hid_start,
@@ -417,6 +444,11 @@ static struct hid_ll_driver acc_hid_ll_driver = {
 	.open = acc_hid_open,
 	.close = acc_hid_close,
 	.raw_request = acc_hid_raw_request,
+	.power = acc_hid_power,
+	.request = acc_hid_request,
+	.wait = acc_hid_wait,
+	.output_report = acc_hid_output_report,
+	.idle = acc_hid_idle,
 };
 
 static struct acc_hid_dev *acc_hid_new(struct acc_dev *dev,
