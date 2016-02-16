@@ -34,7 +34,7 @@ static pid_t child_pid;
  * the same test sequence. (ie: that we haven't forgotten
  * to call check_trapped() somewhere).
  */
-static int nr_tests;
+static long nr_tests;
 
 static void set_breakpoint_addr(void *addr, int n)
 {
@@ -127,7 +127,7 @@ static void (*dummy_funcs[])(void) = {
 	dummy_func3,
 };
 
-static int trapped;
+static long trapped;
 
 static void check_trapped(void)
 {
@@ -262,7 +262,7 @@ static void trigger_tests(void)
 static void check_success(const char *msg)
 {
 	const char *msg2;
-	int child_nr_tests;
+	long child_nr_tests;
 	int status;
 
 	/* Wait for the child to SIGTRAP */
