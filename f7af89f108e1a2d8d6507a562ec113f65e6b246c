@@ -9,12 +9,28 @@ UUID: 3dacb4b4_9e7e3df1
 Bytes: 59
 why 20? could a define be used instead of a magic constant?
 
+43:30-43:32
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3dacb4b4_9e7e3df1
+UUID: ddbd58cb_b92a97c0
+Bytes: 108
+The keywords that we are using here are at most 15 characters length.. I have introduced a #define for this.
+
 131
 Tue Feb 09 19:51:51 2016 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3dacb4b4_a1a558cc
 Bytes: 94
 I wish I could say that I'm surprised that there isn't already a helper function to do this :/
+
+131
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3dacb4b4_a1a558cc
+UUID: ddbd58cb_d97e73b7
+Bytes: 54
+I did search for one, but, I couldn't fine one either.
 
 137:29-137:35
 Tue Feb 09 19:51:51 2016 +0000
@@ -24,6 +40,14 @@ Bytes: 199
 There's a helper (and it avoids a div and a mod):
     payload->number_of_pages = DIV_ROUND_UP(length, PAGE_SIZE);
 (It's only less good if you need int64 or you think length+PAGE_SIZE could overflow.)
+
+137:29-137:35
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dd0d03a_55940cba
+UUID: bd83441c_3e868106
+Bytes: 151
+FEC_BLOCK_SIZE and VERITY_METADATA_SIZE are really small compared to int.. Should be safe to assume that it wouldn't overflow. I will make the change !
 
 171:5-171:20
 Tue Feb 09 19:51:51 2016 +0000
@@ -41,6 +65,14 @@ total nit:
     free_pages:
     ...
 
+171:5-171:20
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1da7f0d2_9d54039e
+UUID: ddbd58cb_19d46bbf
+Bytes: 4
+Done
+
 307:14-307:17
 Tue Feb 09 19:51:51 2016 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,6 +81,14 @@ Bytes: 87
 DMERR("blkdev_get_by_dev failed");
 
 Also, none of the DMERR should have \n should they?
+
+307:14-307:17
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5dbec8e3_779710c1
+UUID: bd83441c_5ee9759f
+Bytes: 43
+Yes.. I will remove the newline characters.
 
 308:17-308:33
 Tue Feb 09 19:51:51 2016 +0000
@@ -59,12 +99,28 @@ can you use ERR_CAST for this then let the void auto cast or does that not work?
 
     return ERR_CAST(bdev);
 
+308:17-308:33
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ddc9d89d_5659b262
+UUID: dd92b865_5f06db6d
+Bytes: 4
+Done
+
 353:42-353:54
 Tue Feb 09 19:51:51 2016 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bdc1846e_fa82e981
 Bytes: 63
 The range change below needs to occur prior to this allocation.
+
+353:42-353:54
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bdc1846e_fa82e981
+UUID: 1d89b03a_e1a0ce19
+Bytes: 4
+Done
 
 363:5-363:17
 Tue Feb 09 19:51:51 2016 +0000
@@ -82,12 +138,36 @@ Bytes: 340
 
 Even if le32 is unsigned, when it is cast, it will go negative if too high. That would mean the above allocation could be 0'd, then the table length would pass this test looking negative and the check below would also pass as the header+length would wrap to less than a page_size!
 
+363:18-363:20
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7dbb8cf2_78aca1fe
+UUID: bd83441c_fe494908
+Bytes: 95
+table_length should u32 as the header from the disk is 32-bit unsigned integer.. Corrected it..
+
+363:5-363:17
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bdc1846e_7a97f9c0
+UUID: fd977c52_326148b1
+Bytes: 4
+Done
+
 364:18-364:38
 Tue Feb 09 19:51:51 2016 +0000
 Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fdb5bcf8_bcd46136
 Bytes: 44
 Does this include an extra byte for the NUL?
+
+364:18-364:38
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fdb5bcf8_bcd46136
+UUID: fde93cd0_bc4c4143
+Bytes: 22
+I dont think it does..
 
 466:5-466:16
 Tue Feb 09 19:51:51 2016 +0000
@@ -110,6 +190,14 @@ Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7dbb8cf2_18a3650d
 Bytes: 129
 even though this has been bounds checked earlier, it makes me nervous to re-read the disk-supplied value without re-setting it :/
+
+509:3-509:14
+Tue Feb 16 23:33:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7dbb8cf2_18a3650d
+UUID: bd9a6476_7b0c93d4
+Bytes: 95
+I am not re-reading from disk again.. I am accessing it from memory.. Is this still a concern ?
 
 537:2-537:16
 Tue Feb 09 19:51:51 2016 +0000
