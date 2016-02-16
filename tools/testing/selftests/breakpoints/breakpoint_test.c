@@ -34,7 +34,7 @@ static pid_t child_pid;
  * the same test sequence. (ie: that we haven't forgotten
  * to call check_trapped() somewhere).
  */
-static long nr_tests;
+static volatile long nr_tests;
 
 static void set_breakpoint_addr(void *addr, int n)
 {
@@ -115,10 +115,10 @@ static void toggle_breakpoint(int n, int type, int len,
 static unsigned long long dummy_var[4];
 
 /* Dummy functions to test execution accesses */
-static void dummy_func(void) { }
-static void dummy_func1(void) { }
-static void dummy_func2(void) { }
-static void dummy_func3(void) { }
+static __attribute__((noinline)) void dummy_func(void) { asm(""); }
+static __attribute__((noinline)) void dummy_func1(void) { asm(""); }
+static __attribute__((noinline)) void dummy_func2(void) { asm(""); }
+static __attribute__((noinline)) void dummy_func3(void) { asm(""); }
 
 static void (*dummy_funcs[])(void) = {
 	dummy_func,
@@ -127,7 +127,7 @@ static void (*dummy_funcs[])(void) = {
 	dummy_func3,
 };
 
-static long trapped;
+static volatile long trapped;
 
 static void check_trapped(void)
 {
@@ -144,25 +144,26 @@ static void check_trapped(void)
 
 static void write_var(int len)
 {
-	char *pcval; short *psval; int *pival; long long *plval;
+	volatile char *pcval; volatile short *psval; volatile int *pival;
+	volatile long long *plval;
 	int i;
 
 	for (i = 0; i < 4; i++) {
 		switch (len) {
 		case 1:
-			pcval = (char *)&dummy_var[i];
+			pcval = (volatile char *)&dummy_var[i];
 			*pcval = 0xff;
 			break;
 		case 2:
-			psval = (short *)&dummy_var[i];
+			psval = (volatile short *)&dummy_var[i];
 			*psval = 0xffff;
 			break;
 		case 4:
-			pival = (int *)&dummy_var[i];
+			pival = (volatile int *)&dummy_var[i];
 			*pival = 0xffffffff;
 			break;
 		case 8:
-			plval = (long long *)&dummy_var[i];
+			plval = (volatile long long *)&dummy_var[i];
 			*plval = 0xffffffffffffffffLL;
 			break;
 		}
@@ -178,16 +179,16 @@ static void read_var(int len)
 	for (i = 0; i < 4; i++) {
 		switch (len) {
 		case 1:
-			cval = *(char *)&dummy_var[i];
+			cval = *(volatile char *)&dummy_var[i];
 			break;
 		case 2:
-			sval = *(short *)&dummy_var[i];
+			sval = *(volatile short *)&dummy_var[i];
 			break;
 		case 4:
-			ival = *(int *)&dummy_var[i];
+			ival = *(volatile int *)&dummy_var[i];
 			break;
 		case 8:
-			lval = *(long long *)&dummy_var[i];
+			lval = *(volatile long long *)&dummy_var[i];
 			break;
 		}
 		check_trapped();
