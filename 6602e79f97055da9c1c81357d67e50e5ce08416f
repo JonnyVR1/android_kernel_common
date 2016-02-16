@@ -1,0 +1,11 @@
+Revision: 6602e79f97055da9c1c81357d67e50e5ce08416f
+Patch-set: 6
+File: init/do_mounts_dm.c
+
+333:1-333:3
+Tue Feb 16 23:55:21 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fd2a1c13_5d8d2f5d
+Bytes: 41
+Please do not insert obsolete empty lines
+
