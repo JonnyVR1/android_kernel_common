@@ -1,0 +1,47 @@
+Revision: 1b6b4e3df016b5ca8ffc7493b17373269819fcba
+Patch-set: 13
+File: drivers/md/dm-android-verity.c
+
+199:14-199:25
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5dbec8e3_0f11d0a6
+Bytes: 11
+nice catch!
+
+363:9-363:16
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ddc9d89d_217b859f
+Bytes: 148
+use kmalloc above?  It'd be safer to use kzalloc if you can (in case the NUL gets forgotten, info leaks, etc), but obviously not a hard requirement.
+
+368:12-368:18
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3dacb4b4_5961e479
+Bytes: 163
+[just an observation, but it might've been easier just to fold the verity table args each independently into the header then build the string here, but maybe not!]
+
+482:28-482:31
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1dd0d03a_bef57836
+Bytes: 88
+would it be worth printing the version received so it might be grabbed from pstore logs?
+
+654:1-654:13
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5dbec8e3_2f1a54b6
+Bytes: 176
+data_sectors will either be u64 (CONFIG_LBDAF) or unsigned long.  Is silent truncation okay? I am guessing that most cases would be caught by the test_mult_overflow case below?
+
+666:25-666:29
+Tue Feb 16 19:54:06 2016 +0000
+Author: Will Drewry <1022354@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1da7f0d2_5c4d5413
+Bytes: 22
+s/to high/too large/
+?
+
