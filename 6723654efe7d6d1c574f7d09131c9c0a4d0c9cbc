@@ -9,3 +9,11 @@ UUID: 5d8fa87c_0e9e9e90
 Bytes: 27
 Need the check if rt6 is Ok
 
+3521:1-3521:11
+Thu Feb 18 00:53:52 2016 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5d8fa87c_0e9e9e90
+UUID: fd705c1a_9ea04d6b
+Bytes: 257
+Actually ip[6]_rt_put can handle NULL pointer itself, and this was explained on its code comments: "dst_release() accepts a NULL parameter. We rely on dst being first structure in struct rt6_info". So even if rt6 is NULL, call ip6_rt_put is still safe here.
+
