@@ -1,0 +1,27 @@
+Revision: 345d0da7bbfc9e6c0e0ac4a815ebbbf790b95fbe
+Patch-set: 1
+File: drivers/mmc/card/block.c
+
+331:5-331:12
+Thu Feb 18 19:30:13 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fd993cfa_1cdf7552
+Bytes: 119
+kstrtou() or kstrtoint()?  Seems odd to use kstrtol() but then explicitly constrain the results to 0 <= set <= INT_MAX.
+
+482:12-482:38
+Thu Feb 18 19:30:13 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3d9034ca_deda6593
+Bytes: 157
+I'd change the name to something else.  I was confused at first since "completion" and "wait_for_completion" have very specific meanings in the Linux kernel.
+
+513:2-515:24
+Thu Feb 18 19:30:13 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3d9034ca_5e64958b
+Bytes: 362
+There's a tiny chance of a race here.  It's possible waitfor > jiffies but only by a tiny amount; the CPU gets interrupted between the time_is_after_jiffies() and jiffies_to_msecs() call; and after the interrupt waitfor < jiffies.
+
+The chances are very small, but if you ever do manage to hit it, you'll end up feeding completely unreasonable values to msleep().
+
