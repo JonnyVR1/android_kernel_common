@@ -9,12 +9,28 @@ UUID: fd993cfa_1cdf7552
 Bytes: 119
 kstrtou() or kstrtoint()?  Seems odd to use kstrtol() but then explicitly constrain the results to 0 <= set <= INT_MAX.
 
+331:5-331:12
+Thu Feb 18 21:37:56 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd993cfa_1cdf7552
+UUID: e2199973_f69f1e27
+Bytes: 124
+Agreed, I started with a 'reasonable' limit until we reacted to your previous comment and capped it at INT_MAX ... silly me.
+
 482:12-482:38
 Thu Feb 18 19:30:13 2016 +0000
 Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3d9034ca_deda6593
 Bytes: 157
 I'd change the name to something else.  I was confused at first since "completion" and "wait_for_completion" have very specific meanings in the Linux kernel.
+
+482:12-482:38
+Thu Feb 18 21:37:56 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3d9034ca_deda6593
+UUID: e2199973_d69c2235
+Bytes: 24
+pause for completion ...
 
 513:2-515:24
 Thu Feb 18 19:30:13 2016 +0000
@@ -24,4 +40,14 @@ Bytes: 362
 There's a tiny chance of a race here.  It's possible waitfor > jiffies but only by a tiny amount; the CPU gets interrupted between the time_is_after_jiffies() and jiffies_to_msecs() call; and after the interrupt waitfor < jiffies.
 
 The chances are very small, but if you ever do manage to hit it, you'll end up feeding completely unreasonable values to msleep().
+
+513:2-515:24
+Thu Feb 18 21:37:56 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3d9034ca_5e64958b
+UUID: e200b9f1_fe181d09
+Bytes: 278
+after_jiffies was selected to ensure waitfor > jiffies, a race would result in waitfor == jiffies at the worst case, which would result with zero msecs, checked below.
+
+I expect you would be satisfied if I used long msecs and checked for a negative value to reduce your concern.
 
