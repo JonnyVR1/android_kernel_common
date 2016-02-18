@@ -17,3 +17,12 @@ UUID: fd705c1a_9ea04d6b
 Bytes: 257
 Actually ip[6]_rt_put can handle NULL pointer itself, and this was explained on its code comments: "dst_release() accepts a NULL parameter. We rely on dst being first structure in struct rt6_info". So even if rt6 is NULL, call ip6_rt_put is still safe here.
 
+3521:1-3521:11
+Thu Feb 18 01:16:18 2016 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd705c1a_9ea04d6b
+UUID: fd993cfa_9fde17f8
+Bytes: 88
+dst_release(), yes.
+But it is not a dst that is passed in but rt which must not be null.
+
