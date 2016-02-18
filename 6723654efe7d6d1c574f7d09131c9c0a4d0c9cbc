@@ -26,3 +26,11 @@ Bytes: 88
 dst_release(), yes.
 But it is not a dst that is passed in but rt which must not be null.
 
+3521:1-3521:11
+Thu Feb 18 01:43:01 2016 +0000
+Author: Liping Zhang <1086323@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd993cfa_9fde17f8
+UUID: 7d170cd9_18e905fd
+Bytes: 296
+This statement "&rt->dst" will not dereference the rt pointer actually, it is equal to "(char *) rt + offsetof(struct rt6_info, dst)", and there's a BUILD_BUG_ON to ensure that offsetof(struct rt6_info, dst) is always 0. If rt6 is NULL, &rt->dst is also NULL, so ip[6]_rt_put(NULL); call is safe.
+
