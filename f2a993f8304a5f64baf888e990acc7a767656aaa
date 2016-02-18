@@ -1,0 +1,11 @@
+Revision: f2a993f8304a5f64baf888e990acc7a767656aaa
+Patch-set: 1
+File: arch/arm64/kernel/hw_breakpoint.c
+
+830:32-830:47
+Thu Feb 18 10:47:38 2016 +0000
+Author: Pavel Labath <1058713@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ddbf1831_c30a5670
+Bytes: 65
+Trivial merge conflict due to reset_ctrl_regs rename in 60fc6942.
+
