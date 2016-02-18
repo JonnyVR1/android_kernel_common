@@ -34,3 +34,11 @@ UUID: 7d170cd9_18e905fd
 Bytes: 296
 This statement "&rt->dst" will not dereference the rt pointer actually, it is equal to "(char *) rt + offsetof(struct rt6_info, dst)", and there's a BUILD_BUG_ON to ensure that offsetof(struct rt6_info, dst) is always 0. If rt6 is NULL, &rt->dst is also NULL, so ip[6]_rt_put(NULL); call is safe.
 
+3521:1-3521:11
+Thu Feb 18 02:19:27 2016 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7d170cd9_18e905fd
+UUID: 5d8968a7_c29d2495
+Bytes: 14
+You are right.
+
