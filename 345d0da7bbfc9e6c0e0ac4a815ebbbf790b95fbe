@@ -32,6 +32,16 @@ UUID: e2199973_d69c2235
 Bytes: 24
 pause for completion ...
 
+482:12-482:38
+Fri Feb 19 20:50:45 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2199973_d69c2235
+UUID: e2b0b90b_5b43238b
+Bytes: 304
+At the risk of bikeshedding: mmc_blk_simulate_delay?
+
+I'm allergic to the word "completion" because struct completion is a widely-used kernel mechanism for signalling that asynchronous work is done.  When I first saw the function prototype I wondered why you were using a completion to implement a delay.
+
 513:2-515:24
 Thu Feb 18 19:30:13 2016 +0000
 Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,4 +60,12 @@ Bytes: 278
 after_jiffies was selected to ensure waitfor > jiffies, a race would result in waitfor == jiffies at the worst case, which would result with zero msecs, checked below.
 
 I expect you would be satisfied if I used long msecs and checked for a negative value to reduce your concern.
+
+513:2-515:24
+Fri Feb 19 20:50:45 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e200b9f1_fe181d09
+UUID: 62be89e4_57d52cfe
+Bytes: 82
+A signed type and negative-value check (preferably with unlikely()) would be fine.
 
