@@ -1,0 +1,11 @@
+Revision: b7660e68b044fae0c8c753e15b8c1825b4d8248b
+Patch-set: 1
+File: drivers/trusty/trusty-ipc.c
+
+1244:21-1244:30
+Sat Feb 20 04:22:48 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02e4ed24_6c287b62
+Bytes: 17
+can this be NULL?
+
