@@ -1,0 +1,11 @@
+Revision: 3d534658fb9de51b7bbfc27d187ebd5bcfab0f2c
+Patch-set: 1
+File: drivers/trusty/trusty-virtio.c
+
+312
+Sat Feb 20 04:20:50 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2981592_080f8b13
+Bytes: 86
+What is the value of reserved if this code is not run? Does it need to be conditional?
+
