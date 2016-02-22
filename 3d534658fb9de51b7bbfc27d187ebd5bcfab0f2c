@@ -9,3 +9,11 @@ UUID: c2981592_080f8b13
 Bytes: 86
 What is the value of reserved if this code is not run? Does it need to be conditional?
 
+312
+Mon Feb 22 23:15:38 2016 +0000
+Author: Michael Ryleev <1045553@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2981592_080f8b13
+UUID: e2def959_7a74a5d8
+Bytes: 39
+it is set to 0 (by secure side though).
+
