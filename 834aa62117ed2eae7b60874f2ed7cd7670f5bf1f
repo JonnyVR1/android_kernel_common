@@ -9,3 +9,11 @@ UUID: 62be89e4_5df78b3c
 Bytes: 15
 check iovs_num?
 
+1001
+Mon Feb 22 23:07:07 2016 +0000
+Author: Michael Ryleev <1045553@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_5df78b3c
+UUID: 62be89e4_4cc35b02
+Bytes: 136
+No need. The total iovec length is big enough to fit the whole message. It is checked at line 985. ki_nbytes field is calculated by vfs.
+
