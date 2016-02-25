@@ -1,0 +1,11 @@
+Revision: 7a7e9b3ab8b571cd2b672f9c527839967ee053fe
+Patch-set: 2
+File: android/configs/android-recommended.cfg
+
+17:1-17:26
+Thu Feb 25 18:49:04 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a29b218c_c36cc644
+Bytes: 45
+not in alphabetic position, move up one line.
+
