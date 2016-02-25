@@ -1,0 +1,20 @@
+Revision: a19349557af7fbd817dbbe3b38111d6666fb5cf1
+Patch-set: 2
+File: /COMMIT_MSG
+
+7:0-7:43
+Thu Feb 25 00:00:13 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02e4ed24_81a7de18
+Bytes: 171
+As ugly as it is, the 'new' standard for commit messages requires (too strong of a word) this bit of stutter:
+
+ANDROID: android: recommended.cfg: Setup verity root for A/B
+
+7:39-7:43
+Thu Feb 25 00:00:13 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2c1f56d_906288b5
+Bytes: 149
+Given that this is to enable A/B, the commit message should probably have a few sentences rationalizing this so that partners can make their choices.
+
