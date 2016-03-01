@@ -119,6 +119,7 @@ void dev_pm_opp_free_cpufreq_table(struct device *dev,
 EXPORT_SYMBOL_GPL(dev_pm_opp_free_cpufreq_table);
 #endif	/* CONFIG_CPU_FREQ */
 
+#ifdef CONFIG_OF
 /* Required only for V1 bindings, as v2 can manage it from DT itself */
 int dev_pm_opp_set_sharing_cpus(struct device *cpu_dev, cpumask_var_t cpumask)
 {
@@ -160,7 +161,6 @@ unlock:
 }
 EXPORT_SYMBOL_GPL(dev_pm_opp_set_sharing_cpus);
 
-#ifdef CONFIG_OF
 void dev_pm_opp_of_cpumask_remove_table(cpumask_var_t cpumask)
 {
 	struct device *cpu_dev;
