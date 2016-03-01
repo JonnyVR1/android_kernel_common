@@ -1,0 +1,13 @@
+Revision: cc04b0a1a3382ac3655d5150ba8f1fe5bd565e4b
+Patch-set: 1
+File: /COMMIT_MSG
+
+9:6-9:23
+Tue Mar 01 02:21:40 2016 +0000
+Author: Andrew Bresticker <1080223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a26ec178_15d55763
+Bytes: 127
+Better yet, could we get rid of this awful interface?
+
+I suppose that will require fixing up the various crappy WiFi drivers...
+
