@@ -546,7 +546,13 @@ static int ramoops_probe(struct platform_device *pdev)
 	phys_addr_t paddr;
 	int err = -EINVAL;
 
-	if (dev->of_node && !pdata) {
+	if (!pdata) {
+		if (!of_node) {
+			dev_err(&pdev->dev, "Neither DT node nor pdata available\n");
+			err = -ENODEV;
+			goto fail_out;
+		}
+
 		pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 		if (!pdata) {
 			err = -ENOMEM;
