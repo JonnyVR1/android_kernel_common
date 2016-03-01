@@ -1,0 +1,20 @@
+Revision: 5dcb59c9b52f2f9e08f5a549baca3e0393781b49
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:48
+Tue Mar 01 18:57:47 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e27a7932_f10d2e17
+Bytes: 141
+Please comply with https://docs.google.com/document/d/1M7tb6pYm_cG8Dhd7sHjUyn28k14FKK_7uQUYNs4n5Xc/edit
+
+Likely CHROMIUM: or ANDROID: prefix?
+
+23:27-23:67
+Tue Mar 01 18:57:47 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82ea9d1e_2a3cc018
+Bytes: 147
+I can not research this cherry pick? Which repository is this from? I expect marc.herbert@intel.com knows, so this may be orphaned information now?
+
