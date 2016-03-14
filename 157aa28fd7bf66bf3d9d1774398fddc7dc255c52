@@ -62,6 +62,14 @@ Bytes: 177
 @Brian, my comment was to @dtor. You are right, but he proposed different thing that actually the same.
 http://lxr.free-electrons.com/source/include/linux/platform_device.h#L211
 
+557
+Mon Mar 14 21:20:52 2016 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 573069cd_da86c43e
+UUID: 573069cd_9a6d2c44
+Bytes: 91
+@dimitrysh: you are mixing up dev_get_drvdata() and dev_get_platdata(). They are different.
+
 589
 Mon Mar 14 21:12:59 2016 +0000
 Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
