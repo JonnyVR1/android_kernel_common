@@ -2,6 +2,13 @@ Revision: d2d4cd092585d69d1b21675598bd8d8cdc519412
 Patch-set: 3
 File: fs/pstore/ram.c
 
+535:39-535:65
+Mon Mar 14 20:50:15 2016 +0000
+Author: Brian Norris <1096846@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 573069cd_3a2b6063
+Bytes: 42
+This is wrong. You only set drvdata later.
+
 550:3-550:7
 Thu Nov 12 22:02:57 2015 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +23,11 @@ Parent: 5b2a4b7b_d43094e5
 UUID: bb3987d2_0059300b
 Bytes: 67
 On probe failure, devres allocations are automatically rolled back.
+
+644:33-644:35
+Mon Mar 14 20:50:15 2016 +0000
+Author: Brian Norris <1096846@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 573069cd_7a35d8b6
+Bytes: 46
+This is superfluous. No one else uses drvdata.
 
