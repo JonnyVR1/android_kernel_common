@@ -19,10 +19,26 @@ UUID: 573069cd_1a25bc44
 Bytes: 115
 @Dmitry, but dev_get_platdata(&pdev->dev) == platform_get_drvdata(pdev) - it will not resolve the reported problem.
 
+557
+Mon Mar 14 21:15:21 2016 +0000
+Author: Brian Norris <1096846@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 573069cd_7a623884
+UUID: 573069cd_9a11ace1
+Bytes: 45
+I'm just reverting this to its upstream state
+
 589
 Mon Mar 14 21:12:59 2016 +0000
 Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 573069cd_9a5fecb3
 Bytes: 152
 This is bad BTW as pdata supposed to be constant... But then we allocate dummy data in module init... why? Beats me. I guess software, layers, goodness.
+
+589
+Mon Mar 14 21:15:21 2016 +0000
+Author: Brian Norris <1096846@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 573069cd_9a5fecb3
+UUID: 573069cd_fad2a847
+Bytes: 30
+Is that related to this patch?
 
