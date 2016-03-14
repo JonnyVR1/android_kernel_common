@@ -1,0 +1,20 @@
+Revision: 157aa28fd7bf66bf3d9d1774398fddc7dc255c52
+Patch-set: 1
+File: fs/pstore/ram.c
+
+557
+Mon Mar 14 21:12:59 2016 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 573069cd_7a623884
+Bytes: 81
+Should be
+
+   struct ramoops_platform_data *pdata = dev_get_platdata(&pdev->dev);
+
+589
+Mon Mar 14 21:12:59 2016 +0000
+Author: Dmitry Torokhov <1076784@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 573069cd_9a5fecb3
+Bytes: 152
+This is bad BTW as pdata supposed to be constant... But then we allocate dummy data in module init... why? Beats me. I guess software, layers, goodness.
+
