@@ -1,0 +1,11 @@
+Revision: 59028ae7a26efcf06441d226284fca48156f32d1
+Patch-set: 3
+File: drivers/char/random.c
+
+1511:37-1511:57
+Tue Mar 15 20:22:10 2016 +0000
+Author: Daniel Cashman <1026058@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97dae1a7_12cdd27f
+Bytes: 22
+should be get_cycles()
+
