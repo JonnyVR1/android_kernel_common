@@ -1,0 +1,13 @@
+Revision: 706da5c400200c61ebd8f33cac962f1e823ad072
+Patch-set: 1
+File: fs/pstore/ram.c
+
+550:7-550:14
+Tue Mar 15 15:38:07 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 573069cd_e86e5d03
+Bytes: 106
+dev->of_node
+
+As written this compiles but checks whether the function of_node() is at a non-NULL address.
+
