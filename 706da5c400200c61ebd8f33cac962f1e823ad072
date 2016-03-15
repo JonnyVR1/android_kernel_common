@@ -11,3 +11,11 @@ dev->of_node
 
 As written this compiles but checks whether the function of_node() is at a non-NULL address.
 
+550:7-550:14
+Tue Mar 15 15:44:52 2016 +0000
+Author: Hans Holmberg <1098683@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 573069cd_e86e5d03
+UUID: d79459c3_01be2e90
+Bytes: 61
+correct, thanks for catching the typo! should be dev->of_node
+
