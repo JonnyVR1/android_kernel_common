@@ -48,7 +48,7 @@ static int sdcardfs_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	return err;
 }
 
-static ssize_t sdcardfs_direct_IO(int rw, struct kiocb *iocb,
+static ssize_t sdcardfs_direct_IO(struct kiocb *iocb,
 		struct iov_iter *iter, loff_t pos)
 {
 	/*
