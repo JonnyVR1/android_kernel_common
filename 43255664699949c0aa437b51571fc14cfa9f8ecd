@@ -1,0 +1,11 @@
+Revision: 43255664699949c0aa437b51571fc14cfa9f8ecd
+Patch-set: 1
+File: include/uapi/linux/nl80211.h
+
+1834:1-1834:32
+Tue Mar 22 20:27:49 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf63e9d_2f272596
+Bytes: 37
+This is wrong - number is not correct
+
