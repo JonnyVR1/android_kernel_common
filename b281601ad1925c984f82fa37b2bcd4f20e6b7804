@@ -1,0 +1,11 @@
+Revision: b281601ad1925c984f82fa37b2bcd4f20e6b7804
+Patch-set: 2
+File: net/wireless/nl80211.c
+
+387:1-387:58
+Tue Mar 22 20:57:05 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf63e9d_f2a342c8
+Bytes: 85
+Could have initializers for the other intervening numerical attributes, like QOS etc?
+
