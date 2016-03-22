@@ -1,0 +1,27 @@
+Revision: 11e8446884a541a69287f399d0001b3bebbac553
+Patch-set: 2
+File: /COMMIT_MSG
+
+7:30-7:33
+Tue Mar 22 20:06:01 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf63e9d_cf6b01f3
+Bytes: 6
+from ?
+
+File: fs/Makefile
+
+6:0-6:1
+Tue Mar 22 20:06:01 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf63e9d_2fed65ab
+Bytes: 23
+No need to clean blanks
+
+62:0-62:1
+Tue Mar 22 20:06:01 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf63e9d_cf05c136
+Bytes: 9
+Same here
+
