@@ -9,3 +9,11 @@ UUID: dcf63e9d_f2a342c8
 Bytes: 85
 Could have initializers for the other intervening numerical attributes, like QOS etc?
 
+387:1-387:58
+Tue Mar 22 22:59:34 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf63e9d_f2a342c8
+UUID: dcf63e9d_157eb8f0
+Bytes: 72
+Once you have proper value for index, it will be in proper array offset.
+
