@@ -29,6 +29,7 @@ static int get_free_idx(void)
 
 static bool tls_desc_okay(const struct user_desc *info)
 {
+<<<<<<< HEAD   (0c9920 Merge branch 'android-3.10' into android-3.10.y)
 	/*
 	 * For historical reasons (i.e. no one ever documented how any
 	 * of the segmentation APIs work), user programs can and do
@@ -74,6 +75,16 @@ static bool tls_desc_okay(const struct user_desc *info)
 	 * it outright.
 	 */
 	if (info->seg_not_present)
+=======
+	if (LDT_empty(info))
+		return true;
+
+	/*
+	 * espfix is required for 16-bit data segments, but espfix
+	 * only works for LDT segments.
+	 */
+	if (!info->seg_32bit)
+>>>>>>> BRANCH (d1317d inotify: Fix erroneous update of bit count)
 		return false;
 
 	return true;
