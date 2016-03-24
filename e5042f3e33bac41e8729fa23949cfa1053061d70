@@ -1,0 +1,12 @@
+Revision: e5042f3e33bac41e8729fa23949cfa1053061d70
+Patch-set: 1
+File: mm/mmap.c
+
+2642:0-2642:13
+Thu Mar 24 18:14:35 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c0cc6ef_bc35cdc0
+Bytes: 101
+It is not exported in purpose (I hope). 
+@Daniel, maybe we need to fix sdcard_fs to use vm_munmap() ?
+
