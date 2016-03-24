@@ -10,3 +10,11 @@ Bytes: 101
 It is not exported in purpose (I hope). 
 @Daniel, maybe we need to fix sdcard_fs to use vm_munmap() ?
 
+2642:0-2642:13
+Thu Mar 24 18:25:13 2016 +0000
+Author: Guenter Roeck <1097718@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c0cc6ef_bc35cdc0
+UUID: 9c0cc6ef_5ca6311f
+Bytes: 216
+Possibly, though it is exported in the nommu code (possibly unnecessarily, though). Problem with vm_munmap might be that it locks a semaphore, so that would not work if the call is recursive (which I thought it was).
+
