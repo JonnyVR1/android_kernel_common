@@ -1,0 +1,12 @@
+Revision: 00129b979db68faa6bc299133940e7d1c52073e7
+Patch-set: 1
+File: drivers/usb/gadget/functions.c
+
+82:1-83:12
+Fri Mar 25 16:47:05 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c791a74_df08977c
+Bytes: 137
+Maybe we are missing a no-op free function in audio source..
+Seems like functions.c implicitly mandates the existence of a no-op function
+
