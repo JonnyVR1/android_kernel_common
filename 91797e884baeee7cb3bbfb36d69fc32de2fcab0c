@@ -1,0 +1,25 @@
+Revision: 91797e884baeee7cb3bbfb36d69fc32de2fcab0c
+Patch-set: 1
+File: drivers/md/dm-android-verity.c
+
+580:24-580:30
+Fri Mar 25 20:43:33 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 31aa2554_680d5b8d
+Bytes: 12
+why not "0";
+
+594:2-594:14
+Fri Mar 25 20:43:33 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 31aa2554_e8f86b91
+Bytes: 71
+You are using global variable without any memory barriers. Just notice.
+
+742:6-742:20
+Fri Mar 25 20:43:33 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 31aa2554_a8511356
+Bytes: 9
+same here
+
