@@ -1,0 +1,11 @@
+Revision: e23a214ddbd0491ca8f51ceb272a839eda821662
+Patch-set: 1
+File: fs/pipe.c
+
+392:3-393:14
+Mon Mar 28 17:45:37 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 71249df3_01a5fe23
+Bytes: 78
+This may create a merge conflict, internal fix had 'int error, atomic, offset'
+
