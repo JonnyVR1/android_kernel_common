@@ -18,3 +18,11 @@ UUID: 9c0cc6ef_5ca6311f
 Bytes: 216
 Possibly, though it is exported in the nommu code (possibly unnecessarily, though). Problem with vm_munmap might be that it locks a semaphore, so that would not work if the call is recursive (which I thought it was).
 
+2642:0-2642:13
+Mon Mar 28 22:28:00 2016 +0000
+Author: Daniel Rosenberg <1045980@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c0cc6ef_5ca6311f
+UUID: 71249df3_4608a77e
+Bytes: 75
+The semaphore is locked before calling into mmap, so we can't use vm_munmap
+
