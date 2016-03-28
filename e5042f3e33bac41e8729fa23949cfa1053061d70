@@ -26,3 +26,11 @@ UUID: 71249df3_4608a77e
 Bytes: 75
 The semaphore is locked before calling into mmap, so we can't use vm_munmap
 
+2642:0-2642:13
+Mon Mar 28 23:29:19 2016 +0000
+Author: Guenter Roeck <1097718@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71249df3_4608a77e
+UUID: 71249df3_e6c0bb68
+Bytes: 94
+That is what I suspected. Is the patch ready to go ? If yes, can someone please give it a +2 ?
+
