@@ -9,10 +9,28 @@ UUID: 71249df3_26893352
 Bytes: 143
 Is there a chance  in the future where one may wish to restore these values? eg: mount root as linear dm target, remount root as verity target?
 
+579:0-585:39
+Tue Mar 29 18:27:43 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71249df3_26893352
+UUID: 71249df3_b53d43c2
+Bytes: 647
+This is not something that we do for rootdev right now.. Even  if we do it should be fine. Every verity target goes through ctr function when being added to the table and dtr gets called when it is removed from the table. Dm layer works below the filesystem.. the dm target has to be teared down and brought back up if we switch from exporting the device as verity to linear and vice versa. At that point dtr would be executed while tearing down and ctr would be executed while bringing this back up. Hope that answers your question !!
+
+sidenote: I will declare the verity_target variable as const and upload it as a new CL.. That's a good catch..
+
 814:0-842:4
 Mon Mar 28 23:34:37 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71249df3_29bf44d6
 Bytes: 103
 Should this be a separate CL, it looks like it could be non-permanent debugging? The values are r/o ...
+
+814:0-842:4
+Tue Mar 29 18:27:43 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71249df3_29bf44d6
+UUID: 71249df3_f50cdb5d
+Bytes: 187
+Anh should have done it that way, but have merged this CL in some of the other branches.. So will leave for this way now for 3.14.. Will separate this into a different CL for 4.4 kernel..
 
