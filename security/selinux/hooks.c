@@ -3534,6 +3534,17 @@ static int selinux_kernel_module_request(char *kmod_name)
 			    SYSTEM__MODULE_REQUEST, &ad);
 }
 
+static int selinux_kernel_module_from_file(struct file *file)
+{
+	/* calls from finit_module */
+	if (file)
+		return file_has_perm(current_cred(), file, FILE__MODULE_LOAD);
+
+	/* calls from init_module */
+	return avc_has_perm(task_sid(current), SECINITSID_KERNEL,
+			SECCLASS_SYSTEM, SYSTEM__MODULE_LOAD, NULL);
+}
+
 static int selinux_task_setpgid(struct task_struct *p, pid_t pgid)
 {
 	return current_has_perm(p, PROCESS__SETPGID);
@@ -5766,6 +5777,7 @@ static struct security_operations selinux_ops = {
 	.kernel_act_as =		selinux_kernel_act_as,
 	.kernel_create_files_as =	selinux_kernel_create_files_as,
 	.kernel_module_request =	selinux_kernel_module_request,
+	.kernel_module_from_file =	selinux_kernel_module_from_file,
 	.task_setpgid =			selinux_task_setpgid,
 	.task_getpgid =			selinux_task_getpgid,
 	.task_getsid =			selinux_task_getsid,
