@@ -11,6 +11,14 @@ Could this be an increment instead? In combination with uptime, one can produce 
 
 KISS: U64_MAX _maybe_, or let it roll over, the chances one will see 0 at an instant here on rollover is extremely small given that to get to rollover you already have a serious and pestiferous problem. Besides, like other block counters on the system, it is the responsibility of the caller to catch rollovers (new_value < last_value).
 
+181:2-181:27
+Wed Mar 30 22:52:11 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 119a81ee_859888a3
+UUID: 119a81ee_b0f860de
+Bytes: 98
+Done. I used atomic_t, because this value can be updated by more than one kernel thread at a time.
+
 File: drivers/md/dm-verity-fec.h
 
 52:1-52:5
