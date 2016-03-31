@@ -28,3 +28,14 @@ UUID: 119a81ee_fcc9de29
 Bytes: 27
 sorry, ignore this comment.
 
+File: security/selinux/hooks.c
+
+3541
+Thu Mar 31 17:19:15 2016 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d13389d5_6a151720
+Bytes: 923
+Wondering if we ought to define a new class for these checks, since a) this only applies to regular files so we do not need to distinguish by file type/class, b) we will no doubt want similar permissions for the other kernel_read_file_id cases in mainline, and c) we have limited space in the access vector and might want these bits for general file permissions in the future.
+Also, that also ensures no one accidentally allows it via an allow a b:file *; rule and makes it simpler to write a neverallow on that class.
+BTW, part of the IMA changes that introduced kernel_read_file and friends was to take policy load to the kernel, by writing the pathname to a pseudo fs node and having the kernel then directly load from the file.  Could possibly do likewise for SELinux.  At which point one could also do a direct policy_load check in the kernel on the policy file being loaded, and limit that to the rootfs, for example.
+
