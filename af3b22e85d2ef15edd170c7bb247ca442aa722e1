@@ -1,0 +1,11 @@
+Revision: af3b22e85d2ef15edd170c7bb247ca442aa722e1
+Patch-set: 5
+File: security/selinux/hooks.c
+
+3555
+Thu Mar 31 18:44:46 2016 +0000
+Author: Stephen Smalley <1010111@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d13389d5_0a257b85
+Bytes: 73
+You must be using an interesting compiler to dereference void pointers ;)
+
