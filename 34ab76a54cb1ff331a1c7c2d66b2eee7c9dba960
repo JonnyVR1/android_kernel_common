@@ -1,0 +1,22 @@
+Revision: 34ab76a54cb1ff331a1c7c2d66b2eee7c9dba960
+Patch-set: 2
+File: /COMMIT_MSG
+
+7
+Thu Mar 31 17:01:59 2016 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 119a81ee_dcad0263
+Bytes: 78
+Please change to:
+
+  ANDROID: selinux: add hook to restrict kernel module load
+
+9
+Thu Mar 31 17:01:59 2016 +0000
+Author: Nick Kralevich <1003966@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 119a81ee_1cb84aa1
+Bytes: 78
+Please change to:
+
+  ANDROID: selinux: add hook to restrict kernel module load
+
