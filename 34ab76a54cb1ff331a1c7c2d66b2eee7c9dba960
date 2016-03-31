@@ -39,3 +39,11 @@ Wondering if we ought to define a new class for these checks, since a) this only
 Also, that also ensures no one accidentally allows it via an allow a b:file *; rule and makes it simpler to write a neverallow on that class.
 BTW, part of the IMA changes that introduced kernel_read_file and friends was to take policy load to the kernel, by writing the pathname to a pseudo fs node and having the kernel then directly load from the file.  Could possibly do likewise for SELinux.  At which point one could also do a direct policy_load check in the kernel on the policy file being loaded, and limit that to the rootfs, for example.
 
+3541
+Thu Mar 31 18:26:16 2016 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d13389d5_6a151720
+UUID: 119a81ee_97551344
+Bytes: 142
+Seems like we could use the system class. I'll put something together. The plan is to get upstream acceptance first, then backport to Android.
+
