@@ -22,6 +22,16 @@ finit_module calls security_kernel_module_from_file(file)
 
 cap_sys_module grants permission to load kernel modules with no notion of origin. I would say this adds additional scrutiny. The sys_module permission is still be necessary.
 
+28
+Mon Apr 04 17:17:29 2016 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e3f20ea_1f737e24
+UUID: 2e3f20ea_152a3fbb
+Bytes: 482
+Assuming the loading process has read on the fd being passed during finit_module(), couldn't the process just read it in and call init_module() and avoid the additional check on the fd? So assuming an attacked service, it doesn't add anything they cannot already do if they have cap sys_module granted, is that right?
+
+This would really only scrutinize properly running code, and would at least allow for development auditing of what services are trying to load what and from where.
+
 File: security/selinux/hooks.c
 
 3547
