@@ -32,6 +32,19 @@ Assuming the loading process has read on the fd being passed during finit_module
 
 This would really only scrutinize properly running code, and would at least allow for development auditing of what services are trying to load what and from where.
 
+28
+Mon Apr 04 17:29:24 2016 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e3f20ea_152a3fbb
+UUID: 2e3f20ea_958daff5
+Bytes: 284
+No, this also checks the init_module path. The following  rule only grants access via the finit_module path:
+
+allow init system_file:system module_load;
+
+If I want stronger enforcement I can also neverallow access via init_module. Example:
+neverallow domain domain:system module_load;
+
 File: security/selinux/hooks.c
 
 3547
