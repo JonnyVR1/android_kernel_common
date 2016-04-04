@@ -1,0 +1,27 @@
+Revision: 7e479e81c649ad76a79df8bd25b482d47eb043a9
+Patch-set: 6
+File: /COMMIT_MSG
+
+28
+Mon Apr 04 02:52:12 2016 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e3f20ea_1fc9be73
+Bytes: 206
+So SE Linux never had a check on syscall finit_module(), just init_module()? how does this fit with cap sys_module? Does this just add additional scrutiny to a path being checked or add something brand new?
+
+File: security/selinux/hooks.c
+
+3547
+Mon Apr 04 02:52:12 2016 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e3f20ea_5fe066e2
+Bytes: 52
+Scrolling up I see the usage of ! instead of == NULL
+
+3548
+Mon Apr 04 02:52:12 2016 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e3f20ea_3fe59af2
+Bytes: 113
+I would just return on a tail call, but that's just me.. I see code above that does both (bail early vs goto out)
+
