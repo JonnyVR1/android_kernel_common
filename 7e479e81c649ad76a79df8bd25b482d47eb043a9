@@ -45,6 +45,14 @@ allow init system_file:system module_load;
 If I want stronger enforcement I can also neverallow access via init_module. Example:
 neverallow domain domain:system module_load;
 
+28
+Mon Apr 04 17:54:45 2016 +0000
+Author: William C Roberts <1013433@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e3f20ea_958daff5
+UUID: 2e3f20ea_d0a2a5bd
+Bytes: 15
+Ahh good point.
+
 File: security/selinux/hooks.c
 
 3547
