@@ -9,6 +9,19 @@ UUID: 2e3f20ea_1fc9be73
 Bytes: 206
 So SE Linux never had a check on syscall finit_module(), just init_module()? how does this fit with cap sys_module? Does this just add additional scrutiny to a path being checked or add something brand new?
 
+28
+Mon Apr 04 17:10:17 2016 +0000
+Author: Jeffrey Vander Stoep <1054468@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e3f20ea_1fc9be73
+UUID: 2e3f20ea_1f737e24
+Bytes: 393
+The LSM hook went in four years ago but remains unused finit_module and init_module use the same hook.
+
+init_module calls security_kernel_module_from_file(NULL)
+finit_module calls security_kernel_module_from_file(file)
+
+cap_sys_module grants permission to load kernel modules with no notion of origin. I would say this adds additional scrutiny. The sys_module permission is still be necessary.
+
 File: security/selinux/hooks.c
 
 3547
