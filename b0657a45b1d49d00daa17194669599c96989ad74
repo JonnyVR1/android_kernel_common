@@ -1,0 +1,11 @@
+Revision: b0657a45b1d49d00daa17194669599c96989ad74
+Patch-set: 1
+File: /COMMIT_MSG
+
+21:0-23:17
+Thu Apr 14 19:25:13 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bac0e06_fe6d5f05
+Bytes: 318
+This may give you problems getting upstream. If you can cite examples of others in /proc (or /sys) doing the same thing, then you may be able to convince. Otherwise it may be better to switch to a more opened permissions (eg: others rw) and allow selinux to gate access with a backup to block non-thread-group members?
+
