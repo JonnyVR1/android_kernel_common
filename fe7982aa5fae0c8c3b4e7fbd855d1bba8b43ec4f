@@ -1,0 +1,11 @@
+Revision: fe7982aa5fae0c8c3b4e7fbd855d1bba8b43ec4f
+Patch-set: 2
+File: fs/sdcardfs/inode.c
+
+84
+Thu Apr 14 00:13:53 2016 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bac0e06_16fad959
+Bytes: 122
+This will cause problems if another thread modifies current->fs - the changes will be lost when you put the saved_fs back.
+
