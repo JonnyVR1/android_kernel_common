@@ -19,3 +19,11 @@ I take that back - current is the current thread, not the current process, so no
 
 It seems strange that this only happens on f2fs and not on ext4.  Can you tell where the umask is getting applied somewhere inside vfs_create?
 
+84
+Thu Apr 14 00:30:08 2016 +0000
+Author: Daniel Rosenberg <1045980@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bac0e06_165499ce
+UUID: 0bac0e06_1633f9a5
+Bytes: 36
+In f2fs, it happens in f2fs_init_acl
+
