@@ -9,3 +9,13 @@ UUID: 0bac0e06_16fad959
 Bytes: 122
 This will cause problems if another thread modifies current->fs - the changes will be lost when you put the saved_fs back.
 
+84
+Thu Apr 14 00:24:08 2016 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bac0e06_16fad959
+UUID: 0bac0e06_165499ce
+Bytes: 267
+I take that back - current is the current thread, not the current process, so nothing else should modify your temporary fs.
+
+It seems strange that this only happens on f2fs and not on ext4.  Can you tell where the umask is getting applied somewhere inside vfs_create?
+
