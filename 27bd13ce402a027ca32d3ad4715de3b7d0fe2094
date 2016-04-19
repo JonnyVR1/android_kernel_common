@@ -1,0 +1,11 @@
+Revision: 27bd13ce402a027ca32d3ad4715de3b7d0fe2094
+Patch-set: 2
+File: drivers/md/dm-android-verity.c
+
+635:2-635:8
+Tue Apr 19 17:45:05 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e86b402f_43b9a63a
+Bytes: 31
+Do we need handle_error() here?
+
