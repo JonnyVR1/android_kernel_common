@@ -62,6 +62,7 @@ struct proc_inode {
 	struct pid *pid;
 	int fd;
 	union proc_op op;
+	void const *entry_data;
 	struct proc_dir_entry *pde;
 	struct ctl_table_header *sysctl;
 	struct ctl_table *sysctl_entry;

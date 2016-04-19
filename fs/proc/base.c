@@ -108,30 +108,43 @@ struct pid_entry {
 	const char *name;
 	int len;
 	umode_t mode;
+	umode_t dumpable_mode; /* this mode is used if task_dumpable is !0 */
 	const struct inode_operations *iop;
 	const struct file_operations *fop;
 	union proc_op op;
 };
 
-#define NOD(NAME, MODE, IOP, FOP, OP) {			\
+#define NOD(NAME, D_MODE, MODE, IOP, FOP, OP) {	\
 	.name = (NAME),					\
 	.len  = sizeof(NAME) - 1,			\
 	.mode = MODE,					\
+	.dumpable_mode = D_MODE,			\
 	.iop  = IOP,					\
 	.fop  = FOP,					\
 	.op   = OP,					\
 }
 
+#define CLR_MASK(BITS, MASK) \
+		((BITS) & (~(MASK)))
+
+
 #define DIR(NAME, MODE, iops, fops)	\
-	NOD(NAME, (S_IFDIR|(MODE)), &iops, &fops, {} )
+	NOD(NAME, (S_IFDIR|(MODE)),	\
+		(S_IFDIR|(MODE)),	\
+		&iops, &fops, {})
 #define LNK(NAME, get_link)					\
 	NOD(NAME, (S_IFLNK|S_IRWXUGO),				\
+		(S_IFLNK|S_IRWXUGO),				\
 		&proc_pid_link_inode_operations, NULL,		\
 		{ .proc_get_link = get_link } )
-#define REG(NAME, MODE, fops)				\
-	NOD(NAME, (S_IFREG|(MODE)), NULL, &fops, {})
+#define REG(NAME, MODE, fops)						\
+	NOD(NAME, (S_IFREG|(MODE)),					\
+			CLR_MASK((S_IFREG|(MODE)), (S_IRWXO | S_IRWXG)),\
+			NULL, &fops, {})
 #define ONE(NAME, MODE, show)				\
 	NOD(NAME, (S_IFREG|(MODE)), 			\
+			CLR_MASK((S_IFREG|(MODE)),	\
+				(S_IRWXO | S_IRWXG)),	\
 		NULL, &proc_single_file_operations,	\
 		{ .proc_show = show } )
 
@@ -1654,6 +1667,7 @@ struct inode *proc_pid_make_inode(struct super_block * sb, struct task_struct *t
 	inode->i_ino = get_next_ino();
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME;
 	inode->i_op = &proc_def_inode_operations;
+	ei->entry_data = NULL;
 
 	/*
 	 * grab the reference to task.
@@ -1669,6 +1683,7 @@ struct inode *proc_pid_make_inode(struct super_block * sb, struct task_struct *t
 		inode->i_gid = cred->egid;
 		rcu_read_unlock();
 	}
+
 	security_task_to_inode(task, inode);
 
 out:
@@ -1714,6 +1729,23 @@ int pid_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
 
 /* dentry stuff */
 
+static
+umode_t pid_get_effective_imode(struct inode *inode, bool dumpable)
+{
+	struct proc_inode *pinode;
+	struct pid_entry const *pentry;
+
+	pinode = PROC_I(inode);
+	if (pinode->entry_data) {
+		pentry = (struct pid_entry const *)pinode->entry_data;
+		if (dumpable)
+			return pentry->dumpable_mode;
+		else
+			return pentry->mode;
+	}
+	return inode->i_mode;
+}
+
 /*
  *	Exceptional case: normally we are not allowed to unhash a busy
  * directory. In this case, however, we can do it - no aliasing problems
@@ -1732,18 +1764,22 @@ int pid_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
 int pid_revalidate(struct dentry *dentry, unsigned int flags)
 {
 	struct inode *inode;
+	struct proc_inode *pinode;
 	struct task_struct *task;
 	const struct cred *cred;
+	bool is_dumpable;
 
 	if (flags & LOOKUP_RCU)
 		return -ECHILD;
 
 	inode = d_inode(dentry);
+	pinode = PROC_I(inode);
 	task = get_proc_task(inode);
 
 	if (task) {
+		is_dumpable = task_dumpable(task);
 		if ((inode->i_mode == (S_IFDIR|S_IRUGO|S_IXUGO)) ||
-		    task_dumpable(task)) {
+		    is_dumpable) {
 			rcu_read_lock();
 			cred = __task_cred(task);
 			inode->i_uid = cred->euid;
@@ -1753,6 +1789,7 @@ int pid_revalidate(struct dentry *dentry, unsigned int flags)
 			inode->i_uid = GLOBAL_ROOT_UID;
 			inode->i_gid = GLOBAL_ROOT_GID;
 		}
+		inode->i_mode = pid_get_effective_imode(inode, is_dumpable);
 		inode->i_mode &= ~(S_ISUID | S_ISGID);
 		security_task_to_inode(task, inode);
 		put_task_struct(task);
@@ -2255,6 +2292,7 @@ static int proc_pident_instantiate(struct inode *dir,
 		goto out;
 
 	ei = PROC_I(inode);
+	ei->entry_data = p;
 	inode->i_mode = p->mode;
 	if (S_ISDIR(inode->i_mode))
 		set_nlink(inode, 2);	/* Use getattr to fix if necessary */
@@ -3121,6 +3159,7 @@ static const struct pid_entry tid_base_stuff[] = {
 	REG("sched",     S_IRUGO|S_IWUSR, proc_pid_sched_operations),
 #endif
 	NOD("comm",      S_IFREG|S_IRUGO|S_IWUSR,
+			 S_IFREG|S_IRUSR|S_IWUSR,
 			 &proc_tid_comm_inode_operations,
 			 &proc_pid_set_comm_operations, {}),
 #ifdef CONFIG_HAVE_ARCH_TRACEHOOK
