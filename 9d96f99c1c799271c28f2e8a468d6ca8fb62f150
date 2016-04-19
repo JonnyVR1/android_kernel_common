@@ -1,0 +1,13 @@
+Revision: 9d96f99c1c799271c28f2e8a468d6ca8fb62f150
+Patch-set: 1
+File: /COMMIT_MSG
+
+8
+Tue Apr 19 19:49:25 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e86b402f_4c31d3e3
+Bytes: 220
+Add a brief message explaining why we're removing this, e.g.:
+
+"Drivers should use extcon moving forward.  Documentation/extcon/porting-android-switch-class describes how to port existing switch class drivers to extcon."
+
