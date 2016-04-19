@@ -1,0 +1,11 @@
+Revision: 7dfa11e4ddaab14afd164f565d7625f743c6f3fa
+Patch-set: 1
+File: mm/vmscan.c
+
+230:9-230:10
+Tue Apr 19 17:37:54 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e86b402f_035b2e03
+Bytes: 19
+No need to assign 0
+
