@@ -1,0 +1,11 @@
+Revision: e2539cb15cd87a98431ed5ad07bf1ed4593341c7
+Patch-set: 1
+File: fs/proc/task_mmu.c
+
+143:17-143:38
+Tue Apr 19 17:47:55 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e86b402f_434b6602
+Bytes: 51
+I think it is not in 4.4 - it was introduces later.
+
