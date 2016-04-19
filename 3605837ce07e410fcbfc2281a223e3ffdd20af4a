@@ -1,0 +1,11 @@
+Revision: 3605837ce07e410fcbfc2281a223e3ffdd20af4a
+Patch-set: 2
+File: android/configs/android-base.cfg
+
+62:0-62:18
+Tue Apr 19 17:48:26 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e86b402f_430446b3
+Bytes: 23
+alphabetic sorted order
+
