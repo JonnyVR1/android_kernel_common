@@ -1,0 +1,11 @@
+Revision: 0399cdcd1bc18ed6b49582c403fe3802c5355926
+Patch-set: 3
+File: drivers/md/dm-android-verity.c
+
+632:20-632:28
+Wed Apr 20 20:53:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e87a6032_207b704a
+Bytes: 241
+android-verity is also downstream of dm= (https://android-review.googlesource.com/#/c/201895) which already does a substitution through name_to_dev_t. do_mounts_dm.c (dm_subsitute_devices).. Maybe move this to else if not in %u:%u%c format ?
+
