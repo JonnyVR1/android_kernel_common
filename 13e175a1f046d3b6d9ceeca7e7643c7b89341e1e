@@ -9,3 +9,21 @@ UUID: e87a6032_4ebfaa22
 Bytes: 59
 with this new magic does the following comment still apply?
 
+1694
+Mon Apr 25 23:51:52 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e87a6032_4ebfaa22
+UUID: 8862c5ec_4952c104
+Bytes: 459
+I'm no networking expert, so take my thoughts with a grain of salt...
+
+It looks like it might still apply, though looking at other examples, it might be able to be improved. I see some other cases using the following helper...
+
+/* This helper checks if a socket is a full socket,
+ * ie _not_ a timewait or request socket.
+ */
+static inline bool sk_fullsock(const struct sock *sk)
+{
+        return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
+}
+
