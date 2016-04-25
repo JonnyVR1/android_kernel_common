@@ -1,0 +1,11 @@
+Revision: 42d9422a803afc7c1db3502787fdbe75577bc14d
+Base-for-patch-set: 1
+File: drivers/misc/Kconfig
+
+415:7-415:15
+Mon Apr 25 18:11:51 2016 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e87a6032_aa3631da
+Bytes: 117
+Also remove from https://android.googlesource.com/kernel/common/+/android-4.4/android/configs/android-recommended.cfg
+
