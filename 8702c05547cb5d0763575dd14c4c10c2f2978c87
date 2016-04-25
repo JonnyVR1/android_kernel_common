@@ -1,0 +1,11 @@
+Revision: 8702c05547cb5d0763575dd14c4c10c2f2978c87
+Patch-set: 1
+File: /COMMIT_MSG
+
+28:22-29:57
+Mon Apr 25 21:40:08 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e87a6032_4dea4291
+Bytes: 160
+This bit in the commit message seems confusing, as the patch is reverting the original feature, but the commit message is from the trial patch to fix the issue.
+
