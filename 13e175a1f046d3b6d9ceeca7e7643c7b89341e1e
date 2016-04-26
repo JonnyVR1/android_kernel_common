@@ -27,3 +27,11 @@ static inline bool sk_fullsock(const struct sock *sk)
         return (1 << sk->sk_state) & ~(TCPF_TIME_WAIT | TCPF_NEW_SYN_RECV);
 }
 
+1694
+Tue Apr 26 01:13:10 2016 +0000
+Author: JP Abgrall <1005480@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8862c5ec_4952c104
+UUID: 8862c5ec_8cc44770
+Bytes: 48
+As the comment applies, no need to improve then.
+
