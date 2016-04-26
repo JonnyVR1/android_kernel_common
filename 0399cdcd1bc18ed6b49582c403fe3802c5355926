@@ -9,3 +9,13 @@ UUID: e87a6032_207b704a
 Bytes: 241
 android-verity is also downstream of dm= (https://android-review.googlesource.com/#/c/201895) which already does a substitution through name_to_dev_t. do_mounts_dm.c (dm_subsitute_devices).. Maybe move this to else if not in %u:%u%c format ?
 
+632:20-632:28
+Tue Apr 26 11:57:22 2016 +0000
+Author: Jeremy Compostella <1051574@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e87a6032_207b704a
+UUID: a87f884b_35260896
+Bytes: 174
+Right. I'm going to investigate why do_mounts_dm.c fails to substitute the device.  Based on that investigation, I will pursue with this patch or submit another one. 
+
+Thanks
+
