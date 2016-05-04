@@ -39,6 +39,10 @@
 #include <asm/fiq_glue.h>
 #endif
 
+#ifdef CONFIG_FIQ_DEBUGGER_UART_OVERLAY
+#include <linux/of.h>
+#endif
+
 #include <linux/uaccess.h>
 
 #include "fiq_debugger.h"
@@ -1201,10 +1205,35 @@ static struct platform_driver fiq_debugger_driver = {
 	},
 };
 
+#if defined(CONFIG_FIQ_DEBUGGER_UART_OVERLAY)
+int fiq_debugger_uart_overlay(void)
+{
+	struct device_node *onp = of_find_node_by_path("/uart_overlay@0");
+	int ret = -ENODEV;
+
+	if (onp) {
+		ret = of_overlay_create(onp);
+		if (ret < 0) {
+			pr_err("serial_debugger: fail to create overlay: %d\n",
+				ret);
+			of_node_put(onp);
+		} else {
+			pr_info("serial_debugger: uart overlay is applied\n");
+		}
+	} else {
+		pr_err("serial_debugger: uart overlay not found\n");
+	}
+	return ret;
+}
+#endif
+
 static int __init fiq_debugger_init(void)
 {
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
 	fiq_debugger_tty_init();
+#endif
+#if defined(CONFIG_FIQ_DEBUGGER_UART_OVERLAY)
+	fiq_debugger_uart_overlay();
 #endif
 	return platform_driver_register(&fiq_debugger_driver);
 }
