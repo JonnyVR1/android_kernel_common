@@ -1,0 +1,11 @@
+Revision: 711a76d52ecbcc1ecc4cf12fa0ad9eb4f00e7868
+Patch-set: 1
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+1214
+Thu May 05 23:05:37 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d3e834b_3a54f1b9
+Bytes: 34
+why return early on errors instead
+
