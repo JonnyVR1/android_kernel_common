@@ -9,3 +9,11 @@ UUID: ce666912_786d21cf
 Bytes: 144
 Would we have a socket object at this point (e.g., in skb->sk)? If so, it's probably more correct to get the UID by calling sock_i_uid(skb->sk).
 
+559:40-559:51
+Fri May 06 20:49:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce666912_786d21cf
+UUID: ad331bd6_aa08efc9
+Bytes: 127
+The problem is that this is error handler. But sock_i_uid() if skb->sk is NULL will return GLOBAL_ROOT_UID and not INVALID_UID.
+
