@@ -54,6 +54,8 @@
 
 #define MAX_FIQ_DEBUGGER_PORTS 4
 
+#define FIQ_DEBUGGER_DEV "ttyFIQ"
+
 struct fiq_debugger_state {
 #ifdef CONFIG_FIQ_GLUE
 	struct fiq_glue_handler handler;
@@ -822,7 +824,7 @@ static void fiq_debugger_console_write(struct console *co,
 }
 
 static struct console fiq_debugger_console = {
-	.name = "ttyFIQ",
+	.name = FIQ_DEBUGGER_DEV,
 	.device = fiq_debugger_console_device,
 	.write = fiq_debugger_console_write,
 	.flags = CON_PRINTBUFFER | CON_ANYTIME | CON_ENABLED,
@@ -940,7 +942,7 @@ static int fiq_debugger_tty_init(void)
 
 	fiq_tty_driver->owner		= THIS_MODULE;
 	fiq_tty_driver->driver_name	= "fiq-debugger";
-	fiq_tty_driver->name		= "ttyFIQ";
+	fiq_tty_driver->name		= FIQ_DEBUGGER_DEV;
 	fiq_tty_driver->type		= TTY_DRIVER_TYPE_SERIAL;
 	fiq_tty_driver->subtype		= SERIAL_TYPE_NORMAL;
 	fiq_tty_driver->init_termios	= tty_std_termios;
@@ -1000,7 +1002,8 @@ static int fiq_debugger_tty_init_one(struct fiq_debugger_state *state)
 
 	device_set_wakeup_capable(tty_dev, 1);
 
-	pr_info("Registered fiq debugger ttyFIQ%d\n", state->pdev->id);
+	pr_info("Registered fiq debugger " FIQ_DEBUGGER_DEV "%d\n",
+		state->pdev->id);
 
 	return 0;
 
@@ -1206,10 +1209,20 @@ static struct platform_driver fiq_debugger_driver = {
 };
 
 #if defined(CONFIG_FIQ_DEBUGGER_UART_OVERLAY)
-int fiq_debugger_uart_overlay(void)
+static char *fiq_uart_overlay_path = NULL;
+
+int fiq_debugger_uart_overlay_apply(void)
 {
-	struct device_node *onp = of_find_node_by_path("/uart_overlay@0");
+	struct device_node *onp;
 	int ret;
+
+
+	if (!fiq_uart_overlay_path) {
+		pr_err("serial_debugger: uart overlay not set\n");
+		return -EPERM;
+	}
+
+	onp = of_find_node_by_path(fiq_uart_overlay_path);
 
 	if (!onp) {
 		pr_err("serial_debugger: uart overlay not found\n");
@@ -1224,17 +1237,27 @@ int fiq_debugger_uart_overlay(void)
 	}
 
 	pr_info("serial_debugger: uart overlay applied\n");
-	return 0;
+	return ret;
 }
+
+static int __init fiq_debugger_overlay_setup(char *str)
+{
+	fiq_uart_overlay_path = str;
+	return 1;
+}
+__setup("fiq_debugger_overlay=", fiq_debugger_overlay_setup);
 #endif
 
 static int __init fiq_debugger_init(void)
 {
+#if defined(CONFIG_FIQ_DEBUGGER_UART_OVERLAY)
+	int ret = fiq_debugger_uart_overlay_apply();
+
+	if (ret < 0)
+		return ret;
+#endif
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
 	fiq_debugger_tty_init();
-#endif
-#if defined(CONFIG_FIQ_DEBUGGER_UART_OVERLAY)
-	fiq_debugger_uart_overlay();
 #endif
 	return platform_driver_register(&fiq_debugger_driver);
 }
