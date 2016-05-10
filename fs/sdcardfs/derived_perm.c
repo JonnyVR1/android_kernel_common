@@ -47,7 +47,6 @@ void setup_derived_state(struct inode *inode, perm_t perm,
 /* While renaming, there is a point where we want the path from dentry, but the name from newdentry */
 void get_derived_permission_new(struct dentry *parent, struct dentry *dentry, struct dentry *newdentry)
 {
-	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
 	struct sdcardfs_inode_info *info = SDCARDFS_I(dentry->d_inode);
 	struct sdcardfs_inode_info *parent_info= SDCARDFS_I(parent->d_inode);
 	appid_t appid;
@@ -96,7 +95,7 @@ void get_derived_permission_new(struct dentry *parent, struct dentry *dentry, st
 		case PERM_ANDROID_DATA:
 		case PERM_ANDROID_OBB:
 		case PERM_ANDROID_MEDIA:
-			appid = get_appid(sbi->pkgl_id, newdentry->d_name.name);
+			appid = get_appid(newdentry->d_name.name);
 			if (appid != 0) {
 				info->d_uid = multiuser_get_uid(parent_info->userid, appid);
 			}
@@ -111,15 +110,15 @@ void get_derived_permission(struct dentry *parent, struct dentry *dentry)
 
 void get_derive_permissions_recursive(struct dentry *parent) {
 	struct dentry *dentry;
+	spin_lock(&parent->d_lock);
 	list_for_each_entry(dentry, &parent->d_subdirs, d_u.d_child) {
 		if (dentry->d_inode) {
-			mutex_lock(&dentry->d_inode->i_mutex);
 			get_derived_permission(parent, dentry);
 			fix_derived_permission(dentry->d_inode);
 			get_derive_permissions_recursive(dentry);
-			mutex_unlock(&dentry->d_inode->i_mutex);
 		}
 	}
+	spin_unlock(&parent->d_lock);
 }
 
 /* main function for updating derived permission */
@@ -135,7 +134,6 @@ inline void update_derived_permission_lock(struct dentry *dentry)
 	 * 1. need to check whether the dentry is updated or not
 	 * 2. remove the root dentry update
 	 */
-	mutex_lock(&dentry->d_inode->i_mutex);
 	if(IS_ROOT(dentry)) {
 		//setup_default_pre_root_state(dentry->d_inode);
 	} else {
@@ -146,7 +144,6 @@ inline void update_derived_permission_lock(struct dentry *dentry)
 		}
 	}
 	fix_derived_permission(dentry->d_inode);
-	mutex_unlock(&dentry->d_inode->i_mutex);
 }
 
 int need_graft_path(struct dentry *dentry)
