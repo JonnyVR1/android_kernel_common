@@ -1228,8 +1228,21 @@ int fiq_debugger_uart_overlay(void)
 }
 #endif
 
+static bool fiq_debugger_disable_flag = false;
+
+static int __init fiq_debugger_disable(char *str)
+{
+	fiq_debugger_disable_flag = true;
+	return 1;
+}
+__setup("fiq_debugger_disable", fiq_debugger_disable);
+
 static int __init fiq_debugger_init(void)
 {
+	if (fiq_debugger_disable_flag) {
+		pr_err("serial_debugger: disabled\n");
+		return -ENODEV;
+	}
 #if defined(CONFIG_FIQ_DEBUGGER_CONSOLE)
 	fiq_debugger_tty_init();
 #endif
