@@ -182,11 +182,18 @@ send_unreach(struct net *net, struct sk_buff *skb_in, unsigned char code,
 	icmpv6_send(skb_in, ICMPV6_DEST_UNREACH, code, 0);
 #ifdef CONFIG_IP6_NF_TARGET_REJECT_SKERR
 	if (skb_in->sk) {
-		icmpv6_err_convert(ICMPV6_DEST_UNREACH, code,
-				   &skb_in->sk->sk_err);
-		skb_in->sk->sk_error_report(skb_in->sk);
-		pr_debug("ip6t_REJECT: sk_err=%d for skb=%p sk=%p\n",
-			skb_in->sk->sk_err, skb_in, skb_in->sk);
+		int err;
+		icmpv6_err_convert(ICMPV6_DEST_UNREACH, code, &err);
+                spin_lock(&skb_in->sk->sk_lock.slock);
+		if (sock_owned_by_user(skb_in->sk)) {
+			skb_in->sk->sk_err = err;
+			skb_in->sk->sk_error_report(skb_in->sk);
+		} else {
+			skb_in->sk->sk_err_soft = err;
+		}
+                spin_unlock(&skb_in->sk->sk_lock.slock);
+		pr_debug("ip6t_REJECT: err=%d for skb=%p sk=%p\n",
+			err, skb_in, skb_in->sk);
 	}
 #endif
 }
