@@ -1,0 +1,18 @@
+Revision: 607a3bc968d782b8557aca07a9b2356711d01cdd
+Patch-set: 3
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+1231
+Wed May 11 23:13:14 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_5d956fea
+Bytes: 48
+Move this to the top with all the other globals.
+
+1238
+Wed May 11 23:13:14 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_fd6f1bec
+Bytes: 95
+move up, also do you need this function, or can it be a module param like the existing options.
+
