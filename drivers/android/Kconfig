@@ -32,6 +32,14 @@ config ANDROID_BINDER_IPC_32BIT
 
 	  Note that enabling this will break newer Android user-space.
 
+config ANDROID_BINDER_VENDOR_DOMAIN
+	bool "Android Binder vendor domain"
+        depends on ANDROID_BINDER_IPC
+	default n
+	---help---
+	  Enable an additional binder domain with its own servicemanager for
+          HAL implementations.
+
 endif # if ANDROID
 
 endmenu
