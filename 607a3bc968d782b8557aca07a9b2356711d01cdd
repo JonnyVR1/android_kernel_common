@@ -9,10 +9,26 @@ UUID: f2725490_5d956fea
 Bytes: 48
 Move this to the top with all the other globals.
 
+1231
+Wed May 11 23:26:59 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_5d956fea
+UUID: f2725490_bd7a0375
+Bytes: 2
+ok
+
 1238
 Wed May 11 23:13:14 2016 +0000
 Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f2725490_fd6f1bec
 Bytes: 95
 move up, also do you need this function, or can it be a module param like the existing options.
+
+1238
+Wed May 11 23:26:59 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_fd6f1bec
+UUID: f2725490_9d754788
+Bytes: 80
+Yes, I want it to be command-line option - it will be too late to do this after.
 
