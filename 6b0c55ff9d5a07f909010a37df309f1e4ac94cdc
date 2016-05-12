@@ -1,0 +1,11 @@
+Revision: 6b0c55ff9d5a07f909010a37df309f1e4ac94cdc
+Patch-set: 5
+File: drivers/staging/android/fiq_debugger/fiq_debugger.c
+
+132:19-132:23
+Thu May 12 00:06:14 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_282793bd
+Bytes: 75
+fiq_ is not needed in the paramter name, as this disables the entire driver
+
