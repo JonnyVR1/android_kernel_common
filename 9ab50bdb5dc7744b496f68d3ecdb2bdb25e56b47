@@ -1,0 +1,13 @@
+Revision: 9ab50bdb5dc7744b496f68d3ecdb2bdb25e56b47
+Patch-set: 1
+File: drivers/trusty/trusty.c
+
+107
+Fri May 13 05:55:35 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_00b9bcd9
+Bytes: 312
+not sure if this will cause 4 interrupt lost (retry=5) because of this patch which has interrupt disabled when calling trusty_std_call_inner().
+
+How about not retrying in this function? I saw you have "trusty_std_call_helper()" to retry it, but need to change sleep/wait algorithm if no above 5 times of retries.
+
