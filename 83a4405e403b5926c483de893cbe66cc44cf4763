@@ -1,0 +1,11 @@
+Revision: 83a4405e403b5926c483de893cbe66cc44cf4763
+Patch-set: 1
+File: include/linux/trusty/smcall.h
+
+66:75-66:78
+Fri May 13 05:30:54 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_5570d461
+Bytes: 9
+typo - if
+
