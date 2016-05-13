@@ -11,3 +11,11 @@ not sure if this will cause 4 interrupt lost (retry=5) because of this patch whi
 
 How about not retrying in this function? I saw you have "trusty_std_call_helper()" to retry it, but need to change sleep/wait algorithm if no above 5 times of retries.
 
+107
+Fri May 13 22:59:24 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_00b9bcd9
+UUID: f2725490_bcb74c47
+Bytes: 152
+The change description on the previous patch (which added this code) explains why we need to retry. Why do you think this retry would affect interrupts?
+
