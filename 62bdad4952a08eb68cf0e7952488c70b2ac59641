@@ -1,0 +1,15 @@
+Revision: 62bdad4952a08eb68cf0e7952488c70b2ac59641
+Patch-set: 1
+File: Documentation/devicetree/bindings/trusty/trusty-irq.txt
+
+3
+Fri May 13 05:04:29 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_95534cd0
+Bytes: 355
+a little bit confusing to me, my understanding is that - 
+for interrupts owned by secure OS, if they are triggered in non-secure mode, then the trusty irq driver will forward them to the secure OS. 
+
+so, if I'm right as above, then it would be supposed to be -
+Trusty requires secure irqs to be forwarded to the secure OS for handling with smc SMC_SC_NOP?
+
