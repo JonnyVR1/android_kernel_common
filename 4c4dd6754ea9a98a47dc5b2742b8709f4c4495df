@@ -1,0 +1,18 @@
+Revision: 4c4dd6754ea9a98a47dc5b2742b8709f4c4495df
+Patch-set: 1
+File: /COMMIT_MSG
+
+9:0-10:58
+Fri May 13 19:44:10 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_a3c56f50
+Bytes: 159
+@rgreenwalt: Do you someone who is aware of the frameworks requirement ? The kernel change proposed seem to be valid if the framework code requirement is true.
+
+13:58-13:68
+Fri May 13 19:44:10 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_c3c26b46
+Bytes: 17
+nit: unregistered
+
