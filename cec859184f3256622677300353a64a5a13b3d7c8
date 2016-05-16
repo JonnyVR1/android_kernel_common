@@ -1,0 +1,18 @@
+Revision: cec859184f3256622677300353a64a5a13b3d7c8
+Patch-set: 3
+File: kernel/power/wakeup_reason.c
+
+44:0-44:45
+Mon May 16 23:58:10 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_7307930a
+Bytes: 71
+This should be inside #ifdef IS_ENABLED(CONFIG_SUSPEND_TIME) ... #endif
+
+173:0-174:30
+Mon May 16 23:58:10 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_930c2f2f
+Bytes: 4
+Same
+
