@@ -19,3 +19,21 @@ UUID: f2725490_bcb74c47
 Bytes: 152
 The change description on the previous patch (which added this code) explains why we need to retry. Why do you think this retry would affect interrupts?
 
+107
+Mon May 16 02:15:39 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_bcb74c47
+UUID: f2725490_a1472068
+Bytes: 1467
+Sorry, I'm not quite understanding the behaviors of ARM GIC. 
+
+For x86, in a VMM/Hypervisor-based TEE implementation, due to this patch, the interrupt will be disabled (aka, interrupt window is closed for a short time) in android before calling SMC/VMCALL to VMM, hence if the Trusty returns because of an android-owned interrupt occurrence, then VMM will inject this interrupt (with its vector) back to Android, but the interrupt window is closed, so android has no chance to handle its irq.  then this trusty_std_call_inner() code does retry again for the second time. 
+
+and now assuming the case above happens again with another interrupt (with different vector), but the interrupt window is still closing on Android side.  then repeating this for another 3 times.  so only the last interrupt can be injected successfully because after 5-time retry, the interrupt window is opened again.  
+
+Vitalization Technology itself doesn't provide a way to save/store the history interrupt information and doesn't deliver them one by one later. 
+
+However, this may not be an issue now, after our discussion, we think we can solve it in VMM, we can log those history/pending interrupt vector info, and inject them back one by one based on their interrupt priorities (or in the order of occurrence) as long as the interrupt window is opened after 5 retries. 
+
+So if i'm correct as above, this might not be a problem. and if this could make ARM/TrustZone happy, i'm Ok to this.
+
