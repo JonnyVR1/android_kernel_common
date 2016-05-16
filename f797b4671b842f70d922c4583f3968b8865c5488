@@ -1,0 +1,22 @@
+Revision: f797b4671b842f70d922c4583f3968b8865c5488
+Patch-set: 2
+File: kernel/power/wakeup_reason.c
+
+193:7-193:19
+Mon May 16 18:16:31 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_32e19cad
+Bytes: 142
+CONFIG_SUSPEND_TIME?
+
+Also #if IS_ENABLED(CONFIG_BLAH_BLAH) is preferred for new code although I don't know how strongly upstream enforces it.
+
+212:7-212:22
+Mon May 16 18:16:31 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2725490_f28804da
+Bytes: 324
+On kernels without CONFIG_SUSPEND_TIME you'll still make the debugfs entry, it'll just read from buckets all filled with 0.
+
+I think CONFIG_SUSPEND_TIME needs to depend on CONFIG_DEBUG_FS (since it doesn't make sense to keep track of these statistics without a consumer).  Then make this #if IS_ENABLED(CONFIG_SUSPEND_TIME).
+
