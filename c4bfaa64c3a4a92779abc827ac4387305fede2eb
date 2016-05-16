@@ -20,3 +20,11 @@ for bug fix, refer to :
 https://lists.linuxfoundation.org/pipermail/virtualization/2015-February/029392.html
 http://article.gmane.org/gmane.linux.kernel.virtualization/24851
 
+322:4-322:11
+Mon May 16 02:22:13 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_4042d452
+UUID: f2725490_813dc4ce
+Bytes: 78
+_vds_get_txbuf() has a call into mutex_lock(), which will do wait-sleep again.
+
