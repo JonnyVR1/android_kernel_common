@@ -37,3 +37,15 @@ However, this may not be an issue now, after our discussion, we think we can sol
 
 So if i'm correct as above, this might not be a problem. and if this could make ARM/TrustZone happy, i'm Ok to this.
 
+107
+Mon May 16 02:18:37 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_bcb74c47
+UUID: f2725490_0157f414
+Bytes: 256
+> The change description on the previous patch (which added this
+ > code) explains why we need to retry. Why do you think this retry
+ > would affect interrupts?
+
+and yes, I read it again, and I'm understanding the reason of retrying in your previous patch.
+
