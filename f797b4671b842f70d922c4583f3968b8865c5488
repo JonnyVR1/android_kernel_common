@@ -11,6 +11,14 @@ CONFIG_SUSPEND_TIME?
 
 Also #if IS_ENABLED(CONFIG_BLAH_BLAH) is preferred for new code although I don't know how strongly upstream enforces it.
 
+193:7-193:19
+Mon May 16 18:32:42 2016 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_32e19cad
+UUID: f2725490_f2dc8483
+Bytes: 4
+Done
+
 212:7-212:22
 Mon May 16 18:16:31 2016 +0000
 Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,4 +27,14 @@ Bytes: 324
 On kernels without CONFIG_SUSPEND_TIME you'll still make the debugfs entry, it'll just read from buckets all filled with 0.
 
 I think CONFIG_SUSPEND_TIME needs to depend on CONFIG_DEBUG_FS (since it doesn't make sense to keep track of these statistics without a consumer).  Then make this #if IS_ENABLED(CONFIG_SUSPEND_TIME).
+
+212:7-212:22
+Mon May 16 18:32:42 2016 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_f28804da
+UUID: f2725490_d2df8875
+Bytes: 196
+I think the logs in the kernel about amount of time the AP was in suspend is useful even if we do not check the degug file. 
+
+Agreed on not having to read null bins if SUSPEND_TIME is not enabled.
 
