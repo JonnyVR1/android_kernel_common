@@ -73,3 +73,11 @@ UUID: f2725490_a95c5e3b
 Bytes: 121
 I'm still not sure what you are trying to solve. If SM_ERR_BUSY is returned, no interrupt state should have been touched.
 
+107
+Tue May 17 02:38:32 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_a95c5e3b
+UUID: f2725490_0930f2d5
+Bytes: 270
+yes, you're absolutely right. it has no problem. I missed up with SM_ERR_INTERRUPTED (it is already put in the outer of this inner_smc_call, with interrupt window opened.) Sorry for confusing,  in your case with SM_ERR_BUSY, so it has no problem in VMM and in your code.
+
