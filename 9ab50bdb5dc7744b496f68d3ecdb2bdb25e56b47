@@ -57,3 +57,11 @@ UUID: f2725490_f5bf0bb6
 Bytes: 135
 Are having a problem, or are you just speculating? No interrupt controller state should have been touched when SM_ERR_BUSY is returned.
 
+107
+Tue May 17 01:42:44 2016 +0000
+Author: Bing Zhu <1082545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_f5bf0bb6
+UUID: f2725490_ae970455
+Bytes: 172
+so far so good, but we didn't have  massive testing. I'm just speculating this, however, we should have solution to solve it in VMM and is pretty easy to get it resolved...
+
