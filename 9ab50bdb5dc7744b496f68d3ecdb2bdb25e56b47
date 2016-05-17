@@ -65,3 +65,11 @@ UUID: f2725490_ae970455
 Bytes: 172
 so far so good, but we didn't have  massive testing. I'm just speculating this, however, we should have solution to solve it in VMM and is pretty easy to get it resolved...
 
+107
+Tue May 17 02:20:56 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_ae970455
+UUID: f2725490_a95c5e3b
+Bytes: 121
+I'm still not sure what you are trying to solve. If SM_ERR_BUSY is returned, no interrupt state should have been touched.
+
