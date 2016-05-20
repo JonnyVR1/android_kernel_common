@@ -1,0 +1,11 @@
+Revision: a99dfd6c4b0a340129411790dab5cbdf94304e0d
+Patch-set: 1
+File: drivers/usb/gadget/function/f_midi.c
+
+1151:17-1151:18
+Fri May 20 21:49:15 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7ae0ef8_19b32c1b
+Bytes: 83
+This field is not set in this file. Is it architecturally correct to reset it here?
+
