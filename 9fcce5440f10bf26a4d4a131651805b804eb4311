@@ -1,0 +1,11 @@
+Revision: 9fcce5440f10bf26a4d4a131651805b804eb4311
+Patch-set: 1
+File: drivers/md/dm-android-verity.h
+
+29:37-29:40
+Sat May 21 00:26:37 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7ae0ef8_f242bd01
+Bytes: 52
+Where does this come from? It looks a bit arbitrary.
+
