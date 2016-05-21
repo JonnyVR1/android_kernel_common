@@ -9,3 +9,19 @@ UUID: b7ae0ef8_f242bd01
 Bytes: 52
 Where does this come from? It looks a bit arbitrary.
 
+29:37-29:40
+Sat May 21 01:05:53 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7ae0ef8_f242bd01
+UUID: b7ae0ef8_0d100297
+Bytes: 407
+<subject>:<sha1-id> seems to be the format for the identifier.
+40 characters for the sha1 id ...
+
+subject can either be the Common Name(CN) + Organization Name(O) or just the CN if the it is prefixed with O
+From https://tools.ietf.org/html/rfc5280#appendix-A
+ub-organization-name-length INTEGER ::= 64
+ub-common-name-length INTEGER ::= 64
+
+Would it make sense to allocate (128 + 40) 200 characters instead ?
+
