@@ -25,3 +25,17 @@ ub-common-name-length INTEGER ::= 64
 
 Would it make sense to allocate (128 + 40) 200 characters instead ?
 
+29:37-29:40
+Sat May 21 01:15:42 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7ae0ef8_0d100297
+UUID: b7ae0ef8_0dd3e2e5
+Bytes: 278
+http://lxr.free-electrons.com/source/crypto/asymmetric_keys/x509_cert_parser.c?v=3.9#L278
+ctx->o_size + 2 + ctx->cn_size + 1
+
++ 41 characters for ":" and sha1 id
+
+so should 64 + 2 + 64 + 1 + 1 + 40 (172)..
+Should I just allocate 200 characters and mention this in the comment ??
+
