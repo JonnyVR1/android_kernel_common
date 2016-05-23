@@ -9,3 +9,11 @@ UUID: b7ae0ef8_19b32c1b
 Bytes: 83
 This field is not set in this file. Is it architecturally correct to reset it here?
 
+1151:17-1151:18
+Mon May 23 01:47:39 2016 +0000
+Author: Winter Wang <1100063@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7ae0ef8_19b32c1b
+UUID: b7ae0ef8_9e46dab1
+Bytes: 69
+opts->func_inst->f is the same as fi->f, which is set in f_midi_alloc
+
