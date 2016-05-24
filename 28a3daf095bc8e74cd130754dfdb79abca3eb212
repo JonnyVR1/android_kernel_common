@@ -9,6 +9,14 @@ UUID: 9c276ff4_59e6cf24
 Bytes: 46
 Is this back by mistake or was the CL rebased?
 
+694:5-694:6
+Tue May 24 22:12:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c276ff4_59e6cf24
+UUID: 9c276ff4_040a2a19
+Bytes: 32
+CL rebase failure !! Will fix !!
+
 776:4-778:29
 Tue May 24 21:53:45 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,4 +33,12 @@ err = snprintf(buf, FEC_ARG_LENGTH,
   target_device,
   ecc.start / FEC_BLOCK_SIZE,
   ecc.blocks, ecc.roots);
+
+776:4-778:29
+Tue May 24 22:12:15 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c276ff4_9995e755
+UUID: 9c276ff4_44fb8221
+Bytes: 4
+Done
 
