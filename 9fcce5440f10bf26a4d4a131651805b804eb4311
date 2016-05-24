@@ -16,12 +16,28 @@ static inline bool default_verity_key_id()
 
 and save a global variable. In the future(tm) one may even add validation here?
 
+87:1-87:30
+Tue May 24 21:42:50 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc4c878d_64000a5e
+UUID: 9c276ff4_b30e0a26
+Bytes: 4
+Done
+
 91:9-91:20
 Mon May 23 14:50:13 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dc4c878d_648b6a2c
 Bytes: 25
 androidboot.veritykeyid ?
+
+91:9-91:20
+Tue May 24 21:42:50 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc4c878d_648b6a2c
+UUID: 9c276ff4_9332e6dd
+Bytes: 89
+Do we need this to be a ro.boot.** property ?? I am neutral here can do it eitherways !!!
 
 652:20-652:28
 Mon May 23 14:50:13 2016 +0000
@@ -30,12 +46,28 @@ UUID: dc4c878d_64b24af6
 Bytes: 92
 use a const char * name pointer to hold this; argv[0] (and formerly argv[1]) is meaningless.
 
+652:20-652:28
+Tue May 24 21:42:50 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc4c878d_64b24af6
+UUID: 9c276ff4_39eafb83
+Bytes: 130
+Using a char* instead of the const char* as the argument is passed to functions in other files where it is not declared as const..
+
 770:3-775:14
 Mon May 23 14:50:13 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dc4c878d_a4a84285
 Bytes: 69
 nit: indent, alas outside the scope of this review. also at line 777.
+
+770:3-775:14
+Tue May 24 21:42:50 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc4c878d_a4a84285
+UUID: 9c276ff4_79f75303
+Bytes: 4
+Done
 
 File: drivers/md/dm-android-verity.h
 
@@ -83,4 +115,12 @@ Parent: b7ae0ef8_0dd3e2e5
 UUID: dc4c878d_24957246
 Bytes: 46
 You _must_ comment as not intuitively obvious.
+
+29:37-29:40
+Tue May 24 21:42:50 2016 +0000
+Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc4c878d_24957246
+UUID: 9c276ff4_2d33d9b1
+Bytes: 4
+Done
 
