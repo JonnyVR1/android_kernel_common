@@ -1,0 +1,11 @@
+Revision: 28a3daf095bc8e74cd130754dfdb79abca3eb212
+Patch-set: 2
+File: drivers/md/dm-android-verity.c
+
+694:5-694:6
+Tue May 24 21:52:25 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c276ff4_59e6cf24
+Bytes: 46
+Is this back by mistake or was the CL rebased?
+
