@@ -1,0 +1,11 @@
+Revision: 09c4a20fc8f32e05c6391b4e9ce55b55547ae4a5
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:53
+Tue May 24 15:18:24 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc4c878d_d5675ba3
+Bytes: 258
+According to https://docs.google.com/document/d/1M7tb6pYm_cG8Dhd7sHjUyn28k14FKK_7uQUYNs4n5Xc (sorry Lianwei Wang, internal at this moment) this needs a FROMLIST: prefix. Body of message should have (cherry-pick commit from https://lkml.org/lkml/2016/4/21/13)
+
