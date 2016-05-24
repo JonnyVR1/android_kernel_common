@@ -9,6 +9,14 @@ UUID: f2725490_a3c56f50
 Bytes: 159
 @rgreenwalt: Do you someone who is aware of the frameworks requirement ? The kernel change proposed seem to be valid if the framework code requirement is true.
 
+9:0-10:58
+Tue May 24 23:46:08 2016 +0000
+Author: Robert Greenwalt <1002609@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2725490_a3c56f50
+UUID: 9c276ff4_91165b49
+Bytes: 240
+I don't know the details.  I believe when we disable usb tethering settings we change the UsbManager.setCurrentFunction between USB_FUNCTION_RNDIS and null.  I suspect the network interface for usb RNDIS is expected to appear and disappear.
+
 13:58-13:68
 Fri May 13 19:44:10 2016 +0000
 Author: Badhri Jagan Sridharan <1042384@85c56323-6fa9-3386-8a01-6480fb634889>
