@@ -9,3 +9,20 @@ UUID: 9c276ff4_59e6cf24
 Bytes: 46
 Is this back by mistake or was the CL rebased?
 
+776:4-778:29
+Tue May 24 21:53:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c276ff4_9995e755
+Bytes: 449
+Still on _minor_ readability nit, an additional indent appears to be necessary to make this easier to read. Also splitting ecc.start / FEC_BLOCK_SIZE appears ill advised:
+
+err = snprintf(buf, FEC_ARG_LENGTH,
+  "%u %s " VERITY_TABLE_OPT_FEC_FORMAT,
+  1 + VERITY_TABLE_OPT_FEC_ARGS,
+  mode == DM_VERITY_MODE_RESTART ?
+    VERITY_TABLE_OPT_RESTART :
+    VERITY_TABLE_OPT_LOGGING,
+  target_device,
+  ecc.start / FEC_BLOCK_SIZE,
+  ecc.blocks, ecc.roots);
+
