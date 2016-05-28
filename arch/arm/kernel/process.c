@@ -33,6 +33,7 @@
 #include <linux/cpuidle.h>
 #include <linux/leds.h>
 #include <linux/console.h>
+#include <linux/rtc.h>
 
 #include <asm/cacheflush.h>
 #include <asm/idmap.h>
@@ -270,6 +271,7 @@ void machine_halt(void)
 void machine_power_off(void)
 {
 	smp_send_stop();
+	show_time(NULL);
 
 	if (pm_power_off)
 		pm_power_off();
@@ -289,6 +291,7 @@ void machine_power_off(void)
 void machine_restart(char *cmd)
 {
 	smp_send_stop();
+	show_time(NULL);
 
 	/* Flush the console to make sure all the relevant messages make it
 	 * out to the console drivers */

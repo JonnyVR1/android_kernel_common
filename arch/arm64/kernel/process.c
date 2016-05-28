@@ -43,6 +43,7 @@
 #include <linux/hw_breakpoint.h>
 #include <linux/personality.h>
 #include <linux/notifier.h>
+#include <linux/rtc.h>
 
 #include <asm/compat.h>
 #include <asm/cacheflush.h>
@@ -119,6 +120,7 @@ void machine_halt(void)
 void machine_power_off(void)
 {
 	machine_shutdown();
+	show_time(NULL);
 	if (pm_power_off)
 		pm_power_off();
 }
@@ -130,6 +132,7 @@ void machine_restart(char *cmd)
 	/* Disable interrupts first */
 	local_irq_disable();
 	local_fiq_disable();
+	show_time(NULL);
 
 	/* Now call the architecture specific reboot code. */
 	if (arm_pm_restart)
