@@ -1,0 +1,11 @@
+Revision: ed0b9b4e69b8beaa6bd3da338fa5a31cc0c3db2a
+Base-for-patch-set: 1
+File: kernel/power/suspend.c
+
+383:9-383:62
+Tue May 31 23:04:34 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_d29d226d
+Bytes: 159
+NB: we need to preserve this format as klogd uses them to help synchronize kernel message with user space messages. Appears that show_time does this correctly.
+

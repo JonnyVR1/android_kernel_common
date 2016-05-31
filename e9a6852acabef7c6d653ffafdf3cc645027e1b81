@@ -1,0 +1,13 @@
+Revision: e9a6852acabef7c6d653ffafdf3cc645027e1b81
+Patch-set: 1
+File: arch/arm/kernel/process.c
+
+274:11-274:15
+Tue May 31 23:04:34 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_92c0fa41
+Bytes: 195
+would not hurt to put a more detailed message here, and in the other places where you pass in a NULL, even if smp_send_stop() gives us some logging context.
+
+eg: "Off:" here and "Restart:" below.
+
