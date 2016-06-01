@@ -1,0 +1,29 @@
+Revision: 2641f14f689db04543e6684f769376e5d00039c3
+Patch-set: 2
+File: arch/arm/kernel/process.c
+
+274:1-274:10
+Wed Jun 01 00:01:46 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_756a2003
+Bytes: 134
+Would a generic reboot notifier work instead of instrumenting every architecture?  (Keep in mind that we support x86 and MIPS too ...)
+
+File: drivers/rtc/rtc-lib.c
+
+93:5-93:14
+Wed Jun 01 00:01:46 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_7581c0d8
+Bytes: 78
+rtc_time_show
+
+so it's clearer which subsystem is actually generating the time
+
+100:1-100:7
+Wed Jun 01 00:01:46 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_12872a27
+Bytes: 84
+The existing implementation logs at INFO and this logs at DEFAULT; is this intended?
+
