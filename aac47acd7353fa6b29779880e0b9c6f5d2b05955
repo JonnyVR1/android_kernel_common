@@ -1,0 +1,39 @@
+Revision: aac47acd7353fa6b29779880e0b9c6f5d2b05955
+Patch-set: 3
+File: /COMMIT_MSG
+
+12:0-14:52
+Wed Jun 01 17:45:03 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_f8dfe07a
+Bytes: 223
+_if_ this ever gets upstreamed, better to have the footer in this order:
+
+Signed-off-by:
+Bug:
+Change-Id:
+
+As it is easier to remove the last two lines to make the commit compliant, than it is to edit them out of the middle.
+
+File: arch/arm64/kernel/traps.c
+
+199:11-199:15
+Wed Jun 01 17:45:03 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_1843c407
+Bytes: 113
+As noted before, prefer not to have NULL passed in. fix in arm and arm64 code.
+
+rtc_show_time("Internal error:");
+
+File: drivers/rtc/rtc-lib.c
+
+93:5-93:14
+Wed Jun 01 17:45:03 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39df75f4_b845d83a
+Bytes: 87
+everything in here is rtc_
+
+rtc_show_time() please, or move to another file or library?
+
