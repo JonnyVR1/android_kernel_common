@@ -159,11 +159,8 @@ static int insert_str_to_int(struct packagelist_data *pkgl_dat, char *key,
 	ret = insert_str_to_int_lock(pkgl_dat, key, value);
 	mutex_unlock(&pkgl_dat->hashtable_lock);
 
-	list_for_each_entry(sbinfo, &sdcardfs_super_list, list) {
-		if (sbinfo) {
-			fixup_perms(sbinfo->sb);
-		}
-	}
+	list_for_each_entry(sbinfo, &sdcardfs_super_list, list)
+		fixup_perms(sbinfo->sb);
 	mutex_unlock(&sdcardfs_super_list_lock);
 	return ret;
 }
@@ -188,11 +185,8 @@ static void remove_str_to_int(struct packagelist_data *pkgl_dat, const char *key
 		}
 	}
 	mutex_unlock(&pkgl_dat->hashtable_lock);
-	list_for_each_entry(sbinfo, &sdcardfs_super_list, list) {
-		if (sbinfo) {
-			fixup_perms(sbinfo->sb);
-		}
-	}
+	list_for_each_entry(sbinfo, &sdcardfs_super_list, list)
+		fixup_perms(sbinfo->sb);
 	mutex_unlock(&sdcardfs_super_list_lock);
 	return;
 }
