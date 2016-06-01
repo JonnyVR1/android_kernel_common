@@ -20,10 +20,26 @@ rtc_time_show
 
 so it's clearer which subsystem is actually generating the time
 
+93:5-93:14
+Wed Jun 01 01:24:38 2016 +0000
+Author: Thierry Strudel <1071633@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39df75f4_7581c0d8
+UUID: 39df75f4_e39dfa6c
+Bytes: 199
+rtc_time_to_tm is just a time format transformation function, those function seems to be in rtc-lib but are not strictly related to rtc. I added show_time to rtc.h header to keep the same philosophy.
+
 100:1-100:7
 Wed Jun 01 00:01:46 2016 +0000
 Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39df75f4_12872a27
 Bytes: 84
 The existing implementation logs at INFO and this logs at DEFAULT; is this intended?
+
+100:1-100:7
+Wed Jun 01 01:24:38 2016 +0000
+Author: Thierry Strudel <1071633@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39df75f4_12872a27
+UUID: 39df75f4_039b5e78
+Bytes: 23
+info is the right level
 
