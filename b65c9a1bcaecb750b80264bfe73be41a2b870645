@@ -1,0 +1,20 @@
+Revision: b65c9a1bcaecb750b80264bfe73be41a2b870645
+Patch-set: 1
+File: drivers/md/dm-verity-fec.c
+
+445:16-445:18
+Fri Jun 03 21:29:24 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 265f52cd_0f546d42
+Bytes: 64
+>=
+
+(paranoia, if level somehow skips 4 because of a future bug)
+
+450:1-450:13
+Fri Jun 03 21:29:24 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 265f52cd_4fd585c8
+Bytes: 41
+Any chance multiple threads can get here?
+
