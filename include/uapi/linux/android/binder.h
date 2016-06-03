@@ -32,6 +32,8 @@ enum {
 	BINDER_TYPE_HANDLE	= B_PACK_CHARS('s', 'h', '*', B_TYPE_LARGE),
 	BINDER_TYPE_WEAK_HANDLE	= B_PACK_CHARS('w', 'h', '*', B_TYPE_LARGE),
 	BINDER_TYPE_FD		= B_PACK_CHARS('f', 'd', '*', B_TYPE_LARGE),
+	BINDER_TYPE_FDA		= B_PACK_CHARS('f', 'd', 'a', B_TYPE_LARGE),
+	BINDER_TYPE_PTR		= B_PACK_CHARS('p', 't', '*', B_TYPE_LARGE),
 };
 
 enum {
@@ -87,6 +89,44 @@ struct binder_fd_object {
 
 	binder_uintptr_t		cookie;
 };
+
+/* A binder_buffer object represents an object that the
+ * binder kernel driver copies verbatim to the target
+ * address space. A buffer itself may be pointed to from
+ * within another buffer, meaning that the pointer inside
+ * that other buffer needs to be fixed up as well. This
+ * can be done by specifying the parent buffer, and the
+ * byte offset at which the pointer lives in that buffer.
+ */
+struct binder_buffer_object {
+	struct binder_object_header	hdr;
+	__u32				flags;
+
+	binder_uintptr_t		buffer; /* Pointer to buffer data */
+	binder_size_t			length; /* Length of the buffer data */
+	binder_size_t			parent; /* index of parent in objects array */
+	binder_size_t			parent_offset; /* byte offset of pointer in parent buffer */
+};
+
+enum {
+	BINDER_BUFFER_FLAG_HAS_PARENT = 0x01,
+};
+
+/* A binder_fd_array object represents an array of file
+ * descriptors embedded in a binder_buffer_object. The
+ * kernel driver will fix up all file descriptors in
+ * the parent buffer specified by parent and parent_offset
+ */
+struct binder_fd_array_object {
+	struct binder_object_header	hdr;
+
+	binder_size_t           num_fds;
+	binder_size_t		parent; /* index of parent in objects array */
+	binder_size_t		parent_offset; /* offset of pointer in parent */
+};
+
+#define BINDER_MAX_FDS_IN_FDA 128
+
 /*
  * On 64-bit platforms where user code may run in 32-bits the driver must
  * translate the buffer (and local binder) addresses appropriately.
@@ -163,7 +203,6 @@ struct binder_transaction_data {
 	uid_t		sender_euid;
 	binder_size_t	data_size;	/* number of bytes of data */
 	binder_size_t	offsets_size;	/* number of bytes of offsets */
-
 	/* If this transaction is inline, the data immediately
 	 * follows here; otherwise, it ends with a pointer to
 	 * the data buffer.
@@ -177,6 +216,11 @@ struct binder_transaction_data {
 		} ptr;
 		__u8	buf[8];
 	} data;
+};
+
+struct binder_transaction_data_sg {
+	struct binder_transaction_data transaction_data;
+	binder_size_t buffers_size;
 };
 
 struct binder_ptr_cookie {
@@ -360,6 +404,11 @@ enum binder_driver_command_protocol {
 	BC_DEAD_BINDER_DONE = _IOW('c', 16, binder_uintptr_t),
 	/*
 	 * void *: cookie
+	 */
+	BC_TRANSACTION_SG = _IOW('c', 17, struct binder_transaction_data_sg),
+	BC_REPLY_SG = _IOW('c', 18, struct binder_transaction_data_sg),
+	/*
+	 * binder_transaction_data: the sent command.
 	 */
 };
 
