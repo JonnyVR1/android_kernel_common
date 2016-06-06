@@ -11,10 +11,26 @@ Bytes: 64
 
 (paranoia, if level somehow skips 4 because of a future bug)
 
+445:16-445:18
+Mon Jun 06 17:29:31 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 265f52cd_0f546d42
+UUID: 265f52cd_b787a725
+Bytes: 4
+Done
+
 450:1-450:13
 Fri Jun 03 21:29:24 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 265f52cd_4fd585c8
 Bytes: 41
 Any chance multiple threads can get here?
+
+450:1-450:13
+Mon Jun 06 17:29:31 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 265f52cd_4fd585c8
+UUID: 265f52cd_977f0bfe
+Bytes: 45
+No, each I/O is processed in only one thread.
 
