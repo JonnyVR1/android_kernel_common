@@ -9,3 +9,11 @@ UUID: 265f52cd_ef9791fb
 Bytes: 35
 Is there an associated triaged bug?
 
+11:0-12:52
+Tue Jun 07 18:22:56 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 265f52cd_ef9791fb
+UUID: c392e865_f157c016
+Bytes: 49
+Done. This was added by the earlier sysfs change.
+
