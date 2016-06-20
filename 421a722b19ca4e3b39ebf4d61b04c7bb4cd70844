@@ -1,0 +1,11 @@
+Revision: 421a722b19ca4e3b39ebf4d61b04c7bb4cd70844
+Patch-set: 1
+File: android/configs/android-base.cfg
+
+16:1-19:33
+Mon Jun 20 15:16:35 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 09034492_46deb2e3
+Bytes: 136
+CONFIG_CC_STACKPROTECTOR_STRONG=y is all that is needed, it turns off _NONE _REGULAR and automatically enabled CONFIG_CC_STACKPROTECTOR.
+
