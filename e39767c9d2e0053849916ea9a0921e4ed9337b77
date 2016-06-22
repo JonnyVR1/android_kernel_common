@@ -1,0 +1,20 @@
+Revision: e39767c9d2e0053849916ea9a0921e4ed9337b77
+Patch-set: 4
+File: drivers/base/power/domain.c
+
+23
+Wed Jun 22 18:12:44 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ed5a6ce_6baa3da2
+Bytes: 15
+is this needed?
+
+File: drivers/base/power/main.c
+
+1579
+Wed Jun 22 18:12:44 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ed5a6ce_4bc09959
+Bytes: 162
+Is this the only place where no_pm_callbacks is consumed? Any reason why the checks in device_pm_check_callbacks() can't be done here and eliminate this bitfield?
+
