@@ -65,3 +65,11 @@ Hmm. Looking closer, all of this is just to skip these conditionals below. In th
 
 So just avoiding the memory latency for these conditionals is what fixes the issue?
 
+1579
+Wed Jun 22 20:48:01 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec6ea30_83b2ecfc
+UUID: 2e680e70_c7fe3e72
+Bytes: 205
+Sorry (I submitted a new version before noticing this comment). This is a bit confusing. Let me follow up with Ulf to make sure I better understand the core reason this fixes the problem and I'll resubmit.
+
