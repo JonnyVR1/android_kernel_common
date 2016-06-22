@@ -1,5 +1,14 @@
 Revision: e39767c9d2e0053849916ea9a0921e4ed9337b77
 Patch-set: 4
+File: drivers/base/power/common.c
+
+17:0-17:1
+Wed Jun 22 18:18:25 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e67020f_f8d4c61c
+Bytes: 36
+Same thing from Todd - is it needed?
+
 File: drivers/base/power/domain.c
 
 23
