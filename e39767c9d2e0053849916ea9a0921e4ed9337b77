@@ -9,6 +9,16 @@ UUID: 4e67020f_f8d4c61c
 Bytes: 36
 Same thing from Todd - is it needed?
 
+17:0-17:1
+Wed Jun 22 18:26:12 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e67020f_f8d4c61c
+UUID: 2e564e46_66acc0a1
+Bytes: 158
+It was needed in the upstream commit which added a device_pm_check_callbacks call to dev_pm_domain_set which doesn't exist here.
+
+I can remove it to simplify.
+
 File: drivers/base/power/domain.c
 
 23
@@ -18,6 +28,14 @@ UUID: 6ed5a6ce_6baa3da2
 Bytes: 15
 is this needed?
 
+23
+Wed Jun 22 18:26:12 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ed5a6ce_6baa3da2
+UUID: 8ed2dae5_f92a8823
+Bytes: 99
+Seems like we could go without it, but its part of the upstream commit. I can drop it if preferred.
+
 File: drivers/base/power/main.c
 
 1579
@@ -26,4 +44,14 @@ Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6ed5a6ce_4bc09959
 Bytes: 162
 Is this the only place where no_pm_callbacks is consumed? Any reason why the checks in device_pm_check_callbacks() can't be done here and eliminate this bitfield?
+
+1579
+Wed Jun 22 18:26:12 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ed5a6ce_4bc09959
+UUID: 2e564e46_0b5a2ddc
+Bytes: 157
+So this sounds reasonable, but as this is a backport of an upstream commit, I'd prefer to keep it close to upstream.
+
++Ulf: Do you have any thoughts on this?
 
