@@ -73,3 +73,11 @@ UUID: 2e680e70_c7fe3e72
 Bytes: 205
 Sorry (I submitted a new version before noticing this comment). This is a bit confusing. Let me follow up with Ulf to make sure I better understand the core reason this fixes the problem and I'll resubmit.
 
+1579
+Wed Jun 22 21:19:51 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec6ea30_83b2ecfc
+UUID: 8e09fadf_9a3e0dd0
+Bytes: 206
+Ok.. So the subtle detail here is that ret = 1, which sets direct_complete which wasn't done previously. This allows the problematic i2c driver to properly suspend w/o causing clk disable/enable mismatches.
+
