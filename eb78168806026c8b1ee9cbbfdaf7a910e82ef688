@@ -1,0 +1,11 @@
+Revision: eb78168806026c8b1ee9cbbfdaf7a910e82ef688
+Patch-set: 3
+File: drivers/base/power/main.c
+
+1579
+Wed Jun 22 18:12:44 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae9cfe2a_b87e4050
+Bytes: 73
+Is this the only place no_pm_callbacks is consumed? Is there a reason why
+
