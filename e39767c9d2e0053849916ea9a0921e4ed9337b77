@@ -55,3 +55,13 @@ So this sounds reasonable, but as this is a backport of an upstream commit, I'd 
 
 +Ulf: Do you have any thoughts on this?
 
+1579
+Wed Jun 22 18:30:11 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ed5a6ce_4bc09959
+UUID: 0ec6ea30_83b2ecfc
+Bytes: 279
+Hmm. Looking closer, all of this is just to skip these conditionals below. In the empty case, we will just fall out the bottom of the if/else with callback==NULL and end up and the unlock label.
+
+So just avoiding the memory latency for these conditionals is what fixes the issue?
+
