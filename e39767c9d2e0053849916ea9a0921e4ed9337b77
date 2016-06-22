@@ -81,3 +81,20 @@ UUID: 8e09fadf_9a3e0dd0
 Bytes: 206
 Ok.. So the subtle detail here is that ret = 1, which sets direct_complete which wasn't done previously. This allows the problematic i2c driver to properly suspend w/o causing clk disable/enable mismatches.
 
+1579
+Wed Jun 22 21:45:43 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e09fadf_9a3e0dd0
+UUID: 2eed6e38_42c1343c
+Bytes: 498
+Ok, then it still seems like we don't need dev->power.no_pm_callbacks or any of the calls to device_pm_check_callbacks except one right here. The code would then be:
+
+  if (!device_pm_check_callbacks()) {
+    ret = 1;
+    goto unlock;
+  }
+
+and none of the changes in the other files are needed.
+
+Having to sprinkle device_pm_check_callbacks() invocations throughout the code to get this set up correctly seems error prone, and if its side effects are only used here, then why not only call it here?
+
