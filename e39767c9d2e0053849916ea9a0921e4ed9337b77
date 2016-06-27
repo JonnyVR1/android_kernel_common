@@ -98,3 +98,11 @@ and none of the changes in the other files are needed.
 
 Having to sprinkle device_pm_check_callbacks() invocations throughout the code to get this set up correctly seems error prone, and if its side effects are only used here, then why not only call it here?
 
+1579
+Mon Jun 27 23:22:27 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eed6e38_42c1343c
+UUID: a047af66_831bfe14
+Bytes: 199
+Again, I don't disagree with you, and I can implement such a change, but I'm hesitant since this is a backport, and switching to your method may cause future collisions with other backported changes.
+
