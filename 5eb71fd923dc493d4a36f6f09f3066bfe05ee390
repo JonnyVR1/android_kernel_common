@@ -1,0 +1,19 @@
+Revision: 5eb71fd923dc493d4a36f6f09f3066bfe05ee390
+Patch-set: 1
+File: /COMMIT_MSG
+
+26:0-29:52
+Fri Jul 01 14:35:35 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bd1efa57_28953353
+Bytes: 880
+nits for next time:
+
+I understand that his is an UPSTREAM patch, the following advice is what I give if it is not to make the (edited) path to upstream easier. The advice is pedantic with regards to this patch, but easy enough to comply.
+
+Bug: is not an upstream compliant footer, add it to the bottom so that it can be 'truncated' out. As it stands it has been placed into the 'middle' of the commit.
+
+Change-Id: is missing. Also not an upstream compliant footer and is a reason to reject into upstream with checkpatch.pl. Historically it was required specifically by Gerrit to be at the bottom, but that requirement disappeared about 3 years ago allowing for some flexibility. I continue to make it the _bottom_ footer out of habit...
+
+With a Change-Id in the patch comments, we gain the ability to research it in Gerrit, look back at comments garnered in the CLs during review.
+
