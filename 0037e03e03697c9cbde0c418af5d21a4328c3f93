@@ -1,0 +1,11 @@
+Revision: 0037e03e03697c9cbde0c418af5d21a4328c3f93
+Patch-set: 2
+File: kernel/cpuset.c
+
+2077:19-2077:38
+Wed Jul 06 16:55:43 2016 +0000
+Author: YongQin Liu <1041813@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d1aa603_37ce5867
+Bytes: 71
+would it be better to use the provided subsys_cgroup_allow_attach here?
+
