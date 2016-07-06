@@ -1,0 +1,11 @@
+Revision: b098af81c39cb18d64e4eff693c81f9411265985
+Patch-set: 3
+File: mm/vmscan.c
+
+187
+Wed Jul 06 18:19:43 2016 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fddf9221_54430934
+Bytes: 84
+It would be better to zero-initialize the struct to avoid future problems like this.
+
