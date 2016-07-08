@@ -1,0 +1,24 @@
+Revision: 66ea11ca2c5580525a0af407cf1791d502719786
+Patch-set: 1
+File: fs/sdcardfs/packagelist.c
+
+353:20-353:29
+Fri Jul 08 22:25:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aeb4463_6f80d0de
+Bytes: 89
+<truncated>\n
+
+may stick out more, otherwise someone will match to package Truncated.app?
+
+364:1-368:3
+Fri Jul 08 22:25:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aeb4463_8f9f941d
+Bytes: 317
+count -= written might not be enough?
+
+Given the imprecise nature of determining truncation, and the large size of PAGE_SIZE, why not reserve sizeof(errormsg) to simplify the code.
+
+All references to PAGE_SIZE for limit should be (PAGE_SIZE - sizeof(errormsg)) and when you hit this artificial limit, just drop it in.
+
