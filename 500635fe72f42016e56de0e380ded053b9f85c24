@@ -1,0 +1,19 @@
+Revision: 500635fe72f42016e56de0e380ded053b9f85c24
+Patch-set: 2
+File: fs/sdcardfs/packagelist.c
+
+358:6-358:53
+Fri Jul 08 23:03:39 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aeb4463_cf611b92
+Bytes: 298
+very minor nit: I always get nervous about operator precedence:
+
+if ((count + written) == (PAGE_SIZE - sizeof(errormsg))) {
+
+is very clear to all observers, whereas someone could hiccup and think you wanted:
+
+if (((count + written) == PAGE_SIZE) - sizeof(errormsg)) {
+
+and give it a double-take ...
+
