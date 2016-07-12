@@ -1,0 +1,8 @@
+Code-Review+2: Daniel Rosenberg <drosen@google.com>
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Verified+1: Daniel Rosenberg <drosen@google.com>
+Submitted-by: Daniel Rosenberg <drosen@google.com>
+Submitted-at: Tue, 12 Jul 2016 22:24:33 +0000
+Reviewed-on: https://android-review.googlesource.com/247473
+Project: kernel/common
+Branch: refs/heads/android-3.18
