@@ -1,0 +1,11 @@
+Revision: 5938fb17b1191e034ea8f5610cc6ab37abcb4ef8
+Patch-set: 3
+File: arch/arm/kernel/setup.c
+
+875
+Tue Jul 12 21:08:14 2016 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2130e3_1d60b5e4
+Bytes: 50
+shouldn't there be "vfpd32" and "lpae" in between?
+
