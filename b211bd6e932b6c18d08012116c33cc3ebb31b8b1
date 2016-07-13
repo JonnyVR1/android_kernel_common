@@ -1,0 +1,11 @@
+Revision: b211bd6e932b6c18d08012116c33cc3ebb31b8b1
+Patch-set: 1
+File: lib/asn1_decoder.c
+
+110:0-111:21
+Wed Jul 13 00:24:57 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5a1264d9_ef7fb5f0
+Bytes: 44
+odd adjustment ... but hey, its upstream ...
+
