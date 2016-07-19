@@ -2060,6 +2060,7 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
 	.cancel_attach	= cpuset_cancel_attach,
 	.attach		= cpuset_attach,
 	.bind		= cpuset_bind,
+	.allow_attach   = subsys_cgroup_allow_attach,
 	.legacy_cftypes	= files,
 	.early_init	= 1,
 };
