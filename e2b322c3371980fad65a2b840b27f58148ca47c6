@@ -1,0 +1,67 @@
+Revision: e2b322c3371980fad65a2b840b27f58148ca47c6
+Patch-set: 1
+File: drivers/misc/memory_state_time.c
+
+277:6-277:27
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_3f2e9794
+Bytes: 54
+Why not if (registered_bw_sources < MAX_NUM_SOURCES) ?
+
+280:3-280:9
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_3f17b74a
+Bytes: 77
+Maybe it makes sense to make it configurable from DT? I mean MAX_NUM_SOURCES.
+
+308:3-308:9
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_dfb9c32e
+Bytes: 33
+Do we need to free 'bw_buckets' ?
+
+337:3-337:9
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_9fc34ba1
+Bytes: 21
+Free 'freq_buckets' ?
+
+353:3-353:9
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_5f0033d2
+Bytes: 15
+free freq_entry
+
+381:2-381:8
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_1f8f5b7c
+Bytes: 14
+mutex_unlock ?
+
+384:2-384:8
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_dfa0a3ec
+Bytes: 14
+mutex_unlock ?
+
+423:2-423:8
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_5f28339f
+Bytes: 19
+destroy_workqueue()
+
+436:2-436:8
+Mon Aug 01 21:57:48 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d450ee1d_bf45e76f
+Bytes: 53
+You would need probably to clean memory here as well.
+
