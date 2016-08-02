@@ -1,0 +1,11 @@
+Revision: 946e1fcb5855c5b7db0e68c8603bb462bede6fd1
+Patch-set: 1
+File: drivers/android/binder.c
+
+2008
+Tue Aug 02 22:54:44 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_72869e7a
+Bytes: 157
+I don't think the driver cares if this is a strong ref or not. If you want to protect a process from itself I can change this to require a strong ref though.
+
