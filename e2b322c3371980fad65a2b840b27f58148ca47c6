@@ -9,12 +9,28 @@ UUID: d450ee1d_3f2e9794
 Bytes: 54
 Why not if (registered_bw_sources < MAX_NUM_SOURCES) ?
 
+277:6-277:27
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_3f2e9794
+UUID: d450ee1d_fff47fbf
+Bytes: 4
+Done
+
 280:3-280:9
 Mon Aug 01 21:57:48 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d450ee1d_3f17b74a
 Bytes: 77
 Maybe it makes sense to make it configurable from DT? I mean MAX_NUM_SOURCES.
+
+280:3-280:9
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_3f17b74a
+UUID: 2f83b188_c7ab5e82
+Bytes: 4
+Done
 
 308:3-308:9
 Mon Aug 01 21:57:48 2016 +0000
@@ -23,12 +39,28 @@ UUID: d450ee1d_dfb9c32e
 Bytes: 33
 Do we need to free 'bw_buckets' ?
 
+308:3-308:9
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_dfb9c32e
+UUID: d450ee1d_5f9f135b
+Bytes: 9
+Done. Yes
+
 337:3-337:9
 Mon Aug 01 21:57:48 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d450ee1d_9fc34ba1
 Bytes: 21
 Free 'freq_buckets' ?
+
+337:3-337:9
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_9fc34ba1
+UUID: d450ee1d_9f846b0a
+Bytes: 4
+Done
 
 353:3-353:9
 Mon Aug 01 21:57:48 2016 +0000
@@ -37,12 +69,28 @@ UUID: d450ee1d_5f0033d2
 Bytes: 15
 free freq_entry
 
+353:3-353:9
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_5f0033d2
+UUID: d450ee1d_3a87c50c
+Bytes: 4
+Done
+
 381:2-381:8
 Mon Aug 01 21:57:48 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d450ee1d_1f8f5b7c
 Bytes: 14
 mutex_unlock ?
+
+381:2-381:8
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_1f8f5b7c
+UUID: d450ee1d_7aa41da4
+Bytes: 4
+Done
 
 384:2-384:8
 Mon Aug 01 21:57:48 2016 +0000
@@ -51,6 +99,14 @@ UUID: d450ee1d_dfa0a3ec
 Bytes: 14
 mutex_unlock ?
 
+384:2-384:8
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_dfa0a3ec
+UUID: d450ee1d_3a9ea54e
+Bytes: 4
+Done
+
 423:2-423:8
 Mon Aug 01 21:57:48 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,10 +114,26 @@ UUID: d450ee1d_5f28339f
 Bytes: 19
 destroy_workqueue()
 
+423:2-423:8
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_5f28339f
+UUID: d450ee1d_3ad90525
+Bytes: 4
+Done
+
 436:2-436:8
 Mon Aug 01 21:57:48 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d450ee1d_bf45e76f
 Bytes: 53
 You would need probably to clean memory here as well.
+
+436:2-436:8
+Tue Aug 02 01:40:40 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d450ee1d_bf45e76f
+UUID: d450ee1d_ba685523
+Bytes: 4
+Done
 
