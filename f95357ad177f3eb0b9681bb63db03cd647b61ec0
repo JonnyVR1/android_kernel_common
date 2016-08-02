@@ -1,0 +1,58 @@
+Revision: f95357ad177f3eb0b9681bb63db03cd647b61ec0
+Patch-set: 2
+File: drivers/misc/memory_state_time.c
+
+298:48-298:59
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_52de020e
+Bytes: 102
+Not must, but we may want to keep default.
+Like 
+  int num_sources = 10;
+And not to fail if not found.
+
+355:13-355:17
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_125cfa80
+Bytes: 30
+What will happen if lenf == 0?
+
+401:2-401:14
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_b23f4609
+Bytes: 64
+You can use goto to release mutex instead of writing it 3 times.
+
+456:2-456:19
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_52512261
+Bytes: 111
+Usually in order not to have 3 destroy_workqueue() people are using goto. Probably the only case when it is Ok.
+
+File: include/linux/memory-state-time.h
+
+18:8-18:27
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_b26e66fe
+Bytes: 34
+I can not find where this is used.
+
+20
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_f24b8e83
+Bytes: 42
+You can remove this if you move #22 to #34
+
+22:0-22:7
+Tue Aug 02 22:46:23 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4954efc_32325615
+Bytes: 24
+You can move this below.
+
