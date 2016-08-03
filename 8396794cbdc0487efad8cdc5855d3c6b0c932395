@@ -1,0 +1,18 @@
+Revision: 8396794cbdc0487efad8cdc5855d3c6b0c932395
+Patch-set: 3
+File: drivers/misc/memory_state_time.c
+
+119:12-119:13
+Wed Aug 03 22:43:51 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4454ee6_3d9b8fba
+Bytes: 4
+>= ?
+
+298:1-298:4
+Wed Aug 03 22:43:51 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4454ee6_bd09dfff
+Bytes: 18
+No need to use ret
+
