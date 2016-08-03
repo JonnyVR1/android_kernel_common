@@ -12,12 +12,28 @@ Like
   int num_sources = 10;
 And not to fail if not found.
 
+298:48-298:59
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_52de020e
+UUID: d4954efc_72e1be02
+Bytes: 4
+Done
+
 355:13-355:17
 Tue Aug 02 22:46:23 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d4954efc_125cfa80
 Bytes: 30
 What will happen if lenf == 0?
+
+355:13-355:17
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_125cfa80
+UUID: d4954efc_86f68b91
+Bytes: 117
+Hashtable will have no entries, so nothing will happen. Where it is used, hash_for_each_possible will not do anything
 
 401:2-401:14
 Tue Aug 02 22:46:23 2016 +0000
@@ -26,12 +42,28 @@ UUID: d4954efc_b23f4609
 Bytes: 64
 You can use goto to release mutex instead of writing it 3 times.
 
+401:2-401:14
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_b23f4609
+UUID: d4954efc_6637bf04
+Bytes: 78
+As you pointed out, mutex is actually not needed here in init sequence, thanks
+
 456:2-456:19
 Tue Aug 02 22:46:23 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d4954efc_52512261
 Bytes: 111
 Usually in order not to have 3 destroy_workqueue() people are using goto. Probably the only case when it is Ok.
+
+456:2-456:19
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_52512261
+UUID: d4954efc_9caedceb
+Bytes: 4
+Done
 
 File: include/linux/memory-state-time.h
 
@@ -42,12 +74,28 @@ UUID: d4954efc_b26e66fe
 Bytes: 34
 I can not find where this is used.
 
+18:8-18:27
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_b26e66fe
+UUID: d4954efc_bcc638b1
+Bytes: 54
+I added you to pagit/633533 where there is an example.
+
 20
 Tue Aug 02 22:46:23 2016 +0000
 Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d4954efc_f24b8e83
 Bytes: 42
 You can remove this if you move #22 to #34
+
+20
+Wed Aug 03 02:09:14 2016 +0000
+Author: James Carr <1075444@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4954efc_f24b8e83
+UUID: d4954efc_3c21c859
+Bytes: 117
+This specific order of 3 declarations is required because the typedef memory_state_update_fn_t is part of the struct.
 
 22:0-22:7
 Tue Aug 02 22:46:23 2016 +0000
