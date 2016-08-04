@@ -65,6 +65,9 @@ static const unsigned freqs[] = { 400000, 300000, 200000, 100000 };
 bool use_spi_crc = 1;
 module_param(use_spi_crc, bool, 0);
 
+static void mmc_update_latency_hist(struct mmc_host *host,
+				    int read, u_int64_t delta_us);
+
 /*
  * We normally treat cards as removed during suspend if they are not
  * known to be on a non-removable bus, to avoid the risk of writing
@@ -175,6 +178,17 @@ void mmc_request_done(struct mmc_host *host, struct mmc_request *mrq)
 			pr_debug("%s:     %d bytes transferred: %d\n",
 				mmc_hostname(host),
 				mrq->data->bytes_xfered, mrq->data->error);
+			if (mrq->lat_hist_enabled) {
+				ktime_t completion;
+				u_int64_t delta_us;
+
+				completion = ktime_get();
+				delta_us = ktime_us_delta(completion,
+							  mrq->io_start);
+				mmc_update_latency_hist(host,
+					(mrq->data->flags & MMC_DATA_READ),
+					delta_us);
+			}
 			trace_mmc_blk_rw_end(cmd->opcode, cmd->arg, mrq->data);
 		}
 
@@ -541,6 +555,11 @@ struct mmc_async_req *mmc_start_req(struct mmc_host *host,
 	}
 
 	if (!err && areq) {
+		if (host->latency_hist_enabled) {
+			areq->mrq->lat_hist_enabled = 1;
+			areq->mrq->io_start = ktime_get();
+		} else
+			areq->mrq->lat_hist_enabled = 0;
 		trace_mmc_blk_rw_start(areq->mrq->cmd->opcode,
 				       areq->mrq->cmd->arg,
 				       areq->mrq->data);
@@ -1751,7 +1770,7 @@ void mmc_init_erase(struct mmc_card *card)
 }
 
 static unsigned int mmc_mmc_erase_timeout(struct mmc_card *card,
-				          unsigned int arg, unsigned int qty)
+					  unsigned int arg, unsigned int qty)
 {
 	unsigned int erase_timeout;
 
@@ -2887,6 +2906,192 @@ static void __exit mmc_exit(void)
 	mmc_unregister_host_class();
 	mmc_unregister_bus();
 	destroy_workqueue(workqueue);
+}
+
+/*
+ * MMC IO latency support. We want this to be as cheap as possible, so doing
+ * this lockless (and avoiding atomics), a few off by a few errors in this
+ * code is not harmful, and we don't want to do anything that is
+ * perf-impactful.
+ */
+static int latency_x_axis_us[] = {
+	100,
+	200,
+	300,
+	400,
+	500,
+	600,
+	700,
+	800,
+	900,
+	1000,
+	1200,
+	1400,
+	1600,
+	1800,
+	2000,
+	2500,
+	3000,
+	4000,
+	5000,
+	6000,
+	7000,
+	9000,
+	10000
+};
+
+static void
+mmc_update_latency_hist(struct mmc_host *host, int read, u_int64_t delta_us)
+{
+	int i;
+
+	for (i = 0 ; i < (sizeof(latency_x_axis_us) / sizeof(int)) ; i++) {
+		if (delta_us < (u_int64_t)latency_x_axis_us[i]) {
+			if (read)
+				host->latency_y_axis_read[i]++;
+			else
+				host->latency_y_axis_write[i]++;
+			break;
+		}
+	}
+	if (i == sizeof(latency_x_axis_us)) {
+		if (read)
+			host->latency_y_axis_ovf_read++;
+		else
+			host->latency_y_axis_ovf_write++;
+	}
+	if (read)
+		host->latency_reads_elems++;
+	else
+		host->latency_writes_elems++;
+}
+
+static void
+mmc_zero_latency_hist(struct mmc_host *host)
+{
+	memset(host->latency_y_axis_read, 0, sizeof(latency_x_axis_us));
+	host->latency_y_axis_ovf_read = 0;
+	memset(host->latency_y_axis_write, 0, sizeof(latency_x_axis_us));
+	host->latency_y_axis_ovf_write = 0;
+	host->latency_reads_elems = 0;
+	host->latency_writes_elems = 0;
+}
+
+static ssize_t
+latency_hist_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	int i;
+	struct mmc_host *host = cls_dev_to_mmc_host(dev);
+	int bytes_written = 0;
+	int pct, num_elem, elem;
+
+	num_elem = host->latency_reads_elems;
+	if (num_elem > 0) {
+		bytes_written += snprintf(buf + bytes_written,
+					  PAGE_SIZE - bytes_written,
+					  "IO svc_time Read Latency Histogram :\n");
+		for (i = 0 ;
+		     i < (int)(sizeof(latency_x_axis_us) / sizeof(int));
+		     i++) {
+			elem = host->latency_y_axis_read[i];
+			pct = (elem * 100) / num_elem;
+			bytes_written += snprintf(buf + bytes_written,
+						  PAGE_SIZE - bytes_written,
+						  "\t< %5dus%15d%15d%%\n",
+						  latency_x_axis_us[i],
+						  elem, pct);
+		}
+		elem = host->latency_y_axis_ovf_read;
+		pct = (elem * 100) / num_elem;
+		bytes_written += snprintf(buf + bytes_written,
+					  PAGE_SIZE - bytes_written,
+					  "\t> %5dms%15d%15d%%\n", 10,
+					  elem, pct);
+	}
+	num_elem = host->latency_writes_elems;
+	if (num_elem > 0) {
+		bytes_written += snprintf(buf + bytes_written,
+				  PAGE_SIZE - bytes_written,
+				  "IO svc_time Write Latency Histogram :\n");
+		for (i = 0 ;
+		     i < (int)(sizeof(latency_x_axis_us) / sizeof(int));
+		     i++) {
+			elem = host->latency_y_axis_write[i];
+			pct = (elem * 100) / num_elem;
+			bytes_written += snprintf(buf + bytes_written,
+						  PAGE_SIZE - bytes_written,
+						  "\t< %5dus%15d%15d%%\n",
+						  latency_x_axis_us[i],
+						  elem, pct);
+		}
+		elem = host->latency_y_axis_ovf_write;
+		pct = (elem * 100) / num_elem;
+		bytes_written += snprintf(buf + bytes_written,
+					  PAGE_SIZE - bytes_written,
+					  "\t> %5dms%15d%15d%%\n", 10,
+					  elem, pct);
+	}
+	return bytes_written;
+}
+
+/*
+ * Values permitted 0, 1, 2.
+ * 0 -> Disable IO latency histograms (default)
+ * 1 -> Enable IO latency histograms
+ * 2 -> Zero out IO latency histograms
+ */
+static ssize_t
+latency_hist_store(struct device *dev, struct device_attribute *attr,
+		   const char *buf, size_t count)
+{
+	struct mmc_host *host = cls_dev_to_mmc_host(dev);
+	long value;
+
+	if (kstrtol(buf, 0, &value))
+		return -EINVAL;
+	if (value == 2)
+		mmc_zero_latency_hist(host);
+	else if (value == 0 || value == 1)
+		host->latency_hist_enabled = value;
+	return count;
+}
+
+static DEVICE_ATTR(latency_hist, S_IRUGO | S_IWUSR,
+		   latency_hist_show, latency_hist_store);
+
+static void
+mmc_latency_hist_sysfs_init(struct mmc_host *host)
+{
+	if (device_create_file(&host->class_dev, &dev_attr_latency_hist))
+		pr_err("%s: Failed to create latency_hist sysfs entry\n",
+		       mmc_hostname(host));
+}
+
+static void
+mmc_latency_hist_sysfs_exit(struct mmc_host *host)
+{
+	device_remove_file(&host->class_dev, &dev_attr_latency_hist);
+}
+
+void
+mmc_alloc_latency_hist(struct mmc_host *host)
+{
+	host->latency_y_axis_read = kzalloc(sizeof(latency_x_axis_us),
+					    GFP_KERNEL);
+	host->latency_y_axis_ovf_read = 0;
+	host->latency_y_axis_write = kzalloc(sizeof(latency_x_axis_us),
+					     GFP_KERNEL);
+	host->latency_y_axis_ovf_write = 0;
+	mmc_latency_hist_sysfs_init(host);
+}
+
+void
+mmc_free_latency_hist(struct mmc_host *host)
+{
+	mmc_latency_hist_sysfs_exit(host);
+	host->latency_hist_enabled = 0;
+	kfree(host->latency_y_axis_read);
+	kfree(host->latency_y_axis_write);
 }
 
 subsys_initcall(mmc_init);

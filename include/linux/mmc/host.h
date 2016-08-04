@@ -377,6 +377,14 @@ struct mmc_host {
 	} embedded_sdio_data;
 #endif
 
+	int			latency_hist_enabled;
+	int			*latency_y_axis_read;
+	int			latency_y_axis_ovf_read;
+	int			latency_reads_elems;
+	int			*latency_y_axis_write;
+	int			latency_y_axis_ovf_write;
+	int			latency_writes_elems;
+
 	unsigned long		private[0] ____cacheline_aligned;
 };
 
