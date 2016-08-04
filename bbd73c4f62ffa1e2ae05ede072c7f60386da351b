@@ -1,0 +1,11 @@
+Revision: bbd73c4f62ffa1e2ae05ede072c7f60386da351b
+Patch-set: 9
+File: drivers/android/binder.c
+
+1771
+Thu Aug 04 23:33:44 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 345cea04_2cea4ba6
+Bytes: 82
+there seems to be a lot of return paths where return_error_param is uninitialized.
+
