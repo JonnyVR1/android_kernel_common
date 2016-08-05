@@ -1355,7 +1355,8 @@ static void binder_transaction(struct binder_proc *proc,
 		if (in_reply_to == NULL) {
 			binder_user_error("%d:%d got reply transaction with no transaction stack\n",
 					  proc->pid, thread->pid);
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EPROTO;
 			goto err_empty_call_stack;
 		}
 		binder_set_nice(in_reply_to->saved_priority);
@@ -1366,7 +1367,8 @@ static void binder_transaction(struct binder_proc *proc,
 				in_reply_to->to_proc->pid : 0,
 				in_reply_to->to_thread ?
 				in_reply_to->to_thread->pid : 0);
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EPROTO;
 			in_reply_to = NULL;
 			goto err_bad_call_stack;
 		}
@@ -1374,6 +1376,7 @@ static void binder_transaction(struct binder_proc *proc,
 		target_thread = in_reply_to->from;
 		if (target_thread == NULL) {
 			return_error = BR_DEAD_REPLY;
+			return_error_param = 0;
 			goto err_dead_binder;
 		}
 		if (target_thread->transaction_stack != in_reply_to) {
@@ -1382,7 +1385,8 @@ static void binder_transaction(struct binder_proc *proc,
 				target_thread->transaction_stack ?
 				target_thread->transaction_stack->debug_id : 0,
 				in_reply_to->debug_id);
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EPROTO;
 			in_reply_to = NULL;
 			target_thread = NULL;
 			goto err_dead_binder;
@@ -1396,7 +1400,8 @@ static void binder_transaction(struct binder_proc *proc,
 			if (ref == NULL) {
 				binder_user_error("%d:%d got transaction to invalid handle\n",
 					proc->pid, thread->pid);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EINVAL;
 				goto err_invalid_target_handle;
 			}
 			target_node = ref->node;
@@ -1404,6 +1409,7 @@ static void binder_transaction(struct binder_proc *proc,
 			target_node = binder_context_mgr_node;
 			if (target_node == NULL) {
 				return_error = BR_DEAD_REPLY;
+				return_error_param = 0;
 				goto err_no_context_mgr_node;
 			}
 		}
@@ -1411,6 +1417,7 @@ static void binder_transaction(struct binder_proc *proc,
 		target_proc = target_node->proc;
 		if (target_proc == NULL) {
 			return_error = BR_DEAD_REPLY;
+			return_error_param = 0;
 			goto err_dead_binder;
 		}
 		if (security_binder_transaction(proc->tsk, target_proc->tsk) < 0) {
@@ -1428,7 +1435,8 @@ static void binder_transaction(struct binder_proc *proc,
 					tmp->to_proc ? tmp->to_proc->pid : 0,
 					tmp->to_thread ?
 					tmp->to_thread->pid : 0);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EPROTO;
 				goto err_bad_call_stack;
 			}
 			while (tmp) {
@@ -1451,14 +1459,16 @@ static void binder_transaction(struct binder_proc *proc,
 	/* TODO: reuse incoming transaction for reply */
 	t = kzalloc(sizeof(*t), GFP_KERNEL);
 	if (t == NULL) {
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -ENOMEM;
 		goto err_alloc_t_failed;
 	}
 	binder_stats_created(BINDER_STAT_TRANSACTION);
 
 	tcomplete = kzalloc(sizeof(*tcomplete), GFP_KERNEL);
 	if (tcomplete == NULL) {
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -ENOMEM;
 		goto err_alloc_tcomplete_failed;
 	}
 	binder_stats_created(BINDER_STAT_TRANSACTION_COMPLETE);
@@ -1499,7 +1509,8 @@ static void binder_transaction(struct binder_proc *proc,
 	t->buffer = binder_alloc_buf(target_proc, tr->data_size,
 		tr->offsets_size, !reply && (t->flags & TF_ONE_WAY));
 	if (t->buffer == NULL) {
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -ENOSPC;
 		goto err_binder_alloc_buf_failed;
 	}
 	t->buffer->allow_user_free = 0;
@@ -1517,20 +1528,23 @@ static void binder_transaction(struct binder_proc *proc,
 			   tr->data.ptr.buffer, tr->data_size)) {
 		binder_user_error("%d:%d got transaction with invalid data ptr\n",
 				proc->pid, thread->pid);
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -EFAULT;
 		goto err_copy_data_failed;
 	}
 	if (copy_from_user(offp, (const void __user *)(uintptr_t)
 			   tr->data.ptr.offsets, tr->offsets_size)) {
 		binder_user_error("%d:%d got transaction with invalid offsets ptr\n",
 				proc->pid, thread->pid);
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -EFAULT;
 		goto err_copy_data_failed;
 	}
 	if (!IS_ALIGNED(tr->offsets_size, sizeof(binder_size_t))) {
 		binder_user_error("%d:%d got transaction with invalid offsets size, %lld\n",
 				proc->pid, thread->pid, (u64)tr->offsets_size);
-		return_error = BR_FAILED_REPLY;
+		return_error = BR_ERROR;
+		return_error_param = -EINVAL;
 		goto err_bad_offset;
 	}
 	off_end = (void *)offp + tr->offsets_size;
@@ -1547,7 +1561,8 @@ static void binder_transaction(struct binder_proc *proc,
 					  (u64)off_min,
 					  (u64)(t->buffer->data_size -
 					  sizeof(*fp)));
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EINVAL;
 			goto err_bad_offset;
 		}
 		fp = (struct flat_binder_object *)(t->buffer->data + *offp);
@@ -1561,7 +1576,8 @@ static void binder_transaction(struct binder_proc *proc,
 			if (node == NULL) {
 				node = binder_new_node(proc, fp->binder, fp->cookie);
 				if (node == NULL) {
-					return_error = BR_FAILED_REPLY;
+					return_error = BR_ERROR;
+					return_error_param = -ENOMEM;
 					goto err_binder_new_node_failed;
 				}
 				node->min_priority = fp->flags & FLAT_BINDER_FLAG_PRIORITY_MASK;
@@ -1572,7 +1588,8 @@ static void binder_transaction(struct binder_proc *proc,
 					proc->pid, thread->pid,
 					(u64)fp->binder, node->debug_id,
 					(u64)fp->cookie, (u64)node->cookie);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EINVAL;
 				goto err_binder_get_ref_for_node_failed;
 			}
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
@@ -1582,7 +1599,8 @@ static void binder_transaction(struct binder_proc *proc,
 			}
 			ref = binder_get_ref_for_node(target_proc, node);
 			if (ref == NULL) {
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -ENOMEM;
 				goto err_binder_get_ref_for_node_failed;
 			}
 			if (fp->type == BINDER_TYPE_BINDER)
@@ -1607,7 +1625,8 @@ static void binder_transaction(struct binder_proc *proc,
 				binder_user_error("%d:%d got transaction with invalid handle, %d\n",
 						proc->pid,
 						thread->pid, fp->handle);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EINVAL;
 				goto err_binder_get_ref_failed;
 			}
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
@@ -1633,7 +1652,8 @@ static void binder_transaction(struct binder_proc *proc,
 
 				new_ref = binder_get_ref_for_node(target_proc, ref->node);
 				if (new_ref == NULL) {
-					return_error = BR_FAILED_REPLY;
+					return_error = BR_ERROR;
+					return_error_param = -ENOMEM;
 					goto err_binder_get_ref_for_node_failed;
 				}
 				fp->handle = new_ref->desc;
@@ -1655,13 +1675,15 @@ static void binder_transaction(struct binder_proc *proc,
 				if (!(in_reply_to->flags & TF_ACCEPT_FDS)) {
 					binder_user_error("%d:%d got reply with fd, %d, but target does not allow fds\n",
 						proc->pid, thread->pid, fp->handle);
-					return_error = BR_FAILED_REPLY;
+					return_error = BR_ERROR;
+					return_error_param = -EPERM;
 					goto err_fd_not_allowed;
 				}
 			} else if (!target_node->accept_fds) {
 				binder_user_error("%d:%d got transaction with fd, %d, but target does not allow fds\n",
 					proc->pid, thread->pid, fp->handle);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EPERM;
 				goto err_fd_not_allowed;
 			}
 
@@ -1669,7 +1691,8 @@ static void binder_transaction(struct binder_proc *proc,
 			if (file == NULL) {
 				binder_user_error("%d:%d got transaction with invalid fd, %d\n",
 					proc->pid, thread->pid, fp->handle);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = -EBADF;
 				goto err_fget_failed;
 			}
 			if (security_binder_transfer_file(proc->tsk, target_proc->tsk, file) < 0) {
@@ -1681,7 +1704,8 @@ static void binder_transaction(struct binder_proc *proc,
 			target_fd = task_get_unused_fd_flags(target_proc, O_CLOEXEC);
 			if (target_fd < 0) {
 				fput(file);
-				return_error = BR_FAILED_REPLY;
+				return_error = BR_ERROR;
+				return_error_param = target_fd;
 				goto err_get_unused_fd_failed;
 			}
 			task_fd_install(target_proc, target_fd, file);
@@ -1695,7 +1719,8 @@ static void binder_transaction(struct binder_proc *proc,
 		default:
 			binder_user_error("%d:%d got transaction with invalid object type, %x\n",
 				proc->pid, thread->pid, fp->type);
-			return_error = BR_FAILED_REPLY;
+			return_error = BR_ERROR;
+			return_error_param = -EINVAL;
 			goto err_bad_object_type;
 		}
 	}
