@@ -1,0 +1,18 @@
+Revision: cebd379c1838d43cda9215bff9da370437944e12
+Patch-set: 1
+File: kernel/power/wakeup_reason.c
+
+45:41-45:43
+Fri Aug 05 18:31:51 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b99e1320_a5c5c4a8
+Bytes: 59
+Please use define - because you are using it below as well.
+
+223:6-223:26
+Fri Aug 05 18:31:51 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b99e1320_250454e6
+Bytes: 64
+Should be protected or at least you need to use memory barriers.
+
