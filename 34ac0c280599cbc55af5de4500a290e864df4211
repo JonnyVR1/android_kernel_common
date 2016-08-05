@@ -9,6 +9,14 @@ UUID: b99e1320_ebc71d10
 Bytes: 74
 Why not place actual function here? (at least give the optimizer a chance)
 
+68:0-69:38
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_ebc71d10
+UUID: b99e1320_63efb1ee
+Bytes: 4
+Done
+
 2917:0-2917:11
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +26,28 @@ static const
 
 u_int64_t ?
 
+2917:0-2917:11
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_8b069977
+UUID: b99e1320_e3fae1a6
+Bytes: 122
+Done. And moved to the header file, and used ARRAY_SIZE for the 2 Y-axes values, removing the need to kzalloc/kfree those.
+
 2917:0-2941:2
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_0ba0493a
 Bytes: 124
 If you move this into include/linux/mmc/host.h you can get away from allocating the bucket arrays as you know the ARRAY_SIZE
+
+2917:0-2941:2
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_0ba0493a
+UUID: b99e1320_83c99d81
+Bytes: 4
+Done
 
 2948:54-2948:57
 Fri Aug 05 20:28:49 2016 +0000
@@ -35,6 +59,14 @@ latency_x_axis_us[0]
 Which leads to replacing this all with:
 
 ARRAY_SIZE(latency_x_axis_us)
+
+2948:54-2948:57
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_8b6f792f
+UUID: b99e1320_03dd8d35
+Bytes: 4
+Done
 
 2957:1-2957:38
 Fri Aug 05 20:28:49 2016 +0000
@@ -49,6 +81,14 @@ or rather
 
 i == ARRAY_SIZE(latency_x_axis_us)
 
+2957:1-2957:38
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_eb5ddd7e
+UUID: b99e1320_c3d6c519
+Bytes: 34
+bug :(. Thanks for catching this !
+
 2972:38-2972:63
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,6 +100,14 @@ or rather
 
 sizeof(host->latency_y_axis_read[0]) * ARRAY_SIZE(latency_x_axis_us)
 
+2972:38-2972:63
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_cbe7c1a9
+UUID: b99e1320_03a6edc1
+Bytes: 198
+replacing that with sizeof(host->latency_y_axis_read/write), since that y-axis is one element larger than the x-axis table (overflow bucket). And sizeof(arr) gives me the size of the array in bytes.
+
 2993:12-2993:13
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,12 +115,28 @@ UUID: b99e1320_eb515d0b
 Bytes: 58
 space prohibited before semicolon by linux coding standard
 
+2993:12-2993:13
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_eb515d0b
+UUID: b99e1320_e3ac219f
+Bytes: 4
+Done
+
 2994:52-2994:55
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_4b865178
 Bytes: 24
 use ARRAY_SIZE macro ...
+
+2994:52-2994:55
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_4b865178
+UUID: b99e1320_c3afa591
+Bytes: 4
+Done
 
 3006:2-3006:27
 Fri Aug 05 20:28:49 2016 +0000
@@ -85,12 +149,28 @@ snprintf returns the number of bytes that it wants to write, scnprintf returns t
 
 Please audit all uses.
 
+3006:2-3006:27
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_ab5b5527
+UUID: b99e1320_06159b96
+Bytes: 4
+Done
+
 3016:12-3016:13
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_8b63f9eb
 Bytes: 58
 space prohibited before semicolon by linux coding standard
+
+3016:12-3016:13
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_8b63f9eb
+UUID: b99e1320_639a5169
+Bytes: 4
+Done
 
 3028:2-3028:32
 Fri Aug 05 20:28:49 2016 +0000
@@ -105,6 +185,14 @@ Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_2b2c25b1
 Bytes: 7
 #define
+
+3052:14-3052:15
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_2b2c25b1
+UUID: b99e1320_238c4932
+Bytes: 4
+Done
 
 3066:2-3067:29
 Fri Aug 05 20:28:49 2016 +0000
@@ -129,10 +217,26 @@ UUID: b99e1320_8bb9b992
 Bytes: 9
 unsigned?
 
+381:1-381:4
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_8bb9b992
+UUID: b99e1320_26ee9788
+Bytes: 4
+Done
+
 381:1-382:31
 Fri Aug 05 20:28:49 2016 +0000
 Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_2ba98529
 Bytes: 71
 Drop axis_ovf_read in favour of a +1 on the sizeof latency_y_axis_read?
+
+381:1-382:31
+Fri Aug 05 23:17:27 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_2ba98529
+UUID: b99e1320_c6ea5372
+Bytes: 4
+Done
 
