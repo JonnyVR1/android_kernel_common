@@ -225,6 +225,24 @@ static const u_int64_t latency_x_axis_us[] = {
 	10000
 };
 
+static const u_int64_t qlen_x_axis[] = {
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	12,
+	14,
+	16,
+	18,
+	20,
+};
+
 struct mmc_host {
 	struct device		*parent;
 	struct device		class_dev;
@@ -414,6 +432,13 @@ struct mmc_host {
 	u_int64_t	latency_reads_elems;
 	u_int64_t	latency_y_axis_write[ARRAY_SIZE(latency_x_axis_us) + 1];
 	u_int64_t	latency_writes_elems;
+
+#define MMC_IO_QLEN_HIST_DISABLE	0
+#define MMC_IO_QLEN_HIST_ENABLE		1
+#define MMC_IO_QLEN_HIST_ZERO		2
+	int		qlen_hist_enabled;
+	u_int64_t	qlen_y_axis[ARRAY_SIZE(qlen_x_axis) + 1];
+	u_int64_t	qlen_elems;
 
 	unsigned long		private[0] ____cacheline_aligned;
 };
