@@ -46,6 +46,24 @@ static int mmc_prep_request(struct request_queue *q, struct request *req)
 	return BLKPREP_OK;
 }
 
+static inline void
+mmc_update_qlen_hist(struct mmc_host *host, int in_flight)
+{
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(qlen_x_axis); i++) {
+		if (in_flight < (u_int64_t)qlen_x_axis[i]) {
+			host->qlen_y_axis[i]++;
+			break;
+		}
+	}
+	if (i == ARRAY_SIZE(qlen_x_axis)) {
+		/* Overflowed the histogram */
+		host->qlen_y_axis[i]++;
+	}
+	host->qlen_elems++;
+}
+
 static int mmc_queue_thread(void *d)
 {
 	struct mmc_queue *mq = d;
@@ -63,12 +81,18 @@ static int mmc_queue_thread(void *d)
 		struct request *req = NULL;
 		struct mmc_queue_req *tmp;
 		unsigned int cmd_flags = 0;
+		struct mmc_host *host = mq->card->host;
+		int qlen;
 
 		spin_lock_irq(q->queue_lock);
 		set_current_state(TASK_INTERRUPTIBLE);
+		qlen = q->in_flight[0] + q->in_flight[1];
 		req = blk_fetch_request(q);
 		mq->mqrq_cur->req = req;
 		spin_unlock_irq(q->queue_lock);
+
+		if (host->qlen_hist_enabled)
+			mmc_update_qlen_hist(host, qlen);
 
 		if (req || mq->mqrq_prev->req) {
 			set_current_state(TASK_RUNNING);

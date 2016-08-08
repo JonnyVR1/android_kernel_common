@@ -2949,6 +2949,14 @@ mmc_zero_latency_hist(struct mmc_host *host)
 	host->latency_writes_elems = 0;
 }
 
+static void
+mmc_zero_qlen_hist(struct mmc_host *host)
+{
+	memset(host->qlen_y_axis, 0,
+	       sizeof(host->qlen_y_axis));
+	host->qlen_elems = 0;
+}
+
 static ssize_t
 latency_hist_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -2977,10 +2985,12 @@ latency_hist_show(struct device *dev, struct device_attribute *attr, char *buf)
 		/* Last element in y-axis table is overflow */
 		elem = host->latency_y_axis_read[i];
 		pct = (elem * 100) / num_elem;
+		i = latency_x_axis_us[ARRAY_SIZE(latency_x_axis_us) - 1];
+		i /= 1000; /* us to ms */
 		bytes_written += scnprintf(buf + bytes_written,
 					   PAGE_SIZE - bytes_written,
-					   "\t> %5dms%15llu%15d%%\n", 10,
-					   elem, pct);
+					   "\t> %5dms%15llu%15d%%\n",
+					   i, elem, pct);
 	}
 	num_elem = host->latency_writes_elems;
 	if (num_elem > 0) {
@@ -3001,13 +3011,53 @@ latency_hist_show(struct device *dev, struct device_attribute *attr, char *buf)
 		/* Last element in y-axis table is overflow */
 		elem = host->latency_y_axis_write[i];
 		pct = (elem * 100) / num_elem;
+		i = latency_x_axis_us[ARRAY_SIZE(latency_x_axis_us) - 1];
+		i /= 1000; /* us to ms */
 		bytes_written += scnprintf(buf + bytes_written,
 					   PAGE_SIZE - bytes_written,
-					   "\t> %5dms%15llu%15d%%\n", 10,
-					   elem, pct);
+					   "\t> %5dms%15llu%15d%%\n",
+					   i, elem, pct);
 	}
 	return bytes_written;
 }
+
+static ssize_t
+qlen_hist_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	int i;
+	struct mmc_host *host = cls_dev_to_mmc_host(dev);
+	int bytes_written = 0;
+	int pct, num_elem;
+	u_int64_t elem;
+
+	num_elem = host->qlen_elems;
+	if (num_elem > 0) {
+		bytes_written += scnprintf(buf + bytes_written,
+				   PAGE_SIZE - bytes_written,
+				   "IO Q Length Histogram :\n");
+		for (i = 0;
+		     i < ARRAY_SIZE(qlen_x_axis);
+		     i++) {
+			elem = host->qlen_y_axis[i];
+			pct = (elem * 100) / num_elem;
+			bytes_written += scnprintf(buf + bytes_written,
+						   PAGE_SIZE - bytes_written,
+						   "\t< %5llu%15llu%15d%%\n",
+						   qlen_x_axis[i],
+						   elem, pct);
+		}
+		/* Last element in y-axis table is overflow */
+		elem = host->qlen_y_axis[i];
+		pct = (elem * 100) / num_elem;
+		bytes_written += scnprintf(buf + bytes_written,
+			   PAGE_SIZE - bytes_written,
+			   "\t> %5d%15llu%15d%%\n",
+			   (int)qlen_x_axis[ARRAY_SIZE(qlen_x_axis) - 1],
+			   elem, pct);
+	}
+	return bytes_written;
+}
+
 /*
  * Values permitted 0, 1, 2.
  * 0 -> Disable IO latency histograms (default)
@@ -3031,21 +3081,45 @@ latency_hist_store(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
+static ssize_t
+qlen_hist_store(struct device *dev, struct device_attribute *attr,
+		const char *buf, size_t count)
+{
+	struct mmc_host *host = cls_dev_to_mmc_host(dev);
+	long value;
+
+	if (kstrtol(buf, 0, &value))
+		return -EINVAL;
+	if (value == MMC_IO_QLEN_HIST_ZERO)
+		mmc_zero_qlen_hist(host);
+	else if (value == MMC_IO_QLEN_HIST_ENABLE ||
+		 value == MMC_IO_QLEN_HIST_DISABLE)
+		host->qlen_hist_enabled = value;
+	return count;
+}
+
 static DEVICE_ATTR(latency_hist, S_IRUGO | S_IWUSR,
 		   latency_hist_show, latency_hist_store);
 
+static DEVICE_ATTR(qlen_hist, S_IRUGO | S_IWUSR,
+		   qlen_hist_show, qlen_hist_store);
+
 void
-mmc_latency_hist_sysfs_init(struct mmc_host *host)
+mmc_hist_sysfs_init(struct mmc_host *host)
 {
 	if (device_create_file(&host->class_dev, &dev_attr_latency_hist))
 		dev_err(&host->class_dev,
 			"Failed to create latency_hist sysfs entry\n");
+	if (device_create_file(&host->class_dev, &dev_attr_qlen_hist))
+		dev_err(&host->class_dev,
+			"Failed to create qlen_hist sysfs entry\n");
 }
 
 void
-mmc_latency_hist_sysfs_exit(struct mmc_host *host)
+mmc_hist_sysfs_exit(struct mmc_host *host)
 {
 	device_remove_file(&host->class_dev, &dev_attr_latency_hist);
+	device_remove_file(&host->class_dev, &dev_attr_qlen_hist);
 }
 
 subsys_initcall(mmc_init);
