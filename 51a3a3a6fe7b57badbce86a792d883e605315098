@@ -2,10 +2,37 @@ Revision: 51a3a3a6fe7b57badbce86a792d883e605315098
 Patch-set: 2
 File: drivers/mmc/core/core.c
 
+73:0-88:2
+Tue Aug 09 15:10:28 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b99e1320_95d8e120
+Bytes: 448
+KISS? Only do this is _you_ can read it. Optimizer will produce the same code, so this is a maintenance issue only (squashing duplicate code fragments into on).
+
+for (i = 0; ; i++) {
+    if ((i == ARRAY_SIZE(latency_x_axis_us) ||
+        (delta_us < (u_int64_t)latency_x_axis_us[i])) {
+            if (read)
+                host->latency_y_axis_read[i]++;
+            else
+                host->latency_y_axis_write[i]++;
+            break;
+    }
+}
+
 583:3-584:37
 Tue Aug 09 01:26:41 2016 +0000
 Author: Mohamad Ayyash <1037321@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b99e1320_ba1624fe
 Bytes: 20
 swap those two lines
+
+2937:8-2937:39
+Tue Aug 09 15:10:28 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b99e1320_f58b65c5
+Bytes: 292
+If there are any locks in proximity, worth checking out, to take advantage of them? If there is a host lock or some such (?), I do not think there is a burden worth worrying about if you took that same lock to retrieve the values for sysfs.
+
+confirm mmc_request_done() is called without lock.
 
