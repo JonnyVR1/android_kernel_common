@@ -1,0 +1,11 @@
+Revision: 51a3a3a6fe7b57badbce86a792d883e605315098
+Patch-set: 2
+File: drivers/mmc/core/core.c
+
+583:3-584:37
+Tue Aug 09 01:26:41 2016 +0000
+Author: Mohamad Ayyash <1037321@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b99e1320_ba1624fe
+Bytes: 20
+swap those two lines
+
