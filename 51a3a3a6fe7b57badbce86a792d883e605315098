@@ -36,3 +36,13 @@ If there are any locks in proximity, worth checking out, to take advantage of th
 
 confirm mmc_request_done() is called without lock.
 
+2937:8-2937:39
+Tue Aug 09 19:01:47 2016 +0000
+Author: Mohan Srinivasan <1105434@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99e1320_f58b65c5
+UUID: f9c96b7a_16c99c7f
+Bytes: 481
+mmc_request_done() is called outside the host->lock in the drivers I looked at.
+
+I was thinking about making the histogram raw data per-cpu, then aggregating them when printing (by scheduling ourselves on each CPU reading the per-cpu state). This will allow us to this completely lockless and be completely accurate at the same time. I didn't think this complication was warranted at this point though. I've updated the "lockless" comment with a mention of this suggestion for now.
+
