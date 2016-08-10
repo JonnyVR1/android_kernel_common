@@ -9,3 +9,13 @@ UUID: d9002788_941a926e
 Bytes: 144
 I think this printk is the only thing missing from upstream. I would prefer you implement it there and submit to lkml (cc me and I'll queue it).
 
+202:2-203:41
+Wed Aug 10 19:31:58 2016 +0000
+Author: Ruchi Kandoi <1041663@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9002788_941a926e
+UUID: 19d39f97_fb8a9769
+Bytes: 394
+Agreed. The code in timekeeping_debug is the same. The only concern is having those prints in the log will appear only with CONFIG_DEBUG_FS. And in the earlier option we could have it enabled without the debug.
+
+Not sure if a print in timekeeping.c would be a better option since having the prints in the dmesg gives us a better understanding of time passed. What are your thoughts on the same?
+
