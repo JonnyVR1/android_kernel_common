@@ -1,0 +1,13 @@
+Revision: 15c26231d6fac14a7ebea6ce9c8af060ca070b03
+Patch-set: 2
+File: include/uapi/linux/rtnetlink.h
+
+310:1-310:9
+Thu Aug 11 15:22:47 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5950b7ef_e6322415
+Bytes: 311
+So RTA_UID and RA_VIA collide here, but just inserting UID back in its place bumps VIA up one along with all the other following RTA_ enums.
+
+It might be better to just comment RTA_VIA out (or add it to the end) and add a comment making it clear that its been re-numbered and userspace using RTA_VIA won't work.
+
