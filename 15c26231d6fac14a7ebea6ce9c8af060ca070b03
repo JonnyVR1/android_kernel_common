@@ -11,3 +11,11 @@ So RTA_UID and RA_VIA collide here, but just inserting UID back in its place bum
 
 It might be better to just comment RTA_VIA out (or add it to the end) and add a comment making it clear that its been re-numbered and userspace using RTA_VIA won't work.
 
+310:1-310:9
+Thu Aug 11 16:16:07 2016 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5950b7ef_e6322415
+UUID: 5eeedd73_e1c3e603
+Bytes: 216
+I did think of commenting out RTA_VIA but then I decided to stay in sync with external/iproute2 project https://android.googlesource.com/platform/external/iproute2/+/android-n-preview-5/include/linux/rtnetlink.h#287.
+
