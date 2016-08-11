@@ -19,3 +19,11 @@ UUID: 5eeedd73_e1c3e603
 Bytes: 216
 I did think of commenting out RTA_VIA but then I decided to stay in sync with external/iproute2 project https://android.googlesource.com/platform/external/iproute2/+/android-n-preview-5/include/linux/rtnetlink.h#287.
 
+310:1-310:9
+Thu Aug 11 16:26:27 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5eeedd73_e1c3e603
+UUID: 5950b7ef_e6c2245b
+Bytes: 261
+Huh. Good catch. I didn't realize the iproute2 code had been modified as well. Though this will likely cause more trouble for trying to run mainline kernels w/ Android since the rest of the enum values will be offset from what the modified iproute2 code uses...
+
