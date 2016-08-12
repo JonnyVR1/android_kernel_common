@@ -1,0 +1,11 @@
+Revision: c355622ecb2b204890dad2cb24a1015a16b8876a
+Base-for-patch-set: 1
+File: fs/ecryptfs/file.c
+
+122:1-122:30
+Fri Aug 12 15:15:03 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de180dbf_195c5b5b
+Bytes: 245
+In android-3.10, commit 2de5f059c4422e357b7df021b487a37b1d61356b appears to be applied borken and lower_file->f_pos remained as file->f_pos in the rval, and the lval on line 124. It may behove us to correct this in the BACKPORT for android-3.10?
+
