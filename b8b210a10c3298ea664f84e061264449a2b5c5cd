@@ -1,0 +1,34 @@
+Revision: b8b210a10c3298ea664f84e061264449a2b5c5cd
+Patch-set: 1
+File: fs/sdcardfs/packagelist.c
+
+335
+Mon Aug 15 20:30:39 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6b3d9b_a23d84e6
+Bytes: 5
+const
+
+336
+Mon Aug 15 20:30:39 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6b3d9b_226b34ed
+Bytes: 38
+Need an RCU read lock around this loop
+
+338
+Mon Aug 15 20:30:39 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b3733db_d27b0452
+Bytes: 420
+The logic to put "<truncated>" at the end of the string is really ugly.  For example it's permanently reserving the sizeof(errormsg) bytes for the message just in case it's needed.
+
+I think this is the rare case where snprintf() *actually* returns the value you want -- you want to know if it tried to go past the end of the buffer and got truncated instead.  Based on that you can then tack "<truncated>" on at the end.
+
+339:5-339:13
+Mon Aug 15 20:30:39 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e6b3d9b_624c4c9d
+Bytes: 110
+Remove the cast.  You've changed key's type to const char *, so now this is actually discarding the constness.
+
