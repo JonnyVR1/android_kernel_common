@@ -9,3 +9,11 @@ UUID: ded72d3a_2d294d89
 Bytes: 64
 Should be FROMLIST: right? It is not accepted by mainstream yet.
 
+7:0-7:8
+Mon Aug 15 01:39:57 2016 +0000
+Author: Winter Wang <1100063@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ded72d3a_2d294d89
+UUID: 7e83a155_b2eee0b2
+Bytes: 46
+It's already merged by Greg KH in his usb repo
+
