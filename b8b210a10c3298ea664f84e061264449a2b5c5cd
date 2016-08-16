@@ -25,6 +25,14 @@ The logic to put "<truncated>" at the end of the string is really ugly.  For exa
 
 I think this is the rare case where snprintf() *actually* returns the value you want -- you want to know if it tried to go past the end of the buffer and got truncated instead.  Based on that you can then tack "<truncated>" on at the end.
 
+338
+Tue Aug 16 23:08:42 2016 +0000
+Author: Daniel Rosenberg <1045980@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7b3733db_d27b0452
+UUID: bb11ab9a_f814d9a0
+Bytes: 80
+I'd prefer to not have the partial line, as it wouldn't have useful information.
+
 339:5-339:13
 Mon Aug 15 20:30:39 2016 +0000
 Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
