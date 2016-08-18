@@ -1,0 +1,11 @@
+Revision: ddd45926dce038edbbb2851db12952b525efb32b
+Patch-set: 2
+File: kernel/sched/tune.c
+
+794:5-794:27
+Thu Aug 18 15:48:14 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_a57a2881
+Bytes: 78
+As you mentioned, this is unsigned int - what is the point of comparison < 0 ?
+
