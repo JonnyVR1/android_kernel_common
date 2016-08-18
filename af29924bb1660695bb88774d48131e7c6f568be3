@@ -1,0 +1,53 @@
+Revision: af29924bb1660695bb88774d48131e7c6f568be3
+Patch-set: 1
+File: drivers/usb/gadget/f_accessory.c
+
+76:1-77:31
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_ddeffcad
+Bytes: 26
+merge into a block comment
+
+80:0-83:4
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_7de588cd
+Bytes: 26
+merge into a block comment
+
+259:0-259:23
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_5dc3ec34
+Bytes: 6
+remove
+
+752:28-753:55
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_5ddc4c0c
+Bytes: 57
+exceeds 80 characters, make this a prefix'd block comment
+
+983:17-983:18
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_3d15d09a
+Bytes: 21
+no spaces before tabs
+
+984:24-984:25
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_1d71f40f
+Bytes: 21
+no spaces before tabs
+
+985:25-985:26
+Thu Aug 18 19:46:45 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb316383_bd7560fc
+Bytes: 21
+no spaces before tabs
+
