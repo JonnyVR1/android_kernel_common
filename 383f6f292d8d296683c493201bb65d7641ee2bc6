@@ -1,0 +1,29 @@
+Revision: 383f6f292d8d296683c493201bb65d7641ee2bc6
+Base-for-patch-set: 1
+File: fs/aio.c
+
+989:0-989:17
+Mon Aug 22 23:34:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_b476eee0
+Bytes: 43
+Should have taken this one as it uses tabs?
+
+File: fs/sdcardfs/derived_perm.c
+
+116:6-116:16
+Mon Aug 22 23:34:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_14af022e
+Bytes: 34
+seems like a loss in hardening ...
+
+File: net/ipv6/ping.c
+
+64:0-64:19
+Mon Aug 22 23:34:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_d4944add
+Bytes: 34
+cosmetic, but maybe more pleasing?
+
