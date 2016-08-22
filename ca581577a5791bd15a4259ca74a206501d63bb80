@@ -1,0 +1,11 @@
+Revision: ca581577a5791bd15a4259ca74a206501d63bb80
+Patch-set: 1
+File: fs/sdcardfs/inode.c
+
+83:13-83:27
+Mon Aug 22 22:58:51 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_5936d3fc
+Bytes: 111
+copy_fs_struct() can return NULL on error, which will turn into a NULL pointer dereference in a couple of lines
+
