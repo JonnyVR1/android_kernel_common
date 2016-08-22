@@ -9,3 +9,11 @@ UUID: e818b7be_5936d3fc
 Bytes: 111
 copy_fs_struct() can return NULL on error, which will turn into a NULL pointer dereference in a couple of lines
 
+83:13-83:27
+Mon Aug 22 23:34:55 2016 +0000
+Author: Daniel Rosenberg <1045980@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e818b7be_5936d3fc
+UUID: e818b7be_34279ece
+Bytes: 4
+Done
+
