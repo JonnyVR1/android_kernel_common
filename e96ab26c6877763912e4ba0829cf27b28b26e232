@@ -1,0 +1,18 @@
+Revision: e96ab26c6877763912e4ba0829cf27b28b26e232
+Patch-set: 1
+File: drivers/android/binder.c
+
+1513
+Mon Aug 22 23:23:28 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_599373a7
+Bytes: 281
+This can fail if the target process just died and finished unmapping the binder driver but has not finished the close call (as it need the same lock that this code is holding). Perhaps fixing that case to return BR_DEAD_REPLY would be more useful than adding all these error codes.
+
+1708
+Mon Aug 22 23:23:28 2016 +0000
+Author: Arve Hjønnevåg <1000205@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e818b7be_1409c28b
+Bytes: 180
+-ESRCH here probably also mean the target process is dying. -EMFILE usually means the target process hit its fd limit. I don't know if this can also happen if a process is exiting.
+
