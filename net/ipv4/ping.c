@@ -888,9 +888,15 @@ int ping_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 
 	/* Copy the address and add cmsg data. */
 	if (family == AF_INET) {
+<<<<<<< HEAD   (ed2200 update defconfig to enable ext4 encryption)
 		if (msg->msg_name) {
 			struct sockaddr_in *sin = (struct sockaddr_in *)msg->msg_name;
 
+=======
+		struct sockaddr_in *sin = (struct sockaddr_in *)msg->msg_name;
+
+		if (sin) {
+>>>>>>> BRANCH (4a5515 ASoC: check for null function pointer for dummy device read/)
 			sin->sin_family = AF_INET;
 			sin->sin_port = 0 /* skb->h.uh->source */;
 			sin->sin_addr.s_addr = ip_hdr(skb)->saddr;
@@ -905,6 +911,11 @@ int ping_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	} else if (family == AF_INET6) {
 		struct ipv6_pinfo *np = inet6_sk(sk);
 		struct ipv6hdr *ip6 = ipv6_hdr(skb);
+<<<<<<< HEAD   (ed2200 update defconfig to enable ext4 encryption)
+=======
+		struct sockaddr_in6 *sin6 =
+			(struct sockaddr_in6 *)msg->msg_name;
+>>>>>>> BRANCH (4a5515 ASoC: check for null function pointer for dummy device read/)
 
 		if (msg->msg_name) {
 			struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)msg->msg_name;
