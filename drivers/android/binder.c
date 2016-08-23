@@ -649,7 +649,7 @@ err_no_vma:
 		up_write(&mm->mmap_sem);
 		mmput(mm);
 	}
-	return -ENOMEM;
+	return vma ? -ENOMEM : -ESRCH;
 }
 
 static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
@@ -663,11 +663,12 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 	void *has_page_addr;
 	void *end_page_addr;
 	size_t size;
+	int ret;
 
 	if (proc->vma == NULL) {
 		pr_err("%d: binder_alloc_buf, no vma\n",
 		       proc->pid);
-		return NULL;
+		return ERR_PTR(-ESRCH);
 	}
 
 	size = ALIGN(data_size, sizeof(void *)) +
@@ -676,7 +677,7 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 	if (size < data_size || size < offsets_size) {
 		binder_user_error("%d: got transaction with invalid size %zd-%zd\n",
 				proc->pid, data_size, offsets_size);
-		return NULL;
+		return ERR_PTR(-EINVAL);
 	}
 
 	if (is_async &&
@@ -684,7 +685,7 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 		binder_debug(BINDER_DEBUG_BUFFER_ALLOC,
 			     "%d: binder_alloc_buf size %zd failed, no async space left\n",
 			      proc->pid, size);
-		return NULL;
+		return ERR_PTR(-ENOSPC);
 	}
 
 	while (n) {
@@ -705,7 +706,7 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 	if (best_fit == NULL) {
 		pr_err("%d: binder_alloc_buf size %zd failed, no address space\n",
 			proc->pid, size);
-		return NULL;
+		return ERR_PTR(-ENOSPC);
 	}
 	if (n == NULL) {
 		buffer = rb_entry(best_fit, struct binder_buffer, rb_node);
@@ -728,9 +729,12 @@ static struct binder_buffer *binder_alloc_buf(struct binder_proc *proc,
 		(void *)PAGE_ALIGN((uintptr_t)buffer->data + buffer_size);
 	if (end_page_addr > has_page_addr)
 		end_page_addr = has_page_addr;
-	if (binder_update_page_range(proc, 1,
-	    (void *)PAGE_ALIGN((uintptr_t)buffer->data), end_page_addr, NULL))
-		return NULL;
+	ret = binder_update_page_range(proc, 1,
+		(void *)PAGE_ALIGN((uintptr_t)buffer->data),
+		end_page_addr, NULL);
+	if (ret) {
+		return ERR_PTR(ret);
+	}
 
 	rb_erase(best_fit, &proc->free_buffers);
 	buffer->free = 0;
@@ -1508,9 +1512,10 @@ static void binder_transaction(struct binder_proc *proc,
 
 	t->buffer = binder_alloc_buf(target_proc, tr->data_size,
 		tr->offsets_size, !reply && (t->flags & TF_ONE_WAY));
-	if (t->buffer == NULL) {
+	if (IS_ERR(t->buffer)) {
 		return_error = BR_ERROR;
-		return_error_param = -ENOSPC;
+		return_error_param = PTR_ERR(t->buffer);
+		t->buffer = NULL;
 		goto err_binder_alloc_buf_failed;
 	}
 	t->buffer->allow_user_free = 0;
