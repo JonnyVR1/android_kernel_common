@@ -1,0 +1,14 @@
+Revision: 9a7d82e0e7f9977ec2dfa928b760cef0a231c684
+Patch-set: 3
+File: fs/sdcardfs/inode.c
+
+398
+Tue Aug 23 22:55:53 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f2cfe6_bbca1275
+Bytes: 57
+$ wc --max-line-length 9a7d82e.diff
+	260 9a7d82e.diff
+
+:(
+
