@@ -17,3 +17,17 @@ UUID: 881e5bf2_4fdd6d06
 Bytes: 218
 It is hardcoded to 20000000 and can only be changed via the kernel command line. If someone did set it to 0 (or anything less than MIN_SCHED_RAVG_WINDOWS), then walt_disabled gets set to true and we wouldn't come here.
 
+1523:15-1523:31
+Wed Aug 24 15:42:37 2016 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 881e5bf2_d4c5945d
+UUID: e8c6f768_35d13029
+Bytes: 494
+walt_ravg_window==20000000 but because of early_param(), it can be override from kernel commandline.
+
+In early_param func, walt_disabled==1 for out of range values of walt_ravg_window. 
+
+So in this particular case !walt_disabled will take care of that.
+
+I did not check other division instances. Though I do see a couple more division by walt_ravg_window without explicitly checking for walt_disabled but there might be other relevant divide-by-zero checks which I might have easily overlooked.
+
