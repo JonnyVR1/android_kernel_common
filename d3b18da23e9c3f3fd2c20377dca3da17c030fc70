@@ -9,3 +9,11 @@ UUID: 881e5bf2_d4c5945d
 Bytes: 48
 Q: what makes sure walt_ravg_window is not zero?
 
+1523:15-1523:31
+Wed Aug 24 15:41:12 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 881e5bf2_d4c5945d
+UUID: 881e5bf2_4fdd6d06
+Bytes: 218
+It is hardcoded to 20000000 and can only be changed via the kernel command line. If someone did set it to 0 (or anything less than MIN_SCHED_RAVG_WINDOWS), then walt_disabled gets set to true and we wouldn't come here.
+
