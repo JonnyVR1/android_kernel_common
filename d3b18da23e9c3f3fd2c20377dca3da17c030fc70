@@ -1,0 +1,11 @@
+Revision: d3b18da23e9c3f3fd2c20377dca3da17c030fc70
+Patch-set: 1
+File: kernel/sched/sched.h
+
+1523:15-1523:31
+Wed Aug 24 15:10:18 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 881e5bf2_d4c5945d
+Bytes: 48
+Q: what makes sure walt_ravg_window is not zero?
+
