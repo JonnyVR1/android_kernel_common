@@ -9,3 +9,11 @@ UUID: 458b6ee0_807d1613
 Bytes: 157
 The original code statement was terminated with a ",". Not sure if it was a valid syntax for TRACE_EVENT() or just a typo. I used ";" instead. Please review.
 
+1061:44-1061:46
+Thu Aug 25 14:43:42 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 458b6ee0_807d1613
+UUID: 884bbb45_41d75c49
+Bytes: 213
+Good catch, thanks! This should have resulted in a syntax error (!), because '#define TP_fast_assign(args...) args' would have stripped off the , and left white space between these two assignments after CPP phase.
+
