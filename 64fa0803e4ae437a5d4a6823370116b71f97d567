@@ -1,0 +1,11 @@
+Revision: 64fa0803e4ae437a5d4a6823370116b71f97d567
+Patch-set: 1
+File: drivers/mmc/core/core.c
+
+39:0-39:22
+Thu Aug 25 22:52:18 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5ac6270_1f265b20
+Bytes: 65
+shy away from asm/* directly ... what about using math.h instead?
+
