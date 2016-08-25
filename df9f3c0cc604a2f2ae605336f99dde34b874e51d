@@ -1,0 +1,11 @@
+Revision: df9f3c0cc604a2f2ae605336f99dde34b874e51d
+Patch-set: 2
+File: include/trace/events/sched.h
+
+1061:44-1061:46
+Thu Aug 25 05:47:56 2016 +0000
+Author: Amit Pundir <1031448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 458b6ee0_807d1613
+Bytes: 157
+The original code statement was terminated with a ",". Not sure if it was a valid syntax for TRACE_EVENT() or just a typo. I used ";" instead. Please review.
+
