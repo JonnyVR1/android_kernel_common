@@ -1,0 +1,32 @@
+Revision: 8d525c512280bb7d8218fd59c04de985b1886eca
+Patch-set: 3
+File: block/blk-core.c
+
+3580
+Thu Aug 25 00:44:28 2016 +0000
+Author: Alistair Strachan <1006523@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8a5df1c_2becd98b
+Bytes: 9
+yes, here
+
+3589
+Thu Aug 25 00:44:28 2016 +0000
+Author: Alistair Strachan <1006523@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 887d7b55_224a4eb6
+Bytes: 8
+and here
+
+3605
+Thu Aug 25 00:44:28 2016 +0000
+Author: Alistair Strachan <1006523@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28d3af97_27509a31
+Bytes: 8
+and here
+
+3614
+Thu Aug 25 00:44:28 2016 +0000
+Author: Alistair Strachan <1006523@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 08cc2bf8_66444ea6
+Bytes: 8
+and here
+
