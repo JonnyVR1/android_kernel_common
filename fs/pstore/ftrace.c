@@ -43,8 +43,8 @@ static void notrace pstore_ftrace_call(unsigned long ip,
 	rec.ip = ip;
 	rec.parent_ip = parent_ip;
 	pstore_ftrace_encode_cpu(&rec, raw_smp_processor_id());
-	psinfo->write_buf(PSTORE_TYPE_FTRACE, 0, NULL, 0, (void *)&rec,
-			  0, sizeof(rec), psinfo);
+	psinfo->write_buf(PSTORE_TYPE_FTRACE, 0, NULL, 0, (const void *)&rec,
+			  PSTORE_FROM_KERNEL, sizeof(rec), psinfo);
 
 	local_irq_restore(flags);
 }
