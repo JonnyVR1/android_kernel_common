@@ -1,5 +1,41 @@
 Revision: a8c16c2fbb92099d8d3c4e13940cb962613ff28f
 Patch-set: 1
+File: fs/pstore/ftrace.c
+
+47:5-47:6
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_4510de00
+Bytes: 58
+upstream has added a new argument here, a bool compressed.
+
+File: fs/pstore/platform.c
+
+227:36-227:37
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_a539ea84
+Bytes: 54
+upstream adds a zero argument here for bool compressed
+
+File: fs/pstore/pmsg.c
+
+36:4-36:5
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_852f0638
+Bytes: 54
+upstream has a bool compressed argument inserted here.
+
+File: fs/pstore/ram.c
+
+407:0-411:1
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_652c0243
+Bytes: 23
+Does not exist upstream
+
 File: fs/pstore/ram_core.c
 
 23:0-23:25
@@ -8,6 +44,13 @@ Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25a4baca_c52f4ea1
 Bytes: 47
 not necessary, already included in pstore_ram.h
+
+27:0-27:27
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_4577be65
+Bytes: 98
+This showed up because of the back-merge from volantis kernel and is not needed here (or upstream)
 
 File: include/linux/pstore.h
 
@@ -19,4 +62,21 @@ Bytes: 197
 gerrit is truncating 'psi' content, add a wrap to clarify. This line does not exceed 80 characters.
 
 THIS signature change may affect out-of-tree implementations of other backing-stores for pstore.
+
+66:0-69:59
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_8545c656
+UUID: 25a4baca_059f765f
+Bytes: 123
+A wrap also plays into the hands of upstream since the bool compressed arg is added and this reduces the conflict somewhat.
+
+File: include/linux/pstore_ram.h
+
+71:0-71:60
+Fri Aug 26 20:17:29 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_a59d6a64
+Bytes: 70
+not in upstream (deprecated) but we have to support in this back-port.
 
