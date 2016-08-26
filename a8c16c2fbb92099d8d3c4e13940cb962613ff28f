@@ -1,0 +1,22 @@
+Revision: a8c16c2fbb92099d8d3c4e13940cb962613ff28f
+Patch-set: 1
+File: fs/pstore/ram_core.c
+
+23:0-23:25
+Fri Aug 26 19:43:38 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_c52f4ea1
+Bytes: 47
+not necessary, already included in pstore_ram.h
+
+File: include/linux/pstore.h
+
+66:0-69:59
+Fri Aug 26 19:43:38 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_8545c656
+Bytes: 197
+gerrit is truncating 'psi' content, add a wrap to clarify. This line does not exceed 80 characters.
+
+THIS signature change may affect out-of-tree implementations of other backing-stores for pstore.
+
