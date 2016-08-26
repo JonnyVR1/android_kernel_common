@@ -45,6 +45,9 @@ enum pstore_type_id {
 
 /* buf_flags */
 #define PSTORE_COMPRESSED 0x01
+#define PSTORE_FROM_ID    0x02
+#define PSTORE_FROM_KERNEL 0x00
+#define PSTORE_FROM_USER   0x02
 
 struct module;
 

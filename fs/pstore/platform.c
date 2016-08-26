@@ -272,7 +272,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 	while (total < kmsg_bytes) {
 		char *dst;
 		unsigned long size;
-		int hsize, buf_flags = 0;
+		int hsize, buf_flags = PSTORE_FROM_KERNEL;
 		int zipped_len = -1;
 		size_t len;
 		size_t total_len;
@@ -354,7 +354,8 @@ static void pstore_console_write(struct console *con, const char *s, unsigned c)
 			spin_lock_irqsave(&psinfo->buf_lock, flags);
 		}
 		memcpy(psinfo->buf, s, c);
-		psinfo->write(PSTORE_TYPE_CONSOLE, 0, &id, 0, 0, 0, c, psinfo);
+		psinfo->write(PSTORE_TYPE_CONSOLE, 0, &id, 0, 0,
+			      PSTORE_FROM_KERNEL, c, psinfo);
 		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
 		s += c;
 		c = e - s;
@@ -456,7 +457,7 @@ void pstore_get_records(int quiet)
 	int			count;
 	enum pstore_type_id	type;
 	struct timespec		time;
-	int			failed = 0, rc, buf_flags = 0;
+	int			failed = 0, rc, buf_flags = PSTORE_FROM_KERNEL;
 	int			unzipped_len = -1;
 
 	if (!psi)
