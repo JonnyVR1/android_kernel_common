@@ -1,0 +1,20 @@
+Revision: a150bbb73adc710b9ce575301a7f24a17f5b4a01
+Patch-set: 1
+File: android/configs/android-recommended.cfg
+
+0
+Fri Aug 26 22:55:36 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_1926bbd1
+Bytes: 75
+You only need to set them in the base config. Recommended is added to base.
+
+File: arch/arm64/configs/defconfig
+
+0
+Fri Aug 26 22:55:36 2016 +0000
+Author: Rom Lemarchand <1018087@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_7917075b
+Bytes: 59
+This file is the base ARM64 config, we shouldn't touch this
+
