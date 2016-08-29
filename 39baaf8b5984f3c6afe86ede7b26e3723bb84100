@@ -1,0 +1,11 @@
+Revision: 39baaf8b5984f3c6afe86ede7b26e3723bb84100
+Patch-set: 1
+File: drivers/cpufreq/cpufreq.c
+
+441:0-444:6
+Mon Aug 29 14:42:18 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_5169b28e
+Bytes: 129
+Adding kandoiruchi@ to review, there is likely an adjustment that can go here so that tracing can still occur on non-SMP systems?
+
