@@ -473,7 +473,7 @@ static int nvram_pstore_open(struct pstore_info *psi)
  * @part:               pstore writes data to registered buffer in parts,
  *                      part number will indicate the same.
  * @count:              Indicates oops count
- * @compressed:         Flag to indicate the log is compressed
+ * @buf_flags:          Flag to indicate the log is compressed
  * @size:               number of bytes written to the registered buffer
  * @psi:                registered pstore_info structure
  *
@@ -484,7 +484,7 @@ static int nvram_pstore_open(struct pstore_info *psi)
 static int nvram_pstore_write(enum pstore_type_id type,
 				enum kmsg_dump_reason reason,
 				u64 *id, unsigned int part, int count,
-				bool compressed, size_t size,
+				int buf_flags, size_t size,
 				struct pstore_info *psi)
 {
 	int rc;
@@ -500,7 +500,7 @@ static int nvram_pstore_write(enum pstore_type_id type,
 	oops_hdr->report_length = (u16) size;
 	oops_hdr->timestamp = get_seconds();
 
-	if (compressed)
+	if (buf_flags & PSTORE_COMPRESSED)
 		err_type = ERR_TYPE_KERNEL_PANIC_GZ;
 
 	rc = nvram_write_os_partition(&oops_log_partition, oops_buf,
@@ -521,7 +521,7 @@ static int nvram_pstore_write(enum pstore_type_id type,
  */
 static ssize_t nvram_pstore_read(u64 *id, enum pstore_type_id *type,
 				int *count, struct timespec *time, char **buf,
-				bool *compressed, struct pstore_info *psi)
+				int *buf_flags, struct pstore_info *psi)
 {
 	struct oops_log_info *oops_hdr;
 	unsigned int err_type, id_no, size = 0;
@@ -612,9 +612,9 @@ static ssize_t nvram_pstore_read(u64 *id, enum pstore_type_id *type,
 		kfree(buff);
 
 		if (err_type == ERR_TYPE_KERNEL_PANIC_GZ)
-			*compressed = true;
+			*buf_flags |= PSTORE_COMPRESSED;
 		else
-			*compressed = false;
+			*buf_flags &= ~PSTORE_COMPRESSED;
 		return length;
 	}
 
