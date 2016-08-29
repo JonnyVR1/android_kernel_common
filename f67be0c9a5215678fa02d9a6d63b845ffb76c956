@@ -1,5 +1,23 @@
 Revision: f67be0c9a5215678fa02d9a6d63b845ffb76c956
 Patch-set: 2
+File: fs/pstore/platform.c
+
+227:9-227:23
+Mon Aug 29 16:24:14 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_5457605f
+Bytes: 81
+I didn't see any change to declarations for this in the CL... is the cast needed?
+
+File: fs/pstore/pmsg.c
+
+35:54-35:68
+Mon Aug 29 16:24:14 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_f4555454
+Bytes: 141
+In another file, you cast this to a (const void *). Which should it be? void* seems better to me, but what is the type in the write_buf decl?
+
 File: fs/pstore/ram.c
 
 219:29-219:39
@@ -22,4 +40,32 @@ Parent: 25a4baca_918dfa33
 UUID: 25a4baca_d4e7f0d7
 Bytes: 357
 FYI, tried the port to replace bool compressed with int flags, the impact is more than expected as read, write and write_buf are all rewritten. I decided that should be split from this change as a dependency to this one as part of a patch group. It will require that the back-port to 3.10 will require the compressed pstore patch first to make this easy ...
+
+219:29-219:39
+Mon Aug 29 16:24:14 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_d4e7f0d7
+UUID: 25a4baca_94ce082d
+Bytes: 170
+Already commented on the "from_user" name. Good name for boolean, bad name for enum. For upstream, I like "int flags" where COMPRESSED can be OR'd with the buffer source.
+
+File: fs/pstore/ram_core.c
+
+253:36-253:45
+Mon Aug 29 16:24:14 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_546e4031
+Bytes: 273
+"from_user" seems like it would be the right name if this were a boolean...but since it is an enum, something like "buffer_source" would be better (really doesn't make sense that "from_user" = "FROM_KERNEL", does it?
+
+Comment applies to all the "from_user" decls below too.
+
+File: include/linux/pstore.h
+
+69:23-69:32
+Mon Aug 29 16:24:14 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_74694420
+Bytes: 17
+"buffer_source" ?
 
