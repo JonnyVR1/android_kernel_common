@@ -207,6 +207,14 @@ static noinline void key_gc_unused_keys(struct list_head *keys)
 		if (test_bit(KEY_FLAG_INSTANTIATED, &key->flags))
 			atomic_dec(&key->user->nikeys);
 
+<<<<<<< HEAD   (ed2200 update defconfig to enable ext4 encryption)
+		key_user_put(key->user);
+=======
+		/* now throw away the key memory */
+		if (key->type->destroy)
+			key->type->destroy(key);
+>>>>>>> BRANCH (4f7300 Revert "netfilter: have ip*t REJECT set the sock err when an)
+
 		key_user_put(key->user);
 
 		kfree(key->description);

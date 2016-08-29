@@ -1715,7 +1715,16 @@ restart_locked:
 			goto out_unlock;
 	}
 
+<<<<<<< HEAD   (ed2200 update defconfig to enable ext4 encryption)
 	if (unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
+=======
+	/* other == sk && unix_peer(other) != sk if
+	 * - unix_peer(sk) == NULL, destination address bound to sk
+	 * - unix_peer(sk) == sk by time of get but disconnected before lock
+	 */
+	if (other != sk &&
+	    unlikely(unix_peer(other) != sk && unix_recvq_full(other))) {
+>>>>>>> BRANCH (4f7300 Revert "netfilter: have ip*t REJECT set the sock err when an)
 		if (timeo) {
 			timeo = unix_wait_for_peer(other, timeo);
 
