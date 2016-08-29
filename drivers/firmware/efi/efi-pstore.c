@@ -35,7 +35,7 @@ struct pstore_read_data {
 	enum pstore_type_id *type;
 	int *count;
 	struct timespec *timespec;
-	bool *compressed;
+	int *buf_flags;
 	char **buf;
 };
 
@@ -62,16 +62,16 @@ static int efi_pstore_read_func(struct efivar_entry *entry, void *data)
 		cb_data->timespec->tv_sec = time;
 		cb_data->timespec->tv_nsec = 0;
 		if (data_type == 'C')
-			*cb_data->compressed = true;
+			*cb_data->buf_flags |= PSTORE_COMPRESSED;
 		else
-			*cb_data->compressed = false;
+			*cb_data->buf_flags &= ~PSTORE_COMPRESSED;
 	} else if (sscanf(name, "dump-type%u-%u-%d-%lu",
 		   cb_data->type, &part, &cnt, &time) == 4) {
 		*cb_data->id = part;
 		*cb_data->count = cnt;
 		cb_data->timespec->tv_sec = time;
 		cb_data->timespec->tv_nsec = 0;
-		*cb_data->compressed = false;
+		*cb_data->buf_flags &= ~PSTORE_COMPRESSED;
 	} else if (sscanf(name, "dump-type%u-%u-%lu",
 			  cb_data->type, &part, &time) == 3) {
 		/*
@@ -83,7 +83,7 @@ static int efi_pstore_read_func(struct efivar_entry *entry, void *data)
 		*cb_data->count = 0;
 		cb_data->timespec->tv_sec = time;
 		cb_data->timespec->tv_nsec = 0;
-		*cb_data->compressed = false;
+		*cb_data->buf_flags &= ~PSTORE_COMPRESSED;
 	} else
 		return 0;
 
@@ -101,7 +101,7 @@ static int efi_pstore_read_func(struct efivar_entry *entry, void *data)
 
 static ssize_t efi_pstore_read(u64 *id, enum pstore_type_id *type,
 			       int *count, struct timespec *timespec,
-			       char **buf, bool *compressed,
+			       char **buf, int *buf_flags,
 			       struct pstore_info *psi)
 {
 	struct pstore_read_data data;
@@ -110,7 +110,7 @@ static ssize_t efi_pstore_read(u64 *id, enum pstore_type_id *type,
 	data.type = type;
 	data.count = count;
 	data.timespec = timespec;
-	data.compressed = compressed;
+	data.buf_flags = buf_flags;
 	data.buf = buf;
 
 	return __efivar_entry_iter(efi_pstore_read_func, &efivar_sysfs_list, &data,
@@ -119,7 +119,7 @@ static ssize_t efi_pstore_read(u64 *id, enum pstore_type_id *type,
 
 static int efi_pstore_write(enum pstore_type_id type,
 		enum kmsg_dump_reason reason, u64 *id,
-		unsigned int part, int count, bool compressed, size_t size,
+		unsigned int part, int count, int buf_flags, size_t size,
 		struct pstore_info *psi)
 {
 	char name[DUMP_NAME_LEN];
@@ -128,7 +128,7 @@ static int efi_pstore_write(enum pstore_type_id type,
 	int i, ret = 0;
 
 	sprintf(name, "dump-type%u-%u-%d-%lu-%c", type, part, count,
-		get_seconds(), compressed ? 'C' : 'D');
+		get_seconds(), (buf_flags & PSTORE_COMPRESSED) ? 'C' : 'D');
 
 	for (i = 0; i < DUMP_NAME_LEN; i++)
 		efi_name[i] = name[i];

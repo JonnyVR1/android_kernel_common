@@ -272,10 +272,9 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 	while (total < kmsg_bytes) {
 		char *dst;
 		unsigned long size;
-		int hsize;
+		int hsize, buf_flags = 0;
 		int zipped_len = -1;
 		size_t len;
-		bool compressed;
 		size_t total_len;
 
 		if (big_oops_buf) {
@@ -292,10 +291,10 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 						hsize + len, psinfo->bufsize);
 
 			if (zipped_len > 0) {
-				compressed = true;
+				buf_flags |= PSTORE_COMPRESSED;
 				total_len = zipped_len;
 			} else {
-				compressed = false;
+				buf_flags &= ~PSTORE_COMPRESSED;
 				total_len = copy_kmsg_to_buffer(hsize, len);
 			}
 		} else {
@@ -309,12 +308,12 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 								size, &len))
 				break;
 
-			compressed = false;
+			buf_flags &= ~PSTORE_COMPRESSED;
 			total_len = hsize + len;
 		}
 
 		ret = psinfo->write(PSTORE_TYPE_DMESG, reason, &id, part,
-				    oopscount, compressed, total_len, psinfo);
+				    oopscount, buf_flags, total_len, psinfo);
 		if (ret == 0 && reason == KMSG_DUMP_OOPS && pstore_is_mounted())
 			pstore_new_entry = 1;
 
@@ -376,11 +375,11 @@ static void pstore_register_console(void) {}
 static int pstore_write_compat(enum pstore_type_id type,
 			       enum kmsg_dump_reason reason,
 			       u64 *id, unsigned int part, int count,
-			       bool compressed, size_t size,
+			       int buf_flags, size_t size,
 			       struct pstore_info *psi)
 {
-	return psi->write_buf(type, reason, id, part, psinfo->buf, compressed,
-			     size, psi);
+	return psi->write_buf(type, reason, id, part, psinfo->buf, buf_flags,
+			      size, psi);
 }
 
 /*
@@ -453,8 +452,7 @@ void pstore_get_records(int quiet)
 	int			count;
 	enum pstore_type_id	type;
 	struct timespec		time;
-	int			failed = 0, rc;
-	bool			compressed;
+	int			failed = 0, rc, buf_flags = 0;
 	int			unzipped_len = -1;
 
 	if (!psi)
@@ -464,9 +462,10 @@ void pstore_get_records(int quiet)
 	if (psi->open && psi->open(psi))
 		goto out;
 
-	while ((size = psi->read(&id, &type, &count, &time, &buf, &compressed,
+	while ((size = psi->read(&id, &type, &count, &time, &buf, &buf_flags,
 				psi)) > 0) {
-		if (compressed && (type == PSTORE_TYPE_DMESG)) {
+		if ((buf_flags & PSTORE_COMPRESSED) &&
+		    (type == PSTORE_TYPE_DMESG)) {
 			if (big_oops_buf)
 				unzipped_len = pstore_decompress(buf,
 							big_oops_buf, size,
@@ -475,15 +474,15 @@ void pstore_get_records(int quiet)
 			if (unzipped_len > 0) {
 				buf = big_oops_buf;
 				size = unzipped_len;
-				compressed = false;
+				buf_flags &= ~PSTORE_COMPRESSED;
 			} else {
 				pr_err("pstore: decompression failed;"
 					"returned %d\n", unzipped_len);
-				compressed = true;
+				buf_flags |= PSTORE_COMPRESSED;
 			}
 		}
 		rc = pstore_mkfile(type, psi->name, id, count, buf,
-				  compressed, (size_t)size, time, psi);
+				   buf_flags, (size_t)size, time, psi);
 		if (unzipped_len < 0) {
 			/* Free buffer other than big oops */
 			kfree(buf);

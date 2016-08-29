@@ -933,9 +933,9 @@ static int erst_open_pstore(struct pstore_info *psi);
 static int erst_close_pstore(struct pstore_info *psi);
 static ssize_t erst_reader(u64 *id, enum pstore_type_id *type, int *count,
 			   struct timespec *time, char **buf,
-			   bool *compressed, struct pstore_info *psi);
+			   int *buf_flags, struct pstore_info *psi);
 static int erst_writer(enum pstore_type_id type, enum kmsg_dump_reason reason,
-		       u64 *id, unsigned int part, int count, bool compressed,
+		       u64 *id, unsigned int part, int count, bool buf_flags,
 		       size_t size, struct pstore_info *psi);
 static int erst_clearer(enum pstore_type_id type, u64 id, int count,
 			struct timespec time, struct pstore_info *psi);
@@ -992,7 +992,7 @@ static int erst_close_pstore(struct pstore_info *psi)
 
 static ssize_t erst_reader(u64 *id, enum pstore_type_id *type, int *count,
 			   struct timespec *time, char **buf,
-			   bool *compressed, struct pstore_info *psi)
+			   int *buf_flags, struct pstore_info *psi)
 {
 	int rc;
 	ssize_t len = 0;
@@ -1037,11 +1037,11 @@ skip:
 	}
 	memcpy(*buf, rcd->data, len - sizeof(*rcd));
 	*id = record_id;
-	*compressed = false;
+	*buf_flags &= ~PSTORE_COMPRESSED;
 	if (uuid_le_cmp(rcd->sec_hdr.section_type,
 			CPER_SECTION_TYPE_DMESG_Z) == 0) {
 		*type = PSTORE_TYPE_DMESG;
-		*compressed = true;
+		*buf_flags |= PSTORE_COMPRESSED;
 	} else if (uuid_le_cmp(rcd->sec_hdr.section_type,
 			CPER_SECTION_TYPE_DMESG) == 0)
 		*type = PSTORE_TYPE_DMESG;
@@ -1063,7 +1063,7 @@ out:
 }
 
 static int erst_writer(enum pstore_type_id type, enum kmsg_dump_reason reason,
-		       u64 *id, unsigned int part, int count, bool compressed,
+		       u64 *id, unsigned int part, int count, int buf_flags,
 		       size_t size, struct pstore_info *psi)
 {
 	struct cper_pstore_record *rcd = (struct cper_pstore_record *)
@@ -1093,7 +1093,7 @@ static int erst_writer(enum pstore_type_id type, enum kmsg_dump_reason reason,
 	rcd->sec_hdr.flags = CPER_SEC_PRIMARY;
 	switch (type) {
 	case PSTORE_TYPE_DMESG:
-		if (compressed)
+		if (buf_flags & PSTORE_COMPRESSED)
 			rcd->sec_hdr.section_type = CPER_SECTION_TYPE_DMESG_Z;
 		else
 			rcd->sec_hdr.section_type = CPER_SECTION_TYPE_DMESG;

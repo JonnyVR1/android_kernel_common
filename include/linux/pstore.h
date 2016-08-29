@@ -43,6 +43,9 @@ enum pstore_type_id {
 	PSTORE_TYPE_UNKNOWN	= 255
 };
 
+/* buf_flags */
+#define PSTORE_COMPRESSED 0x01
+
 struct module;
 
 struct pstore_info {
@@ -56,14 +59,14 @@ struct pstore_info {
 	int		(*close)(struct pstore_info *psi);
 	ssize_t		(*read)(u64 *id, enum pstore_type_id *type,
 			int *count, struct timespec *time, char **buf,
-			bool *compressed, struct pstore_info *psi);
+			int *buf_flags, struct pstore_info *psi);
 	int		(*write)(enum pstore_type_id type,
 			enum kmsg_dump_reason reason, u64 *id,
-			unsigned int part, int count, bool compressed,
+			unsigned int part, int count, int buf_flags,
 			size_t size, struct pstore_info *psi);
 	int		(*write_buf)(enum pstore_type_id type,
 			enum kmsg_dump_reason reason, u64 *id,
-			unsigned int part, const char *buf, bool compressed,
+			unsigned int part, const char *buf, int buf_flags,
 			size_t size, struct pstore_info *psi);
 	int		(*erase)(enum pstore_type_id type, u64 id,
 			int count, struct timespec time,
