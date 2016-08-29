@@ -1,0 +1,17 @@
+Revision: f67be0c9a5215678fa02d9a6d63b845ffb76c956
+Patch-set: 2
+File: fs/pstore/ram.c
+
+219:29-219:39
+Mon Aug 29 15:43:44 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25a4baca_918dfa33
+Bytes: 944
+Nit: maybe make this a flag instead of an enum?
+
+from_user is legacy of the design of this feature, used to be a (boolean) int; where non-zero value references that the page came from the user. In the future it may become a problem if more values are added. For example, and this is a stretch, what if one has PSTORE_FROM_VMALLOC which would trigger the bottom end to free the buffer once it is done with it? Rename to buf_id to more closely associate it with buf, and to ensure it has a future.
+
+The compressed boolean (int) is upstream, we maybe should overload it's location and define this a buf_flag with a bit for compressed source? That is a better choice, they placed compressed to just after buf, whereas I put from_user after buffer size.
+
+This solves a shape change issue with the function, the callers that only have compressed will have a zero or one there, the FROM field is zero, we will denote as PSTORE_FROM_KERNEL as expected.
+
