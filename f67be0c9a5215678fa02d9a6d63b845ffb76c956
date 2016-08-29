@@ -9,6 +9,14 @@ UUID: 25a4baca_5457605f
 Bytes: 81
 I didn't see any change to declarations for this in the CL... is the cast needed?
 
+227:9-227:23
+Mon Aug 29 20:33:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_5457605f
+UUID: 25ecba3b_82afbc75
+Bytes: 256
+I am specifically casting it to const void * because this comes in as char *. Pedantic correctness, and insurance that the caller does not disturb the psinfo->buf contents. This is part of the cleanup requests for the kernel, when you touch it, you fix it.
+
 File: fs/pstore/pmsg.c
 
 35:54-35:68
@@ -17,6 +25,14 @@ Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25a4baca_f4555454
 Bytes: 141
 In another file, you cast this to a (const void *). Which should it be? void* seems better to me, but what is the type in the write_buf decl?
+
+35:54-35:68
+Mon Aug 29 20:33:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_f4555454
+UUID: 25ecba3b_029bac61
+Bytes: 217
+Good catch. This should be const void *, to remove the __user declaration. I was thinking C++ where one used const_cast and you have to leave the type the same, then you wrap another. C, we can do both in one cast ...
 
 File: fs/pstore/ram.c
 
@@ -60,6 +76,14 @@ Bytes: 273
 
 Comment applies to all the "from_user" decls below too.
 
+253:36-253:45
+Mon Aug 29 20:33:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_546e4031
+UUID: 25ecba3b_82e17cc5
+Bytes: 97
+I am prototyping out a change in this to an int buf_flags as I replace bool compressed with that.
+
 File: include/linux/pstore.h
 
 69:23-69:32
@@ -68,4 +92,12 @@ Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25a4baca_74694420
 Bytes: 17
 "buffer_source" ?
+
+69:23-69:32
+Mon Aug 29 20:33:43 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25a4baca_74694420
+UUID: 25ecba3b_82e7bca6
+Bytes: 63
+I will show you the buf_flags idea next and see if you like it.
 
