@@ -1,0 +1,11 @@
+Revision: 24d84b028764c03209af2c3d079b45939ea475b0
+Patch-set: 1
+File: fs/pstore/platform.c
+
+268:0-271:46
+Tue Aug 30 20:21:44 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d13005eb_acdf0327
+Bytes: 85
+Ill advised to print to pr_err as console-ramoops will take a hit for the content ...
+
