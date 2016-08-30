@@ -1,0 +1,11 @@
+Revision: fa93c267621eec4359ea1857bc9d6099085f1305
+Patch-set: 1
+File: arch/powerpc/platforms/pseries/nvram.c
+
+492:0-492:47
+Tue Aug 30 20:26:51 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d13005eb_4f0c1146
+Bytes: 42
+upstream has this line right after int rc;
+
