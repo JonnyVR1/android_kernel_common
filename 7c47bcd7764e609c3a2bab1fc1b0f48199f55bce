@@ -1,0 +1,15 @@
+Revision: 7c47bcd7764e609c3a2bab1fc1b0f48199f55bce
+Patch-set: 4
+File: include/linux/pstore.h
+
+48:0-50:31
+Tue Aug 30 23:12:03 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11c7fd2d_6effaf51
+Bytes: 227
+PSTORE_FROM_KERNEL isn't really a flag. How about something like:
+
+  #define PSTORE_FROM_ID 0x02
+  #define IS_PSTORE_FROM_USER(_flag) (_flag & PSTORE_FROM_ID)
+  #define IS_PSTORE_FROM_KERNEL(_flag) (!IS_PSTORE_FROM_USER(_flag))
+
