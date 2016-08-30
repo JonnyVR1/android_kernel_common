@@ -1,0 +1,11 @@
+Revision: 2b27c847ef5c542de1946cbc923eb7ca999d357b
+Patch-set: 1
+File: fs/pstore/inode.c
+
+336:2-336:16
+Tue Aug 30 20:33:21 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d13005eb_8fbd5924
+Bytes: 9
+scnprintf
+
