@@ -1,5 +1,14 @@
 Revision: 7c47bcd7764e609c3a2bab1fc1b0f48199f55bce
 Patch-set: 4
+File: fs/pstore/pmsg.c
+
+35:54-35:71
+Tue Aug 30 23:22:21 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fd3d27_3ee0c98a
+Bytes: 190
+over the shoulder review: do not throw away __user tag, and then reinstate it later several layers down. Some arches may even have troubles with this because of the memory segment registers.
+
 File: include/linux/pstore.h
 
 48:0-50:31
