@@ -1,0 +1,11 @@
+Revision: 79becfb7dbd491ad4cfb01d471c9c821bdb5817d
+Patch-set: 1
+File: kernel/kcov.c
+
+15:0-15:24
+Tue Aug 30 14:20:25 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5c11ec4_01261d1f
+Bytes: 132
+Adding to the end is so de-passe ;-} One can alphabetically sort the headers to statistically reduce the chances of merge conflicts.
+
