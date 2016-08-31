@@ -9,6 +9,18 @@ UUID: 11fd3d27_3ee0c98a
 Bytes: 190
 over the shoulder review: do not throw away __user tag, and then reinstate it later several layers down. Some arches may even have troubles with this because of the memory segment registers.
 
+35:54-35:71
+Wed Aug 31 01:21:50 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 11fd3d27_3ee0c98a
+UUID: 11b0ddbd_acdcc732
+Bytes: 714
+__user itself doesn't have any effect at runtime.  It's ifdef-ed to nothing on a normal kernel build.
+
+It's intended for documentation and static analyzers, because it's very important that all userspace memory accesses from the kernel are properly checked.  (Enough so that some architectures have *other* ways of enforcing that userspace accesses go through the uaccess helpers.)
+
+So I'm worried by any change that gets rid that documentation, even temporarily.  I can imagine after enough time passing, someone might not be aware that the fifth parameter to write_buf is *sometimes* an unchecked userspace pointer (depending on the contents of a different parameter) and ends up using it in a dangerous context.
+
 File: include/linux/pstore.h
 
 48:0-50:31
