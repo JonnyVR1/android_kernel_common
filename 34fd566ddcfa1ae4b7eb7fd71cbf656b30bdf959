@@ -9,3 +9,11 @@ UUID: 91992d96_e5b81082
 Bytes: 73
 You're doing a __copy_from_user() followed by memcpy() of the same thing?
 
+266:1-266:40
+Wed Aug 31 22:40:10 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 91992d96_e5b81082
+UUID: f1a989a7_a015544a
+Bytes: 15
+OMG good catch!
+
