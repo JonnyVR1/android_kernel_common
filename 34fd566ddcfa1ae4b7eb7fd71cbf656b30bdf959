@@ -1,0 +1,11 @@
+Revision: 34fd566ddcfa1ae4b7eb7fd71cbf656b30bdf959
+Patch-set: 5
+File: fs/pstore/ram_core.c
+
+266:1-266:40
+Wed Aug 31 22:20:40 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 91992d96_e5b81082
+Bytes: 73
+You're doing a __copy_from_user() followed by memcpy() of the same thing?
+
