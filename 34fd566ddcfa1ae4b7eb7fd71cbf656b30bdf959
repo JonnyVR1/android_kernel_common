@@ -18,6 +18,14 @@ UUID: f1a989a7_e04c7cc7
 Bytes: 88
 As mentioned in platform.c, this needs to move into the write_buf_user() implementation.
 
+32:6-32:15
+Wed Aug 31 22:57:19 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1a989a7_e04c7cc7
+UUID: f1d26943_952ce4a0
+Bytes: 157
+I desire to keep this here as it is performed outside of the lock, performing it inside write_buf_user again is low enough of a cost for the generic case ...
+
 File: fs/pstore/ram_core.c
 
 264:20-264:36
