@@ -1,0 +1,11 @@
+Revision: c3af24192c51e5e6abec8dbe489416cf620d6a3d
+Patch-set: 1
+File: drivers/media/tuners/tuner-xc2028.c
+
+1407:3-1407:18
+Thu Sep 01 21:58:14 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f19fc9ca_308a8650
+Bytes: 26
+fails to unlock priv->lock
+
