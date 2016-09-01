@@ -1,0 +1,11 @@
+Revision: 94fb2fe9d3f8bb31e9e06beefe0fc2f8ae327b7d
+Patch-set: 1
+File: android/configs/android-base.cfg
+
+144:0-144:23
+Thu Sep 01 17:15:24 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b1247148_133c8ccd
+Bytes: 66
+This is the default when CONFIG_SECCOMP is selected, not required.
+
