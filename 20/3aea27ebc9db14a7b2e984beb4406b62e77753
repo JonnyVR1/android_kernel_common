@@ -1,0 +1,10 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Todd Kjos <tkjos@google.com>
+Code-Review+1: Srinath Sridharan <srinathsr@google.com>
+Verified+1: Todd Kjos <tkjos@google.com>
+Autosubmit+1: Todd Kjos <tkjos@google.com>
+Submitted-by: Treehugger Robot <treehugger-gerrit@google.com>
+Submitted-at: Fri, 02 Sep 2016 17:01:07 +0000
+Reviewed-on: https://android-review.googlesource.com/269092
+Project: kernel/common
+Branch: refs/heads/android-3.18
