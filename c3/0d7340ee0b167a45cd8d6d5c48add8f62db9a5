@@ -1,0 +1,8 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Kees Cook <keescook@google.com>
+Verified+1: Sami Tolvanen <samitolvanen@google.com>
+Submitted-by: Sami Tolvanen <samitolvanen@google.com>
+Submitted-at: Tue, 06 Sep 2016 15:56:55 +0000
+Reviewed-on: https://android-review.googlesource.com/267418
+Project: kernel/common
+Branch: refs/heads/android-4.4
