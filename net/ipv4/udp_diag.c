@@ -20,7 +20,7 @@
 static int sk_diag_dump(struct sock *sk, struct sk_buff *skb,
 			struct netlink_callback *cb,
 			const struct inet_diag_req_v2 *req,
-			struct nlattr *bc)
+			struct nlattr *bc, bool net_admin)
 {
 	if (!inet_diag_bc_sk(bc, sk))
 		return 0;
@@ -28,7 +28,7 @@ static int sk_diag_dump(struct sock *sk, struct sk_buff *skb,
 	return inet_sk_diag_fill(sk, NULL, skb, req,
 			sk_user_ns(NETLINK_CB(cb->skb).sk),
 			NETLINK_CB(cb->skb).portid,
-			cb->nlh->nlmsg_seq, NLM_F_MULTI, cb->nlh);
+			cb->nlh->nlmsg_seq, NLM_F_MULTI, cb->nlh, net_admin);
 }
 
 static int udp_dump_one(struct udp_table *tbl, struct sk_buff *in_skb,
@@ -75,7 +75,8 @@ static int udp_dump_one(struct udp_table *tbl, struct sk_buff *in_skb,
 	err = inet_sk_diag_fill(sk, NULL, rep, req,
 			   sk_user_ns(NETLINK_CB(in_skb).sk),
 			   NETLINK_CB(in_skb).portid,
-			   nlh->nlmsg_seq, 0, nlh);
+			   nlh->nlmsg_seq, 0, nlh,
+			   netlink_net_capable(in_skb, CAP_NET_ADMIN));
 	if (err < 0) {
 		WARN_ON(err == -EMSGSIZE);
 		kfree_skb(rep);
@@ -98,6 +99,7 @@ static void udp_dump(struct udp_table *table, struct sk_buff *skb,
 {
 	int num, s_num, slot, s_slot;
 	struct net *net = sock_net(skb->sk);
+	bool net_admin = netlink_net_capable(cb->skb, CAP_NET_ADMIN);
 
 	s_slot = cb->args[0];
 	num = s_num = cb->args[1];
@@ -132,7 +134,7 @@ static void udp_dump(struct udp_table *table, struct sk_buff *skb,
 			    r->id.idiag_dport)
 				goto next;
 
-			if (sk_diag_dump(sk, skb, cb, r, bc) < 0) {
+			if (sk_diag_dump(sk, skb, cb, r, bc, net_admin) < 0) {
 				spin_unlock_bh(&hslot->lock);
 				goto done;
 			}
@@ -180,7 +182,7 @@ static int __udp_diag_destroy(struct sk_buff *in_skb,
 		sk = __udp4_lib_lookup(net,
 				req->id.idiag_dst[0], req->id.idiag_dport,
 				req->id.idiag_src[0], req->id.idiag_sport,
-				req->id.idiag_if, tbl, NULL);
+				req->id.idiag_if, tbl);
 #if IS_ENABLED(CONFIG_IPV6)
 	else if (req->sdiag_family == AF_INET6) {
 		if (ipv6_addr_v4mapped((struct in6_addr *)req->id.idiag_dst) &&
@@ -188,7 +190,7 @@ static int __udp_diag_destroy(struct sk_buff *in_skb,
 			sk = __udp4_lib_lookup(net,
 					req->id.idiag_dst[3], req->id.idiag_dport,
 					req->id.idiag_src[3], req->id.idiag_sport,
-					req->id.idiag_if, tbl, NULL);
+					req->id.idiag_if, tbl);
 
 		else
 			sk = __udp6_lib_lookup(net,
@@ -196,7 +198,7 @@ static int __udp_diag_destroy(struct sk_buff *in_skb,
 					req->id.idiag_dport,
 					(struct in6_addr *)req->id.idiag_src,
 					req->id.idiag_sport,
-					req->id.idiag_if, tbl, NULL);
+					req->id.idiag_if, tbl);
 	}
 #endif
 	else {
