@@ -1,0 +1,11 @@
+Revision: ff10406cb3ffbbddff62f357bd84a0ea39fef029
+Patch-set: 1
+File: kernel/events/core.c
+
+7414:1-7414:17
+Mon Sep 12 22:58:55 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb277249_c3c9606f
+Bytes: 58
+This is the million dollar fix, glad we have the trio now!
+
