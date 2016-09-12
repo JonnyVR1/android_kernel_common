@@ -1,0 +1,13 @@
+Revision: 4480a88702d7217887cb59a53e55fe58116d0f0c
+Patch-set: 2
+File: arch/arm/include/asm/pgtable-2level-hwdef.h
+
+23:20-23:31
+Mon Sep 12 15:23:20 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbe692fe_f118a080
+Bytes: 202
+Upstream this is tabs. Why were they converted to spaces? This may make future merges more difficult.
+
+I see this behavior in several places, please resubmit with the appropriate indentation characters.
+
