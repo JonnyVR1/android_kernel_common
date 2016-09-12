@@ -9,3 +9,11 @@ UUID: cb6db244_042c16a4
 Bytes: 156
 This line (605) is incorrect, and needs to be removed. In mainline, we merged a fixup patch on top to remove it, but here you can simply drop it, I suppose.
 
+605
+Mon Sep 12 20:34:58 2016 +0000
+Author: Sami Tolvanen <1058768@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb6db244_042c16a4
+UUID: cb277249_7aa7d15b
+Bytes: 47
+Thanks, I'll cherry pick the fix from upstream.
+
