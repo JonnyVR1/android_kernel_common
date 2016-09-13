@@ -1,0 +1,11 @@
+Revision: 5ebd28a7b5a7bdf527dcb7e1443edd3149cc3696
+Patch-set: 1
+File: kernel/auditsc.c
+
+1038:62-1038:65
+Tue Sep 13 22:07:15 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b6c9a82_f9f763eb
+Bytes: 163
+This and others here use a comment style that is not compliant with linux coding standards. Requires */ to be on a separate line in block comments. Pity it got in.
+
