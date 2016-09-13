@@ -1,0 +1,11 @@
+Revision: e5d32a7724f782b4402f7ee94af95ff117dad47b
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:0-7:53
+Tue Sep 13 17:21:56 2016 +0000
+Author: Mark Salyzyn <1032276@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b83ba54_2682ae37
+Bytes: 71
+Tag with UPSTREAM: or BACKPORT: given how well (or badly) this applies.
+
