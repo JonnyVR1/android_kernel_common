@@ -13,3 +13,11 @@ should be INET_DIAG_MAX __INET_DIAG_MAX
 
 also wondering about the "__" in __INET_DIAG_MAX
 
+130:22-130:40
+Wed Sep 14 05:29:53 2016 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b0f66e3_79aa2775
+UUID: 6b0f66e3_792fc7fb
+Bytes: 164
+Good catch. Changed to INET_DIAG_MARK to match existing code. __INET_DIAG_MAX was only introduced in April this year and thus does not exist in this kernel version.
+
