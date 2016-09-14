@@ -1,0 +1,15 @@
+Revision: f659c09b2fe12eca83e56adeb145aeb05c553c3b
+Patch-set: 1
+File: include/uapi/linux/inet_diag.h
+
+130:22-130:40
+Wed Sep 14 03:24:37 2016 +0000
+Author: Joel Scherpelz <1121773@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b0f66e3_79aa2775
+Bytes: 117
+I think this line is wrong
+
+should be INET_DIAG_MAX __INET_DIAG_MAX
+
+also wondering about the "__" in __INET_DIAG_MAX
+
