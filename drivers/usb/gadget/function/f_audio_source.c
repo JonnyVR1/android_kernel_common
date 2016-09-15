@@ -362,8 +362,8 @@ static void audio_send(struct audio_dev *audio)
 	struct snd_pcm_runtime *runtime;
 	struct usb_request *req;
 	int length, length1, length2, ret;
-	s64 msecs;
-	s64 frames;
+	u64 msecs;
+	u64 frames;
 	ktime_t now;
 
 	/* audio->substream will be null if we have been closed */
