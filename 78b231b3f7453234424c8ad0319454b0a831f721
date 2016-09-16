@@ -1,0 +1,11 @@
+Revision: 78b231b3f7453234424c8ad0319454b0a831f721
+Patch-set: 1
+File: drivers/usb/gadget/function/f_audio_source.c
+
+395:5-395:11
+Fri Sep 16 19:49:33 2016 +0000
+Author: Dmitry Shmidt <1000414@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb3b56ab_cfd9ab78
+Bytes: 33
+We can not catch then frames <= 0
+
