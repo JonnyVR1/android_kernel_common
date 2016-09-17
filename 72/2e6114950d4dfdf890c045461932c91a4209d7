@@ -1,0 +1,8 @@
+Presubmit-Verified+1: Treehugger Robot <treehugger-gerrit@google.com>
+Code-Review+2: Kees Cook <keescook@google.com>
+Verified+1: Jeffrey Vander Stoep <jeffv@google.com>
+Submitted-by: Jeffrey Vander Stoep <jeffv@google.com>
+Submitted-at: Sat, 17 Sep 2016 03:22:16 +0000
+Reviewed-on: https://android-review.googlesource.com/275539
+Project: kernel/common
+Branch: refs/heads/android-4.4
