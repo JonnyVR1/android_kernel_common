@@ -1,0 +1,11 @@
+Revision: b39c4367e7e6cdc581fe7b8ab3a0a2bfe9e92eed
+Patch-set: 2
+File: net/ipv4/udp_diag.c
+
+183:27-183:31
+Sun Sep 18 17:24:11 2016 +0000
+Author: Lorenzo Colitti <1000835@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 300ddf2c_b7ef6812
+Bytes: 127
+This passes in one argument too many. Didn't catch it in compilation because a subsequent patch in the series removes it again.
+
