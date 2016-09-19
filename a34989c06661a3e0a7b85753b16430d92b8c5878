@@ -21,6 +21,18 @@ Actually I'm wondering if it has to be
 if (!boosted) {
 }
 
+5504
+Mon Sep 19 22:18:57 2016 +0000
+Author: Srinath Sridharan <1097408@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb3b56ab_933a5b82
+UUID: 70d83709_f1b628d6
+Bytes: 190
+Sorry the other way.
+
+Boosted tasks must prefer higher utilization CPUs and the non-boosted ones will prefer lower-utilization CPUs.
+
+If the above makes sense, we can keep the existing logic
+
 5505
 Mon Sep 19 22:01:51 2016 +0000
 Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
