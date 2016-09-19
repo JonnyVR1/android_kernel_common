@@ -1,0 +1,20 @@
+Revision: a34989c06661a3e0a7b85753b16430d92b8c5878
+Patch-set: 2
+File: kernel/sched/fair.c
+
+5504
+Mon Sep 19 22:01:51 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb3b56ab_f3ef1f78
+Bytes: 29
+Add a space
+
+"if(" --> "if ("
+
+5505
+Mon Sep 19 22:01:51 2016 +0000
+Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb3b56ab_330a872d
+Bytes: 17
+No '//'. Use '/*'
+
