@@ -11,6 +11,16 @@ Add a space
 
 "if(" --> "if ("
 
+5504
+Mon Sep 19 22:07:43 2016 +0000
+Author: Srinath Sridharan <1097408@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb3b56ab_f3ef1f78
+UUID: eb3b56ab_933a5b82
+Bytes: 56
+Actually I'm wondering if it has to be
+if (!boosted) {
+}
+
 5505
 Mon Sep 19 22:01:51 2016 +0000
 Author: Todd Kjos <1069543@85c56323-6fa9-3386-8a01-6480fb634889>
