@@ -5501,8 +5501,8 @@ static inline int find_best_target(struct task_struct *p, bool boosted, bool pre
 
 		if (new_util < cur_capacity) {
 			if (cpu_rq(i)->nr_running) {
-				if(prefer_idle) {
-					// Find a target cpu with lowest
+				if(!prefer_idle) {
+					// Find a target cpu with highest
 					// utilization.
 					if (target_util == 0 ||
 						target_util < new_util) {
@@ -5510,7 +5510,7 @@ static inline int find_best_target(struct task_struct *p, bool boosted, bool pre
 						target_util = new_util;
 					}
 				} else {
-					// Find a target cpu with highest
+					// Find a target cpu with lowest
 					// utilization.
 					if (target_util == 0 ||
 						target_util > new_util) {
