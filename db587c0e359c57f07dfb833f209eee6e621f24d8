@@ -1,0 +1,11 @@
+Revision: db587c0e359c57f07dfb833f209eee6e621f24d8
+Patch-set: 1
+File: init/Kconfig
+
+1297:28-1297:40
+Wed Sep 21 07:51:39 2016 +0000
+Author: Chris Redpath <1122323@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 108ffb3e_cec3032a
+Bytes: 22
+should be ENERGY_AWARE
+
