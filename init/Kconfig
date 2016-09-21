@@ -1290,6 +1290,15 @@ config SCHED_TUNE
 
 	  If unsure, say N.
 
+config DEFAULT_USE_ENERGY_AWARE
+	bool "Default to enabling the Energy Aware Scheduler feature"
+	default n
+	help
+	  This option defaults the ENERCY_AWARE scheduling feature to true,
+	  which allows it to be set even when SCHED_DEBUG is not set.
+
+	  Say N if unsure.
+
 config SYSFS_DEPRECATED
 	bool "Enable deprecated sysfs features to support old userspace tools"
 	depends on SYSFS
