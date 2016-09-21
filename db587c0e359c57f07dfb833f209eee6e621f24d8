@@ -24,3 +24,11 @@ UUID: f074270d_a5033e1b
 Bytes: 106
 is it more clear to say that without SCHED_DEBUG set this feature can't be enabled or disabled via sysctl?
 
+1298
+Wed Sep 21 17:44:00 2016 +0000
+Author: John Stultz <1010110@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f074270d_a5033e1b
+UUID: f074270d_45560acf
+Bytes: 40
+Agreed. Reworded to use your suggestion.
+
