@@ -17,3 +17,10 @@ UUID: 70d83709_01ab3f77
 Bytes: 19
 Doh. Fixed. Thanks!
 
+1298
+Wed Sep 21 17:34:44 2016 +0000
+Author: Andres Oportus <1118133@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f074270d_a5033e1b
+Bytes: 106
+is it more clear to say that without SCHED_DEBUG set this feature can't be enabled or disabled via sysctl?
+
