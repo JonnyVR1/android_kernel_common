@@ -1,0 +1,11 @@
+Revision: 212d3715d691ad9da9c11710f67ec147009ebd83
+Patch-set: 1
+File: drivers/video/adf/adf_fops.c
+
+229:0-230:17
+Wed Sep 21 20:27:34 2016 +0000
+Author: Greg Hackmann <1015340@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f074270d_59f35389
+Bytes: 167
+This makes a bunch of the get_user() calls below (e.g. get_user(n_intfs, &arg->n_interfaces)) redundant, since they same information has already been copied into data.
+
